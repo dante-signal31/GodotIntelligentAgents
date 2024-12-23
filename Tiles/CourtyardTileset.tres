@@ -1,0 +1,21 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://lwrjedftv6bk"]
+
+[ext_resource type="Texture2D" uid="uid://dehu5md1gaaes" path="res://Sprites/Atlas/SquareTilesAtlas.png" id="1_b4l4g"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_de2y5"]
+resource_name = "SceneTiles"
+texture = ExtResource("1_b4l4g")
+margins = Vector2i(75, 75)
+separation = Vector2i(155, 0)
+texture_region_size = Vector2i(107, 108)
+1:0/0 = 0
+1:0/0/modulate = Color(0.333619, 0.327215, 0.330419, 1)
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-53.5, -54, 53.5, -54, 53.5, 54, -53.5, 54, -53.5, 54, -53.5, -54)
+2:0/0 = 0
+0:0/0 = 0
+
+[resource]
+tile_size = Vector2i(107, 108)
+physics_layer_0/collision_layer = 2
+physics_layer_0/collision_mask = 0
+sources/0 = SubResource("TileSetAtlasSource_de2y5")

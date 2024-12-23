@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://mxho5r22apy1"]
+
+[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/MovingAgent.cs" id="1_o3k4p"]
+[ext_resource type="Texture2D" uid="uid://bc62gvf0jt0gr" path="res://Sprites/Circle.png" id="1_w6fiy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_31xhw"]
+radius = 52.0384
+
+[node name="MovingAgent" type="CharacterBody2D" node_paths=PackedStringArray("_bodySprite")]
+motion_mode = 1
+script = ExtResource("1_o3k4p")
+_bodySprite = NodePath("Body")
+
+[node name="Body" type="Sprite2D" parent="."]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_w6fiy")
+
+[node name="ForwardDot" type="Sprite2D" parent="Body"]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(99.2908, 0)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_w6fiy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_31xhw")
