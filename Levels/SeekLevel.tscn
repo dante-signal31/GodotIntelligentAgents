@@ -1,13 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://cos31pa5ahrvq"]
+[gd_scene load_steps=6 format=3 uid="uid://cos31pa5ahrvq"]
 
 [ext_resource type="PackedScene" uid="uid://dqt1t3nk4wc4b" path="res://Levels/ClearCourtyard.tscn" id="1_8ae2m"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="2_ucic4"]
+[ext_resource type="Script" path="res://Scripts/ClearCourtyard.cs" id="2_wk6of"]
 [ext_resource type="PackedScene" uid="uid://mxho5r22apy1" path="res://Scenes/SteeringBehaviors/MovingAgent.tscn" id="3_od8nb"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="4_vfm2w"]
 
 [node name="SeekLevel" type="Node2D"]
 
 [node name="ClearCourtyard" parent="." instance=ExtResource("1_8ae2m")]
+script = ExtResource("2_wk6of")
 
 [node name="Target" parent="." instance=ExtResource("2_ucic4")]
 top_level = true
