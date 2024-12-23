@@ -19,6 +19,8 @@ gizmo_extents = 51.0
 position = Vector2(1487, 758)
 _maximumSpeed = 100.0
 _stopSpeed = 0.2
+_maximumRotationalDegSpeed = 1080.0
+_stopRotationDegThreshold = 1.0
 _steeringBehavior = NodePath("SeekSteeringBehavior")
 
 [node name="SeekSteeringBehavior" parent="MovingAgent" node_paths=PackedStringArray("_target") instance=ExtResource("4_vfm2w")]

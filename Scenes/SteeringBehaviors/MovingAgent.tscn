@@ -7,6 +7,7 @@
 radius = 52.0384
 
 [node name="MovingAgent" type="CharacterBody2D" node_paths=PackedStringArray("_bodySprite")]
+collision_mask = 3
 motion_mode = 1
 script = ExtResource("1_o3k4p")
 _bodySprite = NodePath("Body")
