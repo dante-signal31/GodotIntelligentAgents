@@ -6,14 +6,23 @@ public partial class SeekSteeringBehavior: SteeringBehavior, ITargeter
 {
     [ExportCategory("CONFIGURATION:")] 
     [Export] private Node2D _target;
+    /// <summary>
+    /// Distance at which we give our goal as reached and we stop our agent.
+    /// </summary>
     [Export] private float _arrivalDistance = .1f;
 
+    /// <summary>
+    /// Point this agent is going to.
+    /// </summary>
     public Node2D Target
     {
         get=> _target; 
         set=> _target = value;
     }
     
+    /// <summary>
+    /// Distance at which we give our goal as reached and we stop our agent.
+    /// </summary>
     public float ArrivalDistance
     {
         get=> _arrivalDistance; 

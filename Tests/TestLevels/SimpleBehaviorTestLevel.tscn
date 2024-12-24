@@ -1,15 +1,14 @@
 [gd_scene load_steps=6 format=3 uid="uid://b62033ep2w41i"]
 
 [ext_resource type="PackedScene" uid="uid://dqt1t3nk4wc4b" path="res://Levels/ClearCourtyard.tscn" id="1_oy3cc"]
-[ext_resource type="Script" path="res://Scripts/ClearCourtyard.cs" id="2_ndptg"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="3_hsc70"]
 [ext_resource type="PackedScene" uid="uid://mxho5r22apy1" path="res://Scenes/SteeringBehaviors/MovingAgent.tscn" id="4_d5nib"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="5_b8gkt"]
+[ext_resource type="PackedScene" uid="uid://fghynj1qk4qb" path="res://Scenes/SteeringBehaviors/ArriveSteeringBehavior.tscn" id="5_xfglb"]
 
 [node name="SimpleBehaviorTestLevel" type="Node2D"]
 
 [node name="ClearCourtyard" parent="." instance=ExtResource("1_oy3cc")]
-script = ExtResource("2_ndptg")
 
 [node name="Target" parent="." instance=ExtResource("3_hsc70")]
 top_level = true
@@ -31,13 +30,30 @@ position = Vector2(390, 742)
 
 [node name="SeekMovingAgent" parent="Agents" node_paths=PackedStringArray("_steeringBehavior") instance=ExtResource("4_d5nib")]
 process_mode = 4
+visible = false
 position = Vector2(1470, 788)
 _maximumSpeed = 600.0
-_stopSpeed = 0.2
+_stopSpeed = 1.0
 _maximumRotationalDegSpeed = 1080.0
 _stopRotationDegThreshold = 1.0
 _steeringBehavior = NodePath("SeekSteeringBehavior")
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" node_paths=PackedStringArray("_target") instance=ExtResource("5_b8gkt")]
 _target = NodePath("../../../Target")
-_arrivalDistance = 3.0
+_arrivalDistance = 10.0
+
+[node name="ArriveMovingAgent" parent="Agents" node_paths=PackedStringArray("_steeringBehavior") instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
+position = Vector2(1630, 761)
+_maximumSpeed = 600.0
+_stopSpeed = 1.0
+_maximumRotationalDegSpeed = 1080.0
+_stopRotationDegThreshold = 1.0
+_steeringBehavior = NodePath("ArriveSteeringBehavior")
+
+[node name="ArriveSteeringBehavior" parent="Agents/ArriveMovingAgent" node_paths=PackedStringArray("_target") instance=ExtResource("5_xfglb")]
+_target = NodePath("../../../Target")
+_brakingRadius = 200.0
+_arrivalDistance = 10.0
+_accelerationRadius = 100.0
