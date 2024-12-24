@@ -97,15 +97,16 @@ public partial class ArriveSteeringBehavior: SteeringBehavior, ITargeter
             _distanceFromStart = (currentPosition - _startPosition).Length();
             newSpeed =
                 _accelerationCurve.Sample(
-                    _distanceFromStart / _accelerationRadius) * maximumSpeed;
+                    Mathf.InverseLerp(0, _accelerationRadius, _distanceFromStart)) *
+                     maximumSpeed;
         }
         else if (distanceToTarget < _brakingRadius &&
                  distanceToTarget >= _arrivalDistance)
         {
-            // Deceleration phase.
             newSpeed = currentVelocity.Length() > stopSpeed ?
                 _decelerationCurve.Sample(
-                    1 - (distanceToTarget / _brakingRadius)) * maximumSpeed:
+                    Mathf.InverseLerp(_brakingRadius, 0, distanceToTarget)) * 
+                maximumSpeed:
                 0;
         }
         else if (distanceToTarget < _arrivalDistance)
