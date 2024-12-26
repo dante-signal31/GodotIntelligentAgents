@@ -22,5 +22,5 @@ _stopSpeed = 1.0
 _maximumRotationalDegSpeed = 1080.0
 _stopRotationDegThreshold = 1.0
 
-[node name="SeekSteeringBehavior" parent="MovingAgent" node_paths=PackedStringArray("_target") instance=ExtResource("4_vfm2w")]
-_target = NodePath("../../Target")
+[node name="SeekSteeringBehavior" parent="MovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_vfm2w")]
+Target = NodePath("../../Target")

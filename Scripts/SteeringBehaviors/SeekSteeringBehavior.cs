@@ -9,42 +9,27 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 // https://github.com/godotengine/godot/issues/36395
 public partial class SeekSteeringBehavior: Node, ISteeringBehavior, ITargeter
 {
-    [ExportCategory("CONFIGURATION:")] 
-    [Export] private Node2D _target;
-    /// <summary>
-    /// Distance at which we give our goal as reached and we stop our agent.
-    /// </summary>
-    [Export] private float _arrivalDistance = .1f;
-
+    [ExportCategory("CONFIGURATION:")]
     /// <summary>
     /// Point this agent is going to.
     /// </summary>
-    public Node2D Target
-    {
-        get=> _target; 
-        set=> _target = value;
-    }
-    
+    [Export] public Node2D Target { get; set; }
     /// <summary>
     /// Distance at which we give our goal as reached and we stop our agent.
     /// </summary>
-    public float ArrivalDistance
-    {
-        get=> _arrivalDistance; 
-        set=> _arrivalDistance = value;
-    }
+    [Export] public float ArrivalDistance { get; set; } = .1f;
     
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
-        if (_target == null) return new SteeringOutput(Vector2.Zero, 0);
+        if (Target == null) return new SteeringOutput(Vector2.Zero, 0);
         
-        Vector2 targetPosition = _target.GlobalPosition;
+        Vector2 targetPosition = Target.GlobalPosition;
         Vector2 currentPosition = args.CurrentAgent.GlobalPosition;
         float maximumSpeed = args.MaximumSpeed;
         
         Vector2 toTarget = targetPosition - currentPosition;
         
-        Vector2 newVelocity = toTarget.Length() > _arrivalDistance? 
+        Vector2 newVelocity = toTarget.Length() > ArrivalDistance? 
             toTarget.Normalized() * maximumSpeed:
             Vector2.Zero;
         
