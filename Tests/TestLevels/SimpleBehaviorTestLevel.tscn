@@ -22,6 +22,9 @@ gizmo_extents = 51.0
 [node name="StartPosition1" type="Marker2D" parent="StartPositions"]
 position = Vector2(1484, 364)
 
+[node name="StartPosition2" type="Marker2D" parent="StartPositions"]
+position = Vector2(957, 514)
+
 [node name="TargetPositions" type="Node" parent="."]
 
 [node name="TargetPosition1" type="Marker2D" parent="TargetPositions"]
@@ -68,4 +71,4 @@ _stopRotationDegThreshold = 1.0
 
 [node name="FleeSteeringBehavior" parent="Agents/FleeMovingAgent" node_paths=PackedStringArray("Threath") instance=ExtResource("6_4ry8j")]
 Threath = NodePath("../../../Target")
-PanicDistance = 600.0
+PanicDistance = 100.0

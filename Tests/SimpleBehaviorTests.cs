@@ -130,7 +130,7 @@ public class SimpleBehaviorTests
         MovingAgent _movingAgent =
             (MovingAgent)_sceneRunner.FindChild("FleeMovingAgent");
         Marker2D _agentStartPosition =
-            (Marker2D)_sceneRunner.FindChild("StartPosition1");
+            (Marker2D)_sceneRunner.FindChild("StartPosition2");
         Target _target = (Target)_sceneRunner.FindChild("Target");
         Marker2D _targetPosition =
             (Marker2D)_sceneRunner.FindChild("TargetPosition1");

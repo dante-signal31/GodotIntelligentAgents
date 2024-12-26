@@ -49,7 +49,6 @@ public partial class FleeSteeringBehavior : Node, ISteeringBehavior
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
-        _seekSteeringBehavior.Target = Threath;
         if (args.CurrentAgent.GlobalPosition.DistanceTo(Threath.GlobalPosition) > PanicDistance)
         { // Out of panic distance, so we stop accelerating.
             return new SteeringOutput(Vector2.Zero, 0);
