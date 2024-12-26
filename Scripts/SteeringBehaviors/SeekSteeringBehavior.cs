@@ -2,7 +2,12 @@
 
 namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
-public partial class SeekSteeringBehavior: SteeringBehavior, ITargeter
+[Tool]
+// It must be marked as Tool to be found by MovingAgent when it uses my custom extension
+// method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
+// seems and old Godot C# problem:
+// https://github.com/godotengine/godot/issues/36395
+public partial class SeekSteeringBehavior: Node, ISteeringBehavior, ITargeter
 {
     [ExportCategory("CONFIGURATION:")] 
     [Export] private Node2D _target;
@@ -29,7 +34,7 @@ public partial class SeekSteeringBehavior: SteeringBehavior, ITargeter
         set=> _arrivalDistance = value;
     }
     
-    public override SteeringOutput GetSteering(SteeringBehaviorArgs args)
+    public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
         if (_target == null) return new SteeringOutput(Vector2.Zero, 0);
         

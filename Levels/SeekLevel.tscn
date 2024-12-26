@@ -15,14 +15,12 @@ z_index = 1000
 position = Vector2(372, 342)
 gizmo_extents = 51.0
 
-[node name="MovingAgent" parent="." node_paths=PackedStringArray("_steeringBehavior") instance=ExtResource("3_od8nb")]
-position = Vector2(1470, 788)
+[node name="MovingAgent" parent="." instance=ExtResource("3_od8nb")]
+position = Vector2(1405, 741)
 _maximumSpeed = 200.0
-_stopSpeed = 0.2
+_stopSpeed = 1.0
 _maximumRotationalDegSpeed = 1080.0
 _stopRotationDegThreshold = 1.0
-_steeringBehavior = NodePath("SeekSteeringBehavior")
 
 [node name="SeekSteeringBehavior" parent="MovingAgent" node_paths=PackedStringArray("_target") instance=ExtResource("4_vfm2w")]
 _target = NodePath("../../Target")
-_arrivalDistance = 3.0

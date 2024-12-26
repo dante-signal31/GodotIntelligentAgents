@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://0fohg3pymfni" path="res://Sprites/crosshair063.png" id="2_1kmlr"]
 
 [node name="Target" type="Marker2D"]
+z_index = 200
 gizmo_extents = 35.5
 script = ExtResource("1_duhil")
 

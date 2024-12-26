@@ -1,7 +1,9 @@
-using Godot;
 using System;
+using Godot;
+using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
+[Tool]
 public partial class MovingAgent : CharacterBody2D
 {
     [ExportCategory("CONFIGURATION:")]
@@ -22,7 +24,7 @@ public partial class MovingAgent : CharacterBody2D
     [Export] private float _stopRotationDegThreshold;
     [Export] private float _maximumAcceleration;
     [Export] private float _maximumDeceleration;
-    [Export] private SteeringBehavior _steeringBehavior;
+    // [Export] private SteeringBehavior _steeringBehavior;
     
     [ExportCategory("WIRING:")]
     [Export] private Sprite2D _bodySprite;
@@ -69,6 +71,7 @@ public partial class MovingAgent : CharacterBody2D
     /// </summary>
     public Vector2 Forward => GlobalTransform.X;
     
+    private ISteeringBehavior _steeringBehavior;
     private SteeringBehaviorArgs _behaviorArgs;
     private float _maximumRotationSpeedRadNormalized;
     private float _stopRotationRadThreshold;
@@ -99,11 +102,14 @@ public partial class MovingAgent : CharacterBody2D
         base._Ready();
         _bodySprite.Modulate = _agentColor;
         _behaviorArgs = GetSteeringBehaviorArgs();
+        _steeringBehavior = this.FindChild<ISteeringBehavior>();
     }
 
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
+        if (_steeringBehavior == null || Engine.IsEditorHint()) return;
+        
         // Update steering behavior args.
         _behaviorArgs.MaximumSpeed = MaximumSpeed;
         _behaviorArgs.CurrentVelocity = Velocity;
@@ -140,4 +146,17 @@ public partial class MovingAgent : CharacterBody2D
         CurrentSpeed = steeringOutput.Linear.Length();
         MoveAndSlide();
     }
+
+    public override string[] _GetConfigurationWarnings()
+    {
+        _steeringBehavior = this.FindChild<ISteeringBehavior>();
+        
+        if (_steeringBehavior == null)
+        {
+            return new[] {"This node needs a child of type SteeringBehavior to work."};
+        }
+
+        return Array.Empty<string>();
+    }
+    
 }
