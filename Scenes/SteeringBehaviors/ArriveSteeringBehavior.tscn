@@ -12,7 +12,7 @@ point_count = 2
 
 [node name="ArriveSteeringBehavior" type="Node"]
 script = ExtResource("1_qgep0")
-_brakingRadius = 1.0
+BrakingRadius = 1.0
 _decelerationCurve = SubResource("Curve_tpama")
-_accelerationRadius = 1.0
+AccelerationRadius = 1.0
 _accelerationCurve = SubResource("Curve_ovdls")

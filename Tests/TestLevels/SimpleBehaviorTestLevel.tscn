@@ -54,11 +54,11 @@ _stopSpeed = 1.0
 _maximumRotationalDegSpeed = 1080.0
 _stopRotationDegThreshold = 1.0
 
-[node name="ArriveSteeringBehavior" parent="Agents/ArriveMovingAgent" node_paths=PackedStringArray("_target") instance=ExtResource("5_xfglb")]
-_target = NodePath("../../../Target")
-_brakingRadius = 200.0
-_arrivalDistance = 10.0
-_accelerationRadius = 100.0
+[node name="ArriveSteeringBehavior" parent="Agents/ArriveMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("5_xfglb")]
+Target = NodePath("../../../Target")
+BrakingRadius = 200.0
+ArrivalDistance = 10.0
+AccelerationRadius = 100.0
 
 [node name="FleeMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
 process_mode = 4

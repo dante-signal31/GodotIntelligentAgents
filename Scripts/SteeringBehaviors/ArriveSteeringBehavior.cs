@@ -10,15 +10,18 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 public partial class ArriveSteeringBehavior: Node, ISteeringBehavior, ITargeter
 {
     [ExportCategory("CONFIGURATION:")]
-    [Export] private Node2D _target;
+    /// <summary>
+    /// Point this agent is going to.
+    /// </summary>
+    [Export] public Node2D Target { get; set; }
     /// <summary>
     /// Radius to start slowing down using deceleration curve.
     /// </summary>
-    [Export] private float _brakingRadius;
+    [Export] public float BrakingRadius { get; set; }
     /// <summary>
     /// At this distance from target agent will full stop.
     /// </summary>
-    [Export] private float _arrivalDistance;
+    [Export] public float ArrivalDistance { get; set; }
     /// <summary>
     /// Deceleration curve.
     /// </summary>
@@ -27,48 +30,12 @@ public partial class ArriveSteeringBehavior: Node, ISteeringBehavior, ITargeter
     /// At this distance from start, agent will be at full speed, finishing its
     /// acceleration curve.
     /// </summary>
-    [Export] private float _accelerationRadius;
+    [Export] public float AccelerationRadius { get; set; }
     /// <summary>
     /// Acceleration curve.
     /// </summary>
     [Export] private Curve _accelerationCurve;
-
-    /// <summary>
-    /// Point this agent is going to.
-    /// </summary>
-    public Node2D Target
-    {
-        get=> _target;
-        set => _target = value;
-    }
     
-    /// <summary>
-    /// Radius to start slowing down using deceleration curve.
-    /// </summary>
-    public float BrakingRadius
-    {
-        get => _brakingRadius;
-        set => _brakingRadius = value;
-    }
-    
-    /// <summary>
-    /// At this distance from target agent will full stop.
-    /// </summary>
-    public float ArrivalDistance
-    {
-        get => _arrivalDistance;
-        set => _arrivalDistance = value;
-    }
-    
-    /// <summary>
-    /// At this distance from start, agent will be at full speed, finishing its
-    /// acceleration curve.
-    /// </summary>
-    public float AccelerationRadius
-    {
-        get => _accelerationRadius;
-        set => _accelerationRadius = value;
-    }
     
     private Vector2 _startPosition;
     private float _distanceFromStart;
@@ -76,7 +43,7 @@ public partial class ArriveSteeringBehavior: Node, ISteeringBehavior, ITargeter
     
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
-        Vector2 targetPosition = _target.GlobalPosition;
+        Vector2 targetPosition = Target.GlobalPosition;
         Vector2 currentPosition = args.CurrentAgent.GlobalPosition;
         Vector2 currentVelocity = args.CurrentAgent.Velocity;
         float stopSpeed = args.CurrentAgent.StopSpeed;
@@ -89,8 +56,8 @@ public partial class ArriveSteeringBehavior: Node, ISteeringBehavior, ITargeter
         
         if (_idle && _distanceFromStart > 0) _distanceFromStart = 0;
 
-        if (distanceToTarget >= _arrivalDistance &&
-            _distanceFromStart < _accelerationRadius)
+        if (distanceToTarget >= ArrivalDistance &&
+            _distanceFromStart < AccelerationRadius)
         {
             // Acceleration phase.
             if (_idle)
@@ -102,19 +69,19 @@ public partial class ArriveSteeringBehavior: Node, ISteeringBehavior, ITargeter
             _distanceFromStart = (currentPosition - _startPosition).Length();
             newSpeed =
                 _accelerationCurve.Sample(
-                    Mathf.InverseLerp(0, _accelerationRadius, _distanceFromStart)) *
+                    Mathf.InverseLerp(0, AccelerationRadius, _distanceFromStart)) *
                      maximumSpeed;
         }
-        else if (distanceToTarget < _brakingRadius &&
-                 distanceToTarget >= _arrivalDistance)
+        else if (distanceToTarget < BrakingRadius &&
+                 distanceToTarget >= ArrivalDistance)
         {
             newSpeed = currentVelocity.Length() > stopSpeed ?
                 _decelerationCurve.Sample(
-                    Mathf.InverseLerp(_brakingRadius, 0, distanceToTarget)) * 
+                    Mathf.InverseLerp(BrakingRadius, 0, distanceToTarget)) * 
                 maximumSpeed:
                 0;
         }
-        else if (distanceToTarget < _arrivalDistance)
+        else if (distanceToTarget < ArrivalDistance)
         {
             // Full stop phase.
             newSpeed = 0;
