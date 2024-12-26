@@ -26,7 +26,7 @@ public partial class MovingAgent : CharacterBody2D
     [Export] private float _maximumDeceleration;
     // [Export] private SteeringBehavior _steeringBehavior;
     
-    [ExportCategory("WIRING:")]
+    [ExportGroup("WIRING:")]
     [Export] private Sprite2D _bodySprite;
 
     /// <summary>

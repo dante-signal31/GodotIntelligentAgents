@@ -3,6 +3,7 @@ using GdUnit4;
 using static GdUnit4.Assertions;
 using Godot;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
+using GodotGameAIbyExample.Scripts.Tools;
 
 [TestSuite]
 public class SimpleBehaviorTests
@@ -120,5 +121,51 @@ public class SimpleBehaviorTests
         // Check if agent reached target.
         float distance = _movingAgent.GlobalPosition.DistanceTo(_target.GlobalPosition);
         AssertThat(distance <= steeringBehavior.ArrivalDistance).IsTrue();
+    }
+
+    [TestCase]
+    public async Task FleeBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent _movingAgent =
+            (MovingAgent)_sceneRunner.FindChild("FleeMovingAgent");
+        Marker2D _agentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("StartPosition1");
+        Target _target = (Target)_sceneRunner.FindChild("Target");
+        Marker2D _targetPosition =
+            (Marker2D)_sceneRunner.FindChild("TargetPosition1");
+
+        // Get reference to FleeSteeringBehaviour.
+        FleeSteeringBehavior steeringBehavior =
+            (FleeSteeringBehavior)_movingAgent.FindChild(
+                nameof(FleeSteeringBehavior));
+
+        // Place target and agent.
+        _target.GlobalPosition = _targetPosition.GlobalPosition;
+        _movingAgent.GlobalPosition = _agentStartPosition.GlobalPosition;
+
+        // Start test.
+        _movingAgent.Visible = true;
+        _movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+
+        // Place 5 targets in random positions and check that the agent flees.
+        int testSamples = 5;
+        for (int i = 0; i < testSamples; i++)
+        {
+            Vector2 randomPositionInLocalCircle = 
+                RandomPointGenerator.GetRandomPointInCircle(steeringBehavior.PanicDistance);
+            // Place target in random position.
+            _target.GlobalPosition = _movingAgent.GlobalPosition +
+                                             randomPositionInLocalCircle;
+
+            // Give agent time to flee target.
+            await _sceneRunner.AwaitMillis(1000);
+
+            // Check if agent is fleeing target asserting that agent is now farther from
+            // the target than before.
+            float distance = _movingAgent.GlobalPosition.DistanceTo(
+                _target.GlobalPosition);
+            AssertThat(distance > steeringBehavior.PanicDistance).IsTrue();
+        }
     }
 }

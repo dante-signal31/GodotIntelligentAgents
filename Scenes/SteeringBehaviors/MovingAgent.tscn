@@ -14,6 +14,7 @@ script = ExtResource("1_o3k4p")
 _bodySprite = NodePath("Body")
 
 [node name="Body" type="Sprite2D" parent="."]
+modulate = Color(0, 1, 0, 1)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("1_w6fiy")
 
