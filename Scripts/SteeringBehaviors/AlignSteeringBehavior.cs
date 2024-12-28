@@ -40,7 +40,7 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
     [Export] private Curve _accelerationCurve;
 
     private float _startOrientation;
-    private float _rotationFromStart;
+    private float _rotationFromStartAbs;
     private float _arrivingMarginRad;
     private float _accelerationRadiusRad;
     private float _decelerationRadiusRad;
@@ -79,31 +79,43 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
             return new SteeringOutput(Vector2.Zero, 0);
         }
 
-        if (_idle && Mathf.Abs(_rotationFromStart) > 0)
+        if (_idle && _rotationFromStartAbs > 0)
         { // If you are stopped and you are not close enough to target rotation, you need
           // to start rotating. But first, you need to reset your rotation counter.
-            _rotationFromStart = 0;
+            _rotationFromStartAbs = 0;
         }
         
         if (toTargetRotationRadAbs >= _arrivingMarginRad && 
-            Mathf.Abs(_rotationFromStart) < _accelerationRadiusRad)
+            _rotationFromStartAbs < _accelerationRadiusRad)
         { // Acceleration phase.
             if (_idle)
             {
                 _startOrientation = currentOrientation;
                 _idle = false;
             }
-            _rotationFromStart = Mathf.AngleDifference(
+            _rotationFromStartAbs = MathF.Abs(Mathf.AngleDifference(
                 Mathf.DegToRad(currentOrientation), 
-                Mathf.DegToRad(_startOrientation));
+                Mathf.DegToRad(_startOrientation)));
+            // Acceleration curve should start at more than 0 or agent will not
+            // start to move.
+            float accelerationProgress = Mathf.InverseLerp(
+                0, 
+                _accelerationRadiusRad, 
+                _rotationFromStartAbs);
             newRotationalSpeedRad = maximumRotationalSpeedRad * 
-                                 _accelerationCurve.Sample(Mathf.InverseLerp(0, _accelerationRadiusRad, _rotationFromStart));
+                                    _accelerationCurve.Sample(accelerationProgress) * 
+                                 rotationSide;
         }
         else if (toTargetRotationRadAbs < _decelerationRadiusRad && 
                  toTargetRotationRadAbs >= _arrivingMarginRad)
         { // Deceleration phase.
+            float decelerationProgress = Mathf.InverseLerp(
+                _decelerationRadiusRad, 
+                0, 
+                toTargetRotationRadAbs);
             newRotationalSpeedRad = maximumRotationalSpeedRad * 
-                                 _decelerationCurve.Sample(Mathf.InverseLerp(0, _decelerationRadiusRad, toTargetRotationRadAbs)) * rotationSide;
+                                 _decelerationCurve.Sample(decelerationProgress) * 
+                                 rotationSide;
         }
         else if (toTargetRotationRadAbs < _arrivingMarginRad)
         { // Stop phase.
