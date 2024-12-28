@@ -2,11 +2,15 @@ using Godot;
 
 namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
-[Tool]
 // It must be marked as Tool to be found by MovingAgent when it uses my custom extension
 // method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
 // seems and old Godot C# problem:
 // https://github.com/godotengine/godot/issues/36395
+[Tool]
+/// <summary>
+/// <p> Arrive behavior is a Seek-like steering behaviour in which agent accelerates at
+/// the startup and brakes gradually when approachs the end.</p>
+/// </summary>
 public partial class ArriveSteeringBehavior: Node, ISteeringBehavior, ITargeter
 {
     [ExportCategory("CONFIGURATION:")]

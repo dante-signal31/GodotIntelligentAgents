@@ -16,9 +16,13 @@ public class SimpleBehaviorTests
     [BeforeTest]
     public void LoadScene()
     {
-          _sceneRunner = ISceneRunner.Load(TestScenePath);  
+          _sceneRunner = ISceneRunner.Load(TestScenePath);
+          _sceneRunner.MaximizeView();
     }
     
+    /// <summary>
+    /// Test that SeekBehavior can reach a target.
+    /// </summary>
     [TestCase]
     public async Task SeekBehaviorTest()
     {
@@ -50,6 +54,10 @@ public class SimpleBehaviorTests
         AssertThat(distance <= steeringBehavior.ArrivalDistance).IsTrue();
     }
     
+    /// <summary>
+    /// Test that ArriveBehavior can reach a target and that it accelerates
+    /// at the beginning and brakes at the end.
+    /// </summary>
     [TestCase]
     public async Task ArriveBehaviorTest()
     {
@@ -123,6 +131,9 @@ public class SimpleBehaviorTests
         AssertThat(distance <= steeringBehavior.ArrivalDistance).IsTrue();
     }
 
+    /// <summary>
+    /// Test that FleeBehavior makes agent go away from its threath.
+    /// </summary>
     [TestCase]
     public async Task FleeBehaviorTest()
     {
@@ -168,4 +179,74 @@ public class SimpleBehaviorTests
             AssertThat(distance > steeringBehavior.PanicDistance).IsTrue();
         }
     }
+
+    /// <summary>
+    /// Test that AlignBehavior can face in the same direction as other GameObject.
+    /// </summary>
+    [TestCase]
+    public async Task AlignBehaviorTest()
+    {
+        // Get references to the target agent that will rotate an that our tested agent
+        // will copy its alignment from.
+        MovingAgent movingAgent =
+            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Marker2D movingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("StartPosition2");
+        MovingAgent alignAgent =
+            (MovingAgent)_sceneRunner.FindChild("AlignMovingAgent");
+        Marker2D alignAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("StartPosition1");
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        Marker2D targetPosition1 = 
+            (Marker2D) _sceneRunner.FindChild("TargetPosition1");
+        Marker2D targetPosition2 = 
+            (Marker2D) _sceneRunner.FindChild("TargetPosition2");
+        Marker2D targetPosition3 = 
+            (Marker2D) _sceneRunner.FindChild("TargetPosition3");
+        
+        // Get references to steering behavior from both agents.
+        SeekSteeringBehavior seekSteeringBehavior =
+            (SeekSteeringBehavior) movingAgent.FindChild(
+                nameof(SeekSteeringBehavior));
+        AlignSteeringBehavior alignSteeringBehavior =
+            (AlignSteeringBehavior) alignAgent.FindChild(
+                nameof(AlignSteeringBehavior));
+        
+        // Place and setup both agents before the test.
+        movingAgent.GlobalPosition = movingAgentStartPosition.GlobalPosition;
+        alignAgent.GlobalPosition = alignAgentStartPosition.GlobalPosition;
+        alignSteeringBehavior.Target = movingAgent;
+        seekSteeringBehavior.Target = target;
+        movingAgent.Visible = true;
+        alignAgent.Visible = true;
+        movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        alignAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Move seeker to face the first target.
+        target.GlobalPosition = targetPosition1.GlobalPosition;
+        await _sceneRunner.AwaitMillis(2000);
+        AssertThat(Mathf.IsEqualApprox(
+            alignAgent.Orientation, 
+            movingAgent.Orientation,
+            alignSteeringBehavior.ArrivingMargin)).IsTrue();
+        
+        // Move seeker to face the second target.
+        target.GlobalPosition = targetPosition2.GlobalPosition;
+        await _sceneRunner.AwaitMillis(2000);
+        AssertThat(Mathf.IsEqualApprox(
+            alignAgent.Orientation, 
+            movingAgent.Orientation,
+            alignSteeringBehavior.ArrivingMargin)).IsTrue();
+        
+        // Move seeker to face the third target.
+        target.GlobalPosition = targetPosition3.GlobalPosition;
+        await _sceneRunner.AwaitMillis(2000);
+        AssertThat(Mathf.IsEqualApprox(
+            alignAgent.Orientation, 
+            movingAgent.Orientation,
+            alignSteeringBehavior.ArrivingMargin)).IsTrue();
+    }
+
 }

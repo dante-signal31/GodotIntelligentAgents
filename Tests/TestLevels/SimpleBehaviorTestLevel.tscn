@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://b62033ep2w41i"]
+[gd_scene load_steps=8 format=3 uid="uid://b62033ep2w41i"]
 
 [ext_resource type="PackedScene" uid="uid://dqt1t3nk4wc4b" path="res://Levels/ClearCourtyard.tscn" id="1_oy3cc"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="3_hsc70"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="5_b8gkt"]
 [ext_resource type="PackedScene" uid="uid://fghynj1qk4qb" path="res://Scenes/SteeringBehaviors/ArriveSteeringBehavior.tscn" id="5_xfglb"]
 [ext_resource type="PackedScene" uid="uid://dqfvcw31jlj2e" path="res://Scenes/SteeringBehaviors/FleeSteeringBehavior.tscn" id="6_4ry8j"]
+[ext_resource type="PackedScene" uid="uid://jxiknrsb0xfq" path="res://Scenes/SteeringBehaviors/AlignSteeringBehavior.tscn" id="7_jhf1f"]
 
 [node name="SimpleBehaviorTestLevel" type="Node2D"]
 
@@ -14,7 +15,7 @@
 [node name="Target" parent="." instance=ExtResource("3_hsc70")]
 top_level = true
 z_index = 1000
-position = Vector2(372, 342)
+position = Vector2(1337, 288)
 gizmo_extents = 51.0
 
 [node name="StartPositions" type="Node" parent="."]
@@ -29,6 +30,12 @@ position = Vector2(957, 514)
 
 [node name="TargetPosition1" type="Marker2D" parent="TargetPositions"]
 position = Vector2(390, 742)
+
+[node name="TargetPosition2" type="Marker2D" parent="TargetPositions"]
+position = Vector2(534, 364)
+
+[node name="TargetPosition3" type="Marker2D" parent="TargetPositions"]
+position = Vector2(905, 760)
 
 [node name="Agents" type="Node" parent="."]
 
@@ -72,3 +79,18 @@ _stopRotationDegThreshold = 1.0
 [node name="FleeSteeringBehavior" parent="Agents/FleeMovingAgent" node_paths=PackedStringArray("Threath") instance=ExtResource("6_4ry8j")]
 Threath = NodePath("../../../Target")
 PanicDistance = 100.0
+
+[node name="AlignMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
+position = Vector2(1219, 267)
+_maximumSpeed = 600.0
+_stopSpeed = 1.0
+_maximumRotationalDegSpeed = 180.0
+_stopRotationDegThreshold = 1.0
+
+[node name="AlignSteeringBehavior" parent="Agents/AlignMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("7_jhf1f")]
+Target = NodePath("../../SeekMovingAgent")
+_decelerationRadius = 5.0
+ArrivingMargin = 1.0
+_accelerationRadius = 5.0

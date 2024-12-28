@@ -30,6 +30,12 @@ public class SteeringBehaviorArgs
     public float MaximumRotationalSpeed { get; }
     
     /// <summary>
+    /// Rotation will stop when the difference in degrees between the current
+    /// rotation and current forward vector is less than this value.
+    /// </summary>
+    public float StopRotationThreshold { get; }
+    
+    /// <summary>
     /// Maximum acceleration for this steering.
     /// </summary>
     public float MaximumAcceleration { get; set; }
@@ -61,6 +67,7 @@ public class SteeringBehaviorArgs
         float maximumSpeed, 
         float stopSpeed, 
         float maximumRotationalSpeed, 
+        float stopRotationThreshold,
         float maximumAcceleration,
         float maximumDeceleration, 
         float deltaTime)
@@ -69,6 +76,7 @@ public class SteeringBehaviorArgs
         MaximumSpeed = maximumSpeed;
         StopSpeed = stopSpeed;
         MaximumRotationalSpeed = maximumRotationalSpeed;
+        StopRotationThreshold = stopRotationThreshold;
         CurrentAgent = currentAgent;
         MaximumAcceleration = maximumAcceleration;
         MaximumDeceleration = maximumDeceleration;

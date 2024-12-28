@@ -84,6 +84,7 @@ public partial class MovingAgent : CharacterBody2D
             _maximumSpeed, 
             _stopSpeed,
             _maximumRotationalDegSpeed,
+            _stopRotationDegThreshold,
             _maximumAcceleration,
             _maximumDeceleration,
             0);
@@ -121,11 +122,13 @@ public partial class MovingAgent : CharacterBody2D
         
         // Apply new steering output to our GameObject.
         Velocity = steeringOutput.Linear;
+        CurrentSpeed = steeringOutput.Linear.Length();
         if (steeringOutput.Angular == 0 && Velocity != Vector2.Zero)
         {
             // If no explicit angular steering, we will just look at the direction we
             // are moving, but clamping our rotation by our rotational speed.
-            if (Mathf.Abs(Forward.AngleTo(Velocity)) > _stopRotationRadThreshold)
+            float totalRotationNeeded = Forward.AngleTo(Velocity);
+            if (Mathf.Abs(totalRotationNeeded) > _stopRotationRadThreshold)
             {
                 float newHeading = Mathf.LerpAngle(
                     Forward.Angle(), 
@@ -139,11 +142,9 @@ public partial class MovingAgent : CharacterBody2D
         else
         {
             // In this case, our steering wants us to face and move in different
-            // directions.
-            // TODO: Recheck this. What happens if Angular is beyond our maximum rotational speed?
-            GlobalRotationDegrees += steeringOutput.Angular;
+            // directions. Steering checks that no threshold is surpassed.
+            GlobalRotationDegrees += steeringOutput.Angular * (float)delta;
         }
-        CurrentSpeed = steeringOutput.Linear.Length();
         MoveAndSlide();
     }
 
@@ -158,5 +159,4 @@ public partial class MovingAgent : CharacterBody2D
 
         return Array.Empty<string>();
     }
-    
 }

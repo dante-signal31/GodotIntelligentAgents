@@ -3,12 +3,15 @@ using System;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
-
-[Tool]
 // It must be marked as Tool to be found by MovingAgent when it uses my custom extension
 // method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
 // seems and old Godot C# problem:
 // https://github.com/godotengine/godot/issues/36395
+[Tool]
+/// <summary>
+/// <p>Flee steering behaviour makes the agent go away from another GameObject marked
+/// as threath.</p>
+/// </summary>
 public partial class FleeSteeringBehavior : Node, ISteeringBehavior
 {
     private const float MinimumPanicDistance = 0.3f;
