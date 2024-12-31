@@ -26,7 +26,7 @@ project/assembly_name="Godot Game AI by Example"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
+enabled=PackedStringArray("res://addons/InteractiveRanges/plugin.cfg", "res://addons/gdUnit4/plugin.cfg")
 
 [gdunit4]
 

@@ -76,7 +76,7 @@ public class SteeringBehaviorArgs
         MaximumSpeed = maximumSpeed;
         StopSpeed = stopSpeed;
         MaximumRotationalSpeed = maximumRotationalSpeed;
-        StopRotationThreshold = stopRotationThreshold;
+        StopRotationThreshold = stopRotationThreshold;  
         CurrentAgent = currentAgent;
         MaximumAcceleration = maximumAcceleration;
         MaximumDeceleration = maximumDeceleration;

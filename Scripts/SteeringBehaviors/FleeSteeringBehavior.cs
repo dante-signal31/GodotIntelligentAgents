@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using GodotGameAIbyExample.addons.InteractiveRanges.CircularRange;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
@@ -12,7 +14,7 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <p>Flee steering behaviour makes the agent go away from another GameObject marked
 /// as threath.</p>
 /// </summary>
-public partial class FleeSteeringBehavior : Node, ISteeringBehavior
+public partial class FleeSteeringBehavior : Node2D, ISteeringBehavior
 {
     private const float MinimumPanicDistance = 0.3f;
     
@@ -32,22 +34,34 @@ public partial class FleeSteeringBehavior : Node, ISteeringBehavior
     }
 
     private float _panicDistance;
+
     /// <summary>
     /// Minimum distance to threath before fleeing.
     /// </summary>
-    [Export] public float PanicDistance {
+    [Export]
+    public float PanicDistance
+    {
         get => _panicDistance;
-        set => _panicDistance = Mathf.Max(MinimumPanicDistance, value);
+        set
+        {
+            float newValue = Mathf.Max(MinimumPanicDistance, value);
+            if (!Mathf.IsEqualApprox(newValue, _panicDistance))
+            {
+                _panicDistance = newValue;
+                if (_circularRange != null) _circularRange.Radius = _panicDistance;
+            }
+        }
     }
-    
+
     private SeekSteeringBehavior _seekSteeringBehavior;
+    private CircularRange _circularRange;
 
     public override void _Ready()
     {
-        base._Ready();
-        if (Engine.IsEditorHint()) return;
         _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
         _seekSteeringBehavior.Target = Threath;
+        _circularRange = this.FindChild<CircularRange>();
+        _circularRange.Radius = PanicDistance;
     }
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
@@ -69,12 +83,19 @@ public partial class FleeSteeringBehavior : Node, ISteeringBehavior
     public override string[] _GetConfigurationWarnings()
     {
         _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
+        _circularRange = this.FindChild<CircularRange>();
+
+        List<string> warnings = new();
         
         if (_seekSteeringBehavior == null)
         {
-            return new[] {"This node needs a child of type SeekSteeringBehavior to work."};
+            warnings.Add("This node needs a child of type SeekSteeringBehavior to work.");
         }
-
-        return Array.Empty<string>();
+        
+        if (_circularRange == null)
+        {
+            warnings.Add("This node needs a child of type CircularRange to work.");
+        }
+        return warnings.ToArray();
     }
 }

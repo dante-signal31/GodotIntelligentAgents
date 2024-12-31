@@ -1,10 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://dqfvcw31jlj2e"]
+[gd_scene load_steps=4 format=3 uid="uid://dqfvcw31jlj2e"]
 
 [ext_resource type="Script" path="res://Scripts/SteeringBehaviors/FleeSteeringBehavior.cs" id="1_qgfbj"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="2_b6voa"]
+[ext_resource type="Script" path="res://addons/InteractiveRanges/CircularRange/CircularRange.cs" id="3_4vce0"]
 
-[node name="FleeSteeringBehavior" type="Node"]
+[node name="FleeSteeringBehavior" type="Node2D"]
 script = ExtResource("1_qgfbj")
-PanicDistance = 0.3
 
 [node name="SeekSteeringBehavior" parent="." instance=ExtResource("2_b6voa")]
+
+[node name="CircularRange" type="Node2D" parent="."]
+script = ExtResource("3_4vce0")
+Radius = 400.0
