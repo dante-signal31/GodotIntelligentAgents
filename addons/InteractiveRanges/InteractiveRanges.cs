@@ -29,4 +29,10 @@ public partial class InteractiveRanges: EditorPlugin
         Texture2D icon = GD.Load<Texture2D>(texturePath);
         AddCustomType(name, baseNode, script, icon);
     }
+
+    public override bool _ForwardCanvasGuiInput(InputEvent @event)
+    {
+        return base._ForwardCanvasGuiInput(@event);
+    }
+    
 }

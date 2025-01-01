@@ -34,7 +34,6 @@ public partial class FleeSteeringBehavior : Node2D, ISteeringBehavior
     }
 
     private float _panicDistance;
-
     /// <summary>
     /// Minimum distance to threath before fleeing.
     /// </summary>
