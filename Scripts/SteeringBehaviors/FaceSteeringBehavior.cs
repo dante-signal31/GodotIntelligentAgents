@@ -49,18 +49,11 @@ public partial class FaceSteeringBehavior : Node, ISteeringBehavior, ITargeter
         Vector2 currentPosition = args.Position;
         
         Vector2 direction = _targetPosition - currentPosition;
-
-        if (direction == Vector2.Zero)
-        {
-            return SteeringOutput.Zero;
-        }
-        else
-        {
-            // Rotate the dummy Node2D in the direction we want to look at. Remember
-            // that dummy Node2D is the align steering behavior target since _Ready().
-            _marker.LookAt(_marker.GlobalPosition + direction);
-            return _alignSteeringBehavior.GetSteering(args);
-        }
+        
+        // Rotate the dummy Node2D in the direction we want to look at. Remember
+        // that dummy Node2D is the align steering behavior target since _Ready().
+        _marker.LookAt(_marker.GlobalPosition + direction);
+        return _alignSteeringBehavior.GetSteering(args);
     }
     
     public override string[] _GetConfigurationWarnings()

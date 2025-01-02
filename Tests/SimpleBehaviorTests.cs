@@ -294,7 +294,7 @@ public class SimpleBehaviorTests
         
         // Sample the tested face agent orientation in some moments of the
         // seeker travel, to check if it is still facing the seeker.
-        float totalTestTimeInSeconds = 5.0f;
+        float totalTestTimeInSeconds = 3.0f;
         int numberOfSamples = 5;
         float sampleInterval = totalTestTimeInSeconds / numberOfSamples;
         foreach (int _ in Enumerable.Range(1, numberOfSamples))

@@ -44,8 +44,6 @@ position = Vector2(1521, 812)
 [node name="Agents" type="Node" parent="."]
 
 [node name="SeekMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
-process_mode = 4
-visible = false
 position = Vector2(1470, 788)
 _maximumSpeed = 600.0
 _stopSpeed = 1.0
@@ -99,8 +97,6 @@ _decelerationRadius = 5.0
 _accelerationRadius = 5.0
 
 [node name="FaceMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
-process_mode = 4
-visible = false
 position = Vector2(1484, 364)
 _maximumSpeed = 600.0
 _stopSpeed = 1.0
