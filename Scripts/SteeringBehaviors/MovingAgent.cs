@@ -3,6 +3,8 @@ using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
+// Needs to be a Tool to be able to averride _GetConfigurationWarnings() and find out
+// if it has a child of type ISteeringBehavior.
 [Tool]
 public partial class MovingAgent : CharacterBody2D
 {

@@ -11,4 +11,3 @@ script = ExtResource("1_qgfbj")
 
 [node name="CircularRange" type="Node2D" parent="."]
 script = ExtResource("3_4vce0")
-Radius = 400.0

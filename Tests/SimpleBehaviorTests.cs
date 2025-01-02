@@ -1,9 +1,12 @@
+using System.Linq;
 using System.Threading.Tasks;
 using GdUnit4;
-using static GdUnit4.Assertions;
 using Godot;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 using GodotGameAIbyExample.Scripts.Tools;
+using static GdUnit4.Assertions;
+
+namespace GodotGameAIbyExample.Tests;
 
 [TestSuite]
 public class SimpleBehaviorTests
@@ -16,8 +19,8 @@ public class SimpleBehaviorTests
     [BeforeTest]
     public void LoadScene()
     {
-          _sceneRunner = ISceneRunner.Load(TestScenePath);
-          _sceneRunner.MaximizeView();
+        _sceneRunner = ISceneRunner.Load(TestScenePath);
+        _sceneRunner.MaximizeView();
     }
     
     /// <summary>
@@ -27,30 +30,30 @@ public class SimpleBehaviorTests
     public async Task SeekBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent _movingAgent = 
+        MovingAgent movingAgent = 
             (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
-        Marker2D _agentStartPosition = 
+        Marker2D agentStartPosition = 
             (Marker2D) _sceneRunner.FindChild("StartPosition1");
-        Target _target = (Target) _sceneRunner.FindChild("Target");
-        Marker2D _targetPosition = 
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        Marker2D targetPosition = 
             (Marker2D) _sceneRunner.FindChild("TargetPosition1");
         
         // Get reference to SteeringBehaviour.
         SeekSteeringBehavior steeringBehavior = 
-            (SeekSteeringBehavior) _movingAgent.FindChild(
+            (SeekSteeringBehavior) movingAgent.FindChild(
                 nameof(SeekSteeringBehavior));
         
         // Place target and agent.
-        _target.GlobalPosition = _targetPosition.GlobalPosition;
-        _movingAgent.GlobalPosition = _agentStartPosition.GlobalPosition;
+        target.GlobalPosition = targetPosition.GlobalPosition;
+        movingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
         
         // Start test.
-        _movingAgent.Visible = true;
-        _movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        movingAgent.Visible = true;
+        movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
         // Give agent time to reach target.
         await _sceneRunner.AwaitMillis(2500);
         // Check if agent reached target.
-        float distance = _movingAgent.GlobalPosition.DistanceTo(_target.GlobalPosition);
+        float distance = movingAgent.GlobalPosition.DistanceTo(target.GlobalPosition);
         AssertThat(distance <= steeringBehavior.ArrivalDistance).IsTrue();
     }
     
@@ -62,72 +65,72 @@ public class SimpleBehaviorTests
     public async Task ArriveBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent _movingAgent = 
+        MovingAgent movingAgent = 
             (MovingAgent) _sceneRunner.FindChild("ArriveMovingAgent");
-        Marker2D _agentStartPosition = 
+        Marker2D agentStartPosition = 
             (Marker2D) _sceneRunner.FindChild("StartPosition1");
-        Target _target = (Target) _sceneRunner.FindChild("Target");
-        Marker2D _targetPosition = 
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        Marker2D targetPosition = 
             (Marker2D) _sceneRunner.FindChild("TargetPosition1");
         
         // Get reference to ArriveSteeringBehaviour.
         ArriveSteeringBehavior steeringBehavior = 
-            (ArriveSteeringBehavior) _movingAgent.FindChild(
+            (ArriveSteeringBehavior) movingAgent.FindChild(
                 nameof(ArriveSteeringBehavior));
         
         // Place target and agent.
-        _target.GlobalPosition = _targetPosition.GlobalPosition;
-        _movingAgent.GlobalPosition = _agentStartPosition.GlobalPosition;
+        target.GlobalPosition = targetPosition.GlobalPosition;
+        movingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
         
         // Start test.
-        _movingAgent.Visible = true;
-        _movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        movingAgent.Visible = true;
+        movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
         
         // Check that agent is accelerating at the beginning.
         while ( // Wait until agent starts is movement.
-            !((_agentStartPosition.GlobalPosition.DistanceTo(
-                   _movingAgent.GlobalPosition) >= 1) && 
-              (_agentStartPosition.GlobalPosition.DistanceTo(
-                  _movingAgent.GlobalPosition) < steeringBehavior.AccelerationRadius))
-            )
+               !((agentStartPosition.GlobalPosition.DistanceTo(
+                     movingAgent.GlobalPosition) >= 1) && 
+                 (agentStartPosition.GlobalPosition.DistanceTo(
+                     movingAgent.GlobalPosition) < steeringBehavior.AccelerationRadius))
+              )
         {
             await _sceneRunner.AwaitIdleFrame();
         }
-        AssertThat(_movingAgent.CurrentSpeed > 0 && 
-                   _movingAgent.CurrentSpeed < _movingAgent.MaximumSpeed).IsTrue();
+        AssertThat(movingAgent.CurrentSpeed > 0 && 
+                   movingAgent.CurrentSpeed < movingAgent.MaximumSpeed).IsTrue();
         
         // Check that agent gets its full cruise speed.
         while ( // Wait until we get full speed.
-            !(_agentStartPosition.GlobalPosition.DistanceTo(
-                     _movingAgent.GlobalPosition) > steeringBehavior.AccelerationRadius)
-            )
+               !(agentStartPosition.GlobalPosition.DistanceTo(
+                   movingAgent.GlobalPosition) > steeringBehavior.AccelerationRadius)
+              )
         {
             await _sceneRunner.AwaitIdleFrame();
         }
         AssertThat(Mathf.IsEqualApprox(
-            _movingAgent.CurrentSpeed, 
-            _movingAgent.MaximumSpeed, 
-            1f))
+                movingAgent.CurrentSpeed, 
+                movingAgent.MaximumSpeed, 
+                1f))
             .IsTrue();
         
         // Check that agent is braking at the end.
         while ( // Wait until we start to brake.
-               !(_movingAgent.GlobalPosition.DistanceTo(
-                   _targetPosition.GlobalPosition) <= steeringBehavior.BrakingRadius)
+               !(movingAgent.GlobalPosition.DistanceTo(
+                   targetPosition.GlobalPosition) <= steeringBehavior.BrakingRadius)
               )
         {
             await _sceneRunner.AwaitIdleFrame();
         }
         await _sceneRunner.AwaitIdleFrame();
         await _sceneRunner.AwaitIdleFrame();
-        AssertThat(_movingAgent.CurrentSpeed > 0 && 
-                   _movingAgent.CurrentSpeed < _movingAgent.MaximumSpeed).IsTrue();
+        AssertThat(movingAgent.CurrentSpeed > 0 && 
+                   movingAgent.CurrentSpeed < movingAgent.MaximumSpeed).IsTrue();
         
         //Assert target was reached.
         // Give agent time to reach target.
         await _sceneRunner.AwaitMillis(1500);
         // Check if agent reached target.
-        float distance = _movingAgent.GlobalPosition.DistanceTo(_target.GlobalPosition);
+        float distance = movingAgent.GlobalPosition.DistanceTo(target.GlobalPosition);
         AssertThat(distance <= steeringBehavior.ArrivalDistance).IsTrue();
     }
 
@@ -138,26 +141,26 @@ public class SimpleBehaviorTests
     public async Task FleeBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent _movingAgent =
+        MovingAgent movingAgent =
             (MovingAgent)_sceneRunner.FindChild("FleeMovingAgent");
-        Marker2D _agentStartPosition =
+        Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("StartPosition2");
-        Target _target = (Target)_sceneRunner.FindChild("Target");
-        Marker2D _targetPosition =
+        Target target = (Target)_sceneRunner.FindChild("Target");
+        Marker2D targetPosition =
             (Marker2D)_sceneRunner.FindChild("TargetPosition1");
 
         // Get reference to FleeSteeringBehaviour.
         FleeSteeringBehavior steeringBehavior =
-            (FleeSteeringBehavior)_movingAgent.FindChild(
+            (FleeSteeringBehavior)movingAgent.FindChild(
                 nameof(FleeSteeringBehavior));
 
         // Place target and agent.
-        _target.GlobalPosition = _targetPosition.GlobalPosition;
-        _movingAgent.GlobalPosition = _agentStartPosition.GlobalPosition;
+        target.GlobalPosition = targetPosition.GlobalPosition;
+        movingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
 
         // Start test.
-        _movingAgent.Visible = true;
-        _movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        movingAgent.Visible = true;
+        movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
 
         // Place 5 targets in random positions and check that the agent flees.
         int testSamples = 5;
@@ -166,16 +169,16 @@ public class SimpleBehaviorTests
             Vector2 randomPositionInLocalCircle = 
                 RandomPointGenerator.GetRandomPointInCircle(steeringBehavior.PanicDistance);
             // Place target in random position.
-            _target.GlobalPosition = _movingAgent.GlobalPosition +
-                                             randomPositionInLocalCircle;
+            target.GlobalPosition = movingAgent.GlobalPosition +
+                                    randomPositionInLocalCircle;
 
             // Give agent time to flee target.
             await _sceneRunner.AwaitMillis(1000);
 
             // Check if agent is fleeing target asserting that agent is now farther from
             // the target than before.
-            float distance = _movingAgent.GlobalPosition.DistanceTo(
-                _target.GlobalPosition);
+            float distance = movingAgent.GlobalPosition.DistanceTo(
+                target.GlobalPosition);
             AssertThat(distance > steeringBehavior.PanicDistance).IsTrue();
         }
     }
@@ -247,6 +250,66 @@ public class SimpleBehaviorTests
             alignAgent.Orientation, 
             movingAgent.Orientation,
             alignSteeringBehavior.ArrivingMargin)).IsTrue();
+    }
+
+    /// <summary>
+    /// Test that FaceBehavior can face towards a target while it moves.
+    /// </summary>
+    [TestCase]
+    public async Task FaceBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent faceAgent =
+            (MovingAgent)_sceneRunner.FindChild("FaceMovingAgent");
+        Marker2D agentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("TargetPosition1");
+        MovingAgent targetMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Marker2D targetMovingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("TargetPosition4");
+        Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
+        Marker2D targetPosition =
+            (Marker2D)_sceneRunner.FindChild("TargetPosition2");
+        
+        // Get references to steering behavior from both agents.
+        SeekSteeringBehavior seekSteeringBehavior =
+            (SeekSteeringBehavior) targetMovingAgent.FindChild(
+                nameof(SeekSteeringBehavior));
+        FaceSteeringBehavior faceSteeringBehavior =
+            (FaceSteeringBehavior) faceAgent.FindChild(
+                nameof(FaceSteeringBehavior));
+        
+        // Place and setup both agents before the test.
+        faceAgent.GlobalPosition = agentStartPosition.GlobalPosition;
+        targetMovingAgent.GlobalPosition = targetMovingAgentStartPosition.GlobalPosition;
+        faceSteeringBehavior.Target = targetMovingAgent;
+        seekSteeringBehavior.Target = targetOfTargetMovingAgent;
+        targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
+        faceAgent.Visible = true;
+        targetMovingAgent.Visible = true;
+        faceAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        targetMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Sample the tested face agent orientation in some moments of the
+        // seeker travel, to check if it is still facing the seeker.
+        float totalTestTimeInSeconds = 5.0f;
+        int numberOfSamples = 5;
+        float sampleInterval = totalTestTimeInSeconds / numberOfSamples;
+        foreach (int _ in Enumerable.Range(1, numberOfSamples))
+        {
+            await _sceneRunner.AwaitMillis((uint)sampleInterval * 1000);
+            Vector2 toFaceTargetVector = 
+                targetMovingAgent.GlobalPosition - faceAgent.GlobalPosition;
+            float currentAngle =  Mathf.RadToDeg(toFaceTargetVector.Angle());
+            // 5 degrees tolerance, because target is constantly moving.
+            AssertThat(
+                Mathf.Abs(
+                    currentAngle - 
+                    faceAgent.Orientation) 
+                <= 5).IsTrue(); 
+        }
     }
 
 }
