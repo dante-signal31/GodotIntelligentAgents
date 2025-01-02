@@ -45,6 +45,8 @@ public partial class FaceSteeringBehavior : Node, ISteeringBehavior, ITargeter
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
+        if (Target == null) return new SteeringOutput(Vector2.Zero, 0);
+        
         _targetPosition = Target.GlobalPosition;
         Vector2 currentPosition = args.Position;
         
