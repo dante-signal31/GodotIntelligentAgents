@@ -92,7 +92,6 @@ public partial class MovingAgent : CharacterBody2D
 
     public override void _EnterTree()
     {
-        base._EnterTree();
         _maximumRotationSpeedRadNormalized =
             Mathf.DegToRad(_maximumRotationalDegSpeed) / (2 * Mathf.Pi);
         _stopRotationRadThreshold = Mathf.DegToRad(_stopRotationDegThreshold);
@@ -100,7 +99,6 @@ public partial class MovingAgent : CharacterBody2D
 
     public override void _Ready()
     {
-        base._Ready();
         _bodySprite.Modulate = _agentColor;
         _behaviorArgs = GetSteeringBehaviorArgs();
         _steeringBehavior = this.FindChild<ISteeringBehavior>();
@@ -108,7 +106,6 @@ public partial class MovingAgent : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
-        base._PhysicsProcess(delta);
         if (_steeringBehavior == null || Engine.IsEditorHint()) return;
         
         // Update steering behavior args.

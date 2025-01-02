@@ -68,15 +68,17 @@ ArrivalDistance = 10.0
 AccelerationRadius = 100.0
 
 [node name="FleeMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
-process_mode = 3
+process_mode = 4
+visible = false
 position = Vector2(1378, 678)
 _maximumSpeed = 600.0
 _stopSpeed = 1.0
 _maximumRotationalDegSpeed = 1080.0
 _stopRotationDegThreshold = 1.0
 
-[node name="FleeSteeringBehavior" parent="Agents/FleeMovingAgent" instance=ExtResource("6_4ry8j")]
-PanicDistance = 300.0
+[node name="FleeSteeringBehavior" parent="Agents/FleeMovingAgent" node_paths=PackedStringArray("Threath") instance=ExtResource("6_4ry8j")]
+Threath = NodePath("../../../Target")
+PanicDistance = 200.0
 
 [node name="AlignMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
 process_mode = 4
