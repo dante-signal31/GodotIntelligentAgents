@@ -55,11 +55,22 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
             // (target has changed its velocity or target velocity has been
             // reached and we no longer need an acceleration).
             float maximumAcceleration = args.MaximumAcceleration;
+            float maximumDeceleration = args.MaximumDeceleration;
             Vector2 neededAcceleration = (_targetVelocity - _currentVelocity) / TimeToMatch;
-            if (neededAcceleration.Length() > maximumAcceleration)
+            
+            // if braking, then target velocity is in the opposite direction than current.
+            bool braking = _currentVelocity.Dot(_targetVelocity) < 0;
+            
+            // Make sure velocity change is not greater than its maximum values.
+            if (!braking && neededAcceleration.Length() > maximumAcceleration)
             {
                 neededAcceleration = neededAcceleration.Normalized() * maximumAcceleration;
             }
+            else if (braking && neededAcceleration.Length() > maximumDeceleration)
+            {
+                neededAcceleration = neededAcceleration.Normalized() * maximumDeceleration;
+            }
+            
             _currentAcceleration = neededAcceleration;
             _currentAccelerationUpdateIsNeeded = false;
         }
