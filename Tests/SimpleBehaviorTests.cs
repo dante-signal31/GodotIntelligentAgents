@@ -312,4 +312,73 @@ public class SimpleBehaviorTests
         }
     }
 
+    // TODO: Normalize position markers names. A it is, it's a mess.
+    
+    /// <summary>
+    /// Test that VelocityMatchingBehavior can can copy its target's velocity.
+    /// </summary>
+    [TestCase]
+    public async Task VelocityMatchingBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent velocityMatchingAgent =
+            (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
+        Marker2D agentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("StartPosition1");
+        MovingAgent targetMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgent");
+        Marker2D targetMovingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("TargetPosition4");
+        Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
+        Marker2D targetPosition =
+            (Marker2D)_sceneRunner.FindChild("TargetPosition1");
+        
+        // Get references to steering behavior from both agents.
+        ArriveSteeringBehavior arriveSteeringBehavior =
+            (ArriveSteeringBehavior) targetMovingAgent.FindChild(
+                nameof(ArriveSteeringBehavior));
+        VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
+            (VelocityMatchingSteeringBehavior) velocityMatchingAgent.FindChild(
+                nameof(VelocityMatchingSteeringBehavior));
+        
+        // Setup agents before the test.
+        targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
+        velocityMatchingAgent.MaximumSpeed = 200.0f;
+        velocityMatchingAgent.MaximumAcceleration = 400.0f;
+        velocityMatchingAgent.StopSpeed = 10f;
+        targetMovingAgent.MaximumSpeed = 200f;
+        velocityMatchingSteeringBehavior.Target = targetMovingAgent;
+        arriveSteeringBehavior.Target = targetOfTargetMovingAgent;
+        velocityMatchingAgent.Visible = true;
+        targetMovingAgent.Visible = true;
+        velocityMatchingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        targetMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Give time for the followed agent to try to reach its target
+        // cruise velocity and assert velocity matcher agent has matched the velocity
+        // of its target.
+        while (!Mathf.IsEqualApprox(
+                   targetMovingAgent.CurrentSpeed, 
+                   targetMovingAgent.MaximumSpeed))
+        {
+            await _sceneRunner.AwaitIdleFrame();
+        }
+        await _sceneRunner.AwaitMillis(
+            (uint)velocityMatchingSteeringBehavior.TimeToMatch * 1000);
+        AssertThat(velocityMatchingAgent.Velocity == targetMovingAgent.Velocity);
+        
+        // Wait until arriver brakes and asserts that the VelocityMatcher
+        // has braked to.
+        while (!Mathf.IsEqualApprox(
+                   targetMovingAgent.CurrentSpeed, 
+                   0))
+        {
+            await _sceneRunner.AwaitIdleFrame();
+        }
+        await _sceneRunner.AwaitMillis(
+            (uint)velocityMatchingSteeringBehavior.TimeToMatch * 1000);
+        AssertThat(velocityMatchingAgent.Velocity == targetMovingAgent.Velocity);
+    }
 }
