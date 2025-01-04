@@ -48,10 +48,10 @@ position = Vector2(1521, 812)
 process_mode = 4
 visible = false
 position = Vector2(1470, 788)
-_maximumSpeed = 600.0
-_stopSpeed = 1.0
-_maximumRotationalDegSpeed = 1080.0
-_stopRotationDegThreshold = 1.0
+MaximumSpeed = 600.0
+StopSpeed = 1.0
+MaximumRotationalDegSpeed = 1080.0
+StopRotationDegThreshold = 1.0
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
 Target = NodePath("../../../Target")
@@ -61,10 +61,10 @@ ArrivalDistance = 10.0
 process_mode = 4
 visible = false
 position = Vector2(1630, 761)
-_maximumSpeed = 600.0
-_stopSpeed = 1.0
-_maximumRotationalDegSpeed = 1080.0
-_stopRotationDegThreshold = 1.0
+MaximumSpeed = 600.0
+StopSpeed = 1.0
+MaximumRotationalDegSpeed = 1080.0
+StopRotationDegThreshold = 1.0
 
 [node name="ArriveSteeringBehavior" parent="Agents/ArriveMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("5_xfglb")]
 Target = NodePath("../../../Target")
@@ -76,10 +76,6 @@ AccelerationRadius = 100.0
 process_mode = 4
 visible = false
 position = Vector2(1378, 678)
-_maximumSpeed = 600.0
-_stopSpeed = 1.0
-_maximumRotationalDegSpeed = 1080.0
-_stopRotationDegThreshold = 1.0
 
 [node name="FleeSteeringBehavior" parent="Agents/FleeMovingAgent" node_paths=PackedStringArray("Threath") instance=ExtResource("6_4ry8j")]
 Threath = NodePath("../../../Target")
@@ -89,10 +85,10 @@ PanicDistance = 200.0
 process_mode = 4
 visible = false
 position = Vector2(1219, 267)
-_maximumSpeed = 600.0
-_stopSpeed = 1.0
-_maximumRotationalDegSpeed = 180.0
-_stopRotationDegThreshold = 1.0
+MaximumSpeed = 600.0
+StopSpeed = 1.0
+MaximumRotationalDegSpeed = 180.0
+StopRotationDegThreshold = 1.0
 
 [node name="AlignSteeringBehavior" parent="Agents/AlignMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("7_jhf1f")]
 Target = NodePath("../../SeekMovingAgent")
@@ -103,10 +99,10 @@ _accelerationRadius = 5.0
 process_mode = 4
 visible = false
 position = Vector2(1484, 364)
-_maximumSpeed = 600.0
-_stopSpeed = 1.0
-_maximumRotationalDegSpeed = 180.0
-_stopRotationDegThreshold = 1.0
+MaximumSpeed = 600.0
+StopSpeed = 1.0
+MaximumRotationalDegSpeed = 180.0
+StopRotationDegThreshold = 1.0
 
 [node name="FaceSteeringBehavior" parent="Agents/FaceMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("8_mvp47")]
 Target = NodePath("../../SeekMovingAgent")
@@ -115,12 +111,12 @@ Target = NodePath("../../SeekMovingAgent")
 process_mode = 4
 visible = false
 position = Vector2(1582, 313)
-_maximumSpeed = 600.0
-_stopSpeed = 1.0
-_maximumRotationalDegSpeed = 1080.0
-_stopRotationDegThreshold = 1.0
-_maximumAcceleration = 400.0
-_maximumDeceleration = 400.0
+MaximumSpeed = 600.0
+StopSpeed = 1.0
+MaximumRotationalDegSpeed = 1080.0
+StopRotationDegThreshold = 1.0
+MaximumAcceleration = 200.0
+MaximumDeceleration = 400.0
 
 [node name="VelocityMatchingSteeringBehavior" parent="Agents/VelocityMatchingMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("9_p6qlj")]
 Target = NodePath("../../ArriveMovingAgent")

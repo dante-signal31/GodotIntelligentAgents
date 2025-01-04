@@ -8,24 +8,43 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 [Tool]
 public partial class MovingAgent : CharacterBody2D
 {
-    [ExportCategory("CONFIGURATION:")]
-    [Export] private Color _agentColor = new Color(0, 1, 0);
-    [Export] private float _maximumSpeed;
+    [ExportCategory("CONFIGURATION:")] 
+    private Color _agentColor = new Color(0, 1, 0);
+    [Export] public Color AgentColor
+    {
+        get => _agentColor;
+        set
+        {
+            if (_agentColor == value) return;
+            _agentColor = value;
+            _bodySprite.Modulate = _agentColor;
+        }
+    } 
+    /// <summary>
+    /// This agent maximum speed.
+    /// </summary>
+    [Export] public float MaximumSpeed { get; set; }
     /// <summary>
     /// When speed is less than this value, we consider the agent stopped.
     /// </summary>
-    [Export] private float _stopSpeed;
+    [Export] public float StopSpeed { get; set; }
     /// <summary>
     /// The agent maximum rotational speed in degrees.
     /// </summary>
-    [Export] private float _maximumRotationalDegSpeed;
+    [Export] public float MaximumRotationalDegSpeed { get; set; }
     /// <summary>
     /// Rotation will stop when the difference in degrees between the current rotation and
     /// current forward vector is less than this value.
     /// </summary>
-    [Export] private float _stopRotationDegThreshold;
-    [Export] private float _maximumAcceleration;
-    [Export] private float _maximumDeceleration;
+    [Export] public float StopRotationDegThreshold { get; set; }
+    /// <summary>
+    /// Maximum acceleration for this agent.
+    /// </summary>
+    [Export] public float MaximumAcceleration { get; set; }
+    /// <summary>
+    /// Maximum deceleration for this agent.
+    /// </summary>
+    [Export] public float MaximumDeceleration { get; set; }
     // [Export] private SteeringBehavior _steeringBehavior;
     
     [ExportGroup("WIRING:")]
@@ -35,33 +54,6 @@ public partial class MovingAgent : CharacterBody2D
     /// This agent current speed
     /// </summary>
     public float CurrentSpeed { get; private set; }
-    
-    /// <summary>
-    /// This agent maximum speed.
-    /// </summary>
-    public float MaximumSpeed
-    {
-        get => _maximumSpeed;
-        set => _maximumSpeed = value;
-    }
-
-    /// <summary>
-    /// Speed at which we consider agent should stop.
-    /// </summary>
-    public float StopSpeed
-    {
-        get => _stopSpeed;
-        set => _stopSpeed = value;
-    }
-    
-    /// <summary>
-    /// Maximum acceleration for this agent.
-    /// </summary>
-    public float MaximumAcceleration
-    {
-        get => _maximumAcceleration;
-        set => _maximumAcceleration = value;
-    }
     
     /// <summary>
     /// This agent rotation in degrees.
@@ -83,25 +75,25 @@ public partial class MovingAgent : CharacterBody2D
         return new SteeringBehaviorArgs(
             this, 
             Velocity, 
-            _maximumSpeed, 
-            _stopSpeed,
-            _maximumRotationalDegSpeed,
-            _stopRotationDegThreshold,
-            _maximumAcceleration,
-            _maximumDeceleration,
+            MaximumSpeed, 
+            StopSpeed,
+            MaximumRotationalDegSpeed,
+            StopRotationDegThreshold,
+            MaximumAcceleration,
+            MaximumDeceleration,
             0);
     }
 
     public override void _EnterTree()
     {
         _maximumRotationSpeedRadNormalized =
-            Mathf.DegToRad(_maximumRotationalDegSpeed) / (2 * Mathf.Pi);
-        _stopRotationRadThreshold = Mathf.DegToRad(_stopRotationDegThreshold);
+            Mathf.DegToRad(MaximumRotationalDegSpeed) / (2 * Mathf.Pi);
+        _stopRotationRadThreshold = Mathf.DegToRad(StopRotationDegThreshold);
     }
 
     public override void _Ready()
     {
-        _bodySprite.Modulate = _agentColor;
+        _bodySprite.Modulate = AgentColor;
         _behaviorArgs = GetSteeringBehaviorArgs();
         _steeringBehavior = this.FindChild<ISteeringBehavior>();
     }

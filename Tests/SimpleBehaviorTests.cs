@@ -43,13 +43,19 @@ public class SimpleBehaviorTests
             (SeekSteeringBehavior) movingAgent.FindChild(
                 nameof(SeekSteeringBehavior));
         
-        // Place target and agent.
+        // Setup agents before the test.
         target.GlobalPosition = targetPosition.GlobalPosition;
         movingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
-        
-        // Start test.
+        movingAgent.MaximumSpeed = 600.0f;
+        movingAgent.StopSpeed = 1f;
+        movingAgent.MaximumRotationalDegSpeed = 1080f;
+        movingAgent.StopRotationDegThreshold = 1f;
+        movingAgent.AgentColor = new Color(0, 1, 0);
         movingAgent.Visible = true;
         movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+
         // Give agent time to reach target.
         await _sceneRunner.AwaitMillis(2500);
         // Check if agent reached target.
@@ -78,11 +84,14 @@ public class SimpleBehaviorTests
             (ArriveSteeringBehavior) movingAgent.FindChild(
                 nameof(ArriveSteeringBehavior));
         
-        // Place target and agent.
+        // Setup target and agent.
         target.GlobalPosition = targetPosition.GlobalPosition;
         movingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
-        
-        // Start test.
+        movingAgent.MaximumSpeed = 600.0f;
+        movingAgent.StopSpeed = 1f;
+        movingAgent.MaximumRotationalDegSpeed = 1080f;
+        movingAgent.StopRotationDegThreshold = 1f;
+        movingAgent.AgentColor = new Color(0, 1, 0);
         movingAgent.Visible = true;
         movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
         
@@ -154,11 +163,16 @@ public class SimpleBehaviorTests
             (FleeSteeringBehavior)movingAgent.FindChild(
                 nameof(FleeSteeringBehavior));
 
-        // Place target and agent.
+        // Setup target and agent.
         target.GlobalPosition = targetPosition.GlobalPosition;
+        steeringBehavior.PanicDistance = 200.0f;
+        steeringBehavior.Threath = target;
         movingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
-
-        // Start test.
+        movingAgent.MaximumSpeed = 600.0f;
+        movingAgent.StopSpeed = 1f;
+        movingAgent.MaximumRotationalDegSpeed = 1080f;
+        movingAgent.StopRotationDegThreshold = 1f;
+        movingAgent.AgentColor = new Color(0, 1, 0);
         movingAgent.Visible = true;
         movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
 
@@ -217,7 +231,17 @@ public class SimpleBehaviorTests
         
         // Place and setup both agents before the test.
         movingAgent.GlobalPosition = movingAgentStartPosition.GlobalPosition;
+        movingAgent.AgentColor = new Color(1, 0, 0);
+        movingAgent.MaximumSpeed = 600.0f;
+        movingAgent.StopSpeed = 1f;
+        movingAgent.MaximumRotationalDegSpeed = 1080f;
+        movingAgent.StopRotationDegThreshold = 1f;
         alignAgent.GlobalPosition = alignAgentStartPosition.GlobalPosition;
+        alignAgent.AgentColor = new Color(0, 1, 0);
+        alignAgent.MaximumSpeed = 600.0f;
+        alignAgent.StopSpeed = 1f;
+        alignAgent.MaximumRotationalDegSpeed = 180f;
+        alignAgent.StopRotationDegThreshold = 1f;
         alignSteeringBehavior.Target = movingAgent;
         seekSteeringBehavior.Target = target;
         movingAgent.Visible = true;
@@ -281,7 +305,17 @@ public class SimpleBehaviorTests
         
         // Place and setup both agents before the test.
         faceAgent.GlobalPosition = agentStartPosition.GlobalPosition;
+        faceAgent.AgentColor = new Color(0, 1, 0);
+        faceAgent.MaximumSpeed = 600.0f;
+        faceAgent.StopSpeed = 1f;
+        faceAgent.MaximumRotationalDegSpeed = 180f;
+        faceAgent.StopRotationDegThreshold = 1f;
         targetMovingAgent.GlobalPosition = targetMovingAgentStartPosition.GlobalPosition;
+        targetMovingAgent.AgentColor = new Color(1, 0, 0);
+        targetMovingAgent.MaximumSpeed = 600.0f;
+        targetMovingAgent.StopSpeed = 1f;
+        targetMovingAgent.MaximumRotationalDegSpeed = 180f;
+        targetMovingAgent.StopRotationDegThreshold = 1f;
         faceSteeringBehavior.Target = targetMovingAgent;
         seekSteeringBehavior.Target = targetOfTargetMovingAgent;
         targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
@@ -345,8 +379,16 @@ public class SimpleBehaviorTests
         targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
         velocityMatchingAgent.MaximumSpeed = 200.0f;
         velocityMatchingAgent.MaximumAcceleration = 400.0f;
+        velocityMatchingAgent.MaximumRotationalDegSpeed = 180f;
+        velocityMatchingAgent.StopRotationDegThreshold = 1f;
         velocityMatchingAgent.StopSpeed = 10f;
+        velocityMatchingAgent.MaximumAcceleration = 200;
+        velocityMatchingAgent.MaximumDeceleration = 400;
         targetMovingAgent.MaximumSpeed = 200f;
+        targetMovingAgent.StopSpeed = 1f;
+        targetMovingAgent.MaximumRotationalDegSpeed = 180f;
+        targetMovingAgent.StopRotationDegThreshold = 1f;
+        targetMovingAgent.AgentColor = new Color(1, 0, 0);
         velocityMatchingSteeringBehavior.Target = targetMovingAgent;
         arriveSteeringBehavior.Target = targetOfTargetMovingAgent;
         velocityMatchingAgent.Visible = true;
