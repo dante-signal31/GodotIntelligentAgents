@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GdUnit4;
 using Godot;
+using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 using GodotGameAIbyExample.Scripts.Tools;
 using static GdUnit4.Assertions;
@@ -132,6 +133,82 @@ public class SimpleBehaviorTests
                    targetPosition.GlobalPosition) <= steeringBehavior.BrakingRadius)
               )
         {
+            await _sceneRunner.AwaitIdleFrame();
+        }
+        await _sceneRunner.AwaitIdleFrame();
+        await _sceneRunner.AwaitIdleFrame();
+        AssertThat(movingAgent.CurrentSpeed > 0 && 
+                   movingAgent.CurrentSpeed < movingAgent.MaximumSpeed).IsTrue();
+        
+        //Assert target was reached.
+        // Give agent time to reach target.
+        await _sceneRunner.AwaitMillis(1500);
+        // Check if agent reached target.
+        float distance = movingAgent.GlobalPosition.DistanceTo(target.GlobalPosition);
+        AssertThat(distance <= steeringBehavior.ArrivalDistance).IsTrue();
+    }
+    
+    /// <summary>
+    /// Test that ArriveBehaviorLA can reach a target and that it accelerates
+    /// at the beginning and brakes at the end.
+    /// </summary>
+    [TestCase]
+    public async Task ArriveBehaviorLATest()
+    {
+        // Get references to agent and target.
+        MovingAgent movingAgent = 
+            (MovingAgent) _sceneRunner.FindChild("ArriveMovingAgentLA");
+        Marker2D agentStartPosition = 
+            (Marker2D) _sceneRunner.FindChild("Position1");
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        Marker2D targetPosition = 
+            (Marker2D) _sceneRunner.FindChild("Position3");
+        
+        // Get reference to ArriveSteeringBehaviour.
+        var steeringBehavior = movingAgent.FindChild<ArriveSteeringBehaviorLA>();
+        
+        // Setup target and agent.
+        target.GlobalPosition = targetPosition.GlobalPosition;
+        movingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
+        movingAgent.MaximumSpeed = 600.0f;
+        movingAgent.StopSpeed = 1f;
+        movingAgent.MaximumRotationalDegSpeed = 1080f;
+        movingAgent.StopRotationDegThreshold = 1f;
+        movingAgent.MaximumAcceleration = 400;
+        movingAgent.MaximumDeceleration = 400;
+        movingAgent.AgentColor = new Color(0, 1, 0);
+        movingAgent.Visible = true;
+        steeringBehavior.Target = target;
+        steeringBehavior.ArrivalDistance = 1f;
+        movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Check that agent is accelerating at the beginning.
+        while ( // Wait until agent starts is movement.
+               !((agentStartPosition.GlobalPosition.DistanceTo(
+                     movingAgent.GlobalPosition) >= 1))
+              )
+        {
+            await _sceneRunner.AwaitIdleFrame();
+        }
+        AssertThat(movingAgent.CurrentSpeed > 0 && 
+                   movingAgent.CurrentSpeed < movingAgent.MaximumSpeed).IsTrue();
+        
+        // Check that agent gets its full cruise speed.
+        while (!Mathf.IsEqualApprox(movingAgent.CurrentSpeed, movingAgent.MaximumSpeed))
+        { // Wait until we get full speed.
+            GD.Print($"[SimpleBehaviorTests]CurrentSpeed: {movingAgent.CurrentSpeed} MaximumSpeed: {movingAgent.MaximumSpeed}");
+            await _sceneRunner.AwaitIdleFrame();
+        }
+        AssertThat(Mathf.IsEqualApprox(
+                movingAgent.CurrentSpeed, 
+                movingAgent.MaximumSpeed, 
+                1f))
+            .IsTrue();
+        
+        // Check that agent is braking at the end.
+        while (!(movingAgent.GlobalPosition.DistanceTo(
+                   targetPosition.GlobalPosition) <= steeringBehavior.BrakingRadius))
+        { // Wait until we start to brake.
             await _sceneRunner.AwaitIdleFrame();
         }
         await _sceneRunner.AwaitIdleFrame();
