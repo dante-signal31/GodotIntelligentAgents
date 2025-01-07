@@ -33,7 +33,7 @@ public class SimpleBehaviorTests
         MovingAgent movingAgent = 
             (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
         Marker2D agentStartPosition = 
-            (Marker2D) _sceneRunner.FindChild("StartPosition1");
+            (Marker2D) _sceneRunner.FindChild("Position1");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D targetPosition = 
             (Marker2D) _sceneRunner.FindChild("TargetPosition1");
@@ -74,10 +74,10 @@ public class SimpleBehaviorTests
         MovingAgent movingAgent = 
             (MovingAgent) _sceneRunner.FindChild("ArriveMovingAgent");
         Marker2D agentStartPosition = 
-            (Marker2D) _sceneRunner.FindChild("StartPosition1");
+            (Marker2D) _sceneRunner.FindChild("Position1");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D targetPosition = 
-            (Marker2D) _sceneRunner.FindChild("TargetPosition1");
+            (Marker2D) _sceneRunner.FindChild("Position3");
         
         // Get reference to ArriveSteeringBehaviour.
         ArriveSteeringBehavior steeringBehavior = 
@@ -153,10 +153,10 @@ public class SimpleBehaviorTests
         MovingAgent movingAgent =
             (MovingAgent)_sceneRunner.FindChild("FleeMovingAgent");
         Marker2D agentStartPosition =
-            (Marker2D)_sceneRunner.FindChild("StartPosition2");
+            (Marker2D)_sceneRunner.FindChild("Position2");
         Target target = (Target)_sceneRunner.FindChild("Target");
         Marker2D targetPosition =
-            (Marker2D)_sceneRunner.FindChild("TargetPosition1");
+            (Marker2D)_sceneRunner.FindChild("Position2");
 
         // Get reference to FleeSteeringBehaviour.
         FleeSteeringBehavior steeringBehavior =
@@ -208,18 +208,18 @@ public class SimpleBehaviorTests
         MovingAgent movingAgent =
             (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D movingAgentStartPosition =
-            (Marker2D)_sceneRunner.FindChild("StartPosition2");
+            (Marker2D)_sceneRunner.FindChild("Position2");
         MovingAgent alignAgent =
             (MovingAgent)_sceneRunner.FindChild("AlignMovingAgent");
         Marker2D alignAgentStartPosition =
-            (Marker2D)_sceneRunner.FindChild("StartPosition1");
+            (Marker2D)_sceneRunner.FindChild("Position1");
         Target target = (Target) _sceneRunner.FindChild("Target");
-        Marker2D targetPosition1 = 
-            (Marker2D) _sceneRunner.FindChild("TargetPosition1");
-        Marker2D targetPosition2 = 
-            (Marker2D) _sceneRunner.FindChild("TargetPosition2");
-        Marker2D targetPosition3 = 
-            (Marker2D) _sceneRunner.FindChild("TargetPosition3");
+        Marker2D Position3 = 
+            (Marker2D) _sceneRunner.FindChild("Position3");
+        Marker2D Position4 = 
+            (Marker2D) _sceneRunner.FindChild("Position4");
+        Marker2D Position5 = 
+            (Marker2D) _sceneRunner.FindChild("Position5");
         
         // Get references to steering behavior from both agents.
         SeekSteeringBehavior seekSteeringBehavior =
@@ -252,7 +252,7 @@ public class SimpleBehaviorTests
         // Start test.
         
         // Move seeker to face the first target.
-        target.GlobalPosition = targetPosition1.GlobalPosition;
+        target.GlobalPosition = Position3.GlobalPosition;
         await _sceneRunner.AwaitMillis(2000);
         AssertThat(Mathf.IsEqualApprox(
             alignAgent.Orientation, 
@@ -260,7 +260,7 @@ public class SimpleBehaviorTests
             alignSteeringBehavior.ArrivingMargin)).IsTrue();
         
         // Move seeker to face the second target.
-        target.GlobalPosition = targetPosition2.GlobalPosition;
+        target.GlobalPosition = Position4.GlobalPosition;
         await _sceneRunner.AwaitMillis(2000);
         AssertThat(Mathf.IsEqualApprox(
             alignAgent.Orientation, 
@@ -268,7 +268,7 @@ public class SimpleBehaviorTests
             alignSteeringBehavior.ArrivingMargin)).IsTrue();
         
         // Move seeker to face the third target.
-        target.GlobalPosition = targetPosition3.GlobalPosition;
+        target.GlobalPosition = Position5.GlobalPosition;
         await _sceneRunner.AwaitMillis(2000);
         AssertThat(Mathf.IsEqualApprox(
             alignAgent.Orientation, 
@@ -286,14 +286,14 @@ public class SimpleBehaviorTests
         MovingAgent faceAgent =
             (MovingAgent)_sceneRunner.FindChild("FaceMovingAgent");
         Marker2D agentStartPosition =
-            (Marker2D)_sceneRunner.FindChild("TargetPosition1");
+            (Marker2D)_sceneRunner.FindChild("Position3");
         MovingAgent targetMovingAgent =
             (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D targetMovingAgentStartPosition =
-            (Marker2D)_sceneRunner.FindChild("TargetPosition4");
+            (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
         Marker2D targetPosition =
-            (Marker2D)_sceneRunner.FindChild("TargetPosition2");
+            (Marker2D)_sceneRunner.FindChild("Position4");
         
         // Get references to steering behavior from both agents.
         SeekSteeringBehavior seekSteeringBehavior =
@@ -358,14 +358,14 @@ public class SimpleBehaviorTests
         MovingAgent velocityMatchingAgent =
             (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
         Marker2D agentStartPosition =
-            (Marker2D)_sceneRunner.FindChild("StartPosition1");
+            (Marker2D)_sceneRunner.FindChild("Position1");
         MovingAgent targetMovingAgent =
             (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgent");
         Marker2D targetMovingAgentStartPosition =
-            (Marker2D)_sceneRunner.FindChild("TargetPosition4");
+            (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
         Marker2D targetPosition =
-            (Marker2D)_sceneRunner.FindChild("TargetPosition1");
+            (Marker2D)_sceneRunner.FindChild("Position3");
         
         // Get references to steering behavior from both agents.
         ArriveSteeringBehavior arriveSteeringBehavior =
