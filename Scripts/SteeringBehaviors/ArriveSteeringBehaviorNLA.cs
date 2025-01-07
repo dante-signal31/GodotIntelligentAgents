@@ -10,26 +10,16 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <summary>
 /// <p> Arrive behavior is a Seek-like steering behaviour in which agent accelerates at
 /// the startup and brakes gradually when approachs the end.</p>
+/// <p> NLA behavior implements a Non-Linear-Acceleration approach. So, in this case
+/// acceleration is given by curves instead of a fixed acceleration value.</p>
 /// </summary>
-public partial class ArriveSteeringBehavior: Node, ISteeringBehavior, ITargeter
+public partial class ArriveSteeringBehaviorNLA: Node, ISteeringBehavior, ITargeter
 {
     [ExportCategory("CONFIGURATION:")]
     /// <summary>
     /// Point this agent is going to.
     /// </summary>
     [Export] public Node2D Target { get; set; }
-    /// <summary>
-    /// Radius to start slowing down using deceleration curve.
-    /// </summary>
-    [Export] public float BrakingRadius { get; set; }
-    /// <summary>
-    /// At this distance from target agent will full stop.
-    /// </summary>
-    [Export] public float ArrivalDistance { get; set; }
-    /// <summary>
-    /// Deceleration curve.
-    /// </summary>
-    [Export] private Curve _decelerationCurve;
     /// <summary>
     /// At this distance from start, agent will be at full speed, finishing its
     /// acceleration curve.
@@ -39,7 +29,18 @@ public partial class ArriveSteeringBehavior: Node, ISteeringBehavior, ITargeter
     /// Acceleration curve.
     /// </summary>
     [Export] private Curve _accelerationCurve;
-    
+    /// <summary>
+    /// Radius to start slowing down using deceleration curve.
+    /// </summary>
+    [Export] public float BrakingRadius { get; set; }
+    /// <summary>
+    /// Deceleration curve.
+    /// </summary>
+    [Export] private Curve _decelerationCurve;
+    /// <summary>
+    /// At this distance from target agent will full stop.
+    /// </summary>
+    [Export] public float ArrivalDistance { get; set; }
     
     private Vector2 _startPosition;
     private float _distanceFromStart;

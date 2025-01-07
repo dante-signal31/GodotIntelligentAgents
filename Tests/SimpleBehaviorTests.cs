@@ -36,7 +36,7 @@ public class SimpleBehaviorTests
             (Marker2D) _sceneRunner.FindChild("Position1");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D targetPosition = 
-            (Marker2D) _sceneRunner.FindChild("TargetPosition1");
+            (Marker2D) _sceneRunner.FindChild("Position3");
         
         // Get reference to SteeringBehaviour.
         SeekSteeringBehavior steeringBehavior = 
@@ -64,15 +64,15 @@ public class SimpleBehaviorTests
     }
     
     /// <summary>
-    /// Test that ArriveBehavior can reach a target and that it accelerates
+    /// Test that ArriveBehaviorNLA can reach a target and that it accelerates
     /// at the beginning and brakes at the end.
     /// </summary>
     [TestCase]
-    public async Task ArriveBehaviorTest()
+    public async Task ArriveBehaviorNLATest()
     {
         // Get references to agent and target.
         MovingAgent movingAgent = 
-            (MovingAgent) _sceneRunner.FindChild("ArriveMovingAgent");
+            (MovingAgent) _sceneRunner.FindChild("ArriveMovingAgentNLA");
         Marker2D agentStartPosition = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Target target = (Target) _sceneRunner.FindChild("Target");
@@ -80,9 +80,9 @@ public class SimpleBehaviorTests
             (Marker2D) _sceneRunner.FindChild("Position3");
         
         // Get reference to ArriveSteeringBehaviour.
-        ArriveSteeringBehavior steeringBehavior = 
-            (ArriveSteeringBehavior) movingAgent.FindChild(
-                nameof(ArriveSteeringBehavior));
+        ArriveSteeringBehaviorNLA steeringBehavior = 
+            (ArriveSteeringBehaviorNLA) movingAgent.FindChild(
+                nameof(ArriveSteeringBehaviorNLA));
         
         // Setup target and agent.
         target.GlobalPosition = targetPosition.GlobalPosition;
@@ -93,6 +93,10 @@ public class SimpleBehaviorTests
         movingAgent.StopRotationDegThreshold = 1f;
         movingAgent.AgentColor = new Color(0, 1, 0);
         movingAgent.Visible = true;
+        steeringBehavior.Target = target;
+        steeringBehavior.AccelerationRadius = 100.0f;
+        steeringBehavior.BrakingRadius = 100.0f;
+        steeringBehavior.ArrivalDistance = 1f;
         movingAgent.ProcessMode = Node.ProcessModeEnum.Always;
         
         // Check that agent is accelerating at the beginning.
@@ -360,7 +364,7 @@ public class SimpleBehaviorTests
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position1");
         MovingAgent targetMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgent");
+            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentNLA");
         Marker2D targetMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -368,9 +372,9 @@ public class SimpleBehaviorTests
             (Marker2D)_sceneRunner.FindChild("Position3");
         
         // Get references to steering behavior from both agents.
-        ArriveSteeringBehavior arriveSteeringBehavior =
-            (ArriveSteeringBehavior) targetMovingAgent.FindChild(
-                nameof(ArriveSteeringBehavior));
+        ArriveSteeringBehaviorNLA arriveSteeringBehavior =
+            (ArriveSteeringBehaviorNLA) targetMovingAgent.FindChild(
+                nameof(ArriveSteeringBehaviorNLA));
         VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
             (VelocityMatchingSteeringBehavior) velocityMatchingAgent.FindChild(
                 nameof(VelocityMatchingSteeringBehavior));
