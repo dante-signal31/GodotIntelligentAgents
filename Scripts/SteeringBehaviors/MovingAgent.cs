@@ -104,8 +104,12 @@ public partial class MovingAgent : CharacterBody2D
         
         // Update steering behavior args.
         _behaviorArgs.MaximumSpeed = MaximumSpeed;
+        _behaviorArgs.StopSpeed = StopSpeed;
         _behaviorArgs.CurrentVelocity = Velocity;
+        _behaviorArgs.MaximumRotationalSpeed = MaximumRotationalDegSpeed;
+        _behaviorArgs.StopRotationThreshold = StopRotationDegThreshold;
         _behaviorArgs.MaximumAcceleration = MaximumAcceleration;
+        _behaviorArgs.MaximumDeceleration = MaximumDeceleration;
         _behaviorArgs.DeltaTime = delta;
         
         // Get steering output.
