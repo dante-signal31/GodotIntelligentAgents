@@ -82,8 +82,7 @@ public class SimpleBehaviorTests
         
         // Get reference to ArriveSteeringBehaviour.
         ArriveSteeringBehaviorNLA steeringBehavior = 
-            (ArriveSteeringBehaviorNLA) movingAgent.FindChild(
-                nameof(ArriveSteeringBehaviorNLA));
+            movingAgent.FindChild<ArriveSteeringBehaviorNLA>();
         
         // Setup target and agent.
         target.GlobalPosition = targetPosition.GlobalPosition;
@@ -441,7 +440,7 @@ public class SimpleBehaviorTests
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position1");
         MovingAgent targetMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentNLA");
+            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
         Marker2D targetMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -449,9 +448,8 @@ public class SimpleBehaviorTests
             (Marker2D)_sceneRunner.FindChild("Position3");
         
         // Get references to steering behavior from both agents.
-        ArriveSteeringBehaviorNLA arriveSteeringBehavior =
-            (ArriveSteeringBehaviorNLA) targetMovingAgent.FindChild(
-                nameof(ArriveSteeringBehaviorNLA));
+        ArriveSteeringBehaviorLA arriveSteeringBehavior =
+            targetMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
         VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
             (VelocityMatchingSteeringBehavior) velocityMatchingAgent.FindChild(
                 nameof(VelocityMatchingSteeringBehavior));
@@ -469,6 +467,8 @@ public class SimpleBehaviorTests
         targetMovingAgent.StopSpeed = 1f;
         targetMovingAgent.MaximumRotationalDegSpeed = 180f;
         targetMovingAgent.StopRotationDegThreshold = 1f;
+        targetMovingAgent.MaximumAcceleration = 180f;
+        targetMovingAgent.MaximumDeceleration = 180f;
         targetMovingAgent.AgentColor = new Color(1, 0, 0);
         velocityMatchingSteeringBehavior.Target = targetMovingAgent;
         arriveSteeringBehavior.Target = targetOfTargetMovingAgent;

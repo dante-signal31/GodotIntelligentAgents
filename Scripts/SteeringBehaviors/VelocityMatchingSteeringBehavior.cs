@@ -18,6 +18,7 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
     [Export] public float TimeToMatch { get; private set; }
     
     private Vector2 _targetVelocity;
+    private Vector2 _currentVelocity;
     private Vector2 _currentAcceleration;
     private bool _currentAccelerationUpdateIsNeeded;
     
@@ -28,7 +29,7 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
         // 2. Target velocity and current velocity are the same. So we should
         //    stop accelerating.
         if ((_targetVelocity != Target.Velocity) ||
-            Mathf.IsEqualApprox(_targetVelocity.Length(), Target.Velocity.Length()))
+            Mathf.IsEqualApprox(_currentVelocity.Length(), Target.Velocity.Length()))
         {
             _targetVelocity = Target.Velocity;
             _currentAccelerationUpdateIsNeeded = true;
@@ -41,7 +42,7 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
         
         UpdateTargetData();
 
-        Vector2 currentVelocity = args.CurrentVelocity;
+        _currentVelocity = args.CurrentVelocity;
         float stopSpeed = args.StopSpeed;
         
         float deltaTime = (float) args.DeltaTime;
@@ -57,18 +58,18 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
             // reached and we no longer need an acceleration).
             float maximumAcceleration = args.MaximumAcceleration;
             float maximumDeceleration = args.MaximumDeceleration;
-            Vector2 neededAcceleration = (_targetVelocity - currentVelocity) / TimeToMatch;
+            Vector2 neededAcceleration = (_targetVelocity - _currentVelocity) / TimeToMatch;
             
             // if braking, then target velocity is in the opposite direction than current.
             bool braking = _targetVelocity == Vector2.Zero || 
-                           currentVelocity.Dot(_targetVelocity) < 0;
+                           _currentVelocity.Dot(_targetVelocity) < 0;
             
             // Make sure velocity change is not greater than its maximum values.
             if (!braking && neededAcceleration.Length() > maximumAcceleration)
             {
                 neededAcceleration = neededAcceleration.Normalized() * maximumAcceleration;
             }
-            else if (braking && currentVelocity.Length() <= stopSpeed)
+            else if (braking && _currentVelocity.Length() <= stopSpeed)
             {
                 return new SteeringOutput(Vector2.Zero, 0);
             }
@@ -80,7 +81,7 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
             _currentAcceleration = neededAcceleration;
             _currentAccelerationUpdateIsNeeded = false;
         }
-        Vector2 newVelocity = currentVelocity + _currentAcceleration * deltaTime;
+        Vector2 newVelocity = _currentVelocity + _currentAcceleration * deltaTime;
         
         return new SteeringOutput(newVelocity, 0);
     }
