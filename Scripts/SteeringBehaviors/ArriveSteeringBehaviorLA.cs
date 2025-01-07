@@ -27,8 +27,6 @@ public partial class ArriveSteeringBehaviorLA: Node, ISteeringBehavior, ITargete
     /// </summary>
     [Export] public float ArrivalDistance { get; set; }
     
-    private Vector2 _startPosition;
-    private bool _idle = true;
     private float _currentSpeed;
     private float _currentMaximumDeceleration;
 
