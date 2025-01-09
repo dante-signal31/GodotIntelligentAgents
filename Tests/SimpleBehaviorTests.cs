@@ -425,8 +425,6 @@ public class SimpleBehaviorTests
                 <= 5).IsTrue(); 
         }
     }
-
-    // TODO: Normalize position markers names. A it is, it's a mess.
     
     /// <summary>
     /// Test that VelocityMatchingBehavior can can copy its target's velocity.
@@ -503,5 +501,68 @@ public class SimpleBehaviorTests
         await _sceneRunner.AwaitMillis(
             (uint)velocityMatchingSteeringBehavior.TimeToMatch * 1000);
         AssertThat(velocityMatchingAgent.Velocity == targetMovingAgent.Velocity);
+    }
+
+    /// <summary>
+    /// Test that PursuitBehavior can intercept its target.
+    /// </summary>
+    [TestCase]
+    public async Task PursuitBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent pursueAgent =
+            (MovingAgent)_sceneRunner.FindChild("PursueMovingAgent");
+        Marker2D agentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position1");
+        MovingAgent targetMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Marker2D targetMovingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position6");
+        Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
+        Marker2D targetPosition =
+            (Marker2D)_sceneRunner.FindChild("Position3");
+        
+        // Get references to steering behavior from both agents.
+        SeekSteeringBehavior seekSteeringBehavior =
+            targetMovingAgent.FindChild<SeekSteeringBehavior>();
+        PursueSteeringBehavior pursueSteeringBehavior =
+            pursueAgent.FindChild<PursueSteeringBehavior>();
+        
+        // Setup agents before the test.
+        targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
+        pursueAgent.GlobalPosition = agentStartPosition.GlobalPosition;
+        pursueAgent.MaximumSpeed = 250.0f;
+        pursueAgent.MaximumAcceleration = 400.0f;
+        pursueAgent.MaximumRotationalDegSpeed = 180f;
+        pursueAgent.StopRotationDegThreshold = 1f;
+        pursueAgent.StopSpeed = 10f;
+        pursueAgent.MaximumAcceleration = 200;
+        pursueAgent.MaximumDeceleration = 400;
+        targetMovingAgent.GlobalPosition = targetMovingAgentStartPosition.GlobalPosition;
+        targetMovingAgent.MaximumSpeed = 200f;
+        targetMovingAgent.StopSpeed = 1f;
+        targetMovingAgent.MaximumRotationalDegSpeed = 180f;
+        targetMovingAgent.StopRotationDegThreshold = 1f;
+        targetMovingAgent.MaximumAcceleration = 180f;
+        targetMovingAgent.MaximumDeceleration = 180f;
+        targetMovingAgent.AgentColor = new Color(1, 0, 0);
+        pursueSteeringBehavior.Target = targetMovingAgent;
+        seekSteeringBehavior.Target = targetOfTargetMovingAgent;
+        pursueAgent.Visible = true;
+        targetMovingAgent.Visible = true;
+        pursueAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        targetMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Give time for the chaser to get to the target.
+        await _sceneRunner.AwaitMillis(3000);
+        
+        // Assert the target was reached.
+        // We test for a distance equal to the radius of both agents, plus
+        // a 0.1 of tolerance. That should be the distance of centers when
+        // both agents are touching.
+        AssertThat(
+            pursueAgent.GlobalPosition.DistanceTo(targetMovingAgent.GlobalPosition) <= 
+            (120f)
+            ).IsTrue();
     }
 }
