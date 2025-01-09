@@ -1,6 +1,8 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using GodotGameAIbyExample.addons.InteractiveRanges.ConeRange;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
@@ -15,8 +17,11 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// agent displaces then we will only follow its trail. Instead, pursuer must predict
 /// whare chased agent will be and aim to that position.</p>
 /// </summary>
-public partial class PursueSteeringBehavior : Node, ISteeringBehavior
+public partial class PursueSteeringBehavior : Node2D, ISteeringBehavior
 {
+    private const string aheadConeRangeName = "AheadConeRange";
+    private const string comingToUsConeRangeName = "ComingToUsConeRange";
+    
     [ExportCategory("CONFIGURATION:")]
     /// <summary>
     /// Agent to pursue to.
@@ -39,6 +44,7 @@ public partial class PursueSteeringBehavior : Node, ISteeringBehavior
         {
             if (Mathf.IsEqualApprox(_aheadSemiConeDegrees, value)) return;
             _aheadSemiConeDegrees = Mathf.Clamp(value, 0, 90);
+            if (_aheadConeRange != null) _aheadConeRange.SemiConeDegrees = value;
         }
     }
     
@@ -54,6 +60,7 @@ public partial class PursueSteeringBehavior : Node, ISteeringBehavior
         {
             if (Mathf.IsEqualApprox(_comingToUsSemiConeDegrees, value)) return;
             _comingToUsSemiConeDegrees = Mathf.Clamp(value, 0, 90);
+            if (_comingToUsConeRange != null) _comingToUsConeRange.SemiConeDegrees = value;
         }
     }
     
@@ -67,8 +74,12 @@ public partial class PursueSteeringBehavior : Node, ISteeringBehavior
     private float _cosAheadSemiConeRadians;
     private float _cosComingToUsSemiConeRadians;
     private Node2D _predictedPositionMarker;
-    private Color _agentColor;
-    private Color _targetColor;
+    private MovingAgent _currentAgent;
+    private ConeRange _aheadConeRange;
+    private ConeRange _comingToUsConeRange;
+    
+    private Color AgentColor => _currentAgent.AgentColor;
+    private Color TargetColor => Target.AgentColor;
     
     public override void _EnterTree()
     {
@@ -87,8 +98,39 @@ public partial class PursueSteeringBehavior : Node, ISteeringBehavior
         _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
         _seekSteeringBehavior.Target = Target;
         _seekSteeringBehavior.ArrivalDistance = ArrivalDistance;
-        _agentColor = this.FindAncestor<MovingAgent>().AgentColor;
-        _targetColor = Target.AgentColor;
+        _currentAgent = this.FindAncestor<MovingAgent>();
+        _aheadConeRange = (ConeRange) FindChild(aheadConeRangeName);
+        _aheadConeRange.SemiConeDegrees = AheadSemiConeDegrees;
+        _comingToUsConeRange = (ConeRange) FindChild(comingToUsConeRangeName);
+        _comingToUsConeRange.SemiConeDegrees = ComingToUsSemiConeDegrees;
+    }
+
+    public override void _Process(double delta)
+    {
+        if (PredictedPositionMarkerVisible) DrawGizmos();
+    }
+
+    private void DrawGizmos()
+    {
+        QueueRedraw();
+    }
+
+    public override void _Draw()
+    {
+        if (_predictedPositionMarker == null || Engine.IsEditorHint()) return;
+        DrawLine(
+            Vector2.Zero, 
+            ToLocal(_predictedPositionMarker.GlobalPosition), 
+            AgentColor);
+        DrawCircle(
+            ToLocal(_predictedPositionMarker.GlobalPosition),
+            30f, 
+            AgentColor, 
+            filled: false);
+        DrawLine(
+            ToLocal(Target.GlobalPosition), 
+            ToLocal(_predictedPositionMarker.GlobalPosition), 
+            TargetColor);
     }
 
     /// <summary>
@@ -148,12 +190,24 @@ public partial class PursueSteeringBehavior : Node, ISteeringBehavior
     public override string[] _GetConfigurationWarnings()
     {
         _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
+        List<ConeRange> coneRangesFound = this.FindChildren<ConeRange>();
+        bool coneRangesNamesCorrect = coneRangesFound.Any(
+                                          cr => cr.Name == aheadConeRangeName) && 
+                                      coneRangesFound.Any(
+                                          cr => cr.Name == comingToUsConeRangeName);
 
         List<string> warnings = new();
         
         if (_seekSteeringBehavior == null)
         {
             warnings.Add("This node needs a child of type SeekSteeringBehavior to work.");
+        }
+        
+        if (coneRangesFound.Count != 2 || !coneRangesNamesCorrect)
+        {
+            warnings.Add($"This node needs 2 child ConeRange to work. " +
+                         $"One called {aheadConeRangeName} and another " +
+                         $"called {comingToUsConeRangeName}");
         }
         
         return warnings.ToArray();

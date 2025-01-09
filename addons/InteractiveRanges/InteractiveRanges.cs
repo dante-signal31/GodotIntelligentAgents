@@ -12,11 +12,17 @@ public partial class InteractiveRanges: EditorPlugin
             "Node2D",
             "res://addons/InteractiveRanges/CircularRange/CircularRange.cs",
             "res://addons/InteractiveRanges/CircularRange/CircularRangeIcon.svg");
+        RegisterCustomNode(
+            "ConeRange",
+            "Node2D",
+            "res://addons/InteractiveRanges/ConeRange/ConeRange.cs",
+            "res://addons/InteractiveRanges/ConeRange/ConeRangeIcon.svg");
     }
 
     public override void _ExitTree()
     {
         RemoveCustomType("CircularRange");
+        RemoveCustomType("ConeRange");
     }
 
     private void RegisterCustomNode(
@@ -29,10 +35,4 @@ public partial class InteractiveRanges: EditorPlugin
         Texture2D icon = GD.Load<Texture2D>(texturePath);
         AddCustomType(name, baseNode, script, icon);
     }
-
-    public override bool _ForwardCanvasGuiInput(InputEvent @event)
-    {
-        return base._ForwardCanvasGuiInput(@event);
-    }
-    
 }

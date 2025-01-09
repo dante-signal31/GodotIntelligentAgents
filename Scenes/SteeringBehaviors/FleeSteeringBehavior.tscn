@@ -10,4 +10,5 @@ script = ExtResource("1_qgfbj")
 [node name="SeekSteeringBehavior" parent="." instance=ExtResource("2_b6voa")]
 
 [node name="CircularRange" type="Node2D" parent="."]
+z_index = 200
 script = ExtResource("3_4vce0")

@@ -3,7 +3,7 @@ using Godot;
 namespace GodotGameAIbyExample.addons.InteractiveRanges.CircularRange;
 
 /// <summary>
-/// Circular gizmo to configure ranges for 2D games. Optionally, it can show a handle.
+/// Circular gizmo to configure ranges for 2D games.
 /// </summary>
 [Tool]
 public partial class CircularRange : Node2D
