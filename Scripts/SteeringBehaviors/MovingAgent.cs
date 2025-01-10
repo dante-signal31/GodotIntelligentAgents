@@ -115,11 +115,10 @@ public partial class MovingAgent : CharacterBody2D
         // Get steering output.
         SteeringOutput steeringOutput = _steeringBehavior.GetSteering(_behaviorArgs);
         
-        // Apply new steering output to our agent.
-        // Velocity = steeringOutput.Linear.Length() > StopSpeed ? 
-        //     steeringOutput.Linear:
-        //     Vector2.Zero;
+        // Apply new steering output to our agent. I don't enforce the StopSpeed because
+        // I've found more flexible to do it at steering behavior level.
         Velocity = steeringOutput.Linear;
+        
         if (steeringOutput.Angular == 0 && Velocity != Vector2.Zero)
         {
             // If no explicit angular steering, we will just look at the direction we
