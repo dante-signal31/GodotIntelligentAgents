@@ -513,7 +513,7 @@ public class SimpleBehaviorTests
         MovingAgent pursueAgent =
             (MovingAgent)_sceneRunner.FindChild("PursueMovingAgent");
         Marker2D agentStartPosition =
-            (Marker2D)_sceneRunner.FindChild("Position1");
+            (Marker2D)_sceneRunner.FindChild("Position4");
         MovingAgent targetMovingAgent =
             (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D targetMovingAgentStartPosition =

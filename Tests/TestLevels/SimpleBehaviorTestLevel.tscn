@@ -45,8 +45,10 @@ position = Vector2(1521, 812)
 [node name="Agents" type="Node" parent="."]
 
 [node name="SeekMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(1678, 792)
-MaximumSpeed = 600.0
+MaximumSpeed = 100.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
@@ -132,13 +134,15 @@ Target = NodePath("../../ArriveMovingAgentNLA")
 TimeToMatch = 1.0
 
 [node name="PursueMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
-position = Vector2(1136, 221)
-MaximumSpeed = 200.0
+process_mode = 4
+visible = false
+position = Vector2(175, 199)
+MaximumSpeed = 100.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
 
 [node name="PursueSteeringBehavior" parent="Agents/PursueMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("11_0ln1b")]
 Target = NodePath("../../SeekMovingAgent")
-AheadSemiConeDegrees = 23.571
-ComingToUsSemiConeDegrees = 16.357
+AheadSemiConeDegrees = 5.357
+ComingToUsSemiConeDegrees = 5.643
