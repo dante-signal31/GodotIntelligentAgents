@@ -37,7 +37,7 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
         
         // if braking, then target velocity is in the opposite direction than current.
         bool braking = _targetVelocity == Vector2.Zero || 
-                       neededAcceleration.Dot(_targetVelocity) < 0;
+                       neededAcceleration.Dot(_currentVelocity) < 0;
         
         // Make sure velocity change is not greater than its maximum values.
         if (!braking && neededAcceleration.Length() > maximumAcceleration)
