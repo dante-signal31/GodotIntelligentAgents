@@ -469,6 +469,7 @@ public class SimpleBehaviorTests
         targetMovingAgent.MaximumDeceleration = 180f;
         targetMovingAgent.AgentColor = new Color(1, 0, 0);
         velocityMatchingSteeringBehavior.Target = targetMovingAgent;
+        velocityMatchingSteeringBehavior.TimeToMatch = 0.1f;
         arriveSteeringBehavior.Target = targetOfTargetMovingAgent;
         velocityMatchingAgent.Visible = true;
         targetMovingAgent.Visible = true;
