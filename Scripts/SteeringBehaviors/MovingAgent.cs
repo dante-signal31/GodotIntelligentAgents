@@ -53,7 +53,7 @@ public partial class MovingAgent : CharacterBody2D
     /// <summary>
     /// This agent current speed
     /// </summary>
-    public float CurrentSpeed { get; private set; }
+    public float CurrentSpeed => Velocity.Length();
     
     /// <summary>
     /// This agent rotation in degrees.
@@ -115,9 +115,10 @@ public partial class MovingAgent : CharacterBody2D
         // Get steering output.
         SteeringOutput steeringOutput = _steeringBehavior.GetSteering(_behaviorArgs);
         
-        // Apply new steering output to our GameObject.
-        Velocity = steeringOutput.Linear;
-        CurrentSpeed = steeringOutput.Linear.Length();
+        // Apply new steering output to our agent.
+        Velocity = steeringOutput.Linear.Length() > StopSpeed ? 
+            steeringOutput.Linear:
+            Vector2.Zero;
         if (steeringOutput.Angular == 0 && Velocity != Vector2.Zero)
         {
             // If no explicit angular steering, we will just look at the direction we
@@ -134,7 +135,7 @@ public partial class MovingAgent : CharacterBody2D
                 LookAt(rotatedForward + GlobalPosition);
             }
         }
-        else
+        else if (steeringOutput.Angular != 0)
         {
             // In this case, our steering wants us to face and move in different
             // directions. Steering checks that no threshold is surpassed.

@@ -28,8 +28,10 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
         // 1. Target velocity has changed.
         // 2. Target velocity and current velocity are the same. So we should
         //    stop accelerating.
-        if ((_targetVelocity != Target.Velocity) ||
-            Mathf.IsEqualApprox(_currentVelocity.Length(), Target.Velocity.Length()))
+        if ((_currentVelocity != Target.Velocity) 
+            ||
+            Mathf.IsEqualApprox(_currentVelocity.Length(), Target.Velocity.Length())
+            )
         {
             _targetVelocity = Target.Velocity;
             _currentAccelerationUpdateIsNeeded = true;
@@ -47,6 +49,10 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
         
         float deltaTime = (float) args.DeltaTime;
 
+        // if braking, then target velocity is in the opposite direction than current.
+        bool braking = _targetVelocity == Vector2.Zero || 
+                       _currentVelocity.Dot(_targetVelocity) < 0;
+        
         if (_currentAccelerationUpdateIsNeeded)
         {
             // Millington executes this code section in every frame, but I
@@ -59,10 +65,6 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
             float maximumAcceleration = args.MaximumAcceleration;
             float maximumDeceleration = args.MaximumDeceleration;
             Vector2 neededAcceleration = (_targetVelocity - _currentVelocity) / TimeToMatch;
-            
-            // if braking, then target velocity is in the opposite direction than current.
-            bool braking = _targetVelocity == Vector2.Zero || 
-                           _currentVelocity.Dot(_targetVelocity) < 0;
             
             // Make sure velocity change is not greater than its maximum values.
             if (!braking && neededAcceleration.Length() > maximumAcceleration)
@@ -81,7 +83,17 @@ public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
             _currentAcceleration = neededAcceleration;
             _currentAccelerationUpdateIsNeeded = false;
         }
+        
         Vector2 newVelocity = _currentVelocity + _currentAcceleration * deltaTime;
+        // When we want to stop, a too high acceleration could invert Velocity direction
+        // instead of reducing it to zero. This would cause the agent to move backwards
+        // when we want it to stop. So, in those cases the acceleration overpass target
+        // velocity, we'll clamp new velocity to target velocity.
+        if ((braking && newVelocity.Dot(_currentVelocity) < 0) ||
+            (!braking && newVelocity.Length() > _targetVelocity.Length()))
+        {
+            newVelocity = _targetVelocity;
+        }
         
         return new SteeringOutput(newVelocity, 0);
     }
