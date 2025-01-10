@@ -14,14 +14,26 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <p>Interpose make an agent to place itself between two other agents.</p>
 /// <p>It's an usual protection behavior. E.g. a bodyguard. </p>
 /// </summary>
-public partial class InterposeSteeringBehavior : Node, ISteeringBehavior
+public partial class InterposeSteeringBehavior : Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")] 
     [Export] private MovingAgent AgentA;
     [Export] private MovingAgent AgentB;
-
+    /// <summary>
+    /// Distance at which we give our goal as reached and we stop our agent.
+    /// </summary>
+    [Export] private float ArrivalDistance;
+    
+    [ExportCategory("DEBUG:")]
+    /// <summary>
+    /// Make visible position marker.
+    /// </summary>
+    [Export] private bool PredictedPositionMarkerVisible { get; set; }
+    
     private SeekSteeringBehavior _seekSteeringBehavior;
     private Node2D _predictedPositionMarker;
+    private Vector2 _previousPositionAgentA;
+    private Vector2 _previousPositionAgentB;
 
     public override void _EnterTree()
     {
@@ -40,6 +52,7 @@ public partial class InterposeSteeringBehavior : Node, ISteeringBehavior
     {
         _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
         _seekSteeringBehavior.Target = _predictedPositionMarker;
+        _seekSteeringBehavior.ArrivalDistance = ArrivalDistance;
     }
 
     /// <summary>
@@ -58,32 +71,69 @@ public partial class InterposeSteeringBehavior : Node, ISteeringBehavior
     {
         Vector2 currentPosition = args.CurrentAgent.GlobalPosition;
         float maximumSpeed = args.MaximumSpeed;
-        
-        Vector2 midPoint = GetMidPoint(AgentA.GlobalPosition, AgentB.GlobalPosition);
-        
-        // If target agents where static, how much time we'd need to get to midPoint?
-        float TimeToReachMidPoint = (midPoint - currentPosition).Length() / maximumSpeed;
-        
-        // But actually agent won't be static, so while we move to midPoint, they will
-        // move too. So, we must figure out where target agents are going to be after
-        // TimeToReachMidPoint has passed. To get that we'll assume both target agents
-        // are going to continue on a straight trajectory (so, no velocity change), so 
-        // we'll extrapolate their future position using their current velocity.
-        Vector2 futurePositionOfAgentA = AgentA.GlobalPosition + 
-                                         AgentA.Velocity * TimeToReachMidPoint;
-        Vector2 futurePositionOfAgentB = AgentB.GlobalPosition + 
-                                         AgentB.Velocity * TimeToReachMidPoint;
-        
-        // Now we have the future position of target agents, we can get the estimated
-        // future midpoint position.
-        Vector2 futureMidPoint = GetMidPoint(
-            futurePositionOfAgentA, 
-            futurePositionOfAgentB);
-        
-        // So, to not been left behind, we must go to the future midpoint.
-        _predictedPositionMarker.GlobalPosition = futureMidPoint;
 
+        if (AgentA.GlobalPosition != _previousPositionAgentA ||
+            AgentB.GlobalPosition != _previousPositionAgentB)
+        {
+            Vector2 midPoint = GetMidPoint(AgentA.GlobalPosition, AgentB.GlobalPosition);
+        
+            // If target agents where static, how much time we'd need to get to midPoint?
+            float TimeToReachMidPoint = (midPoint - currentPosition).Length() / maximumSpeed;
+        
+            // But actually agents won't be static, so while we move to midPoint, they will
+            // move too. So, we must figure out where target agents are going to be after
+            // TimeToReachMidPoint has passed. To get that we'll assume both target agents
+            // are going to continue on a straight trajectory (so, no velocity change), so 
+            // we'll extrapolate their future position using their current velocity.
+            Vector2 futurePositionOfAgentA = AgentA.GlobalPosition + 
+                                             AgentA.Velocity * TimeToReachMidPoint;
+            Vector2 futurePositionOfAgentB = AgentB.GlobalPosition + 
+                                             AgentB.Velocity * TimeToReachMidPoint;
+        
+            // Now we have the future position of target agents, we can get the estimated
+            // future midpoint position.
+            Vector2 futureMidPoint = GetMidPoint(
+                futurePositionOfAgentA, 
+                futurePositionOfAgentB);
+        
+            // So, to not been left behind, we must go to the future midpoint.
+            _predictedPositionMarker.GlobalPosition = futureMidPoint;
+
+            _previousPositionAgentA = AgentA.GlobalPosition;
+            _previousPositionAgentB = AgentB.GlobalPosition;
+        }
+        
         return _seekSteeringBehavior.GetSteering(args);
+    }
+    
+    public override void _Process(double delta)
+    {
+        if (PredictedPositionMarkerVisible) DrawGizmos();
+    }
+
+    private void DrawGizmos()
+    {
+        QueueRedraw();
+    }
+    
+    public override void _Draw()
+    {
+        if (_predictedPositionMarker == null || 
+            !PredictedPositionMarkerVisible ||
+            Engine.IsEditorHint()) return;
+        DrawLine(
+            ToLocal(AgentA.GlobalPosition), 
+            ToLocal(_predictedPositionMarker.GlobalPosition), 
+            AgentA.AgentColor);
+        DrawCircle(
+            ToLocal(_predictedPositionMarker.GlobalPosition),
+            30f, 
+            Colors.Green, 
+            filled: false);
+        DrawLine(
+            ToLocal(AgentB.GlobalPosition),  
+            ToLocal(_predictedPositionMarker.GlobalPosition), 
+            AgentB.AgentColor);
     }
     
     public override string[] _GetConfigurationWarnings()

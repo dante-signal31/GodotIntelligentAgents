@@ -123,7 +123,9 @@ public partial class PursueSteeringBehavior : Node2D, ISteeringBehavior
 
     public override void _Draw()
     {
-        if (_predictedPositionMarker == null || Engine.IsEditorHint()) return;
+        if (_predictedPositionMarker == null || 
+            !PredictedPositionMarkerVisible ||
+            Engine.IsEditorHint()) return;
         DrawLine(
             Vector2.Zero, 
             ToLocal(_predictedPositionMarker.GlobalPosition), 
