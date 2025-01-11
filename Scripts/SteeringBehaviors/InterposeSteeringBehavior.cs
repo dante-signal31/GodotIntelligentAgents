@@ -17,12 +17,12 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 public partial class InterposeSteeringBehavior : Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")] 
-    [Export] private MovingAgent AgentA;
-    [Export] private MovingAgent AgentB;
+    [Export] public MovingAgent AgentA { get; set; }
+    [Export] public MovingAgent AgentB { get; set; }
     /// <summary>
     /// Distance at which we give our goal as reached and we stop our agent.
     /// </summary>
-    [Export] private float ArrivalDistance;
+    [Export] public float ArrivalDistance { get; set; }
     
     [ExportCategory("DEBUG:")]
     /// <summary>
@@ -61,7 +61,7 @@ public partial class InterposeSteeringBehavior : Node2D, ISteeringBehavior
     /// <param name="position1">First position.</param>
     /// <param name="position2">Second position.</param>
     /// <returns>Midpoint position.</returns>
-    private Vector2 GetMidPoint(Vector2 position1, Vector2 position2)
+    public static Vector2 GetMidPoint(Vector2 position1, Vector2 position2)
     {
         Vector2 vectorBetweeenPositions = position2 - position1;
         return position1 + vectorBetweeenPositions / 2;
@@ -128,7 +128,7 @@ public partial class InterposeSteeringBehavior : Node2D, ISteeringBehavior
         DrawCircle(
             ToLocal(_predictedPositionMarker.GlobalPosition),
             30f, 
-            Colors.Green, 
+            Colors.Burlywood, 
             filled: false);
         DrawLine(
             ToLocal(AgentB.GlobalPosition),  

@@ -454,6 +454,7 @@ public class SimpleBehaviorTests
         
         // Setup agents before the test.
         targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
+        velocityMatchingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
         velocityMatchingAgent.MaximumSpeed = 200.0f;
         velocityMatchingAgent.MaximumAcceleration = 400.0f;
         velocityMatchingAgent.MaximumRotationalDegSpeed = 180f;
@@ -461,6 +462,7 @@ public class SimpleBehaviorTests
         velocityMatchingAgent.StopSpeed = 10f;
         velocityMatchingAgent.MaximumAcceleration = 200;
         velocityMatchingAgent.MaximumDeceleration = 400;
+        targetMovingAgent.GlobalPosition = targetMovingAgentStartPosition.GlobalPosition;
         targetMovingAgent.MaximumSpeed = 200f;
         targetMovingAgent.StopSpeed = 1f;
         targetMovingAgent.MaximumRotationalDegSpeed = 180f;
@@ -565,5 +567,103 @@ public class SimpleBehaviorTests
             pursueAgent.GlobalPosition.DistanceTo(targetMovingAgent.GlobalPosition) <= 
             (120f)
             ).IsTrue();
+    }
+    
+    /// <summary>
+    /// Test that InterposeMatchingBehavior can place and agent between two moving agents.
+    /// </summary>
+    [TestCase]
+    public async Task InterposeBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent velocityMatchingAgent =
+            (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
+        Marker2D agentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position7");
+        MovingAgent targetMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Marker2D targetMovingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position8");
+        Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
+        Marker2D targetPosition =
+            (Marker2D)_sceneRunner.FindChild("Position3");
+        MovingAgent interposeAgent = 
+            (MovingAgent)_sceneRunner.FindChild("InterposeMovingAgent");
+        Marker2D interposeAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position9");
+        
+        // Get references to steering behavior from every agents.
+        ArriveSteeringBehaviorLA arriveSteeringBehavior =
+            targetMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
+        VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
+            (VelocityMatchingSteeringBehavior) velocityMatchingAgent.FindChild(
+                nameof(VelocityMatchingSteeringBehavior));
+        InterposeSteeringBehavior interposeSteeringBehavior =
+            interposeAgent.FindChild<InterposeSteeringBehavior>();
+        
+        // Setup agents before the test.
+        targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
+        velocityMatchingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
+        velocityMatchingAgent.MaximumSpeed = 200.0f;
+        velocityMatchingAgent.MaximumAcceleration = 400.0f;
+        velocityMatchingAgent.MaximumRotationalDegSpeed = 180f;
+        velocityMatchingAgent.StopRotationDegThreshold = 1f;
+        velocityMatchingAgent.StopSpeed = 10f;
+        velocityMatchingAgent.MaximumAcceleration = 200;
+        velocityMatchingAgent.MaximumDeceleration = 400;
+        velocityMatchingAgent.AgentColor = Colors.Firebrick;
+        targetMovingAgent.GlobalPosition = targetMovingAgentStartPosition.GlobalPosition;
+        targetMovingAgent.MaximumSpeed = 200f;
+        targetMovingAgent.StopSpeed = 1f;
+        targetMovingAgent.MaximumRotationalDegSpeed = 180f;
+        targetMovingAgent.StopRotationDegThreshold = 1f;
+        targetMovingAgent.MaximumAcceleration = 180f;
+        targetMovingAgent.MaximumDeceleration = 180f;
+        targetMovingAgent.AgentColor = new Color(1, 0, 0);
+        interposeAgent.GlobalPosition = interposeAgentStartPosition.GlobalPosition;
+        velocityMatchingSteeringBehavior.Target = targetMovingAgent;
+        velocityMatchingSteeringBehavior.TimeToMatch = 0.1f;
+        arriveSteeringBehavior.Target = targetOfTargetMovingAgent;
+        interposeSteeringBehavior.AgentA = velocityMatchingAgent;
+        interposeSteeringBehavior.AgentB = targetMovingAgent;
+        interposeSteeringBehavior.ArrivalDistance = 10f;
+        velocityMatchingAgent.Visible = true;
+        targetMovingAgent.Visible = true;
+        interposeAgent.Visible = true;
+        velocityMatchingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        targetMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        interposeAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Give time for the followed agent to try to reach its target
+        // cruise velocity and assert interposed agent in the middle of the two agents.
+        while (!Mathf.IsEqualApprox(
+                   targetMovingAgent.CurrentSpeed, 
+                   targetMovingAgent.MaximumSpeed))
+        {
+            await _sceneRunner.AwaitIdleFrame();
+        }
+        await _sceneRunner.AwaitMillis(
+            (uint)velocityMatchingSteeringBehavior.TimeToMatch * 1000);
+        AssertThat(
+            interposeAgent.GlobalPosition == InterposeSteeringBehavior.GetMidPoint(
+                velocityMatchingAgent.GlobalPosition, 
+                targetMovingAgent.GlobalPosition));
+        
+        // Wait until arriver brakes and asserts that the interpose agent stays in
+        // the middle.
+        while (!Mathf.IsEqualApprox(
+                   targetMovingAgent.CurrentSpeed, 
+                   0))
+        {
+            await _sceneRunner.AwaitIdleFrame();
+        }
+        await _sceneRunner.AwaitMillis(
+            (uint)velocityMatchingSteeringBehavior.TimeToMatch * 1000);
+        AssertThat(
+            interposeAgent.GlobalPosition == InterposeSteeringBehavior.GetMidPoint(
+                velocityMatchingAgent.GlobalPosition, 
+                targetMovingAgent.GlobalPosition));
     }
 }

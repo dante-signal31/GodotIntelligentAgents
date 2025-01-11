@@ -43,6 +43,15 @@ position = Vector2(905, 760)
 [node name="Position6" type="Marker2D" parent="Positions"]
 position = Vector2(1521, 812)
 
+[node name="Position7" type="Marker2D" parent="Positions"]
+position = Vector2(1236, 321)
+
+[node name="Position8" type="Marker2D" parent="Positions"]
+position = Vector2(1278, 753)
+
+[node name="Position9" type="Marker2D" parent="Positions"]
+position = Vector2(1766, 480)
+
 [node name="Agents" type="Node" parent="."]
 
 [node name="SeekMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
@@ -59,6 +68,8 @@ Target = NodePath("../../../Target")
 ArrivalDistance = 10.0
 
 [node name="ArriveMovingAgentLA" parent="Agents" instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(1275, 754)
 MaximumSpeed = 600.0
 StopSpeed = 1.0
@@ -119,6 +130,8 @@ StopRotationDegThreshold = 1.0
 Target = NodePath("../../SeekMovingAgent")
 
 [node name="VelocityMatchingMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(1240, 313)
 MaximumSpeed = 600.0
 StopSpeed = 1.0
@@ -146,6 +159,8 @@ AheadSemiConeDegrees = 5.357
 ComingToUsSemiConeDegrees = 5.643
 
 [node name="InterposeMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(1759, 486)
 MaximumSpeed = 600.0
 StopSpeed = 1.0
