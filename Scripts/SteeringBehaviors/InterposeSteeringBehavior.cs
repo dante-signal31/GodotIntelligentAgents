@@ -12,7 +12,7 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <summary>
 /// <p>Node to offer an Interpose steering behaviour.</p>
 /// <p>Interpose make an agent to place itself between two other agents.</p>
-/// <p>It's an usual protection behavior. E.g. a bodyguard. </p>
+/// <p>It's an usual protection behavior. E.g. a bodyguard.</p>
 /// </summary>
 public partial class InterposeSteeringBehavior : Node2D, ISteeringBehavior
 {
