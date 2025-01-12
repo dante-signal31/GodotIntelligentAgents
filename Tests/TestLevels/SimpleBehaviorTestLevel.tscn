@@ -176,7 +176,7 @@ PredictedPositionMarkerVisible = true
 [node name="EvadeMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(1214, 650)
+position = Vector2(890, 758)
 MaximumSpeed = 100.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0

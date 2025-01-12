@@ -79,7 +79,8 @@ public partial class EvadeSteeringBehavior : Node2D, ISteeringBehavior
     
     public override void _Ready()
     {
-        _predictedPositionMarker.GlobalPosition = Threat.GlobalPosition;
+        if (Threat != null) 
+            _predictedPositionMarker.GlobalPosition = Threat.GlobalPosition;
         _fleeSteeringBehavior = this.FindChild<FleeSteeringBehavior>();
         _fleeSteeringBehavior.Threat = _predictedPositionMarker;
         _fleeSteeringBehavior.PanicDistance = PanicDistance;

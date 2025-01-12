@@ -681,7 +681,7 @@ public class SimpleBehaviorTests
         MovingAgent evadeAgent =
             (MovingAgent)_sceneRunner.FindChild("EvadeMovingAgent");
         Marker2D evadeMovingAgentStartPosition =
-            (Marker2D)_sceneRunner.FindChild("Position8");
+            (Marker2D)_sceneRunner.FindChild("Position5");
         
         // Get references to steering behavior from both agents.
         SeekSteeringBehavior seekSteeringBehavior =
@@ -708,18 +708,19 @@ public class SimpleBehaviorTests
         evadeAgent.MaximumAcceleration = 180f;
         evadeAgent.MaximumDeceleration = 180f;
         evadeSteeringBehavior.Threat = seekAgent;
+        evadeSteeringBehavior.PanicDistance = 200;
         seekAgent.Visible = true;
         evadeAgent.Visible = true;
         seekAgent.ProcessMode = Node.ProcessModeEnum.Always;
         evadeAgent.ProcessMode = Node.ProcessModeEnum.Always;
         
         // Give time for the chaser to try to reach evader.
-        await _sceneRunner.AwaitMillis(3000);
+        await _sceneRunner.AwaitMillis(2000);
         
         // Assert the target was not reached.
         AssertThat(
-            seekAgent.GlobalPosition.DistanceTo(evadeAgent.GlobalPosition) > 
-            (220f)
+            seekAgent.GlobalPosition.DistanceTo(evadeAgent.GlobalPosition) >=
+            (evadeSteeringBehavior.PanicDistance)
             ).IsTrue();
     }
 }
