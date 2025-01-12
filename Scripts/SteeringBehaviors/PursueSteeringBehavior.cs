@@ -91,6 +91,8 @@ public partial class PursueSteeringBehavior : Node2D, ISteeringBehavior
         // position. That marker will be used by seek steering behaviour as target.
         _predictedPositionMarker = new Node2D();
         _predictedPositionMarker.GlobalPosition = Target.GlobalPosition;
+        // Find out who is our father.
+        _currentAgent = this.FindAncestor<MovingAgent>();
     }
 
     public override void _ExitTree()
@@ -100,7 +102,6 @@ public partial class PursueSteeringBehavior : Node2D, ISteeringBehavior
 
     public override void _Ready()
     {
-        _currentAgent = this.FindAncestor<MovingAgent>();
         _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
         _seekSteeringBehavior.ArrivalDistance = ArrivalDistance;
         _seekSteeringBehavior.Target = _predictedPositionMarker;

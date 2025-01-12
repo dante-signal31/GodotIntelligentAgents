@@ -19,17 +19,17 @@ public partial class FleeSteeringBehavior : Node2D, ISteeringBehavior
     private const float MinimumPanicDistance = 0.3f;
     
     [ExportCategory("CONFIGURATION:")]
-    private Node2D _threath;
+    private Node2D _threat;
     /// <summary>
     /// Object to flee from.
     /// </summary>
-    [Export] public Node2D Threath
+    [Export] public Node2D Threat
     {
-        get => _threath;
+        get => _threat;
         set
         {
-            _threath = value;
-            if (_seekSteeringBehavior != null) _seekSteeringBehavior.Target = Threath;
+            _threat = value;
+            if (_seekSteeringBehavior != null) _seekSteeringBehavior.Target = Threat;
         }
     }
 
@@ -58,14 +58,14 @@ public partial class FleeSteeringBehavior : Node2D, ISteeringBehavior
     public override void _Ready()
     {
         _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
-        _seekSteeringBehavior.Target = Threath;
+        _seekSteeringBehavior.Target = Threat;
         _circularRange = this.FindChild<CircularRange>();
         _circularRange.Radius = PanicDistance;
     }
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
-        if (args.CurrentAgent.GlobalPosition.DistanceTo(Threath.GlobalPosition) > PanicDistance)
+        if (args.CurrentAgent.GlobalPosition.DistanceTo(Threat.GlobalPosition) > PanicDistance)
         { // Out of panic distance, so we stop accelerating.
             return new SteeringOutput(Vector2.Zero, 0);
         }

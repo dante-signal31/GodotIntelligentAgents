@@ -246,7 +246,7 @@ public class SimpleBehaviorTests
         // Setup target and agent.
         target.GlobalPosition = targetPosition.GlobalPosition;
         steeringBehavior.PanicDistance = 200.0f;
-        steeringBehavior.Threath = target;
+        steeringBehavior.Threat = target;
         movingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
         movingAgent.MaximumSpeed = 600.0f;
         movingAgent.StopSpeed = 1f;
@@ -665,5 +665,61 @@ public class SimpleBehaviorTests
             interposeAgent.GlobalPosition == InterposeSteeringBehavior.GetMidPoint(
                 velocityMatchingAgent.GlobalPosition, 
                 targetMovingAgent.GlobalPosition));
+    }
+    
+    /// <summary>
+    /// Test that EvadeBehavior can keep away its agent from its chaser.
+    /// </summary>
+    [TestCase]
+    public async Task EvadeBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent seekAgent =
+            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Marker2D seekAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position6");
+        MovingAgent evadeAgent =
+            (MovingAgent)_sceneRunner.FindChild("EvadeMovingAgent");
+        Marker2D evadeMovingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position8");
+        
+        // Get references to steering behavior from both agents.
+        SeekSteeringBehavior seekSteeringBehavior =
+            seekAgent.FindChild<SeekSteeringBehavior>();
+        EvadeSteeringBehavior evadeSteeringBehavior =
+            evadeAgent.FindChild<EvadeSteeringBehavior>();
+        
+        // Setup agents before the test.
+        seekAgent.GlobalPosition = seekAgentStartPosition.GlobalPosition;
+        seekAgent.MaximumSpeed = 200.0f;
+        seekAgent.MaximumAcceleration = 400.0f;
+        seekAgent.MaximumRotationalDegSpeed = 180f;
+        seekAgent.StopRotationDegThreshold = 1f;
+        seekAgent.StopSpeed = 10f;
+        seekAgent.MaximumAcceleration = 200;
+        seekAgent.MaximumDeceleration = 400;
+        seekAgent.AgentColor = new Color(1, 0, 0);
+        seekSteeringBehavior.Target = evadeAgent;
+        evadeAgent.GlobalPosition = evadeMovingAgentStartPosition.GlobalPosition;
+        evadeAgent.MaximumSpeed = 200f;
+        evadeAgent.StopSpeed = 1f;
+        evadeAgent.MaximumRotationalDegSpeed = 180f;
+        evadeAgent.StopRotationDegThreshold = 1f;
+        evadeAgent.MaximumAcceleration = 180f;
+        evadeAgent.MaximumDeceleration = 180f;
+        evadeSteeringBehavior.Threat = seekAgent;
+        seekAgent.Visible = true;
+        evadeAgent.Visible = true;
+        seekAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        evadeAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Give time for the chaser to try to reach evader.
+        await _sceneRunner.AwaitMillis(3000);
+        
+        // Assert the target was not reached.
+        AssertThat(
+            seekAgent.GlobalPosition.DistanceTo(evadeAgent.GlobalPosition) > 
+            (220f)
+            ).IsTrue();
     }
 }

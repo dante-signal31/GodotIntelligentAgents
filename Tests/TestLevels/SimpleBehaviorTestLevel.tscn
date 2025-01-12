@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b62033ep2w41i"]
+[gd_scene load_steps=14 format=3 uid="uid://b62033ep2w41i"]
 
 [ext_resource type="PackedScene" uid="uid://dqt1t3nk4wc4b" path="res://Levels/ClearCourtyard.tscn" id="1_oy3cc"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="3_hsc70"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://dy3b5h8r1h1lr" path="res://Scenes/SteeringBehaviors/ArriveSteeringBehaviorLA.tscn" id="10_ippjy"]
 [ext_resource type="PackedScene" uid="uid://bv2ph1f3ujvic" path="res://Scenes/SteeringBehaviors/PursueSteeringBehavior.tscn" id="11_0ln1b"]
 [ext_resource type="PackedScene" uid="uid://kpukeeoid3t4" path="res://Scenes/SteeringBehaviors/InterposeSteeringBehavior.tscn" id="12_vep10"]
+[ext_resource type="PackedScene" uid="uid://i3pux2y0isai" path="res://Scenes/SteeringBehaviors/EvadeSteeringBehavior.tscn" id="13_exiqe"]
 
 [node name="SimpleBehaviorTestLevel" type="Node2D"]
 
@@ -99,8 +100,7 @@ process_mode = 4
 visible = false
 position = Vector2(1378, 678)
 
-[node name="FleeSteeringBehavior" parent="Agents/FleeMovingAgent" node_paths=PackedStringArray("Threath") instance=ExtResource("6_4ry8j")]
-Threath = NodePath("../../../Target")
+[node name="FleeSteeringBehavior" parent="Agents/FleeMovingAgent" instance=ExtResource("6_4ry8j")]
 PanicDistance = 200.0
 
 [node name="AlignMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
@@ -171,4 +171,18 @@ StopRotationDegThreshold = 1.0
 AgentA = NodePath("../../ArriveMovingAgentLA")
 AgentB = NodePath("../../VelocityMatchingMovingAgent")
 ArrivalDistance = 10.0
+PredictedPositionMarkerVisible = true
+
+[node name="EvadeMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
+position = Vector2(1214, 650)
+MaximumSpeed = 100.0
+StopSpeed = 1.0
+MaximumRotationalDegSpeed = 1080.0
+StopRotationDegThreshold = 1.0
+
+[node name="EvadeSteeringBehavior" parent="Agents/EvadeMovingAgent" node_paths=PackedStringArray("Threat") instance=ExtResource("13_exiqe")]
+Threat = NodePath("../../SeekMovingAgent")
+PanicDistance = 300.0
 PredictedPositionMarkerVisible = true
