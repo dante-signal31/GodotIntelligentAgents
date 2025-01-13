@@ -806,7 +806,7 @@ public class SimpleBehaviorTests
                 separationAgent.GlobalPosition) <=
             separationSteeringBehavior.SeparationThreshold).IsTrue();
         
-        // Let time separation agent to go away from the two agents.
+        // Let separation agent time to go away from the two agents.
         await _sceneRunner.AwaitMillis(4000);
         
         // Assert that both agents are above separation threshold.

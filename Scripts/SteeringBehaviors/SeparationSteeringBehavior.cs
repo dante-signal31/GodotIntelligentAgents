@@ -13,7 +13,7 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 [Tool]
 /// <summary>
 /// <p>Node to offer a separation steering behaviour.</p>
-/// <p>Separation steering behaviour makes the agent go away from another node marked
+/// <p>Separation steering behaviour makes the agent go away from other nodes marked
 /// as threat. It's similar to flee, but the threat is not a single node, but a group and
 /// the repulsion force is inversely proportional to the distance.</p>
 /// </summary>
@@ -31,16 +31,16 @@ public partial class SeparationSteeringBehavior : Node2D, ISteeringBehavior
     /// </summary>
     [Export] public Array<MovingAgent> Threats { get; set; } = new();
     
-    private float _separationRadius  = 100f;
+    private float _separationThreshold  = 100f;
     /// <summary>
     /// Below this threshold distance, separation will be applied.
     /// </summary>
     [Export] public float SeparationThreshold
     {
-        get => _separationRadius;
+        get => _separationThreshold;
         set
         {   
-            _separationRadius = value;
+            _separationThreshold = value;
             if (_circularRange != null) _circularRange.Radius = value;
         }
     }
@@ -101,12 +101,13 @@ public partial class SeparationSteeringBehavior : Node2D, ISteeringBehavior
         if (Threats == null || Threats.Count == 0) 
             return new SteeringOutput(Vector2.Zero, 0);
 
-        Vector2 newVelocity = args.CurrentAgent.Velocity;
+        Vector2 newVelocity = args.CurrentVelocity;
+        Vector2 currentPosition = args.Position;
 
         // Traverse every target and sum up their respective repulsion forces.
         foreach (MovingAgent target in Threats)
         {
-            Vector2 toTarget = target.GlobalPosition - args.CurrentAgent.GlobalPosition;
+            Vector2 toTarget = target.GlobalPosition - currentPosition;
             float distanceToTarget = toTarget.Length();
 
             // If the agent is close enough to the target, apply a repulsion force.
