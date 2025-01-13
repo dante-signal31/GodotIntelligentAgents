@@ -723,4 +723,199 @@ public class SimpleBehaviorTests
             (evadeSteeringBehavior.PanicDistance)
             ).IsTrue();
     }
+    
+    /// <summary>
+    /// Test that SeparationMatchingBehavior can separate its agent from two moving agents
+    /// using a linear algorithm.
+    /// </summary>
+    [TestCase]
+    public async Task SeparationBehaviorLinearTest()
+    {
+        // Get references to agent and target.
+        MovingAgent velocityMatchingAgent =
+            (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
+        Marker2D agentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position7");
+        MovingAgent targetMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Marker2D targetMovingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position8");
+        Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
+        Marker2D targetPosition =
+            (Marker2D)_sceneRunner.FindChild("Position5");
+        MovingAgent separationAgent = 
+            (MovingAgent)_sceneRunner.FindChild("SeparationMovingAgent");
+        Marker2D separationAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position2");
+        
+        // Get references to steering behavior from every agents.
+        ArriveSteeringBehaviorLA arriveSteeringBehavior =
+            targetMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
+        VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
+            (VelocityMatchingSteeringBehavior) velocityMatchingAgent.FindChild(
+                nameof(VelocityMatchingSteeringBehavior));
+        SeparationSteeringBehavior separationSteeringBehavior =
+            separationAgent.FindChild<SeparationSteeringBehavior>();
+        
+        // Setup agents before the test.
+        targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
+        velocityMatchingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
+        velocityMatchingAgent.MaximumSpeed = 200.0f;
+        velocityMatchingAgent.MaximumAcceleration = 400.0f;
+        velocityMatchingAgent.MaximumRotationalDegSpeed = 180f;
+        velocityMatchingAgent.StopRotationDegThreshold = 1f;
+        velocityMatchingAgent.StopSpeed = 10f;
+        velocityMatchingAgent.MaximumAcceleration = 200;
+        velocityMatchingAgent.MaximumDeceleration = 400;
+        velocityMatchingAgent.AgentColor = Colors.Firebrick;
+        targetMovingAgent.GlobalPosition = targetMovingAgentStartPosition.GlobalPosition;
+        targetMovingAgent.MaximumSpeed = 200f;
+        targetMovingAgent.StopSpeed = 1f;
+        targetMovingAgent.MaximumRotationalDegSpeed = 180f;
+        targetMovingAgent.StopRotationDegThreshold = 1f;
+        targetMovingAgent.MaximumAcceleration = 180f;
+        targetMovingAgent.MaximumDeceleration = 180f;
+        targetMovingAgent.AgentColor = new Color(1, 0, 0);
+        separationAgent.GlobalPosition = separationAgentStartPosition.GlobalPosition;
+        velocityMatchingSteeringBehavior.Target = targetMovingAgent;
+        velocityMatchingSteeringBehavior.TimeToMatch = 0.1f;
+        arriveSteeringBehavior.Target = targetOfTargetMovingAgent;
+        separationSteeringBehavior.Threats.Add(velocityMatchingAgent);
+        separationSteeringBehavior.Threats.Add(targetMovingAgent);
+        separationSteeringBehavior.SeparationThreshold = 410f;
+        separationSteeringBehavior.DecayCoefficient = 20f;
+        separationSteeringBehavior.SeparationAlgorithm =
+            SeparationSteeringBehavior.SeparationAlgorithms.Linear;
+        velocityMatchingAgent.Visible = true;
+        targetMovingAgent.Visible = true;
+        separationAgent.Visible = true;
+        velocityMatchingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        targetMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        separationAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Assert that both agents start under separation threshold.
+        AssertThat(
+            velocityMatchingAgent.GlobalPosition.DistanceTo(
+                separationAgent.GlobalPosition) <=
+            separationSteeringBehavior.SeparationThreshold
+        ).IsTrue();
+        AssertThat(
+            targetMovingAgent.GlobalPosition.DistanceTo(
+                separationAgent.GlobalPosition) <=
+            separationSteeringBehavior.SeparationThreshold).IsTrue();
+        
+        // Let time separation agent to go away from the two agents.
+        await _sceneRunner.AwaitMillis(4000);
+        
+        // Assert that both agents are above separation threshold.
+        AssertThat(
+            velocityMatchingAgent.GlobalPosition.DistanceTo(
+                separationAgent.GlobalPosition) >=
+            separationSteeringBehavior.SeparationThreshold
+        ).IsTrue();
+        AssertThat(
+            targetMovingAgent.GlobalPosition.DistanceTo(
+                separationAgent.GlobalPosition) >=
+            separationSteeringBehavior.SeparationThreshold).IsTrue();
+    }
+    
+    /// <summary>
+    /// Test that SeparationMatchingBehavior can separate its agent from two moving agents
+    /// using an inverse square algorithm.
+    /// </summary>
+    [TestCase]
+    public async Task SeparationBehaviorInverseSquareTest()
+    {
+        // Get references to agent and target.
+        MovingAgent velocityMatchingAgent =
+            (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
+        Marker2D agentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position7");
+        MovingAgent targetMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Marker2D targetMovingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position8");
+        Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
+        Marker2D targetPosition =
+            (Marker2D)_sceneRunner.FindChild("Position5");
+        MovingAgent separationAgent = 
+            (MovingAgent)_sceneRunner.FindChild("SeparationMovingAgent");
+        Marker2D separationAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position2");
+        
+        // Get references to steering behavior from every agents.
+        ArriveSteeringBehaviorLA arriveSteeringBehavior =
+            targetMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
+        VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
+            (VelocityMatchingSteeringBehavior) velocityMatchingAgent.FindChild(
+                nameof(VelocityMatchingSteeringBehavior));
+        SeparationSteeringBehavior separationSteeringBehavior =
+            separationAgent.FindChild<SeparationSteeringBehavior>();
+        
+        // Setup agents before the test.
+        targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
+        velocityMatchingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
+        velocityMatchingAgent.MaximumSpeed = 200.0f;
+        velocityMatchingAgent.MaximumAcceleration = 400.0f;
+        velocityMatchingAgent.MaximumRotationalDegSpeed = 180f;
+        velocityMatchingAgent.StopRotationDegThreshold = 1f;
+        velocityMatchingAgent.StopSpeed = 10f;
+        velocityMatchingAgent.MaximumAcceleration = 200;
+        velocityMatchingAgent.MaximumDeceleration = 400;
+        velocityMatchingAgent.AgentColor = Colors.Firebrick;
+        targetMovingAgent.GlobalPosition = targetMovingAgentStartPosition.GlobalPosition;
+        targetMovingAgent.MaximumSpeed = 200f;
+        targetMovingAgent.StopSpeed = 1f;
+        targetMovingAgent.MaximumRotationalDegSpeed = 180f;
+        targetMovingAgent.StopRotationDegThreshold = 1f;
+        targetMovingAgent.MaximumAcceleration = 180f;
+        targetMovingAgent.MaximumDeceleration = 180f;
+        targetMovingAgent.AgentColor = new Color(1, 0, 0);
+        separationAgent.GlobalPosition = separationAgentStartPosition.GlobalPosition;
+        velocityMatchingSteeringBehavior.Target = targetMovingAgent;
+        velocityMatchingSteeringBehavior.TimeToMatch = 0.1f;
+        arriveSteeringBehavior.Target = targetOfTargetMovingAgent;
+        separationSteeringBehavior.Threats.Add(velocityMatchingAgent);
+        separationSteeringBehavior.Threats.Add(targetMovingAgent);
+        separationSteeringBehavior.SeparationThreshold = 410f;
+        separationSteeringBehavior.DecayCoefficient = 20f;
+        separationSteeringBehavior.SeparationAlgorithm =
+            SeparationSteeringBehavior.SeparationAlgorithms.InverseSquare;
+        velocityMatchingAgent.Visible = true;
+        targetMovingAgent.Visible = true;
+        separationAgent.Visible = true;
+        velocityMatchingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        targetMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        separationAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Assert that both agents start under separation threshold.
+        AssertThat(
+            velocityMatchingAgent.GlobalPosition.DistanceTo(
+                separationAgent.GlobalPosition) <=
+            separationSteeringBehavior.SeparationThreshold
+        ).IsTrue();
+        AssertThat(
+            targetMovingAgent.GlobalPosition.DistanceTo(
+                separationAgent.GlobalPosition) <=
+            separationSteeringBehavior.SeparationThreshold).IsTrue();
+        
+        // Let time separation agent to go away from the two agents.
+        await _sceneRunner.AwaitMillis(4000);
+        
+        // Assert that both agents are above separation threshold.
+        // Assert that both agents start under separation threshold.
+        AssertThat(
+            velocityMatchingAgent.GlobalPosition.DistanceTo(
+                separationAgent.GlobalPosition) >=
+            separationSteeringBehavior.SeparationThreshold
+        ).IsTrue();
+        AssertThat(
+            targetMovingAgent.GlobalPosition.DistanceTo(
+                separationAgent.GlobalPosition) >=
+            separationSteeringBehavior.SeparationThreshold).IsTrue();
+    }
 }

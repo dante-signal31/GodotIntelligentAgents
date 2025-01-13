@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b62033ep2w41i"]
+[gd_scene load_steps=15 format=3 uid="uid://b62033ep2w41i"]
 
 [ext_resource type="PackedScene" uid="uid://dqt1t3nk4wc4b" path="res://Levels/ClearCourtyard.tscn" id="1_oy3cc"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="3_hsc70"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bv2ph1f3ujvic" path="res://Scenes/SteeringBehaviors/PursueSteeringBehavior.tscn" id="11_0ln1b"]
 [ext_resource type="PackedScene" uid="uid://kpukeeoid3t4" path="res://Scenes/SteeringBehaviors/InterposeSteeringBehavior.tscn" id="12_vep10"]
 [ext_resource type="PackedScene" uid="uid://i3pux2y0isai" path="res://Scenes/SteeringBehaviors/EvadeSteeringBehavior.tscn" id="13_exiqe"]
+[ext_resource type="PackedScene" uid="uid://b2pbfdtn606b1" path="res://Scenes/SteeringBehaviors/SeparationSteeringBehavior.tscn" id="14_t8tiy"]
 
 [node name="SimpleBehaviorTestLevel" type="Node2D"]
 
@@ -21,7 +22,7 @@
 [node name="Target" parent="." instance=ExtResource("3_hsc70")]
 top_level = true
 z_index = 1000
-position = Vector2(246, 914)
+position = Vector2(827, 839)
 gizmo_extents = 51.0
 
 [node name="Positions" type="Node" parent="."]
@@ -186,3 +187,21 @@ StopRotationDegThreshold = 1.0
 Threat = NodePath("../../SeekMovingAgent")
 PanicDistance = 300.0
 PredictedPositionMarkerVisible = true
+
+[node name="SeparationMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
+position = Vector2(975, 559)
+MaximumSpeed = 600.0
+StopSpeed = 1.0
+MaximumRotationalDegSpeed = 1080.0
+StopRotationDegThreshold = 1.0
+MaximumAcceleration = 200.0
+MaximumDeceleration = 300.0
+
+[node name="SeparationSteeringBehavior" parent="Agents/SeparationMovingAgent" node_paths=PackedStringArray("Threats") instance=ExtResource("14_t8tiy")]
+Threats = [NodePath("../../ArriveMovingAgentLA"), NodePath("../../VelocityMatchingMovingAgent")]
+SeparationThreshold = 400.0
+DecayCoefficient = 20.0
+VelocityMarkerVisible = true
+MarkerColor = Color(1, 0, 0, 1)
