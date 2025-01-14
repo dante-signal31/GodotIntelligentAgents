@@ -11,6 +11,7 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 // https://github.com/godotengine/godot/issues/36395
 [Tool]
 /// <summary>
+/// <p> Node to offer a group align steering behaviour. </p>
 /// <p> Group align steering behaviour makes the agent look at the same direction than
 /// the average orientation of a group of target nodes. </p>
 /// </summary>
@@ -89,7 +90,7 @@ public partial class GroupAlignSteeringBehavior : Node2D, ISteeringBehavior
     /// </summary>
     [Export] private bool OrientationGizmosVisible { get; set; }
     /// <summary>
-    /// Color for other gizmos markers.
+    /// Color for other's orientation gizmos.
     /// </summary>
     [Export] private Color OtherOrientationGizmosColor { get; set; }
     /// <summary>
@@ -180,7 +181,7 @@ public partial class GroupAlignSteeringBehavior : Node2D, ISteeringBehavior
     
     public override void _Draw()
     {
-        if (!OrientationGizmosVisible || Engine.IsEditorHint()) return;
+        if (!OrientationGizmosVisible || Targets == null || Engine.IsEditorHint()) return;
 
         // Draw other orientation markers.
         foreach (Node2D target in Targets)
