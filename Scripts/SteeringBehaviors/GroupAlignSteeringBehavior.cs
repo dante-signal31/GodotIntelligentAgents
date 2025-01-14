@@ -150,8 +150,8 @@ public partial class GroupAlignSteeringBehavior : Node2D, ISteeringBehavior
         foreach (Node2D target in Targets)
         {
             // Remember that, for our agents, forward direction point rightwards, i.e. X
-            // axis. So, their respective transform.up vectors are actually their heading
-            // vectors.
+            // axis. So, their respective GlobalTtransform.x vectors are actually their
+            // heading vectors.
             headingSum += target.GlobalTransform.X;
         }
         Vector2 averageHeading = headingSum / Targets.Count;
