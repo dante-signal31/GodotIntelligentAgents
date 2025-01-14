@@ -59,6 +59,7 @@ position = Vector2(1766, 480)
 
 [node name="SeekMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
 process_mode = 4
+visible = false
 position = Vector2(538, 362)
 MaximumSpeed = 100.0
 StopSpeed = 1.0
@@ -70,6 +71,8 @@ Target = NodePath("../../../Target")
 ArrivalDistance = 10.0
 
 [node name="ArriveMovingAgentLA" parent="Agents" instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(1272, 751)
 MaximumSpeed = 600.0
 StopSpeed = 1.0
@@ -203,6 +206,8 @@ VelocityMarkerVisible = true
 MarkerColor = Color(1, 0, 0, 1)
 
 [node name="GroupAlignMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(898, 765)
 MaximumSpeed = 600.0
 StopSpeed = 1.0

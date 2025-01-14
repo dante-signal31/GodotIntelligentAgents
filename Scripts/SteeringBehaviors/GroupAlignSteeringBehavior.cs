@@ -107,7 +107,7 @@ public partial class GroupAlignSteeringBehavior : Node2D, ISteeringBehavior
     [Export] private float OwnOrientationGizmoLength { get; set; }
     
     /// <summary>
-    /// <p>Average orientation counting every agent's targets.</p>
+    /// <p>Average orientation, in degrees, counting every agent's targets.</p>
     /// </summary>
     public float AverageOrientation{ get; private set; }
 
@@ -141,16 +141,25 @@ public partial class GroupAlignSteeringBehavior : Node2D, ISteeringBehavior
         if (Targets == null || Targets.Count == 0 || _alignSteeringBehavior == null) 
             return new SteeringOutput(Vector2.Zero, 0);
 
-        // Average heading counting every agent's targets.
-        // You shouldn't calculate AverageHeading with targets velocity vectors because
-        // they might be stationary but with a rotation applied. So, you should calculate
-        // using their rotation values.
-        float headingSum = new();
+        // Let's average heading counting every agent's targets. You'd better get an
+        // average vector from heading vectors than average their angle rotation values.
+        // This way you can be sure that resulting average is in the inner angle between
+        // every target vector pair.
+        Vector2 headingSum = new();
+        
         foreach (Node2D target in Targets)
         {
-            headingSum += target.GlobalRotationDegrees;
+            // Remember that, for our agents, forward direction point rightwards, i.e. X
+            // axis. So, their respective transform.up vectors are actually their heading
+            // vectors.
+            headingSum += target.GlobalTransform.X;
         }
-        AverageOrientation = (headingSum / Targets.Count);
+        Vector2 averageHeading = headingSum / Targets.Count;
+        
+        // Store resulting orientation.
+        AverageOrientation = Mathf.RadToDeg(averageHeading.Angle());
+        
+        // Rotate our marker to point at the average heading.
         _orientationMarker.GlobalRotationDegrees = AverageOrientation;
         
         return _alignSteeringBehavior.GetSteering(args);
