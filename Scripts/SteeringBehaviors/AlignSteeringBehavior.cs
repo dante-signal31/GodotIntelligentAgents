@@ -19,18 +19,39 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
     /// </summary>
     [Export] public Node2D Target { get; set; }
     
+    private float _decelerationRadius;
+
     /// <summary>
     /// Rotation to start to slow down (degress).
     /// </summary>
-    [Export] public float DecelerationRadius { get; set; }
+    [Export] public float DecelerationRadius
+    {
+        get => _decelerationRadius;
+        set
+        {
+            _decelerationRadius = value;
+            _decelerationRadiusRad = Mathf.DegToRad(_decelerationRadius);
+        }
+    }
+    
     /// <summary>
     /// Deceleration curve.
     /// </summary>
     [Export] public Curve DecelerationCurve { get; set; }
+
+    private float _accelerationRadius;
     /// <summary>
     /// At this rotation start angle will be at full speed (degress).
     /// </summary>
-    [Export] public float AccelerationRadius { get; set; }
+    [Export] public float AccelerationRadius
+    {
+        get => _accelerationRadius;
+        set
+        {
+            _accelerationRadius = value;
+            _accelerationRadiusRad = Mathf.DegToRad(_accelerationRadius);
+        }
+    }
     /// <summary>
     /// Acceleration curve.
     /// </summary>
@@ -42,9 +63,6 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
     private float _decelerationRadiusRad;
     private bool _idle = true;
     
-    private float _targetOrientation;
-    
-
     public override void _Ready()
     {
         _accelerationRadiusRad = Mathf.DegToRad(AccelerationRadius);
@@ -56,14 +74,14 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
       // ArriveSteeringBehavior.
         if (Target == null) return new SteeringOutput(Vector2.Zero, 0);
         
-        _targetOrientation = Target.RotationDegrees;
+        float targetOrientation = Target.RotationDegrees;
         float currentOrientation = args.Orientation;
         float maximumRotationalSpeedRad = Mathf.DegToRad(args.MaximumRotationalSpeed);
         float arrivingMarginRad = Mathf.DegToRad(args.StopRotationThreshold);
         
         float toTargetRotationRad = Mathf.AngleDifference(
             Mathf.DegToRad(currentOrientation), 
-            Mathf.DegToRad(_targetOrientation));
+            Mathf.DegToRad(targetOrientation));
         int rotationSide = (toTargetRotationRad < 0) ? -1 : 1;
         float toTargetRotationRadAbs = Mathf.Abs(toTargetRotationRad);
         
