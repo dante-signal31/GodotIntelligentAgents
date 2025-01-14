@@ -18,30 +18,26 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
     /// Target to align with.
     /// </summary>
     [Export] public Node2D Target { get; set; }
+    
     /// <summary>
     /// Rotation to start to slow down (degress).
     /// </summary>
-    [Export] private float _decelerationRadius;
-    /// <summary>
-    /// At this rotation from target angle will full stop (degress).
-    /// </summary>
-    [Export] public float ArrivingMargin { get; private set; }
+    [Export] public float DecelerationRadius { get; set; }
     /// <summary>
     /// Deceleration curve.
     /// </summary>
-    [Export] private Curve _decelerationCurve;
+    [Export] public Curve DecelerationCurve { get; set; }
     /// <summary>
     /// At this rotation start angle will be at full speed (degress).
     /// </summary>
-    [Export] private float _accelerationRadius;
+    [Export] public float AccelerationRadius { get; set; }
     /// <summary>
     /// Acceleration curve.
     /// </summary>
-    [Export] private Curve _accelerationCurve;
+    [Export] public Curve AccelerationCurve { get; set; }
 
     private float _startOrientation;
     private float _rotationFromStartAbs;
-    private float _arrivingMarginRad;
     private float _accelerationRadiusRad;
     private float _decelerationRadiusRad;
     private bool _idle = true;
@@ -51,9 +47,8 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
 
     public override void _Ready()
     {
-        _arrivingMarginRad = Mathf.DegToRad(ArrivingMargin);
-        _accelerationRadiusRad = Mathf.DegToRad(_accelerationRadius);
-        _decelerationRadiusRad = Mathf.DegToRad(_decelerationRadius);
+        _accelerationRadiusRad = Mathf.DegToRad(AccelerationRadius);
+        _decelerationRadiusRad = Mathf.DegToRad(DecelerationRadius);
     }
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
@@ -64,6 +59,7 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
         _targetOrientation = Target.RotationDegrees;
         float currentOrientation = args.Orientation;
         float maximumRotationalSpeedRad = Mathf.DegToRad(args.MaximumRotationalSpeed);
+        float arrivingMarginRad = Mathf.DegToRad(args.StopRotationThreshold);
         
         float toTargetRotationRad = Mathf.AngleDifference(
             Mathf.DegToRad(currentOrientation), 
@@ -73,7 +69,7 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
         
         float newRotationalSpeedRad = 0.0f;
         
-        if (_idle && toTargetRotationRadAbs < _arrivingMarginRad)
+        if (_idle && toTargetRotationRadAbs < arrivingMarginRad)
         { // If you are stopped and you are close enough to target rotation, you are done.
           // Just stay there.
             return new SteeringOutput(Vector2.Zero, 0);
@@ -85,7 +81,7 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
             _rotationFromStartAbs = 0;
         }
         
-        if (toTargetRotationRadAbs >= _arrivingMarginRad && 
+        if (toTargetRotationRadAbs >= arrivingMarginRad && 
             _rotationFromStartAbs < _accelerationRadiusRad)
         { // Acceleration phase.
             if (_idle)
@@ -103,21 +99,21 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
                 _accelerationRadiusRad, 
                 _rotationFromStartAbs);
             newRotationalSpeedRad = maximumRotationalSpeedRad * 
-                                    _accelerationCurve.Sample(accelerationProgress) * 
+                                    AccelerationCurve.Sample(accelerationProgress) * 
                                  rotationSide;
         }
         else if (toTargetRotationRadAbs < _decelerationRadiusRad && 
-                 toTargetRotationRadAbs >= _arrivingMarginRad)
+                 toTargetRotationRadAbs >= arrivingMarginRad)
         { // Deceleration phase.
             float decelerationProgress = Mathf.InverseLerp(
                 _decelerationRadiusRad, 
                 0, 
                 toTargetRotationRadAbs);
             newRotationalSpeedRad = maximumRotationalSpeedRad * 
-                                 _decelerationCurve.Sample(decelerationProgress) * 
+                                 DecelerationCurve.Sample(decelerationProgress) * 
                                  rotationSide;
         }
-        else if (toTargetRotationRadAbs < _arrivingMarginRad)
+        else if (toTargetRotationRadAbs < arrivingMarginRad)
         { // Stop phase.
             newRotationalSpeedRad = 0;
             _idle = true;

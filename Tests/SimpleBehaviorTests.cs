@@ -337,7 +337,7 @@ public class SimpleBehaviorTests
         AssertThat(Mathf.IsEqualApprox(
             alignAgent.Orientation, 
             movingAgent.Orientation,
-            alignSteeringBehavior.ArrivingMargin)).IsTrue();
+            alignAgent.StopRotationDegThreshold)).IsTrue();
         
         // Move seeker to face the second target.
         target.GlobalPosition = Position4.GlobalPosition;
@@ -345,7 +345,7 @@ public class SimpleBehaviorTests
         AssertThat(Mathf.IsEqualApprox(
             alignAgent.Orientation, 
             movingAgent.Orientation,
-            alignSteeringBehavior.ArrivingMargin)).IsTrue();
+            alignAgent.StopRotationDegThreshold)).IsTrue();
         
         // Move seeker to face the third target.
         target.GlobalPosition = Position5.GlobalPosition;
@@ -353,7 +353,7 @@ public class SimpleBehaviorTests
         AssertThat(Mathf.IsEqualApprox(
             alignAgent.Orientation, 
             movingAgent.Orientation,
-            alignSteeringBehavior.ArrivingMargin)).IsTrue();
+            alignAgent.StopRotationDegThreshold)).IsTrue();
     }
 
     /// <summary>
@@ -917,5 +917,90 @@ public class SimpleBehaviorTests
             targetMovingAgent.GlobalPosition.DistanceTo(
                 separationAgent.GlobalPosition) >=
             separationSteeringBehavior.SeparationThreshold).IsTrue();
+    }
+    
+    
+    /// <summary>
+    /// Test that GroupAlignBehavior calculates the average between two target agent's
+    /// orientations.
+    /// </summary>
+    [TestCase]
+    public async Task GroupAlignBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent seekMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Marker2D seekStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position4");
+        MovingAgent arriveMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Marker2D arriveMovingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position8");
+        Target targetOfArriveMovingAgent = (Target)_sceneRunner.FindChild("Target");
+        Marker2D targetPosition =
+            (Marker2D)_sceneRunner.FindChild("Position7");
+        MovingAgent groupAlignAgent = 
+            (MovingAgent)_sceneRunner.FindChild("GroupAlignMovingAgent");
+        Marker2D groupAlignAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position5");
+        
+        // Get references to steering behavior from every agents.
+        ArriveSteeringBehaviorLA arriveSteeringBehavior =
+            arriveMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
+        SeekSteeringBehavior seekSteeringBehavior =
+            (SeekSteeringBehavior) seekMovingAgent.FindChild(
+                nameof(SeekSteeringBehavior));
+        GroupAlignSteeringBehavior groupAlignSteeringBehavior =
+            groupAlignAgent.FindChild<GroupAlignSteeringBehavior>();
+        
+        // Setup agents before the test.
+        targetOfArriveMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
+        seekMovingAgent.GlobalPosition = seekStartPosition.GlobalPosition;
+        // Leave seekMovingAgent static. Y only want it to look at right.
+        seekMovingAgent.MaximumSpeed = 0f;
+        seekMovingAgent.MaximumRotationalDegSpeed = 0f;
+        seekMovingAgent.AgentColor = Colors.Firebrick;
+        arriveMovingAgent.GlobalPosition = arriveMovingAgentStartPosition.GlobalPosition;
+        arriveMovingAgent.MaximumSpeed = 200f;
+        arriveMovingAgent.StopSpeed = 1f;
+        arriveMovingAgent.MaximumRotationalDegSpeed = 180f;
+        arriveMovingAgent.StopRotationDegThreshold = 1f;
+        arriveMovingAgent.MaximumAcceleration = 180f;
+        arriveMovingAgent.MaximumDeceleration = 180f;
+        arriveMovingAgent.AgentColor = new Color(1, 0, 0);
+        groupAlignAgent.GlobalPosition = groupAlignAgentStartPosition.GlobalPosition;
+        seekSteeringBehavior.Target = arriveMovingAgent;
+        arriveSteeringBehavior.Target = targetOfArriveMovingAgent;
+        groupAlignSteeringBehavior.Targets.Clear();
+        groupAlignSteeringBehavior.Targets.Add(seekMovingAgent);
+        groupAlignSteeringBehavior.Targets.Add(arriveMovingAgent);
+        groupAlignSteeringBehavior.DecelerationRadius = 5f;
+        groupAlignSteeringBehavior.AccelerationRadius = 5f;
+        seekMovingAgent.Visible = true;
+        arriveMovingAgent.Visible = true;
+        groupAlignAgent.Visible = true;
+        seekMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        arriveMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        groupAlignAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Assert that group align agent starts with 0 rotation.
+        AssertThat(Mathf.IsEqualApprox(groupAlignAgent.RotationDegrees, 0f)).IsTrue();
+        
+        // Let time arrive agent to go to its target.
+        await _sceneRunner.AwaitMillis(4000);
+        
+        // Assert that group align agent is no longer at 0 rotation but at the average
+        // of other two agents rotation.
+        AssertThat(Mathf.IsEqualApprox(
+            groupAlignAgent.RotationDegrees, 
+            0f))
+            .IsFalse();
+        float rotationAverage = (seekMovingAgent.GlobalRotationDegrees + arriveMovingAgent.GlobalRotationDegrees) / 2f;
+        AssertThat(Mathf.Abs(
+                rotationAverage -
+                groupAlignAgent.GlobalRotationDegrees) <= groupAlignAgent.StopRotationDegThreshold)
+            .IsTrue();
     }
 }

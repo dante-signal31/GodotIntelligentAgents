@@ -56,7 +56,7 @@ public class SteeringBehaviorArgs
     public Vector2 Position => CurrentAgent.GlobalPosition;
 
     /// <summary>
-    /// This agent rotation (using Z as rotation axis because this is a
+    /// This agent rotation in degrees (using Z as rotation axis because this is a
     /// 2D game).
     /// </summary>
     public float Orientation => CurrentAgent.GlobalRotationDegrees;
