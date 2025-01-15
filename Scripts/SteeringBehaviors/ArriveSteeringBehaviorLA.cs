@@ -39,6 +39,8 @@ public partial class ArriveSteeringBehaviorLA: Node, ISteeringBehavior, ITargete
     }
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
+        if (Target == null) return new SteeringOutput(Vector2.Zero, 0);
+        
         Vector2 targetPosition = Target.GlobalPosition;
         Vector2 currentPosition = args.CurrentAgent.GlobalPosition;
         Vector2 currentVelocity = args.CurrentAgent.Velocity;

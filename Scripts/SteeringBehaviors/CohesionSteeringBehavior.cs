@@ -49,7 +49,7 @@ public partial class CohesionSteeringBehavior : Node2D, ISteeringBehavior
     /// <summary>
     /// Radius for the position marker gizmo.
     /// </summary>
-    [Export] private float PositionMarkerRadius { get; set; }
+    [Export] private float PositionGizmoRadius { get; set; }
     
     /// <summary>
     /// <p>Average position, counting every agent's targets.</p>
@@ -89,7 +89,6 @@ public partial class CohesionSteeringBehavior : Node2D, ISteeringBehavior
 
         // Let's average position counting every agent's targets. 
         Vector2 positionSum = new();
-        
         foreach (Node2D target in Targets)
         {
             positionSum += target.GlobalPosition;
@@ -130,7 +129,7 @@ public partial class CohesionSteeringBehavior : Node2D, ISteeringBehavior
     {
         if (!PositionGizmoVisible || Targets == null || Engine.IsEditorHint()) return;
 
-        // Draw relationship between target and center of mass.
+        // Draw relationship between targets and center of mass.
         foreach (Node2D target in Targets)
         {
             DrawLine(
@@ -142,11 +141,11 @@ public partial class CohesionSteeringBehavior : Node2D, ISteeringBehavior
         // Draw center of mass.
         DrawCircle(
             ToLocal(_positionMarker.GlobalPosition),
-            PositionMarkerRadius,
+            PositionGizmoRadius,
             PositionGizmoColor,
             filled: false);
         
-        // Draw heading from current heading to center of mass.
+        // Draw heading from current agent to center of mass.
         DrawLine(
             Vector2.Zero, 
             ToLocal(_positionMarker.GlobalPosition),

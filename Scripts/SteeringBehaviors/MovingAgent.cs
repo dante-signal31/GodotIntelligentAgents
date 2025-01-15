@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
@@ -148,11 +149,13 @@ public partial class MovingAgent : CharacterBody2D
     {
         _steeringBehavior = this.FindChild<ISteeringBehavior>();
         
+        List<string> warnings = new();
+        
         if (_steeringBehavior == null)
         {
-            return new[] {"This node needs a child of type SteeringBehavior to work."};
+            warnings.Add("This node needs a child of type SteeringBehavior to work.");
         }
 
-        return Array.Empty<string>();
+        return warnings.ToArray();
     }
 }

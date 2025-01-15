@@ -437,46 +437,47 @@ public class SimpleBehaviorTests
             (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position1");
-        MovingAgent targetMovingAgent =
+        MovingAgent arriveMovingAgent =
             (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
-        Marker2D targetMovingAgentStartPosition =
+        Marker2D arriveMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position6");
-        Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
+        Target targetOfArriveMovingAgent = (Target)_sceneRunner.FindChild("Target");
         Marker2D targetPosition =
             (Marker2D)_sceneRunner.FindChild("Position3");
         
         // Get references to steering behavior from both agents.
         ArriveSteeringBehaviorLA arriveSteeringBehavior =
-            targetMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
+            arriveMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
         VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
             (VelocityMatchingSteeringBehavior) velocityMatchingAgent.FindChild(
                 nameof(VelocityMatchingSteeringBehavior));
         
         // Setup agents before the test.
-        targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
+        targetOfArriveMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
         velocityMatchingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
         velocityMatchingAgent.MaximumSpeed = 200.0f;
-        velocityMatchingAgent.MaximumAcceleration = 400.0f;
         velocityMatchingAgent.MaximumRotationalDegSpeed = 180f;
         velocityMatchingAgent.StopRotationDegThreshold = 1f;
         velocityMatchingAgent.StopSpeed = 10f;
-        velocityMatchingAgent.MaximumAcceleration = 200;
-        velocityMatchingAgent.MaximumDeceleration = 400;
-        targetMovingAgent.GlobalPosition = targetMovingAgentStartPosition.GlobalPosition;
-        targetMovingAgent.MaximumSpeed = 200f;
-        targetMovingAgent.StopSpeed = 1f;
-        targetMovingAgent.MaximumRotationalDegSpeed = 180f;
-        targetMovingAgent.StopRotationDegThreshold = 1f;
-        targetMovingAgent.MaximumAcceleration = 180f;
-        targetMovingAgent.MaximumDeceleration = 180f;
-        targetMovingAgent.AgentColor = new Color(1, 0, 0);
-        velocityMatchingSteeringBehavior.Target = targetMovingAgent;
+        velocityMatchingAgent.MaximumAcceleration = 800f;
+        velocityMatchingAgent.MaximumDeceleration = 3000f;
+        velocityMatchingAgent.Velocity = Vector2.Zero;
+        arriveMovingAgent.GlobalPosition = arriveMovingAgentStartPosition.GlobalPosition;
+        arriveMovingAgent.MaximumSpeed = 200f;
+        arriveMovingAgent.StopSpeed = 1f;
+        arriveMovingAgent.MaximumRotationalDegSpeed = 180f;
+        arriveMovingAgent.StopRotationDegThreshold = 1f;
+        arriveMovingAgent.MaximumAcceleration = 180f;
+        arriveMovingAgent.MaximumDeceleration = 180f;
+        arriveMovingAgent.AgentColor = new Color(1, 0, 0);
+        arriveMovingAgent.Velocity = Vector2.Zero;
+        velocityMatchingSteeringBehavior.Target = arriveMovingAgent;
         velocityMatchingSteeringBehavior.TimeToMatch = 0.1f;
-        arriveSteeringBehavior.Target = targetOfTargetMovingAgent;
+        arriveSteeringBehavior.Target = targetOfArriveMovingAgent;
         velocityMatchingAgent.Visible = true;
-        targetMovingAgent.Visible = true;
+        arriveMovingAgent.Visible = true;
         velocityMatchingAgent.ProcessMode = Node.ProcessModeEnum.Always;
-        targetMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        arriveMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
         
         // Start test.
         
@@ -484,26 +485,32 @@ public class SimpleBehaviorTests
         // cruise velocity and assert velocity matcher agent has matched the velocity
         // of its target.
         while (!Mathf.IsEqualApprox(
-                   targetMovingAgent.CurrentSpeed, 
-                   targetMovingAgent.MaximumSpeed))
+                   arriveMovingAgent.CurrentSpeed, 
+                   arriveMovingAgent.MaximumSpeed))
         {
             await _sceneRunner.AwaitIdleFrame();
         }
         await _sceneRunner.AwaitMillis(
             (uint)velocityMatchingSteeringBehavior.TimeToMatch * 1000);
-        AssertThat(velocityMatchingAgent.Velocity == targetMovingAgent.Velocity);
+        AssertThat(
+            (velocityMatchingAgent.Velocity.Normalized() - arriveMovingAgent.Velocity.Normalized()).Length() < 0.01 &&
+            Mathf.Abs(velocityMatchingAgent.Velocity.Length() - arriveMovingAgent.Velocity.Length()) < 15f)
+            .IsTrue();
         
         // Wait until arriver brakes and asserts that the VelocityMatcher
         // has braked to.
         while (!Mathf.IsEqualApprox(
-                   targetMovingAgent.CurrentSpeed, 
+                   arriveMovingAgent.CurrentSpeed, 
                    0))
         {
             await _sceneRunner.AwaitIdleFrame();
         }
         await _sceneRunner.AwaitMillis(
             (uint)velocityMatchingSteeringBehavior.TimeToMatch * 1000);
-        AssertThat(velocityMatchingAgent.Velocity == targetMovingAgent.Velocity);
+        AssertThat(
+                (velocityMatchingAgent.Velocity.Normalized() - arriveMovingAgent.Velocity.Normalized()).Length() < 1.2f &&
+                Mathf.Abs(velocityMatchingAgent.Velocity.Length() - arriveMovingAgent.Velocity.Length()) < 40f)
+            .IsTrue();
     }
 
     /// <summary>
@@ -647,9 +654,10 @@ public class SimpleBehaviorTests
         await _sceneRunner.AwaitMillis(
             (uint)velocityMatchingSteeringBehavior.TimeToMatch * 1000);
         AssertThat(
-            interposeAgent.GlobalPosition == InterposeSteeringBehavior.GetMidPoint(
+            (interposeAgent.GlobalPosition - InterposeSteeringBehavior.GetMidPoint(
                 velocityMatchingAgent.GlobalPosition, 
-                targetMovingAgent.GlobalPosition));
+                targetMovingAgent.GlobalPosition)).Length() <= 
+            interposeSteeringBehavior.ArrivalDistance).IsTrue();
         
         // Wait until arriver brakes and asserts that the interpose agent stays in
         // the middle.
@@ -662,9 +670,10 @@ public class SimpleBehaviorTests
         await _sceneRunner.AwaitMillis(
             (uint)velocityMatchingSteeringBehavior.TimeToMatch * 1000);
         AssertThat(
-            interposeAgent.GlobalPosition == InterposeSteeringBehavior.GetMidPoint(
+            (interposeAgent.GlobalPosition - InterposeSteeringBehavior.GetMidPoint(
                 velocityMatchingAgent.GlobalPosition, 
-                targetMovingAgent.GlobalPosition));
+                targetMovingAgent.GlobalPosition)).Length() <= 
+            interposeSteeringBehavior.ArrivalDistance).IsTrue();
     }
     
     /// <summary>
@@ -1001,6 +1010,118 @@ public class SimpleBehaviorTests
         AssertThat(Mathf.Abs(
                 rotationAverage -
                 groupAlignAgent.GlobalRotationDegrees) <= groupAlignAgent.StopRotationDegThreshold)
+            .IsTrue();
+    }
+    
+    /// <summary>
+    /// Test that CohesionMatchingBehavior can place and agent in the center of mass of
+    /// a 3 agent group.
+    /// </summary>
+    [TestCase]
+    public async Task CohesionBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent velocityMatchingAgent =
+            (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
+        Marker2D velocityMatchingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position8");
+        MovingAgent arriveAgent =
+            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Marker2D arriveAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position7");
+        Marker2D arriveAgentTarget =
+            (Marker2D)_sceneRunner.FindChild("Position4");
+        MovingAgent seekAgent =
+            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Marker2D seekAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position2");
+        Marker2D seekAgentTarget =
+            (Marker2D)_sceneRunner.FindChild("Position3");
+        MovingAgent cohesionAgent = 
+            (MovingAgent)_sceneRunner.FindChild("CohesionMovingAgent");
+        Marker2D cohesionAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position9");
+        
+        // Get references to steering behavior from every agents.
+        ArriveSteeringBehaviorLA arriveSteeringBehavior =
+            arriveAgent.FindChild<ArriveSteeringBehaviorLA>();
+        VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
+            velocityMatchingAgent.FindChild<VelocityMatchingSteeringBehavior>();
+        SeekSteeringBehavior seekSteeringBehavior =
+            seekAgent.FindChild<SeekSteeringBehavior>();
+        CohesionSteeringBehavior cohesionSteeringBehavior =
+            cohesionAgent.FindChild<CohesionSteeringBehavior>();
+        
+        // Setup agents before the test.
+        velocityMatchingAgent.GlobalPosition = velocityMatchingAgentStartPosition.GlobalPosition;
+        velocityMatchingAgent.MaximumSpeed = 200.0f;
+        velocityMatchingAgent.MaximumAcceleration = 400.0f;
+        velocityMatchingAgent.MaximumRotationalDegSpeed = 180f;
+        velocityMatchingAgent.StopRotationDegThreshold = 1f;
+        velocityMatchingAgent.StopSpeed = 10f;
+        velocityMatchingAgent.MaximumAcceleration = 200;
+        velocityMatchingAgent.MaximumDeceleration = 400;
+        velocityMatchingAgent.AgentColor = new Color(1, 0, 0);
+        arriveAgent.GlobalPosition = arriveAgentStartPosition.GlobalPosition;
+        arriveAgent.MaximumSpeed = 200f;
+        arriveAgent.StopSpeed = 1f;
+        arriveAgent.MaximumRotationalDegSpeed = 180f;
+        arriveAgent.StopRotationDegThreshold = 1f;
+        arriveAgent.MaximumAcceleration = 180f;
+        arriveAgent.MaximumDeceleration = 180f;
+        arriveAgent.AgentColor = new Color(1, 0, 0);
+        seekAgent.GlobalPosition = seekAgentStartPosition.GlobalPosition;
+        seekAgent.MaximumSpeed = 200f;
+        seekAgent.StopSpeed = 1f;
+        seekAgent.MaximumRotationalDegSpeed = 180f;
+        seekAgent.StopRotationDegThreshold = 1f;
+        seekAgent.MaximumAcceleration = 180f;
+        seekAgent.MaximumDeceleration = 180f;
+        seekAgent.AgentColor = new Color(1, 0, 0);
+        cohesionAgent.GlobalPosition = cohesionAgentStartPosition.GlobalPosition;
+        cohesionAgent.MaximumSpeed = 200f;
+        cohesionAgent.StopSpeed = 1f;
+        cohesionAgent.MaximumRotationalDegSpeed = 180f;
+        cohesionAgent.StopRotationDegThreshold = 1f;
+        cohesionAgent.MaximumAcceleration = 180f;
+        cohesionAgent.MaximumDeceleration = 180f;
+        cohesionAgent.AgentColor = new Color(0, 1, 0);
+        velocityMatchingSteeringBehavior.Target = arriveAgent;
+        velocityMatchingSteeringBehavior.TimeToMatch = 0.1f;
+        seekSteeringBehavior.Target = seekAgentTarget;
+        seekSteeringBehavior.ArrivalDistance = 10;
+        arriveSteeringBehavior.Target = arriveAgentTarget;
+        arriveSteeringBehavior.ArrivalDistance = 10;
+        cohesionSteeringBehavior.Targets.Clear();
+        cohesionSteeringBehavior.Targets.Add(arriveAgent);
+        cohesionSteeringBehavior.Targets.Add(velocityMatchingAgent);
+        cohesionSteeringBehavior.Targets.Add(seekAgent);
+        cohesionSteeringBehavior.ArrivalDistance = 10f;
+        velocityMatchingAgent.Visible = true;
+        arriveAgent.Visible = true;
+        cohesionAgent.Visible = true;
+        seekAgent.Visible = true;
+        velocityMatchingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        arriveAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        cohesionAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        seekAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Check that agent starts out of place.
+        AssertThat(
+                cohesionAgent.GlobalPosition ==
+                cohesionSteeringBehavior.AveragePosition)
+            .IsFalse();
+        
+        // Let it time to reach its position.
+        await _sceneRunner.AwaitMillis(7000);
+        
+        // Check that agent now is in place.
+        AssertThat(
+                (cohesionAgent.GlobalPosition -
+                cohesionSteeringBehavior.AveragePosition).Length() <= 
+                cohesionSteeringBehavior.ArrivalDistance)
             .IsTrue();
     }
 }
