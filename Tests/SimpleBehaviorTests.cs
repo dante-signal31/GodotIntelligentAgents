@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GdUnit4;
@@ -22,6 +23,12 @@ public class SimpleBehaviorTests
     {
         _sceneRunner = ISceneRunner.Load(TestScenePath);
         _sceneRunner.MaximizeView();
+    }
+
+    [AfterTest]
+    public void DestroyScene()
+    {
+        _sceneRunner.Dispose();
     }
     
     /// <summary>
@@ -224,7 +231,7 @@ public class SimpleBehaviorTests
     }
 
     /// <summary>
-    /// Test that FleeBehavior makes agent go away from its threath.
+    /// Test that FleeBehavior makes agent go away from its threat.
     /// </summary>
     [TestCase]
     public async Task FleeBehaviorTest()
@@ -283,7 +290,7 @@ public class SimpleBehaviorTests
     [TestCase]
     public async Task AlignBehaviorTest()
     {
-        // Get references to the target agent that will rotate an that our tested agent
+        // Get references to the target agent that will rotate and that our tested agent
         // will copy its alignment from.
         MovingAgent movingAgent =
             (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
@@ -599,7 +606,7 @@ public class SimpleBehaviorTests
         Marker2D interposeAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position9");
         
-        // Get references to steering behavior from every agents.
+        // Get references to steering behavior from every agent.
         ArriveSteeringBehaviorLA arriveSteeringBehavior =
             targetMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
         VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
@@ -757,7 +764,7 @@ public class SimpleBehaviorTests
         Marker2D separationAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position2");
         
-        // Get references to steering behavior from every agents.
+        // Get references to steering behavior from every agent.
         ArriveSteeringBehaviorLA arriveSteeringBehavior =
             targetMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
         VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
@@ -854,7 +861,7 @@ public class SimpleBehaviorTests
         Marker2D separationAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position2");
         
-        // Get references to steering behavior from every agents.
+        // Get references to steering behavior from every agent.
         ArriveSteeringBehaviorLA arriveSteeringBehavior =
             targetMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
         VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
@@ -953,7 +960,7 @@ public class SimpleBehaviorTests
         Marker2D groupAlignAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position5");
         
-        // Get references to steering behavior from every agents.
+        // Get references to steering behavior from every agent.
         ArriveSteeringBehaviorLA arriveSteeringBehavior =
             arriveMovingAgent.FindChild<ArriveSteeringBehaviorLA>();
         SeekSteeringBehavior seekSteeringBehavior =
@@ -1042,7 +1049,7 @@ public class SimpleBehaviorTests
         Marker2D cohesionAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position9");
         
-        // Get references to steering behavior from every agents.
+        // Get references to steering behavior from every agent.
         ArriveSteeringBehaviorLA arriveSteeringBehavior =
             arriveAgent.FindChild<ArriveSteeringBehaviorLA>();
         VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
@@ -1123,5 +1130,49 @@ public class SimpleBehaviorTests
                 cohesionSteeringBehavior.AveragePosition).Length() <= 
                 cohesionSteeringBehavior.ArrivalDistance)
             .IsTrue();
+    }
+    
+    /// <summary>
+    /// Test that SeekBehavior can reach a target.
+    /// </summary>
+    [TestCase]
+    public async Task WanderBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent wanderAgent = 
+            (MovingAgent) _sceneRunner.FindChild("WanderMovingAgent");
+        Marker2D agentStartPosition = 
+            (Marker2D) _sceneRunner.FindChild("Position10");
+        
+        // Get reference to SteeringBehaviour.
+        WanderSteeringBehavior wanderSteeringBehavior = 
+            (WanderSteeringBehavior) wanderAgent.FindChild(
+                nameof(WanderSteeringBehavior));
+        
+        // Setup agents before the test.
+        wanderAgent.GlobalPosition = agentStartPosition.GlobalPosition;
+        wanderAgent.MaximumSpeed = 100.0f;
+        wanderAgent.StopSpeed = 1f;
+        wanderAgent.MaximumRotationalDegSpeed = 1080f;
+        wanderAgent.StopRotationDegThreshold = 1f;
+        wanderAgent.AgentColor = new Color(0, 1, 0);
+        wanderAgent.Visible = true;
+        wanderAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        
+        // Start test.
+        int numberOfTestSamples = 5;
+        List<Vector2> previousVelocities = new();
+        foreach (var _ in Enumerable.Range(0, numberOfTestSamples))
+        {
+            // Give time the wander agent to move.
+            await _sceneRunner.AwaitMillis(1000);
+            // Sample its velocity.
+            Vector2 currentVelocity = wanderAgent.Velocity;
+            // Check that velocity is different from the previous ones.
+            AssertThat(previousVelocities.Contains(currentVelocity)).IsFalse();
+            // Store current velocity to be checked against in the next samples.
+            previousVelocities.Add(currentVelocity);
+        }
     }
 }

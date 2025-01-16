@@ -57,6 +57,9 @@ position = Vector2(1278, 753)
 [node name="Position9" type="Marker2D" parent="Positions"]
 position = Vector2(1766, 480)
 
+[node name="Position10" type="Marker2D" parent="Positions"]
+position = Vector2(961, 911)
+
 [node name="Agents" type="Node" parent="."]
 
 [node name="SeekMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
@@ -236,8 +239,11 @@ Targets = [NodePath("../../SeekMovingAgent"), NodePath("../../ArriveMovingAgentL
 ArrivalDistance = 5.0
 PositionGizmoVisible = true
 PositionGizmoColor = Color(1, 0, 0, 1)
+PositionGizmoRadius = 10.0
 
 [node name="WanderMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(969, 905)
 MaximumSpeed = 100.0
 StopSpeed = 1.0
