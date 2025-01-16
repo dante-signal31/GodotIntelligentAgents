@@ -45,7 +45,6 @@ public partial class CohesionSteeringBehavior : Node2D, ISteeringBehavior
     /// </summary>
     [Export] private bool PositionGizmoVisible { get; set; }
     [Export] private Color PositionGizmoColor { get; set; }
-
     /// <summary>
     /// Radius for the position marker gizmo.
     /// </summary>
