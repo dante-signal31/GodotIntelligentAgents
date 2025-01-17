@@ -5,7 +5,6 @@ using GdUnit4;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
-using GodotGameAIbyExample.Scripts.Tools;
 using static GdUnit4.Assertions;
 
 namespace GodotGameAIbyExample.Tests;
@@ -267,8 +266,8 @@ public class SimpleBehaviorTests
         int testSamples = 5;
         for (int i = 0; i < testSamples; i++)
         {
-            Vector2 randomPositionInLocalCircle = 
-                RandomPointGenerator.GetRandomPointInCircle(steeringBehavior.PanicDistance);
+            Vector2 randomPositionInLocalCircle =
+                RandomExtensions.GetRandomPointInsideCircle(steeringBehavior.PanicDistance);
             // Place target in random position.
             target.GlobalPosition = movingAgent.GlobalPosition +
                                     randomPositionInLocalCircle;
