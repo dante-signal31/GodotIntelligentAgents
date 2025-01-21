@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Godot.Collections;
 
 // It must be marked as Tool to be found by HideSteeringBehavior when it uses my custom
@@ -23,7 +24,7 @@ public partial class HidingPointsDetector : Node2D
     /// <summary>
     /// Obstacles positions in the level.
     /// </summary>
-    [Export] public Array<Vector2> ObstaclesPositions { get; private set; } = 
+    [Export] public Array<Vector2> ObstaclesPositions { get; set; } = 
         new();
     
     private uint _obstaclesLayers = 1;
@@ -91,6 +92,12 @@ public partial class HidingPointsDetector : Node2D
     [Export] public float MaximumInnerRayDistance { get; set; } = 1000f;
     
     /// <summary>
+    /// Step length to advance the inner ray. The smaller value gives more accuracy to
+    /// calculate the exit point but it's slower to calculate. 
+    /// </summary>
+    [Export] public float InnerRayStep { get; set; } = 3f;
+    
+    /// <summary>
     /// <p>Maximum distance behind the obstacle to find a valid hiding point.</p>
     /// <p>WARNING! This value must be bigger than
     /// SeparationFromObstacles + AgentRadius.</p>
@@ -150,6 +157,11 @@ public partial class HidingPointsDetector : Node2D
         _rayCaster.Enabled = true;
     }
 
+    public override void _Ready()
+    {
+        GetTree().Root.CallDeferred(MethodName.AddChild, _rayCaster);
+    }
+
     public override void _ExitTree()
     {
         _rayCaster.QueueFree();
@@ -175,9 +187,12 @@ public partial class HidingPointsDetector : Node2D
     {
         RayCollisionPoints.Clear();
         _rayCaster.GlobalPosition = Threat.GlobalPosition;
-        foreach (Vector2 obstaclesPosition in ObstaclesPositions)
+        foreach (Vector2 obstaclePosition in ObstaclesPositions)
         {
-            _rayCaster.TargetPosition = _rayCaster.ToLocal(obstaclesPosition);
+            _rayCaster.TargetPosition = _rayCaster.ToLocal(obstaclePosition);
+            // If you not force a raycast update, the raycast target position won't
+            // be updated until next physics frame.
+            _rayCaster.ForceRaycastUpdate();
             if (_rayCaster.IsColliding())
             {
                 RayCollisionPoints.Add(_rayCaster.GetCollisionPoint());
@@ -195,15 +210,42 @@ public partial class HidingPointsDetector : Node2D
         InnerRayCollisionEnds.Clear();
         foreach (Vector2 rayCollisionPoint in RayCollisionPoints)
         {
-            _rayCaster.GlobalPosition = rayCollisionPoint;
             Vector2 _rayDirection =
                 (rayCollisionPoint - Threat.GlobalPosition).Normalized();
-            _rayCaster.TargetPosition = _rayDirection * MaximumInnerRayDistance;
-            if (_rayCaster.IsColliding())
+            Vector2 innerRayInitialStartPosition = rayCollisionPoint;
+            Vector2 innerRayInitialEndPosition = rayCollisionPoint + _rayDirection * 10f;
+            _rayCaster.GlobalPosition = innerRayInitialStartPosition;
+            _rayCaster.TargetPosition = innerRayInitialEndPosition;
+            float newInnerRayAdvance = 0f;
+            bool maximumInnerRayDistanceReached = false;
+            // If you not force a raycast update, the raycast target position won't
+            // be updated until next physics frame.
+            _rayCaster.ForceRaycastUpdate();
+            while (_rayCaster.IsColliding()) 
             {
-                Vector2 innerRayCollisionPoint = _rayCaster.GetCollisionPoint();
-                InnerRayCollisionEnds.Add((rayCollisionPoint, innerRayCollisionPoint));
+                // If ray is colliding, it means that it is still inside the
+                // obstacle, so we advance its start position.
+                newInnerRayAdvance += InnerRayStep;
+                // If we reached the maximum distance, we stop the search for the exit
+                // point and we discard this obstacle as a valid hiding point.
+                if (newInnerRayAdvance > MaximumInnerRayDistance)
+                {
+                    maximumInnerRayDistanceReached = true;
+                    break;
+                }
+                // Advance the raycast along the ray direction.
+                _rayCaster.GlobalPosition = innerRayInitialStartPosition + _rayDirection * newInnerRayAdvance;
+                _rayCaster.TargetPosition = innerRayInitialEndPosition +_rayDirection * newInnerRayAdvance;
+                // Force the raycast update, we don't want to wait until next physics
+                // frame.
+                _rayCaster.ForceRaycastUpdate();
             }
+            if (maximumInnerRayDistanceReached) continue;
+            // If we get here without reaching the maximum distance, it means that
+            // we have found the exit point. We add the ray collision point and the
+            // inner ray collision point to the list.
+            Vector2 innerRayCollisionPoint = _rayCaster.GlobalPosition;
+            InnerRayCollisionEnds.Add((rayCollisionPoint, innerRayCollisionPoint));
         }
     }
 
@@ -283,6 +325,8 @@ public partial class HidingPointsDetector : Node2D
     {
         if (!ShowCalculationGizmos ||
             Engine.IsEditorHint()) return;
+        
+        // Draw a Line from Threat to Obstacles position.
         foreach (Vector2 obstacle in ObstaclesPositions)
         {
             
@@ -292,6 +336,7 @@ public partial class HidingPointsDetector : Node2D
                 RayColor);
         }
         
+        // Draw a circle at each ray collision point with the obstacle.
         foreach (Vector2 rayCollisionPoint in RayCollisionPoints)
         {
             DrawCircle(
@@ -301,6 +346,7 @@ public partial class HidingPointsDetector : Node2D
                 filled: false);
         }
 
+        // Draw a line for the inner ray into obstacle until exit collision point.
         foreach ((Vector2 rayCollisionPoint, Vector2 innerRayCollisionPoint) in 
                  InnerRayCollisionEnds)
         {
@@ -315,6 +361,7 @@ public partial class HidingPointsDetector : Node2D
                 filled: false);
         }
 
+        // Draw a line from obstacle exit point to hiding point.
         foreach ((Vector2 innerRayCollisionPoint, Vector2 hidingPoint) in 
                  ExternalRayCollisionEnds)
         {

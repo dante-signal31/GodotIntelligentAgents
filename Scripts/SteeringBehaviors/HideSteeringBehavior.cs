@@ -16,8 +16,21 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// </summary>
 public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
 {
-    [ExportCategory("CONFIGURATION:")]
-    [Export] public MovingAgent Threat { get; set; }
+    [ExportCategory("CONFIGURATION:")] 
+    private MovingAgent _threat;
+    /// <summary>
+    /// Agent to hide from.
+    /// </summary>
+    [Export] public MovingAgent Threat
+    {
+        get => _threat;
+        set
+        {
+            _threat = value;
+            if (_hidingPointsDetector != null)  
+                _hidingPointsDetector.Threat = value;
+        }
+    }
     
     /// <summary>
     /// Distance at which we give our goal as reached and we stop our agent.
@@ -89,12 +102,27 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     // TODO: Encapsulate navigation agent in its own node to allow to use different pathfinding algorithms. 
     private NavigationAgent2D _navigationAgent2D;
     private SeekSteeringBehavior _seekSteeringBehavior;
+    private Courtyard _currentLevel;
 
     private RayCast2D _rayCaster;
     
-    private Vector2 _hidingPoint;
     private bool _hidingNeeded;
     private Node2D _nextMovementTarget;
+
+    private Vector2 _hidingPoint;
+    /// <summary>
+    /// Current hiding point position selected by this behavior.
+    /// </summary>
+    public Vector2 HidingPoint
+    {
+        get => _hidingPoint;
+        private set
+        {
+            _hidingPoint = value;
+            if (_navigationAgent2D != null)
+                _navigationAgent2D.TargetPosition = value;
+        }
+    }
     
     public override void _EnterTree()
     {
@@ -106,6 +134,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         _rayCaster.CollideWithAreas = false;
         _rayCaster.Enabled = true;
         AddChild(_rayCaster);
+        HidingPoint = GlobalPosition;
     }
 
     public override void _ExitTree()
@@ -116,30 +145,91 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
 
     public override void _Ready()
     {
-        _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
-        _seekSteeringBehavior.Target = _nextMovementTarget;
-        _seekSteeringBehavior.ArrivalDistance = ArrivalDistance;
-        _hidingPointsDetector = this.FindChild<HidingPointsDetector>();
-        _hidingPointsDetector.ObstaclesLayers = ObstaclesLayers;
-        _hidingPointsDetector.SeparationFromObstacles = SeparationFromObstacles;
-        _hidingPointsDetector.AgentRadius = AgentRadius;
-        _hidingPointsDetector.NotEmptyGroundLayers = NotEmptyGroundLayers;
+        Node _currentRoot = GetTree().Root.FindChild<Node>();
+        _currentLevel = _currentRoot.FindChild<Courtyard>();
+        InitSeekSteeringBehavior();
+        InitHidingPointDetector();
+        InitNavigationAgent();
+    }
+
+    private void InitNavigationAgent()
+    {
         _navigationAgent2D = this.FindChild<NavigationAgent2D>();
+        // I want my SeekSteeringBehavior to move the agent, not the navigation agent. So
+        // I set its velocity to zero.
+        ///////////
+        // TODO: Check this. According to the documentation, it should be set to the
+        // velocity of the SeekSteeringBehavior. Seems that navigation agent does not 
+        // move anything in Godot, but it need velocity to make some calcules.
         _navigationAgent2D.Velocity = Vector2.Zero;
+        _navigationAgent2D.MaxSpeed = 0f;
         _navigationAgent2D.TargetPosition = _hidingPoint;
         _navigationAgent2D.Radius = AgentRadius;
     }
 
-    public override void _PhysicsProcess(double delta)
+    private void InitHidingPointDetector()
     {
-        _nextMovementTarget.GlobalPosition = _navigationAgent2D.GetNextPathPosition();
+        _hidingPointsDetector = this.FindChild<HidingPointsDetector>();
+        _hidingPointsDetector.Threat = Threat;
+        _hidingPointsDetector.ObstaclesPositions = _currentLevel.ObstaclePositions;
+        _hidingPointsDetector.ObstaclesLayers = ObstaclesLayers;
+        _hidingPointsDetector.SeparationFromObstacles = SeparationFromObstacles;
+        _hidingPointsDetector.AgentRadius = AgentRadius;
+        _hidingPointsDetector.NotEmptyGroundLayers = NotEmptyGroundLayers;
     }
 
-    // TODO: Detect we have line of sight to the threat and start hiding.
+    private void InitSeekSteeringBehavior()
+    {
+        _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
+        _seekSteeringBehavior.Target = _nextMovementTarget;
+        _seekSteeringBehavior.ArrivalDistance = ArrivalDistance;
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        _rayCaster.TargetPosition = Threat.GlobalPosition;
+        if (_rayCaster.IsColliding())
+        {
+            Node detectedCollider = (Node) _rayCaster.GetCollider();
+            _hidingNeeded = (detectedCollider.Name == Threat.Name);
+        }
+        
+        // Do not query when the map has never synchronized and is empty.
+        Rid currentNavigationMap = _navigationAgent2D.GetNavigationMap();
+        if (NavigationServer2D.MapGetIterationId(currentNavigationMap) == 0)
+            return;
+        // Only query when the navigation agent has not reached the target yet.
+        if (!_navigationAgent2D.IsNavigationFinished())
+            _nextMovementTarget.GlobalPosition = _navigationAgent2D.GetNextPathPosition();
+    }
     
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
-        throw new NotImplementedException();
+        if (_hidingNeeded)
+        { // Search for the nearest hiding point.
+            List<Vector2> hidingPoints = _hidingPointsDetector.HidingPoints;
+            if (hidingPoints.Count > 0)
+            {
+                float minimumDistance = float.MaxValue;
+                Vector2 nearestHidingPoint = Vector2.Zero;
+                foreach (Vector2 candidatePoint in hidingPoints)
+                {
+                    _navigationAgent2D.TargetPosition = candidatePoint;
+                    // TODO: Check that DistanceToTarget is the complete path distance and not only the distance to the target.
+                    float currentDistance =_navigationAgent2D.DistanceToTarget();
+                    if (currentDistance < minimumDistance)
+                    {
+                        minimumDistance = currentDistance;
+                        nearestHidingPoint = candidatePoint;
+                    }
+                }
+                HidingPoint = nearestHidingPoint;
+            }
+        }
+        
+        // Head to the next point in the path to the heading target. That next point
+        // position is updated in _PhysicsProcess.
+        return _seekSteeringBehavior.GetSteering(args);
     }
     
     public override string[] _GetConfigurationWarnings()

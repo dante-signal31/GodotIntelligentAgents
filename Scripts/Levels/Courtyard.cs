@@ -10,7 +10,7 @@ public partial class Courtyard : Node2D
     [ExportCategory("CONFIGURATION:")] 
     [Export] private TileMapLayer _obstacleLayer;
 
-    public List<Vector2> ObstaclePositions { get; } = new();
+    public Array<Vector2> ObstaclePositions { get; } = new();
     
     public override void _Ready()
     {
@@ -20,7 +20,11 @@ public partial class Courtyard : Node2D
         {
             TileData tileData = _obstacleLayer.GetCellTileData(position);
             bool isObstacle = (bool) tileData.GetCustomData(ObstacleKey);
-            if (isObstacle) ObstaclePositions.Add(position);
+            if (isObstacle)
+            {
+                Vector2 globalPosition = ToGlobal(_obstacleLayer.MapToLocal(position));
+                ObstaclePositions.Add(globalPosition);
+            }
         }
     }
 }
