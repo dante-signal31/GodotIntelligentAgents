@@ -111,7 +111,7 @@ public partial class HidingPointsDetector : Node2D
     /// </summary>
     [Export] public bool ShowCalculationGizmos { get; set; }
     [Export] public Color RayColor { get; set; } = Colors.Green;
-    [Export] public Color InnerRayColor { get; set; } = Colors.Red;
+    [Export] public Color CleanRadiusColor { get; set; } = Colors.Red;
     [Export] private float CollisionPointRadius { get; set; } = 5f;
     [Export] private float HidingPointRadius { get; set; } = 10f;
 
@@ -139,7 +139,7 @@ public partial class HidingPointsDetector : Node2D
     private void InitCleanAreaChecker()
     {
         _cleanAreaShapeCircle = new CircleShape2D();
-        _cleanAreaShapeCircle.Radius = SeparationFromObstacles + AgentRadius;
+        _cleanAreaShapeCircle.Radius = MinimumCleanRadius;
         _cleanAreaChecker = new ShapeCast2D();
         _cleanAreaChecker.CollisionMask = NotEmptyGroundLayers;
         _cleanAreaChecker.Shape = _cleanAreaShapeCircle;
@@ -214,7 +214,7 @@ public partial class HidingPointsDetector : Node2D
             float innerAdvance = 0f;
             while (innerAdvance < MaximumInnerRayDistance)
             {
-                innerAdvance += MinimumCleanRadius;
+                innerAdvance += InnerRayStep;
                 Vector2 candidateHidingPoint = rayCollisionPoint +
                                                _rayDirection * innerAdvance;
                 if (IsCleanHidingPoint(candidateHidingPoint))
@@ -285,7 +285,7 @@ public partial class HidingPointsDetector : Node2D
             DrawCircle(
                 ToLocal(hidingPoint),
                 HidingPointRadius,
-                InnerRayColor,
+                CleanRadiusColor,
                 filled: false);
             DrawCircle(ToLocal(hidingPoint),
                 MinimumCleanRadius,
