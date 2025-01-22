@@ -90,7 +90,7 @@ public partial class HidingPointsDetector : Node2D
     /// <summary>
     /// Maximum scene obstacles inner distance.
     /// </summary>
-    [Export] public float MaximumInnerRayDistance { get; set; } = 1000f;
+    [Export] public float MaximumAdvanceAfterCollision { get; set; } = 1000f;
     
     /// <summary>
     /// Step length to advance the inner ray. The smaller value gives more accuracy to
@@ -103,7 +103,7 @@ public partial class HidingPointsDetector : Node2D
     /// <p>WARNING! This value must be bigger than
     /// SeparationFromObstacles + AgentRadius.</p>
     /// </summary>
-    [Export] public float MaximumExternalRayDistance { get; set; } = 300f;
+    // [Export] public float MaximumExternalRayDistance { get; set; } = 300f;
     
     [ExportCategory("DEBUG:")]
     /// <summary>
@@ -212,7 +212,7 @@ public partial class HidingPointsDetector : Node2D
             Vector2 _rayDirection =
                 (rayCollisionPoint - Threat.GlobalPosition).Normalized();
             float innerAdvance = 0f;
-            while (innerAdvance < MaximumInnerRayDistance)
+            while (innerAdvance < MaximumAdvanceAfterCollision)
             {
                 innerAdvance += InnerRayStep;
                 Vector2 candidateHidingPoint = rayCollisionPoint +
