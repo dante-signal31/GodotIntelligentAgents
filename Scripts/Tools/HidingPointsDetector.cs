@@ -118,7 +118,7 @@ public partial class HidingPointsDetector : Node2D
     public List<Vector2> HidingPoints { get; private set; } = new();
     
     private RayCast2D _rayCaster;
-    private Area2D _cleanAreaChecker;
+    private ShapeCast2D _cleanAreaChecker;
     private CollisionShape2D _cleanAreaShape;
     private CircleShape2D _cleanAreaShapeCircle;
 
@@ -138,13 +138,15 @@ public partial class HidingPointsDetector : Node2D
 
     private void InitCleanAreaChecker()
     {
-        _cleanAreaChecker = new Area2D();
-        _cleanAreaChecker.CollisionMask = NotEmptyGroundLayers;
         _cleanAreaShapeCircle = new CircleShape2D();
         _cleanAreaShapeCircle.Radius = SeparationFromObstacles + AgentRadius;
-        _cleanAreaShape = new CollisionShape2D();
-        _cleanAreaShape.Shape = _cleanAreaShapeCircle;
-        _cleanAreaChecker.AddChild(_cleanAreaShape);
+        _cleanAreaChecker = new ShapeCast2D();
+        _cleanAreaChecker.CollisionMask = NotEmptyGroundLayers;
+        _cleanAreaChecker.Shape = _cleanAreaShapeCircle;
+        _cleanAreaChecker.CollideWithBodies = true;
+        _cleanAreaChecker.TargetPosition = Vector2.Zero;
+        _cleanAreaChecker.ExcludeParent = true;
+        _cleanAreaChecker.Enabled = true;
     }
 
     private void InitRayCaster()
@@ -160,8 +162,10 @@ public partial class HidingPointsDetector : Node2D
     public override void _Ready()
     {
         // TODO: Maybe it's more correct to make them children of the HidingPointsDetector node? 
-        GetTree().Root.CallDeferred(MethodName.AddChild, _rayCaster);
-        GetTree().Root.CallDeferred(MethodName.AddChild, _cleanAreaChecker);
+        // GetTree().Root.CallDeferred(MethodName.AddChild, _rayCaster);
+        // GetTree().Root.CallDeferred(MethodName.AddChild, _cleanAreaChecker);
+        CallDeferred(MethodName.AddChild, _rayCaster);
+        CallDeferred(MethodName.AddChild, _cleanAreaChecker);
     }
 
     public override void _ExitTree()
@@ -231,7 +235,8 @@ public partial class HidingPointsDetector : Node2D
     private bool IsCleanHidingPoint(Vector2 hidingPoint)
     {
         _cleanAreaChecker.GlobalPosition = hidingPoint;
-        return (_cleanAreaChecker.GetOverlappingBodies().Count == 0);
+        _cleanAreaChecker.ForceShapecastUpdate();
+        return (!_cleanAreaChecker.IsColliding());
     }
     
     public override void _Process(double delta)
