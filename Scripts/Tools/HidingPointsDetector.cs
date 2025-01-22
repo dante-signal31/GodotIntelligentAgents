@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -127,8 +128,7 @@ public partial class HidingPointsDetector : Node2D
     private float MinimumCleanRadius => SeparationFromObstacles + AgentRadius;
     
     private List<Vector2> RayCollisionPoints { get; set; } = new();
-    private List<(Vector2, Vector2)> InnerRayCollisionEnds { get; set; } = new();
-    private List<(Vector2, Vector2)> ExternalRayCollisionEnds { get; set; } = new();
+    private List<(Vector2, Vector2)> AfterCollisionRayEnds { get; set; } = new();
 
     public override void _EnterTree()
     {
@@ -159,7 +159,9 @@ public partial class HidingPointsDetector : Node2D
 
     public override void _Ready()
     {
+        // TODO: Maybe it's more correct to make them children of the HidingPointsDetector node? 
         GetTree().Root.CallDeferred(MethodName.AddChild, _rayCaster);
+        GetTree().Root.CallDeferred(MethodName.AddChild, _cleanAreaChecker);
     }
 
     public override void _ExitTree()
@@ -173,10 +175,9 @@ public partial class HidingPointsDetector : Node2D
         if (_rayCaster == null) return;
         
         UpdateRayCollisionPoints();
-        UpdateInnerRayCollisionPoints();
-        UpdateHidingPoints();
+        UpdateCleanHidingPoints();
     }
-    
+
     /// <summary>
     /// <p>Update the list of sight collision points between the threat agent and the
     /// obstacles in the level.</p>
@@ -199,102 +200,24 @@ public partial class HidingPointsDetector : Node2D
             }
         }
     }
-    
-    /// <summary>
-    /// <p>Update the list of exit points of the rays between the threat agent positions
-    /// and the obstacles positions in the level, once those rays are continued further
-    /// from the obstacles center position to exit the obstacles colliders.</p>
-    /// </summary>
-    private void UpdateInnerRayCollisionPoints()
+
+    private void UpdateCleanHidingPoints()
     {
-        InnerRayCollisionEnds.Clear();
         foreach (Vector2 rayCollisionPoint in RayCollisionPoints)
         {
             Vector2 _rayDirection =
                 (rayCollisionPoint - Threat.GlobalPosition).Normalized();
-            Vector2 innerRayInitialStartPosition = rayCollisionPoint;
-            Vector2 innerRayInitialEndPosition = rayCollisionPoint + _rayDirection * 10f;
-            _rayCaster.GlobalPosition = innerRayInitialStartPosition;
-            _rayCaster.TargetPosition = innerRayInitialEndPosition;
-            float newInnerRayAdvance = 0f;
-            bool maximumInnerRayDistanceReached = false;
-            // If you not force a raycast update, the raycast target position won't
-            // be updated until next physics frame.
-            _rayCaster.ForceRaycastUpdate();
-            while (_rayCaster.IsColliding()) 
+            float innerAdvance = 0f;
+            while (innerAdvance < MaximumInnerRayDistance)
             {
-                // If ray is colliding, it means that it is still inside the
-                // obstacle, so we advance its start position.
-                newInnerRayAdvance += InnerRayStep;
-                // If we reached the maximum distance, we stop the search for the exit
-                // point and we discard this obstacle as a valid hiding point.
-                if (newInnerRayAdvance > MaximumInnerRayDistance)
-                {
-                    maximumInnerRayDistanceReached = true;
-                    break;
-                }
-                // Advance the raycast along the ray direction.
-                _rayCaster.GlobalPosition = innerRayInitialStartPosition + _rayDirection * newInnerRayAdvance;
-                _rayCaster.TargetPosition = innerRayInitialEndPosition +_rayDirection * newInnerRayAdvance;
-                // Force the raycast update, we don't want to wait until next physics
-                // frame.
-                _rayCaster.ForceRaycastUpdate();
-            }
-            if (maximumInnerRayDistanceReached) continue;
-            // If we get here without reaching the maximum distance, it means that
-            // we have found the exit point. We add the ray collision point and the
-            // inner ray collision point to the list.
-            Vector2 innerRayCollisionPoint = _rayCaster.GlobalPosition;
-            InnerRayCollisionEnds.Add((rayCollisionPoint, innerRayCollisionPoint));
-        }
-    }
-
-    /// <summary>
-    /// <p>Once the ray exits the obstacle collider through the exit point, we must
-    /// extend the ray to the nearest empty ground position. That place is going to be
-    /// a valid hiding point.</p>
-    /// <p>Problem comes from not convex obstacles, obstacles with holes or obstacles
-    /// with other obstacles near to them. In those cases, the hiding point can be
-    /// inside an obstacle again.</p>
-    /// <p>To avoid those cases, we must check if the hiding point is inside an obstacle
-    /// casting a volume over the check point. If that cast returns nothing then the
-    /// point is valid for hiding. But if the cast returns something, then the hiding
-    /// point is not valid and we must check another point further in the ray
-    /// direction.</p>
-    /// <p>I could have used this method from the very beginning since we found the
-    /// first ray collision points, but it is resource intensive, so I preferred to use
-    /// an internal raycast. Hopefully, most cases won't need to use the volume casting
-    /// to find a valid point after first obstacle.</p> 
-    /// </summary>
-    private void UpdateHidingPoints()
-    {
-        HidingPoints.Clear();
-        ExternalRayCollisionEnds.Clear();
-        foreach ((Vector2 rayCollisionPoint, Vector2 innerRayCollisionPoint) in
-                 InnerRayCollisionEnds)
-        {
-            Vector2 rayDirection =
-                (innerRayCollisionPoint - rayCollisionPoint).Normalized();
-            Vector2 candidateHidingPoint = innerRayCollisionPoint +
-                                           rayDirection *
-                                           MinimumCleanRadius;
-            _cleanAreaChecker.GlobalPosition = candidateHidingPoint;
-            while (candidateHidingPoint.Length() < MaximumExternalRayDistance)
-            {
+                innerAdvance += MinimumCleanRadius;
+                Vector2 candidateHidingPoint = rayCollisionPoint +
+                                               _rayDirection * innerAdvance;
                 if (IsCleanHidingPoint(candidateHidingPoint))
                 {
                     // Candidate point zone is clean. We can place and agent there.
-                    HidingPoints.Add(candidateHidingPoint);
-                    ExternalRayCollisionEnds.Add(
-                        (innerRayCollisionPoint, candidateHidingPoint));
+                    AfterCollisionRayEnds.Add((rayCollisionPoint, candidateHidingPoint));
                     break;
-                }
-                else
-                {
-                    // Candidate point zone is not clean. We must extend the ray.
-                    candidateHidingPoint = candidateHidingPoint.Normalized() *
-                                           (candidateHidingPoint.Length() +
-                                            MinimumCleanRadius);
                 }
             }
         }
@@ -345,34 +268,24 @@ public partial class HidingPointsDetector : Node2D
                 RayColor,
                 filled: false);
         }
-
-        // Draw a line for the inner ray into obstacle until exit collision point.
-        foreach ((Vector2 rayCollisionPoint, Vector2 innerRayCollisionPoint) in 
-                 InnerRayCollisionEnds)
+        
+        // Draw a line from collision point to hiding point.
+        foreach ((Vector2 collisionPoint, Vector2 hidingPoint) in 
+                 AfterCollisionRayEnds)
         {
             DrawLine(
-                ToLocal(rayCollisionPoint),
-                ToLocal(innerRayCollisionPoint),
-                InnerRayColor);
-            DrawCircle(
-                ToLocal(innerRayCollisionPoint),
-                CollisionPointRadius,
-                InnerRayColor,
-                filled: false);
-        }
-
-        // Draw a line from obstacle exit point to hiding point.
-        foreach ((Vector2 innerRayCollisionPoint, Vector2 hidingPoint) in 
-                 ExternalRayCollisionEnds)
-        {
-            DrawLine(
-                ToLocal(innerRayCollisionPoint),
+                ToLocal(collisionPoint),
                 ToLocal(hidingPoint),
                 RayColor);
             DrawCircle(
                 ToLocal(hidingPoint),
                 HidingPointRadius,
-                RayColor);
+                InnerRayColor,
+                filled: false);
+            DrawCircle(ToLocal(hidingPoint),
+                MinimumCleanRadius,
+                RayColor,
+                filled: false);
         }
     }
 }
