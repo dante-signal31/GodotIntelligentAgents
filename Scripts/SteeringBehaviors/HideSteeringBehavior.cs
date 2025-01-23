@@ -29,6 +29,8 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
             _threat = value;
             if (_hidingPointsDetector != null)  
                 _hidingPointsDetector.Threat = value;
+            if (_rayCast2D != null)
+                _rayCast2D.CollisionMask = Threat.CollisionLayer;
         }
     }
     
@@ -97,17 +99,13 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
                 _hidingPointsDetector.NotEmptyGroundLayers = value;
         }
     }
-
-    private HidingPointsDetector _hidingPointsDetector;
-    // TODO: Encapsulate navigation agent in its own node to allow to use different pathfinding algorithms. 
-    private NavigationAgent2D _navigationAgent2D;
-    private SeekSteeringBehavior _seekSteeringBehavior;
-    private Courtyard _currentLevel;
-
-    private RayCast2D _rayCaster;
     
-    private bool _hidingNeeded;
-    private Node2D _nextMovementTarget;
+    [ExportCategory("DEBUG:")]
+    /// <summary>
+    /// Show gizmos.
+    /// </summary>
+    [Export] public bool ShowGizmos { get; set; }
+    [Export] public Color RayColor { get; set; } = Colors.Green;
 
     private Vector2 _hidingPoint;
     /// <summary>
@@ -124,32 +122,55 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         }
     }
     
+    private HidingPointsDetector _hidingPointsDetector;
+    // TODO: Encapsulate navigation agent in its own node to allow to use different pathfinding algorithms. 
+    private NavigationAgent2D _navigationAgent2D;
+    private SeekSteeringBehavior _seekSteeringBehavior;
+    private Courtyard _currentLevel;
+    private RayCast2D _rayCast2D;
+    private MovingAgent _parentMovingAgent;
+    
+    private bool _hidingNeeded;
+    private Node2D _nextMovementTarget;
+    
     public override void _EnterTree()
     {
-        _nextMovementTarget = new Node2D();
-        _rayCaster = new RayCast2D();
-        _rayCaster.ExcludeParent = true;
-        _rayCaster.HitFromInside = false;
-        _rayCaster.CollideWithBodies = true;
-        _rayCaster.CollideWithAreas = false;
-        _rayCaster.Enabled = true;
-        AddChild(_rayCaster);
+        if (_nextMovementTarget == null) _nextMovementTarget = new Node2D();
         HidingPoint = GlobalPosition;
+        _parentMovingAgent = this.FindAncestor<MovingAgent>();
     }
 
     public override void _ExitTree()
     {
-        _nextMovementTarget.QueueFree();
-        _rayCaster.QueueFree();
+        _nextMovementTarget?.QueueFree();
     }
 
     public override void _Ready()
     {
         Node _currentRoot = GetTree().Root.FindChild<Node>();
         _currentLevel = _currentRoot.FindChild<Courtyard>();
+        // Next guard is needed to not receiving warnings when this node is opened in its
+        // own scene.
+        if (_currentLevel == null) return;
+        InitRayCast2D();
         InitSeekSteeringBehavior();
         InitHidingPointDetector();
         InitNavigationAgent();
+    }
+
+    private void InitRayCast2D()
+    {
+        // TODO: Try to provide RayCast2D as a child node from the scene to see if
+        // console errors go away.
+        _rayCast2D = this.FindChild<RayCast2D>();
+        if (Threat != null && _rayCast2D != null) 
+            _rayCast2D.CollisionMask = Threat.CollisionLayer;
+        // Make HitFromInside false to not detect our own agent.
+        _rayCast2D.HitFromInside = false;
+        _rayCast2D.CollideWithBodies = true;
+        _rayCast2D.CollideWithAreas = false;
+        // _rayCast2D.AddException(_parentMovingAgent);
+        _rayCast2D.Enabled = true;
     }
 
     private void InitNavigationAgent()
@@ -160,9 +181,9 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         ///////////
         // TODO: Check this. According to the documentation, it should be set to the
         // velocity of the SeekSteeringBehavior. Seems that navigation agent does not 
-        // move anything in Godot, but it need velocity to make some calcules.
-        _navigationAgent2D.Velocity = Vector2.Zero;
-        _navigationAgent2D.MaxSpeed = 0f;
+        // move anything in Godot, but it needs velocity to make some calcules.
+        // _navigationAgent2D.Velocity = Vector2.Zero;
+        // _navigationAgent2D.MaxSpeed = 0f;
         _navigationAgent2D.TargetPosition = _hidingPoint;
         _navigationAgent2D.Radius = AgentRadius;
     }
@@ -187,10 +208,13 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
 
     public override void _PhysicsProcess(double delta)
     {
-        _rayCaster.TargetPosition = Threat.GlobalPosition;
-        if (_rayCaster.IsColliding())
+        if (Threat == null || _rayCast2D == null) return;
+        
+        _rayCast2D.TargetPosition = ToLocal(Threat.GlobalPosition);
+        _rayCast2D.ForceRaycastUpdate();
+        if (_rayCast2D.IsColliding())
         {
-            Node detectedCollider = (Node) _rayCaster.GetCollider();
+            Node detectedCollider = (Node) _rayCast2D.GetCollider();
             _hidingNeeded = (detectedCollider.Name == Threat.Name);
         }
         
@@ -237,6 +261,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         _hidingPointsDetector = this.FindChild<HidingPointsDetector>();
         _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
         _navigationAgent2D = this.FindChild<NavigationAgent2D>();
+        _rayCast2D = this.FindChild<RayCast2D>();
 
         List<string> warnings = new();
         
@@ -252,7 +277,33 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         {
             warnings.Add("This node needs a child of type NavigationAgent2D to work.");
         }
+        if (_rayCast2D == null)
+        {
+            warnings.Add("This node needs a child of type RayCast2D to work.");
+        }
         
         return warnings.ToArray();
+    }
+    
+    public override void _Process(double delta)
+    {
+        if (ShowGizmos) DrawGizmos();
+    }
+
+    private void DrawGizmos()
+    {
+        QueueRedraw();
+    }
+    
+    public override void _Draw()
+    {
+        if (!ShowGizmos ||
+            Engine.IsEditorHint()) return;
+        
+        // Draw detection raycast.
+        DrawLine(
+            ToLocal(_rayCast2D.GlobalPosition), 
+            _rayCast2D.TargetPosition, 
+            RayColor);
     }
 }

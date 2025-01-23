@@ -176,7 +176,7 @@ public partial class HidingPointsDetector : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (_rayCaster == null) return;
+        if (_rayCaster == null || Threat == null) return;
         
         UpdateRayCollisionPoints();
         UpdateCleanHidingPoints();
@@ -207,6 +207,8 @@ public partial class HidingPointsDetector : Node2D
 
     private void UpdateCleanHidingPoints()
     {
+        AfterCollisionRayEnds.Clear();
+        HidingPoints.Clear();
         foreach (Vector2 rayCollisionPoint in RayCollisionPoints)
         {
             Vector2 _rayDirection =
@@ -220,6 +222,7 @@ public partial class HidingPointsDetector : Node2D
                 if (IsCleanHidingPoint(candidateHidingPoint))
                 {
                     // Candidate point zone is clean. We can place and agent there.
+                    HidingPoints.Add(candidateHidingPoint);
                     AfterCollisionRayEnds.Add((rayCollisionPoint, candidateHidingPoint));
                     break;
                 }
