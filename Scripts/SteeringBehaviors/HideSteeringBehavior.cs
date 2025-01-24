@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
@@ -147,7 +148,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
 
     public override void _Ready()
     {
-        Node _currentRoot = GetTree().Root.FindChild<Node>();
+        Node2D _currentRoot = GetTree().Root.FindChild<Node2D>();
         _currentLevel = _currentRoot.FindChild<Courtyard>();
         // Next guard is needed to not receiving warnings when this node is opened in its
         // own scene.
@@ -248,6 +249,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
                     }
                 }
                 HidingPoint = nearestHidingPoint;
+                GD.Print($"[HideSteeringBehavior] Hiding point found: {HidingPoint}");
             }
         }
         
