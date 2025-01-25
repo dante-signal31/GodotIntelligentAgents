@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using GodotGameAIbyExample.Scripts.Extensions;
+using GodotGameAIbyExample.Scripts.Pathfinding;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
 // It must be marked as Tool to be found by MovingAgent when it uses my custom extension
@@ -122,8 +123,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     }
     
     private HidingPointsDetector _hidingPointsDetector;
-    // TODO: Encapsulate navigation agent in its own node to allow to use different pathfinding algorithms. 
-    private NavigationAgent2D _navigationAgent2D;
+    private INavigationAgent _navigationAgent2D;
     private SeekSteeringBehavior _seekSteeringBehavior;
     private Courtyard _currentLevel;
     private RayCast2D _rayCast2D;
@@ -147,6 +147,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     public override void _Ready()
     {
         Node2D _currentRoot = GetTree().Root.FindChild<Node2D>();
+        if (_currentRoot == null) return;
         _currentLevel = _currentRoot.FindChild<Courtyard>();
         // Next guard is needed to not receiving warnings when this node is opened in its
         // own scene.
@@ -171,7 +172,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
 
     private void InitNavigationAgent()
     {
-        _navigationAgent2D = this.FindChild<NavigationAgent2D>();
+        _navigationAgent2D = this.FindChild<INavigationAgent>();
         _navigationAgent2D.TargetPosition = _hidingPoint;
         _navigationAgent2D.Radius = AgentRadius;
     }
@@ -207,9 +208,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         }
         
         // Do not query when the map has never synchronized and is empty.
-        Rid currentNavigationMap = _navigationAgent2D.GetNavigationMap();
-        if (NavigationServer2D.MapGetIterationId(currentNavigationMap) == 0)
-            return;
+        if (!_navigationAgent2D.IsReady) return;
         // Only query when the navigation agent has not reached the target yet.
         if (!_navigationAgent2D.IsNavigationFinished())
             _nextMovementTarget.GlobalPosition = _navigationAgent2D.GetNextPathPosition();
@@ -248,7 +247,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     {
         _hidingPointsDetector = this.FindChild<HidingPointsDetector>();
         _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
-        _navigationAgent2D = this.FindChild<NavigationAgent2D>();
+        _navigationAgent2D = this.FindChild<INavigationAgent>();
         _rayCast2D = this.FindChild<RayCast2D>();
 
         List<string> warnings = new();
@@ -263,7 +262,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         }
         if (_navigationAgent2D == null)
         {
-            warnings.Add("This node needs a child of type NavigationAgent2D to work.");
+            warnings.Add("This node needs a child that complies with the INavigationAgent interface to work.");
         }
         if (_rayCast2D == null)
         {
