@@ -3,6 +3,7 @@ using Godot;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot.Collections;
+using GodotGameAIbyExample.Scripts.Extensions;
 
 // It must be marked as Tool to be found by HideSteeringBehavior when it uses my custom
 // extension method FindChild<T>(). Otherwise, FindChild casting to HidePointsDetector
@@ -151,7 +152,7 @@ public partial class HidingPointsDetector : Node2D
 
     private void InitRayCaster()
     {
-        _rayCaster = new RayCast2D();
+        _rayCaster = this.FindChild<RayCast2D>();
         _rayCaster.CollisionMask = ObstaclesLayers;
         _rayCaster.HitFromInside = true;
         _rayCaster.CollideWithBodies = true;
@@ -161,10 +162,6 @@ public partial class HidingPointsDetector : Node2D
 
     public override void _Ready()
     {
-        // TODO: Maybe it's more correct to make them children of the HidingPointsDetector node? 
-        // GetTree().Root.CallDeferred(MethodName.AddChild, _rayCaster);
-        // GetTree().Root.CallDeferred(MethodName.AddChild, _cleanAreaChecker);
-        CallDeferred(MethodName.AddChild, _rayCaster);
         CallDeferred(MethodName.AddChild, _cleanAreaChecker);
     }
 
@@ -205,6 +202,12 @@ public partial class HidingPointsDetector : Node2D
         }
     }
 
+    /// <summary>
+    /// <p>Update the list of points after the obstacles that are clear enough to allow
+    /// the agent to hide there.</p>
+    /// <p>It uses a ShapeCast2D to continue sight right, after collision with obstacle,
+    /// until it finds a valid hiding point free from the obstacle.</p>
+    /// </summary>
     private void UpdateCleanHidingPoints()
     {
         AfterCollisionRayEnds.Clear();
@@ -240,6 +243,20 @@ public partial class HidingPointsDetector : Node2D
         _cleanAreaChecker.GlobalPosition = hidingPoint;
         _cleanAreaChecker.ForceShapecastUpdate();
         return (!_cleanAreaChecker.IsColliding());
+    }
+    
+    public override string[] _GetConfigurationWarnings()
+    {
+        _rayCaster = this.FindChild<RayCast2D>();
+
+        List<string> warnings = new();
+        
+        if (_rayCaster == null)
+        {
+            warnings.Add("This node needs a child of type RayCast2D to work.");
+        }
+        
+        return warnings.ToArray();
     }
     
     public override void _Process(double delta)

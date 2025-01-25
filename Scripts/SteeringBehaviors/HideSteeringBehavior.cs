@@ -1,7 +1,5 @@
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
@@ -161,8 +159,6 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
 
     private void InitRayCast2D()
     {
-        // TODO: Try to provide RayCast2D as a child node from the scene to see if
-        // console errors go away.
         _rayCast2D = this.FindChild<RayCast2D>();
         if (Threat != null && _rayCast2D != null) 
             _rayCast2D.CollisionMask = Threat.CollisionLayer;
@@ -170,7 +166,6 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         _rayCast2D.HitFromInside = false;
         _rayCast2D.CollideWithBodies = true;
         _rayCast2D.CollideWithAreas = false;
-        // _rayCast2D.AddException(_parentMovingAgent);
         _rayCast2D.Enabled = true;
     }
 
