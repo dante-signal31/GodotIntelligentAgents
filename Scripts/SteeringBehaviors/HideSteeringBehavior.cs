@@ -98,7 +98,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
                 _hidingPointsDetector.NotEmptyGroundLayers = value;
         }
     }
-    
+
     [ExportCategory("DEBUG:")]
     /// <summary>
     /// Show gizmos.
@@ -172,14 +172,6 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     private void InitNavigationAgent()
     {
         _navigationAgent2D = this.FindChild<NavigationAgent2D>();
-        // I want my SeekSteeringBehavior to move the agent, not the navigation agent. So
-        // I set its velocity to zero.
-        ///////////
-        // TODO: Check this. According to the documentation, it should be set to the
-        // velocity of the SeekSteeringBehavior. Seems that navigation agent does not 
-        // move anything in Godot, but it needs velocity to make some calcules.
-        // _navigationAgent2D.Velocity = Vector2.Zero;
-        // _navigationAgent2D.MaxSpeed = 0f;
         _navigationAgent2D.TargetPosition = _hidingPoint;
         _navigationAgent2D.Radius = AgentRadius;
     }
@@ -235,7 +227,6 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
                 foreach (Vector2 candidatePoint in hidingPoints)
                 {
                     _navigationAgent2D.TargetPosition = candidatePoint;
-                    // TODO: Check that DistanceToTarget is the complete path distance and not only the distance to the target.
                     float currentDistance =_navigationAgent2D.DistanceToTarget();
                     if (currentDistance < minimumDistance)
                     {
