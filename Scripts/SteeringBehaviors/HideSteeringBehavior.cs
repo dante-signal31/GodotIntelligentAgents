@@ -128,8 +128,12 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     private Courtyard _currentLevel;
     private RayCast2D _rayCast2D;
     private MovingAgent _parentMovingAgent;
+    private Vector2 _previousThreatPosition = Vector2.Zero;
     
-    private bool _hidingNeeded;
+    private bool ThreatHasJustMoved => Threat.GlobalPosition != _previousThreatPosition;
+    
+    private bool _threatCanSeeUs;
+    private bool _hidingPointRecheckNeeded;
     private Node2D _nextMovementTarget;
     
     public override void _EnterTree()
@@ -199,13 +203,19 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     {
         if (Threat == null || _rayCast2D == null) return;
         
+        // Check if there is a line of sight with the threat.
         _rayCast2D.TargetPosition = ToLocal(Threat.GlobalPosition);
         _rayCast2D.ForceRaycastUpdate();
         if (_rayCast2D.IsColliding())
         {
             Node detectedCollider = (Node) _rayCast2D.GetCollider();
-            _hidingNeeded = (detectedCollider.Name == Threat.Name);
+            _threatCanSeeUs = (detectedCollider.Name == Threat.Name);
         }
+        
+        // Starting threat position counts as ThreatHasJustMoved because
+        // _previousThreatPosition is init as Vector2.Zero.
+        if (ThreatHasJustMoved) _hidingPointRecheckNeeded = true;
+        _previousThreatPosition = Threat.GlobalPosition;
         
         // Do not query when the map has never synchronized and is empty.
         if (!_navigationAgent2D.IsReady) return;
@@ -216,7 +226,9 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
-        if (_hidingNeeded)
+        // Look for a new hiding point if the threat can see us and if it is threat first 
+        // position (only once) or has just moved.
+        if (_threatCanSeeUs && _hidingPointRecheckNeeded)
         { // Search for the nearest hiding point.
             List<Vector2> hidingPoints = _hidingPointsDetector.HidingPoints;
             if (hidingPoints.Count > 0)
@@ -234,7 +246,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
                     }
                 }
                 HidingPoint = nearestHidingPoint;
-                GD.Print($"[HideSteeringBehavior] Hiding point found: {HidingPoint}");
+                _hidingPointRecheckNeeded = false;
             }
         }
         
