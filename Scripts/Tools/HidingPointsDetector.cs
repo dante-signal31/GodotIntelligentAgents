@@ -133,7 +133,6 @@ public partial class HidingPointsDetector : Node2D
 
     public override void _EnterTree()
     {
-        InitRayCaster();
         InitCleanAreaChecker();
     }
 
@@ -163,11 +162,11 @@ public partial class HidingPointsDetector : Node2D
     public override void _Ready()
     {
         CallDeferred(MethodName.AddChild, _cleanAreaChecker);
+        InitRayCaster();
     }
 
     public override void _ExitTree()
     {
-        _rayCaster.QueueFree();
         _cleanAreaChecker.QueueFree();
     }
 
