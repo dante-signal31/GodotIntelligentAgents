@@ -165,7 +165,8 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     private void InitRayCast2D()
     {
         _rayCast2D = this.FindChild<RayCast2D>();
-        if (Threat != null && _rayCast2D != null) 
+        if (_rayCast2D == null) return;
+        if (Threat != null) 
             _rayCast2D.CollisionMask = Threat.CollisionLayer | ObstaclesLayers;
         // Make HitFromInside false to not detect our own agent.
         _rayCast2D.HitFromInside = false;
