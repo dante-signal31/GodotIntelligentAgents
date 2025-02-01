@@ -10,7 +10,7 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 // https://github.com/godotengine/godot/issues/36395
 [Tool]
 /// <summary>
-/// <p>Node to offer an hiding steering behaviour.</p>
+/// <p>Node to offer a hiding steering behaviour.</p>
 /// <p>Hiding makes an agent to place itself after an obstacle between him and a
 /// threat.</p>
 /// </summary>
@@ -30,7 +30,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
             if (_hidingPointsDetector != null)  
                 _hidingPointsDetector.Threat = value;
             if (_rayCast2D != null)
-                _rayCast2D.CollisionMask = Threat.CollisionLayer;
+                _rayCast2D.CollisionMask = Threat.CollisionLayer | ObstaclesLayers;
         }
     }
     
@@ -166,7 +166,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     {
         _rayCast2D = this.FindChild<RayCast2D>();
         if (Threat != null && _rayCast2D != null) 
-            _rayCast2D.CollisionMask = Threat.CollisionLayer;
+            _rayCast2D.CollisionMask = Threat.CollisionLayer | ObstaclesLayers;
         // Make HitFromInside false to not detect our own agent.
         _rayCast2D.HitFromInside = false;
         _rayCast2D.CollideWithBodies = true;
