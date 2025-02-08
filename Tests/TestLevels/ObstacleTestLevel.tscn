@@ -35,6 +35,7 @@ AgentColor = Color(0.876078, 0.0670398, 0.0128302, 1)
 MaximumSpeed = 600.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
+StopRotationDegThreshold = 1.0
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("3_kftuo")]
 Target = NodePath("../../../Target")
