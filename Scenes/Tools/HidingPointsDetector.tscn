@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjl27ameio1m3"]
+
+[ext_resource type="Script" path="res://Scripts/Tools/HidingPointsDetector.cs" id="1_wykce"]
+
+[node name="HidingPointsDetector" type="Node2D"]
+script = ExtResource("1_wykce")
+ObstaclesLayers = 2
+SeparationFromObstacles = 50.0
+AgentRadius = 53.0
+NotEmptyGroundLayers = 3
+ShowCalculationGizmos = true
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+collision_mask = 2
+hit_from_inside = true

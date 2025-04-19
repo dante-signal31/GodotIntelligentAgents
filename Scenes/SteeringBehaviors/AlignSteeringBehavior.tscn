@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://jxiknrsb0xfq"]
+
+[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/AlignSteeringBehavior.cs" id="1_n17aa"]
+
+[sub_resource type="Curve" id="Curve_rqhj2"]
+_data = [Vector2(0.00165017, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.00390625), -2.06556, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_o0q64"]
+_data = [Vector2(0, 0.296875), 0.0, 1.97297, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="AlignSteeringBehavior" type="Node"]
+script = ExtResource("1_n17aa")
+DecelerationRadius = 5.0
+DecelerationCurve = SubResource("Curve_rqhj2")
+AccelerationRadius = 5.0
+AccelerationCurve = SubResource("Curve_o0q64")

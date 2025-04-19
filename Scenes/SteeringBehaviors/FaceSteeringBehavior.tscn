@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddva0787eguoq"]
+
+[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/FaceSteeringBehavior.cs" id="1_n011q"]
+[ext_resource type="PackedScene" uid="uid://jxiknrsb0xfq" path="res://Scenes/SteeringBehaviors/AlignSteeringBehavior.tscn" id="2_iqm4k"]
+
+[node name="FaceSteeringBehavior" type="Node"]
+script = ExtResource("1_n011q")
+
+[node name="AlignSteeringBehavior" parent="." instance=ExtResource("2_iqm4k")]
+_decelerationRadius = 0.0
+ArrivingMargin = 0.0
+_decelerationCurve = null
+_accelerationRadius = 0.0
+_accelerationCurve = null

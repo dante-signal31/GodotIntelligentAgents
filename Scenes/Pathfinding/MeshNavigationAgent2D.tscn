@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://brydlhmq16gta"]
+
+[ext_resource type="Script" path="res://Scripts/Pathfinding/MeshNavigationAgent2D.cs" id="1_lfwmg"]
+
+[node name="MeshNavigationAgent2D" type="NavigationAgent2D"]
+script = ExtResource("1_lfwmg")

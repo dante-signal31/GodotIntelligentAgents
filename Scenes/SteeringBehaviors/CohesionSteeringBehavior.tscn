@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://b2cchvb3gddvj"]
+
+[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/CohesionSteeringBehavior.cs" id="1_ljr4u"]
+[ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="2_6sxu4"]
+
+[node name="CohesionSteeringBehavior" type="Node2D" node_paths=PackedStringArray("Targets")]
+script = ExtResource("1_ljr4u")
+Targets = []
+ArrivalDistance = 2.0
+PositionGizmoRadius = 10.0
+
+[node name="SeekSteeringBehavior" parent="." instance=ExtResource("2_6sxu4")]

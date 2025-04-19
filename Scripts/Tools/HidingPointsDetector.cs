@@ -2,6 +2,7 @@ using System;
 using Godot;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using Godot.Collections;
 using GodotGameAIbyExample.Scripts.Extensions;
 
@@ -26,6 +27,7 @@ public partial class HidingPointsDetector : Node2D
     /// <summary>
     /// Obstacles positions in the level.
     /// </summary>
+    // TODO: Should this be exported really?
     [Export] public Array<Vector2> ObstaclesPositions { get; set; } = 
         new();
     
@@ -110,6 +112,7 @@ public partial class HidingPointsDetector : Node2D
     /// <summary>
     /// Show calculations gizmos.
     /// </summary>
+    // TODO: Some of this fields can be made private.
     [Export] public bool ShowCalculationGizmos { get; set; }
     [Export] public Color RayColor { get; set; } = Colors.Green;
     [Export] public Color CleanRadiusColor { get; set; } = Colors.Red;
@@ -213,14 +216,14 @@ public partial class HidingPointsDetector : Node2D
         HidingPoints.Clear();
         foreach (Vector2 rayCollisionPoint in RayCollisionPoints)
         {
-            Vector2 _rayDirection =
+            Vector2 rayDirection =
                 (rayCollisionPoint - Threat.GlobalPosition).Normalized();
             float innerAdvance = 0f;
             while (innerAdvance < MaximumAdvanceAfterCollision)
             {
                 innerAdvance += InnerRayStep;
                 Vector2 candidateHidingPoint = rayCollisionPoint +
-                                               _rayDirection * innerAdvance;
+                                               rayDirection * innerAdvance;
                 if (IsCleanHidingPoint(candidateHidingPoint))
                 {
                     // Candidate point zone is clean. We can place and agent there.
@@ -276,7 +279,6 @@ public partial class HidingPointsDetector : Node2D
         // Draw a Line from Threat to Obstacles position.
         foreach (Vector2 obstacle in ObstaclesPositions)
         {
-            
             DrawLine(
                 ToLocal(Threat.GlobalPosition), 
                 ToLocal(obstacle), 
@@ -293,19 +295,21 @@ public partial class HidingPointsDetector : Node2D
                 filled: false);
         }
         
-        // Draw a line from collision point to hiding point.
         foreach ((Vector2 collisionPoint, Vector2 hidingPoint) in 
                  AfterCollisionRayEnds)
         {
+            // Draw a line from collision point to hiding point.
             DrawLine(
                 ToLocal(collisionPoint),
                 ToLocal(hidingPoint),
                 RayColor);
+            // Mark hiding point position.
             DrawCircle(
                 ToLocal(hidingPoint),
                 HidingPointRadius,
                 CleanRadiusColor,
                 filled: false);
+            // Draw a circle at hiding point with the clean radius.
             DrawCircle(ToLocal(hidingPoint),
                 MinimumCleanRadius,
                 RayColor,

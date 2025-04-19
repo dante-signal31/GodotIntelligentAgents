@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6jxcemj6xp7r"]
+
+[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/WanderSteeringBehavior.cs" id="1_yjs4f"]
+[ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="2_yb07j"]
+
+[node name="WanderSteeringBehavior" type="Node2D"]
+script = ExtResource("1_yjs4f")
+ArrivalDistance = 1.0
+WanderRadius = 30.0
+WanderDistance = 60.0
+WanderJitter = 40.0
+WanderRecalculationTime = 0.2
+PositionGizmoVisible = true
+PositionGizmoColor = Color(0, 1, 0, 1)
+PositionGizmoRadius = 10.0
+
+[node name="SeekSteeringBehavior" parent="." instance=ExtResource("2_yb07j")]
+
+[node name="Timer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.2

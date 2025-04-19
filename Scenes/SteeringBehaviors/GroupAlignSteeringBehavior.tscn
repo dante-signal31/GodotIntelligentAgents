@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://rn516t04k2u2"]
+
+[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/GroupAlignSteeringBehavior.cs" id="1_ciwe8"]
+[ext_resource type="PackedScene" uid="uid://jxiknrsb0xfq" path="res://Scenes/SteeringBehaviors/AlignSteeringBehavior.tscn" id="2_s4aol"]
+
+[sub_resource type="Curve" id="Curve_gj4u3"]
+_data = [Vector2(0, 1), 0.0, -0.128196, 0, 0, Vector2(1, 0), -2.07517, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_itbgl"]
+_data = [Vector2(0, 0.30129), 0.0, 2.08494, 0, 0, Vector2(1, 0.996007), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="GroupAlignSteeringBehavior" type="Node2D" node_paths=PackedStringArray("Targets")]
+script = ExtResource("1_ciwe8")
+Targets = []
+DecelerationRadius = 100.0
+DecelerationCurve = SubResource("Curve_gj4u3")
+AccelerationRadius = 100.0
+AccelerationCurve = SubResource("Curve_itbgl")
+OtherOrientationGizmosColor = Color(0, 0, 1, 1)
+OtherOrientationGizmosLength = 100.0
+OwnOrientationGizmoColor = Color(0, 1, 0, 1)
+OwnOrientationGizmoLength = 150.0
+
+[node name="AlignSteeringBehavior" parent="." instance=ExtResource("2_s4aol")]
+DecelerationRadius = 0.0
+DecelerationCurve = null
+AccelerationRadius = 0.0
+AccelerationCurve = null

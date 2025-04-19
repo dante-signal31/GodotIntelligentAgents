@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dy3b5h8r1h1lr"]
+
+[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/ArriveSteeringBehaviorLA.cs" id="1_opaxp"]
+
+[node name="ArriveSteeringBehaviorLa" type="Node"]
+script = ExtResource("1_opaxp")
+ArrivalDistance = 2.0

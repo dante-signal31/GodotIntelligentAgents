@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://d0te180fjegr"]
+
+[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/HideSteeringBehavior.cs" id="1_37cg2"]
+[ext_resource type="PackedScene" uid="uid://bjl27ameio1m3" path="res://Scenes/Tools/HidingPointsDetector.tscn" id="2_nxau8"]
+[ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="3_a2r5f"]
+[ext_resource type="PackedScene" uid="uid://brydlhmq16gta" path="res://Scenes/Pathfinding/MeshNavigationAgent2D.tscn" id="4_oqiaf"]
+
+[node name="HideSteeringBehavior" type="Node2D"]
+script = ExtResource("1_37cg2")
+ArrivalDistance = 2.0
+ObstaclesLayers = 2
+NotEmptyGroundLayers = 3
+ShowGizmos = true
+
+[node name="HidingPointsDetector" parent="." instance=ExtResource("2_nxau8")]
+
+[node name="SeekSteeringBehavior" parent="." instance=ExtResource("3_a2r5f")]
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+collision_mask = 0
+
+[node name="MeshNavigationAgent2D" parent="." instance=ExtResource("4_oqiaf")]
+radius = 50.0
+debug_enabled = true
