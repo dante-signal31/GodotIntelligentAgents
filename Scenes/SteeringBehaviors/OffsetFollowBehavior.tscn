@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://db5gbqpl7ewx2"]
+
+[ext_resource type="Script" uid="uid://c12afo0fnvv4c" path="res://Scripts/SteeringBehaviors/OffsetFollowBehavior.cs" id="1_7kylm"]
+
+[node name="OffsetFollowBehavior" type="Node2D"]
+script = ExtResource("1_7kylm")
+ShowGizmos = true
