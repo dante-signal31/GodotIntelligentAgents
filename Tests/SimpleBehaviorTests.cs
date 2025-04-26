@@ -583,6 +583,90 @@ public class SimpleBehaviorTests
     }
     
     /// <summary>
+    /// Test that OffsetFollowBehavior can follow its target keeping its offset.
+    /// </summary>
+    [TestCase]
+    public async Task OffsetFollowBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent followAgent =
+            (MovingAgent)_sceneRunner.FindChild("OffsetFollowMovingAgent");
+        Node2D offsetFromTargetMarker = (Node2D)_sceneRunner.FindChild("OffsetFromTargetMarker");
+        Marker2D agentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position4");
+        MovingAgent targetMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Marker2D targetMovingAgentStartPosition =
+            (Marker2D)_sceneRunner.FindChild("Position6");
+        Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
+        Marker2D targetPosition =
+            (Marker2D)_sceneRunner.FindChild("Position3");
+        Marker2D secondTargetPosition =
+            (Marker2D)_sceneRunner.FindChild("Position4");
+        
+        // Get references to steering behavior from both agents.
+        OffsetFollowBehavior offsetFollowBehavior =
+            followAgent.FindChild<OffsetFollowBehavior>();
+        SeekSteeringBehavior seekSteeringBehavior =
+            targetMovingAgent.FindChild<SeekSteeringBehavior>();
+        
+        // Setup agents before the test.
+        targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
+        followAgent.GlobalPosition = agentStartPosition.GlobalPosition;
+        followAgent.MaximumSpeed = 250.0f;
+        followAgent.MaximumAcceleration = 400.0f;
+        followAgent.MaximumRotationalDegSpeed = 180f;
+        followAgent.StopRotationDegThreshold = 1f;
+        followAgent.StopSpeed = 10f;
+        followAgent.MaximumAcceleration = 200;
+        followAgent.MaximumDeceleration = 400;
+
+        targetMovingAgent.GlobalPosition = targetMovingAgentStartPosition.GlobalPosition;
+        targetMovingAgent.MaximumSpeed = 200f;
+        targetMovingAgent.StopSpeed = 1f;
+        targetMovingAgent.MaximumRotationalDegSpeed = 180f;
+        targetMovingAgent.StopRotationDegThreshold = 1f;
+        targetMovingAgent.MaximumAcceleration = 180f;
+        targetMovingAgent.MaximumDeceleration = 180f;
+        targetMovingAgent.AgentColor = new Color(1, 0, 0);
+        
+        Vector2 offsetFromTarget = new Vector2(-100, 100);
+        offsetFromTargetMarker.GlobalPosition = 
+            targetMovingAgent.ToGlobal(offsetFromTarget);
+        offsetFollowBehavior.UpdateOffsetFromTarget();
+            
+        seekSteeringBehavior.Target = targetOfTargetMovingAgent;
+        offsetFollowBehavior.Target = targetMovingAgent;
+        followAgent.Visible = true;
+        targetMovingAgent.Visible = true;
+        followAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        targetMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Give time for the follower to get to the target.
+        await _sceneRunner.AwaitMillis(5000);
+        
+        // Assert follow agent is at the offset position from target agent.
+        AssertThat(
+            followAgent.GlobalPosition.DistanceTo(
+                targetMovingAgent.ToGlobal(offsetFromTarget)) <= 
+            (150f)
+            ).IsTrue();
+        
+        // Move again target agent.
+        targetOfTargetMovingAgent.GlobalPosition = secondTargetPosition.GlobalPosition;
+        
+        // Give time for the follower to get to the target again.
+        await _sceneRunner.AwaitMillis(2000);
+        
+        // Assert follow agent is now again at the offset position from target agent.
+        AssertThat(
+            followAgent.GlobalPosition.DistanceTo(
+                targetMovingAgent.ToGlobal(offsetFromTarget)) <= 
+            (150f)
+        ).IsTrue();
+    }
+    
+    /// <summary>
     /// Test that InterposeMatchingBehavior can place and agent between two moving agents.
     /// </summary>
     [TestCase]

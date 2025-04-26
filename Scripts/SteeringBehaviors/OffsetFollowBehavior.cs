@@ -54,8 +54,15 @@ public partial class OffsetFollowBehavior: Node2D, ISteeringBehavior
         if (node2DChildren.Count == 0) return;
         _offsetFromTargetMarker = (Node2D) node2DChildren[0];
         _followSteeringBehavior.Target = _offsetFromTargetMarker;
-        _offsetFromTarget = _offsetFromTargetMarker.GlobalPosition - 
-                            Target.GlobalPosition;
+        UpdateOffsetFromTarget();
+    }
+
+    /// <summary>
+    /// <p>Updates the offset position from the target in the local coordinate space.</p>
+    /// </summary>
+    public void UpdateOffsetFromTarget()
+    {
+        _offsetFromTarget = Target.ToLocal(_offsetFromTargetMarker.GlobalPosition);
     }
 
     public override void _Process(double delta)
