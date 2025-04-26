@@ -1,10 +1,10 @@
-using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using GodotGameAIbyExample.addons.InteractiveRanges.ConeRange;
 using GodotGameAIbyExample.Scripts.Extensions;
-using GodotGameAIbyExample.Scripts.SteeringBehaviors;
+
+namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
 // It must be marked as Tool to be found by MovingAgent when it uses my custom extension
 // method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
@@ -83,16 +83,18 @@ public partial class PursueSteeringBehavior : Node2D, ISteeringBehavior
     
     public override void _EnterTree()
     {
+        // Find out who our father is.
+        _currentAgent = this.FindAncestor<MovingAgent>();
         // Most methods use radians as input, but most humans understand better degrees. 
         // So, we accept degrees to configure scripts but convert them to radians to work.
         _cosAheadSemiConeRadians = Mathf.Cos(Mathf.DegToRad(AheadSemiConeDegrees));
-        _cosComingToUsSemiConeRadians = Mathf.Cos(Mathf.DegToRad(ComingToUsSemiConeDegrees));
+        _cosComingToUsSemiConeRadians = Mathf.Cos(
+            Mathf.DegToRad(ComingToUsSemiConeDegrees));
         // Create an invisible object as marker to place it at target predicted future
         // position. That marker will be used by seek steering behaviour as target.
         _predictedPositionMarker = new Node2D();
+        if (Target == null) return;
         _predictedPositionMarker.GlobalPosition = Target.GlobalPosition;
-        // Find out who is our father.
-        _currentAgent = this.FindAncestor<MovingAgent>();
     }
 
     public override void _ExitTree()
@@ -190,8 +192,8 @@ public partial class PursueSteeringBehavior : Node2D, ISteeringBehavior
             // Place the marker where we think the target will be at the look-ahead
             // time.
             _predictedPositionMarker.GlobalPosition = Target.GlobalPosition +
-                                                          (targetVelocity *
-                                                           lookAheadTime);
+                                                      (targetVelocity *
+                                                       lookAheadTime);
             
             // Let the seek steering behavior get to the new marker position.
             return _seekSteeringBehavior.GetSteering(args);

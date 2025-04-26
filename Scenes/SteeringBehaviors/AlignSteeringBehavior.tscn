@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://jxiknrsb0xfq"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/AlignSteeringBehavior.cs" id="1_n17aa"]
+[ext_resource type="Script" uid="uid://dk3pwpfeg7suu" path="res://Scripts/SteeringBehaviors/AlignSteeringBehavior.cs" id="1_n17aa"]
 
 [sub_resource type="Curve" id="Curve_rqhj2"]
 _data = [Vector2(0.00165017, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.00390625), -2.06556, 0.0, 0, 0]

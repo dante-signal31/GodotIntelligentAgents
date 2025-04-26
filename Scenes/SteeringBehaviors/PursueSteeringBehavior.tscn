@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://bv2ph1f3ujvic"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/PursueSteeringBehavior.cs" id="1_80hgp"]
+[ext_resource type="Script" uid="uid://byx31hehuplts" path="res://Scripts/SteeringBehaviors/PursueSteeringBehavior.cs" id="1_80hgp"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="2_8dyao"]
-[ext_resource type="Script" path="res://addons/InteractiveRanges/ConeRange/ConeRange.cs" id="3_q67fv"]
+[ext_resource type="Script" uid="uid://x00e0v0m34tl" path="res://addons/InteractiveRanges/ConeRange/ConeRange.cs" id="3_q67fv"]
 
 [node name="PursueSteeringBehavior" type="Node2D"]
 script = ExtResource("1_80hgp")

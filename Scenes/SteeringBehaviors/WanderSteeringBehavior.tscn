@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b6jxcemj6xp7r"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/WanderSteeringBehavior.cs" id="1_yjs4f"]
+[ext_resource type="Script" uid="uid://cahu7awwb6ioa" path="res://Scripts/SteeringBehaviors/WanderSteeringBehavior.cs" id="1_yjs4f"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="2_yb07j"]
 
 [node name="WanderSteeringBehavior" type="Node2D"]

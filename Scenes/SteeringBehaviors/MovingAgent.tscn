@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://mxho5r22apy1"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/MovingAgent.cs" id="1_o3k4p"]
+[ext_resource type="Script" uid="uid://cy5evyd0kptwh" path="res://Scripts/SteeringBehaviors/MovingAgent.cs" id="1_o3k4p"]
 [ext_resource type="Texture2D" uid="uid://bc62gvf0jt0gr" path="res://Sprites/Circle.png" id="1_w6fiy"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_31xhw"]

@@ -29,7 +29,7 @@ public class ObstacleBehaviorTests
     }
     
     /// <summary>
-    /// Test that SeekBehavior can reach a target.
+    /// Test that HideBehavior hides from a moving SeekBehavior.
     /// </summary>
     [TestCase]
     public async Task HideBehaviorTest()

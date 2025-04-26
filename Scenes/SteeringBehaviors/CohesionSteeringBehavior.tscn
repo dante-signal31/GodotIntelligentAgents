@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b2cchvb3gddvj"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/CohesionSteeringBehavior.cs" id="1_ljr4u"]
+[ext_resource type="Script" uid="uid://c8nflfs0it7fv" path="res://Scripts/SteeringBehaviors/CohesionSteeringBehavior.cs" id="1_ljr4u"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="2_6sxu4"]
 
 [node name="CohesionSteeringBehavior" type="Node2D" node_paths=PackedStringArray("Targets")]

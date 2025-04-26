@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://kpukeeoid3t4"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/InterposeSteeringBehavior.cs" id="1_4p155"]
+[ext_resource type="Script" uid="uid://bcu726jc3pico" path="res://Scripts/SteeringBehaviors/InterposeSteeringBehavior.cs" id="1_4p155"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="2_x6oo7"]
 
 [node name="InterposeSteeringBehavior" type="Node2D"]

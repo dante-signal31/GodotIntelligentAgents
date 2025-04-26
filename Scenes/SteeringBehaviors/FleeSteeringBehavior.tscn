@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://dqfvcw31jlj2e"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/FleeSteeringBehavior.cs" id="1_qgfbj"]
+[ext_resource type="Script" uid="uid://dtktcpficjmcu" path="res://Scripts/SteeringBehaviors/FleeSteeringBehavior.cs" id="1_qgfbj"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="2_b6voa"]
-[ext_resource type="Script" path="res://addons/InteractiveRanges/CircularRange/CircularRange.cs" id="3_4vce0"]
+[ext_resource type="Script" uid="uid://dk14cofvt6fm" path="res://addons/InteractiveRanges/CircularRange/CircularRange.cs" id="3_4vce0"]
 
 [node name="FleeSteeringBehavior" type="Node2D"]
 script = ExtResource("1_qgfbj")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bjl27ameio1m3"]
 
-[ext_resource type="Script" path="res://Scripts/Tools/HidingPointsDetector.cs" id="1_wykce"]
+[ext_resource type="Script" uid="uid://bo60phih3nbsm" path="res://Scripts/Tools/HidingPointsDetector.cs" id="1_wykce"]
 
 [node name="HidingPointsDetector" type="Node2D"]
 script = ExtResource("1_wykce")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://fghynj1qk4qb"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/ArriveSteeringBehaviorNLA.cs" id="1_qgep0"]
+[ext_resource type="Script" uid="uid://gf8y2catrpmq" path="res://Scripts/SteeringBehaviors/ArriveSteeringBehaviorNLA.cs" id="1_qgep0"]
 
 [sub_resource type="Curve" id="Curve_ovdls"]
 _data = [Vector2(0, 0.00567567), 0.0, 0.201849, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]

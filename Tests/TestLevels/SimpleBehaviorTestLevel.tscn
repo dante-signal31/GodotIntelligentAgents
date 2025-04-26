@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://b62033ep2w41i"]
+[gd_scene load_steps=19 format=3 uid="uid://b62033ep2w41i"]
 
 [ext_resource type="PackedScene" uid="uid://dqt1t3nk4wc4b" path="res://Levels/ClearCourtyard.tscn" id="1_oy3cc"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="3_hsc70"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://rn516t04k2u2" path="res://Scenes/SteeringBehaviors/GroupAlignSteeringBehavior.tscn" id="15_cm7y6"]
 [ext_resource type="PackedScene" uid="uid://b2cchvb3gddvj" path="res://Scenes/SteeringBehaviors/CohesionSteeringBehavior.tscn" id="16_4hd86"]
 [ext_resource type="PackedScene" uid="uid://b6jxcemj6xp7r" path="res://Scenes/SteeringBehaviors/WanderSteeringBehavior.tscn" id="17_38cq1"]
+[ext_resource type="PackedScene" uid="uid://db5gbqpl7ewx2" path="res://Scenes/SteeringBehaviors/OffsetFollowBehavior.tscn" id="18_q0gcs"]
 
 [node name="SimpleBehaviorTestLevel" type="Node2D"]
 
@@ -63,16 +64,15 @@ position = Vector2(961, 911)
 [node name="Agents" type="Node" parent="."]
 
 [node name="SeekMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
-process_mode = 4
-visible = false
-position = Vector2(942, 510)
-MaximumSpeed = 600.0
+process_mode = 3
+position = Vector2(1142, 410)
+MaximumSpeed = 100.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
-Target = NodePath("../../../Positions/Position3")
+Target = NodePath("../../../Target")
 ArrivalDistance = 10.0
 
 [node name="ArriveMovingAgentLA" parent="Agents" instance=ExtResource("4_d5nib")]
@@ -253,3 +253,20 @@ StopRotationDegThreshold = 1.0
 WanderRadius = 60.0
 WanderDistance = 90.0
 WanderJitter = 70.0
+
+[node name="OffsetFollowMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
+position = Vector2(688, 559)
+MaximumSpeed = 150.0
+StopSpeed = 1.0
+MaximumRotationalDegSpeed = 1080.0
+StopRotationDegThreshold = 1.0
+
+[node name="OffsetFollowBehavior" parent="Agents/OffsetFollowMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("18_q0gcs")]
+Target = NodePath("../../SeekMovingAgent")
+
+[node name="ArriveSteeringBehaviorNLA" parent="Agents/OffsetFollowMovingAgent/OffsetFollowBehavior" instance=ExtResource("5_xfglb")]
+AccelerationRadius = 10.0
+BrakingRadius = 10.0
+
+[node name="OffsetFromTargetMarker" type="Node2D" parent="Agents/OffsetFollowMovingAgent/OffsetFollowBehavior"]
+position = Vector2(374, -22)

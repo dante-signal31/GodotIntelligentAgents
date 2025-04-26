@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://rn516t04k2u2"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/GroupAlignSteeringBehavior.cs" id="1_ciwe8"]
+[ext_resource type="Script" uid="uid://dmqsjcf8s7a5t" path="res://Scripts/SteeringBehaviors/GroupAlignSteeringBehavior.cs" id="1_ciwe8"]
 [ext_resource type="PackedScene" uid="uid://jxiknrsb0xfq" path="res://Scenes/SteeringBehaviors/AlignSteeringBehavior.tscn" id="2_s4aol"]
 
 [sub_resource type="Curve" id="Curve_gj4u3"]

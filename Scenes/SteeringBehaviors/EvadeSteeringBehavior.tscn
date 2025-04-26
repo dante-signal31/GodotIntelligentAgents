@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://i3pux2y0isai"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/EvadeSteeringBehavior.cs" id="1_w8hnv"]
+[ext_resource type="Script" uid="uid://51m4scigr77k" path="res://Scripts/SteeringBehaviors/EvadeSteeringBehavior.cs" id="1_w8hnv"]
 [ext_resource type="PackedScene" uid="uid://dqfvcw31jlj2e" path="res://Scenes/SteeringBehaviors/FleeSteeringBehavior.tscn" id="2_o1wus"]
 
 [node name="EvadeSteeringBehavior" type="Node2D"]

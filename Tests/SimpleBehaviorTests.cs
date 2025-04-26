@@ -541,8 +541,8 @@ public class SimpleBehaviorTests
         // Get references to steering behavior from both agents.
         SeekSteeringBehavior seekSteeringBehavior =
             targetMovingAgent.FindChild<SeekSteeringBehavior>();
-        PursueSteeringBehavior pursueSteeringBehavior =
-            pursueAgent.FindChild<PursueSteeringBehavior>();
+        Scripts.SteeringBehaviors.PursueSteeringBehavior pursueSteeringBehavior =
+            pursueAgent.FindChild<Scripts.SteeringBehaviors.PursueSteeringBehavior>();
         
         // Setup agents before the test.
         targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;

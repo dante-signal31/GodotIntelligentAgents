@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cuiom4nbl5741"]
 
-[ext_resource type="Script" path="res://Scripts/SteeringBehaviors/SeekSteeringBehavior.cs" id="1_xk7i6"]
+[ext_resource type="Script" uid="uid://bvi7ptm5sl32v" path="res://Scripts/SteeringBehaviors/SeekSteeringBehavior.cs" id="1_xk7i6"]
 
 [node name="SeekSteeringBehavior" type="Node"]
 script = ExtResource("1_xk7i6")
