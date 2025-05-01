@@ -64,8 +64,7 @@ position = Vector2(961, 911)
 [node name="Agents" type="Node" parent="."]
 
 [node name="SeekMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
-process_mode = 4
-visible = false
+process_mode = 3
 position = Vector2(1142, 410)
 MaximumSpeed = 100.0
 StopSpeed = 1.0
@@ -256,8 +255,7 @@ WanderDistance = 90.0
 WanderJitter = 70.0
 
 [node name="OffsetFollowMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
-process_mode = 4
-visible = false
+process_mode = 3
 position = Vector2(688, 559)
 MaximumSpeed = 150.0
 StopSpeed = 1.0

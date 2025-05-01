@@ -23,7 +23,7 @@ public partial class OffsetFollowBehavior: Node2D, ISteeringBehavior
 
     [ExportCategory("CONFIGURATION:")]
     /// <summary>
-    /// Target to pursue.
+    /// Target to follow.
     /// </summary>
     [Export] public MovingAgent Target { get; set; }
     
@@ -97,22 +97,28 @@ public partial class OffsetFollowBehavior: Node2D, ISteeringBehavior
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
+        // Buckland uses a look-ahead algorithm to place marker. In my tests I didn't
+        // like it because in movement the follower approached nearer than offset and
+        // when target stopped the follower retreated in an oddly way. So I discarded
+        // the look-ahead algorithm. Nevertheless I let it commented if you want to
+        // assess it.
+        //
         // The look-ahead time is proportional to the distance between the target and
         // the followed; and is inversely proportional to the sum of the agent's
         // velocities.
-        float lookAheadTime = _offsetFromTarget.Length() / 
-                              (args.MaximumSpeed + Target.CurrentSpeed);
-        
+        // float lookAheadTime = _offsetFromTarget.Length() / 
+        //                       (args.MaximumSpeed + Target.CurrentSpeed);
         // Place the marker where we think the target will be at the look-ahead
         // time.
-        //
+        // _offsetFromTargetMarker.GlobalPosition = Target.ToGlobal(_offsetFromTarget) + 
+        //                                          (Target.Velocity *
+        //                                           lookAheadTime);
+        
         // In editor, offset marker can be moved freely to define the offset from
         // target. But at execution time, offset marker should follow the target to
         // be used as target by child steering behavior. Luckily, GetSteering()
         // is not called from editor.
-        _offsetFromTargetMarker.GlobalPosition = Target.ToGlobal(_offsetFromTarget) + 
-                                                 (Target.Velocity *
-                                                  lookAheadTime);
+        _offsetFromTargetMarker.GlobalPosition = Target.ToGlobal(_offsetFromTarget);
         
         // Let the child steering behavior get to the new marker position.
         return _followSteeringBehavior.GetSteering(args);
