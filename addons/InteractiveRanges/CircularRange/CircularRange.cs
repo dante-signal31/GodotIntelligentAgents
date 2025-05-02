@@ -8,6 +8,8 @@ namespace GodotGameAIbyExample.addons.InteractiveRanges.CircularRange;
 [Tool]
 public partial class CircularRange : Node2D
 {
+    [Signal] public delegate void UpdatedEventHandler();
+    
     [ExportCategory("CONFIGURATION:")]
     /// <summary>
     /// Gizmo color.
@@ -23,7 +25,9 @@ public partial class CircularRange : Node2D
         get=> _radius;
         set
         {
+            if (Mathf.IsEqualApprox(_radius, value)) return;
             _radius = value;
+            EmitSignal(SignalName.Updated);
             QueueRedraw();
         }
     }

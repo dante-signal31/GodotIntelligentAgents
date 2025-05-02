@@ -68,7 +68,6 @@ public partial class OffsetFollowBehavior: Node2D, ISteeringBehavior
     public override void _Process(double delta)
     {
         if (ShowGizmos) DrawGizmos();
-
     }
 
     private void DrawGizmos()

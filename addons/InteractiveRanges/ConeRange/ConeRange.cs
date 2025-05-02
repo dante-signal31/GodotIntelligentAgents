@@ -8,6 +8,8 @@ namespace GodotGameAIbyExample.addons.InteractiveRanges.ConeRange;
 [Tool]
 public partial class ConeRange : Node2D
 {
+    [Signal] public delegate void UpdatedEventHandler();
+    
     [ExportCategory("CONFIGURATION:")] 
     private Color _rangeColor = new Color(1, 0, 0);
     /// <summary>
@@ -18,7 +20,9 @@ public partial class ConeRange : Node2D
         get => _rangeColor;
         set
         {
+            if (_rangeColor == value) return;
             _rangeColor = value;
+            EmitSignal(SignalName.Updated);
             QueueRedraw();
         }
     }
@@ -32,7 +36,9 @@ public partial class ConeRange : Node2D
         get => _semiConeDegrees;
         set
         {
+            if (Mathf.IsEqualApprox(_semiConeDegrees, value)) return;
             _semiConeDegrees = value;
+            EmitSignal(SignalName.Updated);
             QueueRedraw();
         }
     }
@@ -47,7 +53,9 @@ public partial class ConeRange : Node2D
         get => _resolution;
         set
         {
+            if (_resolution == value) return;
             _resolution = value;
+            EmitSignal(SignalName.Updated);
             QueueRedraw();
         }
     }
@@ -61,7 +69,9 @@ public partial class ConeRange : Node2D
         get => _range;
         set
         {
+            if (Mathf.IsEqualApprox(_range, value)) return;
             _range = value;
+            EmitSignal(SignalName.Updated);
             QueueRedraw();
         }
     }
