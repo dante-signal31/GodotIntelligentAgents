@@ -19,9 +19,15 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
 {
     [ExportCategory("CONFIGURATION:")]
     /// <summary>
-    /// Target to follow.
+    /// Target to go avoiding other agents.
     /// </summary>
     [Export] public Node2D Target { get; set; }
+    
+    /// <summary>
+    /// Timeout started after no further collision detected, before resuming travel to
+    /// target.
+    /// </summary>
+    [Export] public float AvoidanceTimeout { get; set; } = 1.0f;
     
     [ExportCategory("DEBUG:")]
     [Export] private bool ShowGizmos { get; set; }
@@ -29,8 +35,10 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
     private ITargeter _targeter;
     private ISteeringBehavior _steeringBehavior;
     private PotentialCollisionDetector _potentialCollisionDetector;
+    private Timer _avoidanceTimer;
+    private bool _waitingForAvoidanceTimeout;
     private MovingAgent _currentAgent;
-    private Vector2 _newVelocity;
+    private SteeringOutput _currentSteeringOutput;
     
     private Color AgentColor => _currentAgent.AgentColor;
 
@@ -45,10 +53,16 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
         _targeter = this.FindChild<ITargeter>();
         _steeringBehavior = (ISteeringBehavior)_targeter;
         _targeter.Target = Target;
-        
         _potentialCollisionDetector = this.FindChild<PotentialCollisionDetector>();
+        _avoidanceTimer = this.FindChild<Timer>();
+        _avoidanceTimer.Timeout += OnAvoidanceTimeout;
     }
-    
+
+    private void OnAvoidanceTimeout()
+    {
+        _waitingForAvoidanceTimeout = false;
+    }
+
     public override void _Process(double delta)
     {
         if (ShowGizmos) DrawGizmos();
@@ -61,56 +75,67 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
 
     public override void _Draw()
     {
-        if (Target == null || 
-            !_potentialCollisionDetector.PotentialCollisionDetected || 
-            Engine.IsEditorHint()) 
+        if (Target == null) 
             return;
 
-        Vector2 currentAgentCollisionPosition =
-            _potentialCollisionDetector.TimeToPotentialCollision *
-            _currentAgent.Velocity +
-            _currentAgent.GlobalPosition;
-        Vector2 otherAgentCollisionPosition = 
-            _potentialCollisionDetector.TimeToPotentialCollision *
-            _potentialCollisionDetector.PotentialCollisionAgent.Velocity +
-            _potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition;
+        if (_potentialCollisionDetector.PotentialCollisionDetected)
+        {
+            Vector2 currentAgentCollisionPosition =
+                _potentialCollisionDetector.TimeToPotentialCollision *
+                _currentAgent.Velocity +
+                _currentAgent.GlobalPosition;
+            Vector2 otherAgentCollisionPosition = 
+                _potentialCollisionDetector.TimeToPotentialCollision *
+                _potentialCollisionDetector.PotentialCollisionAgent.Velocity +
+                _potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition;
         
-        // Draw positions for potential collision.
+            // Draw positions for potential collision.
+            DrawLine(
+                Vector2.Zero, 
+                ToLocal(currentAgentCollisionPosition), 
+                new Color(1, 0, 0));
+            DrawCircle(
+                ToLocal(currentAgentCollisionPosition),
+                10f,
+                new Color(1, 0, 0),
+                filled:false);
+            DrawLine(
+                ToLocal(_potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition), 
+                ToLocal(otherAgentCollisionPosition), 
+                new Color(1, 0, 0));
+            DrawCircle(
+                ToLocal(otherAgentCollisionPosition),
+                10f,
+                new Color(1, 0, 0),
+                filled:false);
+            // Draw current collision agent velocity.
+            DrawLine(
+                ToLocal(_potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition),
+                _potentialCollisionDetector.PotentialCollisionAgent.Velocity,
+                new Color(0, 0, 1));
+        }
+        
+        // Draw current agent velocity.
         DrawLine(
             Vector2.Zero, 
-            ToLocal(currentAgentCollisionPosition), 
-            AgentColor);
-        DrawCircle(
-            ToLocal(currentAgentCollisionPosition),
-            10f,
-            AgentColor,
-            filled:false);
-        DrawLine(
-            ToLocal(_potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition), 
-            ToLocal(otherAgentCollisionPosition), 
-            AgentColor);
-        DrawCircle(
-            ToLocal(otherAgentCollisionPosition),
-            10f,
-            AgentColor,
-            filled:false);
-        
-        // Draw new evasion velocity.
-        DrawLine(
-            Vector2.Zero, 
-            _newVelocity, 
-            AgentColor);
+            _currentAgent.Velocity, 
+            new Color(1, 0, 0));
     }
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
+        SteeringOutput steeringToTargetVelocity = _steeringBehavior.GetSteering(args);
+        if (!_potentialCollisionDetector.PotentialCollisionDetected &&
+            !_waitingForAvoidanceTimeout)
+            return steeringToTargetVelocity;
         if (!_potentialCollisionDetector.PotentialCollisionDetected)
-            return _steeringBehavior.GetSteering(args);
+            return _currentSteeringOutput;
 
         Vector2 minimumDistanceRelativePosition;
         // If we're going to collide, or are already colliding, then we do the steering
         // based on current position.
-        if (_potentialCollisionDetector.MinimumSeparationAtPotentialCollision <= 0 ||
+        if (_potentialCollisionDetector.MinimumSeparationAtPotentialCollision <= 0
+            ||
             _potentialCollisionDetector.CurrentDistanceToPotentialCollisionAgent <
             _potentialCollisionDetector.CollisionDistance)
         {
@@ -133,14 +158,34 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
         // relativePosition with MaximumAcceleration. But I think the right thing to
         // do is multiply the opposite of relativePosition vector, because that
         // vector goes from agent to its target, so as it is that vector would approach
-        // those two agents. To meke them farther away you should take the opposite
+        // those two agents. To make them farther away you should take the opposite
         // vector as I'm doing here with -minimumDistanceRelativePosition.
-        _newVelocity = -minimumDistanceRelativePosition.Normalized() *
-                              args.MaximumAcceleration;
+        Vector2 avoidanceVelocity = -minimumDistanceRelativePosition.Normalized() *
+                              args.MaximumSpeed;
+        Vector2 newVelocity = steeringToTargetVelocity.Linear + avoidanceVelocity;
         
-        return new SteeringOutput(_newVelocity, 0);
+        // It's harder to evade collision agent If we end going along the same direction. 
+        // So, we want to use a resulting vector pointing in the opposite direction than
+        // the velocity of the collision agent. This way we will avoid it passing it
+        // across its tail.
+        int sign =
+            _potentialCollisionDetector.PotentialCollisionAgent.Velocity
+                .Dot(newVelocity) > 0
+                ? -1
+                : 1;
+        _currentSteeringOutput = new SteeringOutput(
+            sign * (newVelocity), 
+            steeringToTargetVelocity.Angular);
+        StartAvoidanceTimer();
+        return _currentSteeringOutput;
     }
-    
+
+    private void StartAvoidanceTimer()
+    {
+        _avoidanceTimer.Start();
+        _waitingForAvoidanceTimeout = true;
+    }
+
     public override string[] _GetConfigurationWarnings()
     {
         ITargeter targeterBehavior = 

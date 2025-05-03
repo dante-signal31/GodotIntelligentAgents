@@ -21,7 +21,7 @@ public partial class PotentialCollisionDetector : Node2D
     [Export(PropertyHint.Layers2DPhysics)] private uint _layersToDetect = 1;
     [Export] public float AgentRadius { get; set; }
     
-    public bool PotentialCollisionDetected => TimeToPotentialCollision < float.MaxValue;
+    public bool PotentialCollisionDetected { get; private set; }
     
     public MovingAgent PotentialCollisionAgent { get; private set; }
     
@@ -89,7 +89,10 @@ public partial class PotentialCollisionDetector : Node2D
     {
         Array<Node2D> detections = _detectionArea.GetOverlappingBodies();
         Array<MovingAgent> detectedAgents = new Array<MovingAgent>(
-            detections.Where(x => x is MovingAgent)
+            detections.Where(x => 
+                    x is MovingAgent && 
+                    // Don't take in count our own agent.
+                    ((MovingAgent)x).Name != _currentAgent.Name)
                 .Cast<MovingAgent>()
                 .ToArray());
         Array<MovingAgent> detectedAgentsInCone = new Array<MovingAgent>();
@@ -98,8 +101,8 @@ public partial class PotentialCollisionDetector : Node2D
             float distance = agent.GlobalPosition.DistanceTo(
                 _currentAgent.GlobalPosition);
             float heading = Mathf.RadToDeg(
-                _currentAgent.Forward.AngleTo(
-                _currentAgent.ToLocal(agent.GlobalPosition)));
+                _currentAgent.Forward.AngleToPoint(
+                agent.GlobalPosition));
             if (distance < _coneRange.Range && heading < _coneRange.SemiConeDegrees)
             {
                 detectedAgentsInCone.Add(agent);
@@ -111,12 +114,18 @@ public partial class PotentialCollisionDetector : Node2D
     public override void _PhysicsProcess(double delta)
     {
         Array<MovingAgent> targets = GetDetectedAgents();
+        if (targets.Count == 0)
+        {
+            PotentialCollisionDetected = false;
+            return;
+        }
         
         float shortestTimeToCollision = float.MaxValue;
-        MovingAgent closestCollidingAgentCandidate = null;
         float minSeparationAtClosestCollisionCandidate = float.MaxValue;
+        MovingAgent closestCollidingAgentCandidate = null;
         Vector2 currentRelativePositionToPotentialCollisionAgent = Vector2.Zero;
         Vector2 currentRelativeVelocityToPotentialCollisionAgent = Vector2.Zero;
+        PotentialCollisionDetected = false;
         
         foreach (MovingAgent target in targets)
         {
@@ -124,25 +133,30 @@ public partial class PotentialCollisionDetector : Node2D
             Vector2 relativePosition = target.GlobalPosition - 
                                        _currentAgent.GlobalPosition;
             float currentDistance = relativePosition.Length();
-            Vector2 relativeVelocity = target.Velocity - _currentAgent.Velocity;
+            // I've used Millington algorithm as reference, but here mine differs his.
+            // Millington algorithm substracts the _currentAgent.Velocity from
+            // target.Velocity. I guess it's an error because, in my calculations,
+            // further dot product would get a negative result for a collision approach,
+            // that wouldn't be correct because timeToClosestPosition should be negative
+            // if agents go away from each other and positive if they go towards each
+            // other. So, I made relativeVelocity the opposite to Millington's algorithm.
+            Vector2 relativeVelocity = _currentAgent.Velocity - target.Velocity;
             float relativeSpeed = relativeVelocity.Length();
+            
             float timeToClosestPosition = relativePosition.Dot(relativeVelocity) / 
                                     (float) Mathf.Pow(relativeSpeed, 2.0);
+
+            // They are moving away, so no collision possible.
+            if (timeToClosestPosition < 0) continue;
             
-            // I've used Millington algorithm as reference, but here mine differs his.
-            // Millington algorithm substracts the relativeSpeed * timeToCollision from
-            // the currentDistance. I guess it's an error because my calculations
-            // results that relativeSpeed * timeToCollision should be added to the
-            // currentDistance.
-            float minSeparation = currentDistance + relativeSpeed * timeToClosestPosition;
+            float minSeparation = currentDistance - relativeSpeed * timeToClosestPosition;
 
             // If minSeparation is greater than _collisionDistance then we have no
             // collision at all, so we assess next target.
             if (minSeparation > CollisionDistance) continue;
             
             // OK, we have a candidate potential collision, but is it the nearest?
-            if (0 < timeToClosestPosition && 
-                timeToClosestPosition < shortestTimeToCollision)
+            if (timeToClosestPosition < shortestTimeToCollision)
             {
                 shortestTimeToCollision = timeToClosestPosition;
                 closestCollidingAgentCandidate = target;
@@ -160,6 +174,7 @@ public partial class PotentialCollisionDetector : Node2D
             currentRelativePositionToPotentialCollisionAgent;
         CurrentRelativeVelocityToPotentialCollisionAgent = 
             currentRelativeVelocityToPotentialCollisionAgent;
+        PotentialCollisionDetected = PotentialCollisionAgent != null;
     }
 
     public override string[] _GetConfigurationWarnings()
