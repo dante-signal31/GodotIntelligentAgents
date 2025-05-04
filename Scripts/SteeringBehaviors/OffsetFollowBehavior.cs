@@ -17,6 +17,7 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// The agent anticipates the target's position based on its current position, velocity,
 /// and a look-ahead time.</p>
 /// </summary>
+// TODO: Rename this class to OffsetFollowSteeringBehavior according to standard.
 public partial class OffsetFollowBehavior: Node2D, ISteeringBehavior
 {
     private const string OffsetFromTargetMarkerName = "OffsetFromTargetMarker";
