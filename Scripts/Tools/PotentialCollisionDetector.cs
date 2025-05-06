@@ -154,7 +154,12 @@ public partial class PotentialCollisionDetector : Node2D
             // They are moving away, so no collision possible.
             if (timeToClosestPosition < 0) continue;
             
-            float minSeparation = currentDistance - relativeSpeed * timeToClosestPosition;
+            // Here too, my implementation differs from Millington's. He calculates
+            // miSeparation substracting relativeSpeed * timeToClosestPosition from the 
+            // modulus of relative position. My tests show that you must do instead the
+            // operations summing with vectors and later get the module.
+            float minSeparation =
+                (relativePosition + relativeVelocity * timeToClosestPosition).Length();
 
             // If minSeparation is greater than _collisionDistance then we have no
             // collision at all, so we assess next target.

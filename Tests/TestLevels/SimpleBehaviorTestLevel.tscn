@@ -64,6 +64,12 @@ position = Vector2(1766, 480)
 [node name="Position10" type="Marker2D" parent="Positions"]
 position = Vector2(961, 911)
 
+[node name="Position11" type="Marker2D" parent="Positions"]
+position = Vector2(467, 506)
+
+[node name="Position12" type="Marker2D" parent="Positions"]
+position = Vector2(1486, 506)
+
 [node name="Agents" type="Node" parent="."]
 
 [node name="SeekMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]

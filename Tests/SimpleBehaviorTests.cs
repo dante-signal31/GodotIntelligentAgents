@@ -1003,6 +1003,90 @@ public class SimpleBehaviorTests
     }
     
     /// <summary>
+    /// Test that AgentAvoiderBehavior can reach its target without touching another
+    /// moving agent that goes across its path.
+    /// </summary>
+    [TestCase]
+    public async Task AgentAvoiderBehaviorTestFifthScenario()
+    {
+        // Get references to agent and target.
+        MovingAgent agentAvoider =
+            (MovingAgent)_sceneRunner.FindChild("AgentAvoiderMovingAgent");
+        Marker2D position11 =
+            (Marker2D)_sceneRunner.FindChild("Position11");
+        MovingAgent obstacleMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Marker2D position12 =
+            (Marker2D)_sceneRunner.FindChild("Position12");
+        Target targetOfAgentAvoiderMovingAgent = (Target)_sceneRunner.FindChild("Target");
+        // Marker2D position1 =
+        //     (Marker2D)_sceneRunner.FindChild("Position1");
+        // Marker2D position4 =
+        //     (Marker2D)_sceneRunner.FindChild("Position4");
+        // Marker2D position9 =
+        //     (Marker2D)_sceneRunner.FindChild("Position9");
+        
+        // Get references to steering behavior from both agents.
+        AgentAvoiderSteeringBehavior agentAvoiderBehavior =
+            agentAvoider.FindChild<AgentAvoiderSteeringBehavior>();
+        SeekSteeringBehavior seekSteeringBehavior =
+            obstacleMovingAgent.FindChild<SeekSteeringBehavior>();
+        
+        // Setup agents before the test.
+        agentAvoider.MaximumSpeed = 250.0f;
+        agentAvoider.MaximumAcceleration = 400.0f;
+        agentAvoider.MaximumRotationalDegSpeed = 180f;
+        agentAvoider.StopRotationDegThreshold = 1f;
+        agentAvoider.StopSpeed = 10f;
+        agentAvoider.MaximumAcceleration = 200;
+        agentAvoider.MaximumDeceleration = 400;
+
+        obstacleMovingAgent.GlobalPosition = position12.GlobalPosition;
+        obstacleMovingAgent.MaximumSpeed = 200f;
+        obstacleMovingAgent.StopSpeed = 1f;
+        obstacleMovingAgent.MaximumRotationalDegSpeed = 180f;
+        obstacleMovingAgent.StopRotationDegThreshold = 1f;
+        obstacleMovingAgent.MaximumAcceleration = 180f;
+        obstacleMovingAgent.MaximumDeceleration = 180f;
+        obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
+        
+        agentAvoiderBehavior.AvoidanceTimeout = 0.5f;
+        
+        // FIFTH SCENARIO:
+        targetOfAgentAvoiderMovingAgent.GlobalPosition = position12.GlobalPosition;
+        agentAvoider.GlobalPosition = position11.GlobalPosition;
+        obstacleMovingAgent.GlobalPosition = position12.GlobalPosition;
+        seekSteeringBehavior.Target = position11;
+        agentAvoiderBehavior.Target = targetOfAgentAvoiderMovingAgent;
+        agentAvoider.Visible = true;
+        obstacleMovingAgent.Visible = true;
+        agentAvoider.ProcessMode = Node.ProcessModeEnum.Always;
+        obstacleMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        // Assert we move without touching the obstacle agent.
+        int steps = 9;
+        for (int i=0; i < steps; i++)
+        {
+            await _sceneRunner.AwaitMillis(1000);
+            AssertThat(
+                agentAvoider.GlobalPosition.DistanceTo(
+                    obstacleMovingAgent.GlobalPosition) > 
+                150f
+            ).IsTrue();
+        }
+        // Assert we reached target.
+        AssertThat(
+            agentAvoider.GlobalPosition.DistanceTo(
+                targetOfAgentAvoiderMovingAgent.GlobalPosition) <
+            10f
+        ).IsTrue();
+        // Disable test agents.
+        agentAvoider.Visible = false;
+        obstacleMovingAgent.Visible = false;
+        agentAvoider.ProcessMode = Node.ProcessModeEnum.Disabled;
+        obstacleMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
+    
+    /// <summary>
     /// Test that InterposeMatchingBehavior can place and agent between two moving agents.
     /// </summary>
     [TestCase]
