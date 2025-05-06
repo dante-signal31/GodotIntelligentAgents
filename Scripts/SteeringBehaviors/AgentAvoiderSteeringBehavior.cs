@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
@@ -14,9 +15,13 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <p>Node to offer an agent avoider steering behaviour.</p>
 /// <p>Represents a steering behavior where an agent avoids another agents it may
 /// collision with in its path.</p>
+/// <p>The difference with an obstacle avoidance algorithm is that obstacles don't move
+/// while agents do.</p>
 /// </summary>
 public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, ITargeter
 {
+    private readonly Random _random = new();
+    
     [ExportCategory("CONFIGURATION:")]
     /// <summary>
     /// Target to go avoiding other agents.
@@ -28,6 +33,15 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
     /// target.
     /// </summary>
     [Export] public float AvoidanceTimeout { get; set; } = 1.0f;
+
+
+    /// <summary>
+    /// Threshold factor for determining when to use normal vector avoidance.
+    /// When the dot product between avoidance and collision vectors exceeds this value 
+    /// (positive or negative), the avoidance vector is replaced with a vector normal 
+    /// to the collision agent's velocity to prevent chase or collision scenarios.
+    /// </summary>
+    [Export] public float TooAlignedFactor { get; set; }= 0.95f;
     
     [ExportCategory("DEBUG:")]
     [Export] private bool ShowGizmos { get; set; }
@@ -100,7 +114,8 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
                 new Color(1, 0, 0),
                 filled:false);
             DrawLine(
-                ToLocal(_potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition), 
+                ToLocal(
+                    _potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition), 
                 ToLocal(otherAgentCollisionPosition), 
                 new Color(1, 0, 0));
             DrawCircle(
@@ -110,8 +125,10 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
                 filled:false);
             // Draw current collision agent velocity.
             DrawLine(
-                ToLocal(_potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition),
-                ToLocal(_potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition + 
+                ToLocal(
+                    _potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition),
+                ToLocal(
+                    _potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition + 
                         _potentialCollisionDetector.PotentialCollisionAgent.Velocity),
                 new Color(0, 0, 1));
         }
@@ -135,7 +152,7 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
         Vector2 minimumDistanceRelativePosition;
         // If we're going to collide, or are already colliding, then we do the steering
         // based on current position.
-        if (_potentialCollisionDetector.MinimumSeparationAtPotentialCollision <= 0
+        if (_potentialCollisionDetector.SeparationAtPotentialCollision <= 0
             ||
             _potentialCollisionDetector.CurrentDistanceToPotentialCollisionAgent <
             _potentialCollisionDetector.CollisionDistance)
@@ -147,12 +164,8 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
         {
             // If collision is going to happen in the future then calculate the 
             // relative position in that moment.
-            minimumDistanceRelativePosition = _potentialCollisionDetector
-                                      .CurrentRelativePositionToPotentialCollisionAgent +
-                                  _potentialCollisionDetector
-                                      .CurrentRelativeVelocityToPotentialCollisionAgent *
-                                  _potentialCollisionDetector
-                                      .TimeToPotentialCollision;
+            minimumDistanceRelativePosition = 
+                _potentialCollisionDetector.RelativePositionAtPotentialCollision;
         }
 
         // Another issue I have with Millington algorithm is that it multiplies
@@ -167,18 +180,36 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
         Vector2 newVelocity = steeringToTargetVelocity.Linear + avoidanceVelocity;
         
         // This is another change from Millington algorithm.
-        // It's harder to evade collision agent If we end going along the same direction. 
-        // So, we want to use a resulting vector pointing in the opposite direction than
-        // the velocity of the collision agent. This way we will avoid it passing it
-        // across its tail.
-        int sign = 
-            _potentialCollisionDetector.PotentialCollisionAgent.Velocity
-                .Dot(newVelocity) > 0
-                ? -1
-                : 1;
+        float relativeAvoidance = _potentialCollisionDetector.PotentialCollisionAgent
+            .Velocity.Normalized()
+            .Dot(newVelocity.Normalized());
+        if (Mathf.Abs(relativeAvoidance) >= TooAlignedFactor)
+        {
+            // If newVelocity is too aligned with collision agent velocity then our
+            // avoidance can end in a direct hit or a chase, so we try an avoidance
+            // vector that is perpendicular to the collision agent's velocity.
+            newVelocity = _potentialCollisionDetector.PotentialCollisionAgent.Velocity
+                .Rotated(Mathf.Pi / 2)
+                .Normalized() * newVelocity.Length() * 
+                          // Turn to one side or another randomly.
+                          (_random.Next(2) * 2 - 1); 
+        } 
+        else
+        {
+            // It's harder to evade collision agent if we end going along the same
+            // direction. So, we want to use a resulting vector pointing in the opposite
+            // direction than the velocity of the collision agent. This way we will
+            // avoid it passing it across its tail.
+            int sign = 
+                _potentialCollisionDetector.PotentialCollisionAgent.Velocity
+                    .Dot(newVelocity) > 0
+                    ? -1
+                    : 1;
+            newVelocity *= sign;
+        }
         
         _currentSteeringOutput = new SteeringOutput(
-            sign * (newVelocity), 
+            newVelocity, 
             steeringToTargetVelocity.Angular);
         StartAvoidanceTimer();
         return _currentSteeringOutput;

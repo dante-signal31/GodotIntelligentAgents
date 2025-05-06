@@ -20,14 +20,15 @@ public partial class PotentialCollisionDetector : Node2D
     [ExportCategory("CONFIGURATION:")]
     [Export(PropertyHint.Layers2DPhysics)] private uint _layersToDetect = 1;
     [Export] public float AgentRadius { get; set; }
-    
-    public bool PotentialCollisionDetected { get; private set; }
+
+    public bool PotentialCollisionDetected { get; private set; } = false;
     
     public MovingAgent PotentialCollisionAgent { get; private set; }
     
     public float TimeToPotentialCollision { get; private set; }
     
-    public float MinimumSeparationAtPotentialCollision { get; private set; }
+    public Vector2 RelativePositionAtPotentialCollision { get; private set; }
+    public float SeparationAtPotentialCollision { get; private set; }
     
     public Vector2 CurrentRelativePositionToPotentialCollisionAgent { get; private set; }
     public Vector2 CurrentRelativeVelocityToPotentialCollisionAgent { get; private set; }
@@ -55,7 +56,7 @@ public partial class PotentialCollisionDetector : Node2D
         _detectionArea.CollisionMask = _layersToDetect;
         _collisionShape = _detectionArea.FindChild<CollisionShape2D>();
         CollisionDistance = 2 * AgentRadius;
-        _coneRange.Connect(
+        _coneRange?.Connect(
             ConeRange.SignalName.Updated, 
             new Callable(this, MethodName.OnConeRangeUpdated));
         UpdateDetectionArea();
@@ -78,8 +79,9 @@ public partial class PotentialCollisionDetector : Node2D
             Mathf.Sin(float.DegreesToRadians(_coneRange.SemiConeDegrees)) * 
             2);
         
-        // Set position offset to center the rectangle properly
-        // Move it half its length to the right since we want it to grow in that direction
+        // Set position offset to center the rectangle properly.
+        // Move it half its length to the right since we want it to grow in that
+        // direction.
         _collisionShape.Position = new Vector2(_coneRange.Range / 2, 0);
         
         _collisionShape.Shape = rectangleShape;
@@ -121,6 +123,7 @@ public partial class PotentialCollisionDetector : Node2D
         }
         
         float shortestTimeToCollision = float.MaxValue;
+        Vector2 relativePositionAtPotentialCollision = Vector2.Zero;
         float minSeparationAtClosestCollisionCandidate = float.MaxValue;
         MovingAgent closestCollidingAgentCandidate = null;
         Vector2 currentRelativePositionToPotentialCollisionAgent = Vector2.Zero;
@@ -158,8 +161,9 @@ public partial class PotentialCollisionDetector : Node2D
             // miSeparation substracting relativeSpeed * timeToClosestPosition from the 
             // modulus of relative position. My tests show that you must do instead the
             // operations summing with vectors and later get the module.
-            float minSeparation =
-                (relativePosition + relativeVelocity * timeToClosestPosition).Length();
+            Vector2 minRelativePosition =
+                relativePosition + relativeVelocity * timeToClosestPosition; 
+            float minSeparation = minRelativePosition.Length();
 
             // If minSeparation is greater than _collisionDistance then we have no
             // collision at all, so we assess next target.
@@ -170,6 +174,7 @@ public partial class PotentialCollisionDetector : Node2D
             {
                 shortestTimeToCollision = timeToClosestPosition;
                 closestCollidingAgentCandidate = target;
+                relativePositionAtPotentialCollision = minRelativePosition;
                 minSeparationAtClosestCollisionCandidate = minSeparation;
                 currentRelativePositionToPotentialCollisionAgent = relativePosition;
                 currentRelativeVelocityToPotentialCollisionAgent = relativeVelocity;
@@ -178,7 +183,8 @@ public partial class PotentialCollisionDetector : Node2D
         
         // Offer data of the current nearest agent collision candidate.
         TimeToPotentialCollision = shortestTimeToCollision;
-        MinimumSeparationAtPotentialCollision = minSeparationAtClosestCollisionCandidate;
+        RelativePositionAtPotentialCollision = relativePositionAtPotentialCollision;
+        SeparationAtPotentialCollision = minSeparationAtClosestCollisionCandidate;
         PotentialCollisionAgent = closestCollidingAgentCandidate;
         CurrentRelativePositionToPotentialCollisionAgent = 
             currentRelativePositionToPotentialCollisionAgent;
