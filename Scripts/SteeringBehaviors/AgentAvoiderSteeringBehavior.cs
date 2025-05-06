@@ -111,14 +111,15 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
             // Draw current collision agent velocity.
             DrawLine(
                 ToLocal(_potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition),
-                _potentialCollisionDetector.PotentialCollisionAgent.Velocity,
+                ToLocal(_potentialCollisionDetector.PotentialCollisionAgent.GlobalPosition + 
+                        _potentialCollisionDetector.PotentialCollisionAgent.Velocity),
                 new Color(0, 0, 1));
         }
         
         // Draw current agent velocity.
         DrawLine(
             Vector2.Zero, 
-            _currentAgent.Velocity, 
+            ToLocal(GlobalPosition + _currentAgent.Velocity), 
             new Color(1, 0, 0));
     }
 
@@ -162,17 +163,20 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
         // vector as I'm doing here with -minimumDistanceRelativePosition.
         Vector2 avoidanceVelocity = -minimumDistanceRelativePosition.Normalized() *
                               args.MaximumSpeed;
+
         Vector2 newVelocity = steeringToTargetVelocity.Linear + avoidanceVelocity;
         
+        // This is another change from Millington algorithm.
         // It's harder to evade collision agent If we end going along the same direction. 
         // So, we want to use a resulting vector pointing in the opposite direction than
         // the velocity of the collision agent. This way we will avoid it passing it
         // across its tail.
-        int sign =
+        int sign = 
             _potentialCollisionDetector.PotentialCollisionAgent.Velocity
                 .Dot(newVelocity) > 0
                 ? -1
                 : 1;
+        
         _currentSteeringOutput = new SteeringOutput(
             sign * (newVelocity), 
             steeringToTargetVelocity.Angular);

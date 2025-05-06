@@ -100,9 +100,9 @@ public partial class PotentialCollisionDetector : Node2D
         {
             float distance = agent.GlobalPosition.DistanceTo(
                 _currentAgent.GlobalPosition);
-            float heading = Mathf.RadToDeg(
+            float heading = Mathf.Abs(Mathf.RadToDeg(
                 _currentAgent.Forward.AngleToPoint(
-                agent.GlobalPosition));
+                _currentAgent.ToLocal(agent.GlobalPosition))));
             if (distance < _coneRange.Range && heading < _coneRange.SemiConeDegrees)
             {
                 detectedAgentsInCone.Add(agent);
@@ -133,17 +133,22 @@ public partial class PotentialCollisionDetector : Node2D
             Vector2 relativePosition = target.GlobalPosition - 
                                        _currentAgent.GlobalPosition;
             float currentDistance = relativePosition.Length();
-            // I've used Millington algorithm as reference, but here mine differs his.
-            // Millington algorithm substracts the _currentAgent.Velocity from
-            // target.Velocity. I guess it's an error because, in my calculations,
-            // further dot product would get a negative result for a collision approach,
-            // that wouldn't be correct because timeToClosestPosition should be negative
-            // if agents go away from each other and positive if they go towards each
-            // other. So, I made relativeVelocity the opposite to Millington's algorithm.
-            Vector2 relativeVelocity = _currentAgent.Velocity - target.Velocity;
+            Vector2 relativeVelocity = target.Velocity - _currentAgent.Velocity;
             float relativeSpeed = relativeVelocity.Length();
             
-            float timeToClosestPosition = relativePosition.Dot(relativeVelocity) / 
+            // I've used Millington algorithm as reference, but here mine differs his.
+            // Millington algorithm uses de positive dot product between relativePosition
+            // and relativeVelocity. I guess it's an error because, in my calculations,
+            // that would get a positive result for a non-collision approach,
+            // that wouldn't be correct because timeToClosestPosition should be negative
+            // if agents go away from each other and positive if they go towards each
+            // other.
+            // Besides, I've found sources where this formula is defined and they 
+            // multiply by -1.0 the numerator:
+            // https://medium.com/@knave/collision-avoidance-the-math-1f6cdf383b5c
+            //
+            // So, I've multiplied by -1.0 the numerator.
+            float timeToClosestPosition = -relativePosition.Dot(relativeVelocity) / 
                                     (float) Mathf.Pow(relativeSpeed, 2.0);
 
             // They are moving away, so no collision possible.
