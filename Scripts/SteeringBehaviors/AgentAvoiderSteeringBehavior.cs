@@ -180,13 +180,16 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
         Vector2 newVelocity = steeringToTargetVelocity.Linear + avoidanceVelocity;
         
         // This is another change from Millington algorithm.
-        float relativeAvoidance = _potentialCollisionDetector.PotentialCollisionAgent
-            .Velocity.Normalized()
-            .Dot(newVelocity.Normalized());
+        float relativeAvoidance = 
+            _potentialCollisionDetector.CurrentRelativePositionToPotentialCollisionAgent
+            .Normalized()
+            .Dot(
+                _potentialCollisionDetector.CurrentRelativeVelocityToPotentialCollisionAgent
+                    .Normalized());
         if (Mathf.Abs(relativeAvoidance) >= TooAlignedFactor)
         {
-            // If newVelocity is too aligned with collision agent velocity then our
-            // avoidance can end in a direct hit or a chase, so we try an avoidance
+            // If relative velocity is too aligned with relative position then our
+            // avoidance vector can end in a direct hit or a chase, so we try an avoidance
             // vector that is perpendicular to the collision agent's velocity.
             newVelocity = _potentialCollisionDetector.PotentialCollisionAgent.Velocity
                 .Rotated(Mathf.Pi / 2)

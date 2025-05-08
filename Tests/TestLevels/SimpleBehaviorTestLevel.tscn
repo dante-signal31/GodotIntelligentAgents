@@ -285,8 +285,8 @@ position = Vector2(288, -22)
 
 [node name="AgentAvoiderMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
 process_mode = 3
-position = Vector2(399, 745)
-MaximumSpeed = 250.0
+position = Vector2(285, 511)
+MaximumSpeed = 300.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
@@ -300,7 +300,7 @@ AgentRadius = 55.0
 
 [node name="ConeRange" type="Node2D" parent="Agents/AgentAvoiderMovingAgent/AgentAvoiderSteeringBehavior/PotentialCollisionDetector"]
 script = ExtResource("21_6oyvm")
-SemiConeDegrees = 62.756
+SemiConeDegrees = 90.0
 Resolution = 10
 Range = 600.0
 metadata/_custom_type_script = "uid://x00e0v0m34tl"
