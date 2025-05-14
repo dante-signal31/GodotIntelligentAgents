@@ -18,24 +18,92 @@ namespace GodotGameAIbyExample.Scripts.Tools;
 public partial class PotentialCollisionDetector : Node2D
 {
     [ExportCategory("CONFIGURATION:")]
+    /// <summary>
+    /// Specifies the physics layers that the <see cref="PotentialCollisionDetector"/>
+    /// will monitor for potential collisions. This variable is used to configure
+    /// which 2D physics layers should be included in detection.
+    /// </summary>
     [Export(PropertyHint.Layers2DPhysics)] private uint _layersToDetect = 1;
+
+    /// <summary>
+    /// Represents the radius of an agent used for potential collision detection.
+    /// </summary>
+    /// <remarks>
+    /// This property defines the distance around the agent that is considered for
+    /// detecting potential collisions with other objects or agents.
+    /// </remarks>
     [Export] public float AgentRadius { get; set; }
 
+    /// <summary>
+    /// Indicates whether a potential collision has been detected if current agent
+    /// keeps its heading.
+    /// </summary>
+    /// <remarks>
+    /// This property returns true if the system has identified a potential collision
+    /// scenario in the context of an agent's movement or interaction with other objects.
+    /// </remarks>
     public bool PotentialCollisionDetected { get; private set; } = false;
-    
+
+    /// <summary>
+    /// Identifies the nearest agent that poses a potential collision threat.
+    /// </summary>
+    /// <remarks>
+    /// This property is updated during the physics process to hold a reference to the
+    /// closest agent which may collide with the current agent. It facilitates collision
+    /// prediction and subsequent decision-making processes.
+    /// </remarks>
     public MovingAgent PotentialCollisionAgent { get; private set; }
-    
+
+    /// <summary>
+    /// Represents the calculated time remaining before a potential collision occurs.
+    /// </summary>
+    /// <remarks>
+    /// This property indicates the predicted time, in seconds, before an agent
+    /// or object will potentially collide with another. It is typically used
+    /// for path planning, collision avoidance, and steering behaviors in AI systems.
+    /// </remarks>
     public float TimeToPotentialCollision { get; private set; }
-    
+
+    /// <summary>
+    /// Represents the relative position at which a potential collision is detected is
+    /// likely to happen if current agent keeps its heading.
+    /// </summary>
+    /// <remarks>
+    /// This property provides the coordinates relative to the current agent's position
+    /// indicating where a potential collision with another object or agent may occur.
+    /// </remarks>
     public Vector2 RelativePositionAtPotentialCollision { get; private set; }
+
+    /// <summary>
+    /// Represents the separation distance maintained during a potential collision
+    /// scenario.
+    /// </summary>
     public float SeparationAtPotentialCollision { get; private set; }
-    
+
+    /// <summary>
+    /// Denotes the relative position of the current agent to a potential collision agent.
+    /// </summary>
     public Vector2 CurrentRelativePositionToPotentialCollisionAgent { get; private set; }
+
+    /// <summary>
+    /// Represents the relative velocity of the current agent with respect to
+    /// a potential collision agent.
+    /// </summary>
     public Vector2 CurrentRelativeVelocityToPotentialCollisionAgent { get; private set; }
-    
+
+    /// <summary>
+    /// Represents the current distance to a potential collision agent.
+    /// </summary>
     public float CurrentDistanceToPotentialCollisionAgent => 
         CurrentRelativePositionToPotentialCollisionAgent.Length();
-    
+
+    /// <summary>
+    /// Specifies the distance within which potential collisions are evaluated.
+    /// </summary>
+    /// <remarks>
+    /// This property determines the threshold distance used to identify whether objects
+    /// are close enough to be considered for collision detection. 
+    /// </remarks>
     public float CollisionDistance { get; private set; }
 
     private ConeRange _coneRange;
@@ -135,7 +203,7 @@ public partial class PotentialCollisionDetector : Node2D
             // Calculate time to collision.
             Vector2 relativePosition = target.GlobalPosition - 
                                        _currentAgent.GlobalPosition;
-            float currentDistance = relativePosition.Length();
+            // float currentDistance = relativePosition.Length();
             Vector2 relativeVelocity = target.Velocity - _currentAgent.Velocity;
             float relativeSpeed = relativeVelocity.Length();
             
