@@ -26,7 +26,19 @@ public partial class AgentAvoiderSteeringBehavior : Node2D, ISteeringBehavior, I
     /// <summary>
     /// Target to go avoiding other agents.
     /// </summary>
-    [Export] public Node2D Target { get; set; }
+    private Node2D _target;
+
+    [Export] public Node2D Target
+    {
+        get => _target;
+        set
+        {
+            if (_target == value) return;
+            _target = value;
+            if (_targeter == null) return;
+            _targeter.Target = value;
+        }
+    }
     
     /// <summary>
     /// Timeout started after no further collision detected, before resuming travel to
