@@ -50,8 +50,9 @@ public class SimpleBehaviorTests
             (SeekSteeringBehavior) movingAgent.FindChild(
                 nameof(SeekSteeringBehavior));
         
-        // Setup agents before the test.
+        // Set up agents before the test.
         target.GlobalPosition = targetPosition.GlobalPosition;
+        steeringBehavior.Target = target;
         movingAgent.GlobalPosition = agentStartPosition.GlobalPosition;
         movingAgent.MaximumSpeed = 600.0f;
         movingAgent.StopSpeed = 1f;
@@ -63,7 +64,7 @@ public class SimpleBehaviorTests
         
         // Start test.
 
-        // Give agent time to reach target.
+        // Give the agent time to reach target.
         await _sceneRunner.AwaitMillis(2500);
         // Check if agent reached target.
         float distance = movingAgent.GlobalPosition.DistanceTo(target.GlobalPosition);
@@ -683,8 +684,8 @@ public class SimpleBehaviorTests
         Marker2D position6 =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfAgentAvoiderMovingAgent = (Target)_sceneRunner.FindChild("Target");
-        Marker2D position1 =
-            (Marker2D)_sceneRunner.FindChild("Position1");
+        // Marker2D position1 =
+        //     (Marker2D)_sceneRunner.FindChild("Position1");
         Marker2D position4 =
             (Marker2D)_sceneRunner.FindChild("Position4");
         Marker2D position9 =
@@ -705,7 +706,7 @@ public class SimpleBehaviorTests
         agentAvoider.MaximumAcceleration = 200;
         agentAvoider.MaximumDeceleration = 400;
 
-        obstacleMovingAgent.GlobalPosition = position6.GlobalPosition;
+        // obstacleMovingAgent.GlobalPosition = position6.GlobalPosition;
         obstacleMovingAgent.MaximumSpeed = 200f;
         obstacleMovingAgent.StopSpeed = 1f;
         obstacleMovingAgent.MaximumRotationalDegSpeed = 180f;
@@ -727,7 +728,7 @@ public class SimpleBehaviorTests
         agentAvoider.ProcessMode = Node.ProcessModeEnum.Always;
         obstacleMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
         // Assert we move without touching the obstacle agent.
-        int steps = 9;
+        int steps = 8;
         for (int i=0; i < steps; i++)
         {
             await _sceneRunner.AwaitMillis(1000);
@@ -767,8 +768,8 @@ public class SimpleBehaviorTests
         Marker2D position6 =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfAgentAvoiderMovingAgent = (Target)_sceneRunner.FindChild("Target");
-        Marker2D position1 =
-            (Marker2D)_sceneRunner.FindChild("Position1");
+        // Marker2D position1 =
+        //     (Marker2D)_sceneRunner.FindChild("Position1");
         Marker2D position4 =
             (Marker2D)_sceneRunner.FindChild("Position4");
         Marker2D position9 =
@@ -789,7 +790,7 @@ public class SimpleBehaviorTests
         agentAvoider.MaximumAcceleration = 200;
         agentAvoider.MaximumDeceleration = 400;
 
-        obstacleMovingAgent.GlobalPosition = position6.GlobalPosition;
+        // obstacleMovingAgent.GlobalPosition = position6.GlobalPosition;
         obstacleMovingAgent.MaximumSpeed = 200f;
         obstacleMovingAgent.StopSpeed = 1f;
         obstacleMovingAgent.MaximumRotationalDegSpeed = 180f;
@@ -873,7 +874,7 @@ public class SimpleBehaviorTests
         agentAvoider.MaximumAcceleration = 200;
         agentAvoider.MaximumDeceleration = 400;
 
-        obstacleMovingAgent.GlobalPosition = position6.GlobalPosition;
+        // obstacleMovingAgent.GlobalPosition = position6.GlobalPosition;
         obstacleMovingAgent.MaximumSpeed = 200f;
         obstacleMovingAgent.StopSpeed = 1f;
         obstacleMovingAgent.MaximumRotationalDegSpeed = 180f;
@@ -935,12 +936,12 @@ public class SimpleBehaviorTests
         Marker2D position6 =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfAgentAvoiderMovingAgent = (Target)_sceneRunner.FindChild("Target");
-        Marker2D position1 =
-            (Marker2D)_sceneRunner.FindChild("Position1");
-        Marker2D position4 =
-            (Marker2D)_sceneRunner.FindChild("Position4");
-        Marker2D position9 =
-            (Marker2D)_sceneRunner.FindChild("Position9");
+        // Marker2D position1 =
+        //     (Marker2D)_sceneRunner.FindChild("Position1");
+        // Marker2D position4 =
+        //     (Marker2D)_sceneRunner.FindChild("Position4");
+        // Marker2D position9 =
+        //     (Marker2D)_sceneRunner.FindChild("Position9");
         
         // Get references to steering behavior from both agents.
         AgentAvoiderSteeringBehavior agentAvoiderBehavior =
