@@ -7,8 +7,8 @@ using GodotGameAIbyExample.Scripts.Extensions;
 
 namespace GodotGameAIbyExample.Scripts.Tools;
 
-// It must be marked as Tool to be found by MovingAgent when it uses my custom extension
-// method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
+// It must be marked as Tool to be found when used my custom extension
+// method FindChild<T>(). Otherwise, FindChild casting will fail. It
 // seems and old Godot C# problem:
 // https://github.com/godotengine/godot/issues/36395
 [Tool]
@@ -263,11 +263,8 @@ public partial class PotentialCollisionDetector : Node2D
 
     public override string[] _GetConfigurationWarnings()
     {
-        ConeRange coneRange =
-            this.FindChild<ConeRange>();
-
-        Area2D detectionArea =
-            this.FindChild<Area2D>();
+        ConeRange coneRange = this.FindChild<ConeRange>();
+        Area2D detectionArea = this.FindChild<Area2D>();
 
         List<string> warnings = new();
 

@@ -8,6 +8,10 @@ namespace GodotGameAIbyExample.addons.InteractiveRanges.ConeRange;
 [Tool]
 public partial class ConeRange : Node2D
 {
+    /// <summary>
+    /// Delegate for the Updated signal, which indicates that the state or
+    /// configuration of the cone has been changed.
+    /// </summary>
     [Signal] public delegate void UpdatedEventHandler();
     
     [ExportCategory("CONFIGURATION:")] 
