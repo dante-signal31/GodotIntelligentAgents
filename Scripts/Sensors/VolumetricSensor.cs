@@ -25,7 +25,7 @@ public partial class VolumetricSensor : Node2D
     /// <summary>
     /// Current set of objects that is inside the detection area.
     /// </summary>
-    public HashSet<Node2D> DetectedObjects { get; private set; } = new();
+    public HashSet<Node2D> DetectedObjects { get; } = new();
     
     /// <summary>
     /// Whether there is any object inside the detection area.
@@ -49,17 +49,18 @@ public partial class VolumetricSensor : Node2D
     }
 
     /// <summary>
-    /// <p>Update DetectedObjects set with any object inside the detection area.<p>
+    /// <p>Update DetectedObjects set with any object inside the detection area.</p>
     /// <p>It's especially useful to detect objects just created inside the detection
     /// area, so they don't trigger any entered event.</p>
     /// </summary>
     private void UpdateDetectedObjectsSet()
     {
         if (_area == null || _collisionShape == null) return;
-        DetectedObjects.Clear();
         foreach (Node2D body in _area.GetOverlappingBodies())
         {
+            if (DetectedObjects.Contains(body)) continue;
             DetectedObjects.Add(body);
+            EmitSignal(SignalName.ObjectEnteredArea, body);
         }
     }
     
