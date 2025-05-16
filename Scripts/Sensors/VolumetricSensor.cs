@@ -41,25 +41,6 @@ public partial class VolumetricSensor : Node2D
     {
         _area = this.FindChild<Area2D>();
         if (_area == null) return;
-        // Look for collision shape. It may be under VolumetricSensor or under Area2D.
-        // If it's under VolumetricSensor, we need to reparent it to Area2D to run the
-        // game. But if we are in the editor, we need to reparent it to VolumetricSensor
-        // in order to be able to link collision shape with BoxManager.
-        _collisionShape = this.FindChild<CollisionShape2D>();
-        if (_collisionShape == null)
-        {
-            _collisionShape = this.FindChild<CollisionShape2D>(recursive: true);
-            if (_collisionShape == null) return;
-        }
-        
-        if (Engine.IsEditorHint())
-        {
-            _collisionShape.Reparent(this);
-        }
-        else
-        {
-            _collisionShape.Reparent(_area);
-        }
         
         _area.BodyEntered += OnObjectEntered;
         _area.BodyExited += OnObjectExited;
@@ -114,18 +95,12 @@ public partial class VolumetricSensor : Node2D
     public override string[] _GetConfigurationWarnings()
     {
         Area2D area = this.FindChild<Area2D>();
-        CollisionShape2D collisionShape = this.FindChild<CollisionShape2D>();
 
         List<string> warnings = new();
 
         if (area== null)
         {
             warnings.Add("This node needs a child Area2D node to work. ");
-        }
-
-        if (collisionShape == null)
-        {
-            warnings.Add("This node needs a child CollisionShape2D node to work");
         }
 
         return warnings.ToArray();
