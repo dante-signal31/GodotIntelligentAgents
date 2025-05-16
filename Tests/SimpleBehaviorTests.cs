@@ -929,12 +929,12 @@ public class SimpleBehaviorTests
         // Get references to agent and target.
         MovingAgent agentAvoider =
             (MovingAgent)_sceneRunner.FindChild("AgentAvoiderMovingAgent");
-        Marker2D position3 =
-            (Marker2D)_sceneRunner.FindChild("Position3");
+        Marker2D position11 =
+            (Marker2D)_sceneRunner.FindChild("Position11");
         MovingAgent obstacleMovingAgent =
             (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
-        Marker2D position6 =
-            (Marker2D)_sceneRunner.FindChild("Position6");
+        Marker2D position12 =
+            (Marker2D)_sceneRunner.FindChild("Position12");
         Target targetOfAgentAvoiderMovingAgent = (Target)_sceneRunner.FindChild("Target");
         // Marker2D position1 =
         //     (Marker2D)_sceneRunner.FindChild("Position1");
@@ -957,8 +957,7 @@ public class SimpleBehaviorTests
         agentAvoider.StopSpeed = 10f;
         agentAvoider.MaximumAcceleration = 200;
         agentAvoider.MaximumDeceleration = 400;
-
-        obstacleMovingAgent.GlobalPosition = position6.GlobalPosition;
+        
         obstacleMovingAgent.MaximumSpeed = 200f;
         obstacleMovingAgent.StopSpeed = 1f;
         obstacleMovingAgent.MaximumRotationalDegSpeed = 180f;
@@ -970,10 +969,10 @@ public class SimpleBehaviorTests
         agentAvoiderBehavior.AvoidanceTimeout = 0.5f;
         
         // FOURTH SCENARIO:
-        targetOfAgentAvoiderMovingAgent.GlobalPosition = position3.GlobalPosition;
-        agentAvoider.GlobalPosition = position6.GlobalPosition;
-        obstacleMovingAgent.GlobalPosition = position3.GlobalPosition;
-        seekSteeringBehavior.Target = position6;
+        targetOfAgentAvoiderMovingAgent.GlobalPosition = position11.GlobalPosition;
+        agentAvoider.GlobalPosition = position12.GlobalPosition;
+        obstacleMovingAgent.GlobalPosition = position11.GlobalPosition;
+        seekSteeringBehavior.Target = position12;
         agentAvoiderBehavior.Target = targetOfAgentAvoiderMovingAgent;
         agentAvoider.Visible = true;
         obstacleMovingAgent.Visible = true;

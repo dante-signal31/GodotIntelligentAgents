@@ -15,34 +15,39 @@ public partial class ConeSensor : Node2D
     /// <summary>
     /// Delegate for handling events when an object enters the cone of vision.
     /// </summary>
-    [Signal] private delegate void ObjectEnteredConeEventHandler(Node2D detectedObject);
+    [Signal] public delegate void ObjectEnteredConeEventHandler(Node2D detectedObject);
 
 
     /// <summary>
     /// Delegate for handling events when an object exits the cone of vision.
     /// </summary>
-    [Signal] private delegate void ObjectLeftConeEventHandler(Node2D lostObject);
+    [Signal] public delegate void ObjectLeftConeEventHandler(Node2D lostObject);
 
     /// <summary>
     /// Delegate for handling changes in the cone sensor's dimensions,
     /// such as range and angle.
     /// </summary>
-    [Signal] private delegate void ConeSensorDimensionsChangedEventHandler(
+    [Signal] public delegate void ConeSensorDimensionsChangedEventHandler(
         float newRange, float newDegrees);
-
+    
     [ExportCategory("CONFIGURATION:")]
-    private float _detectionRange = 10.0f;
+    /// <summary>
+    /// Specifies the physics layers that the sensor will monitor for objects.
+    /// </summary>
+    [Export(PropertyHint.Layers2DPhysics)] public uint LayersToDetect { get; set; } = 1;
+    
+    private float _detectionRange;
     /// <summary>
     /// Range to detect objects.
     /// </summary>
-    [Export] private float DetectionRange
+    public float DetectionRange
     {
         get => _detectionRange;
         set
         {
-            // Guard needed to avoid infinite calls between this component and _coneRange
-            // when changing the range.
-            if (Mathf.IsEqualApprox(_detectionRange, value)) return;
+            // // Guard needed to avoid infinite calls between this component and _coneRange
+            // // when changing the range.
+            // if (Mathf.IsEqualApprox(_detectionRange, value)) return;
             
             _detectionRange = value;
             UpdateDetectionArea();
@@ -51,23 +56,23 @@ public partial class ConeSensor : Node2D
                 value, 
                 DetectionSemiConeAngle);
             
-            if (Mathf.IsEqualApprox(_coneRange.Range, value)) return;
-            _coneRange.Range = value;
+            // if (Mathf.IsEqualApprox(_coneRange.Range, value)) return;
+            // _coneRange.Range = value;
         }
     } 
     
-    private float _detectionSemiConeAngle = 45.0f;
+    private float _detectionSemiConeAngle;
     /// <summary>
     /// Semicone angle for detection (in degrees).
     /// </summary>
-    [Export(PropertyHint.Range, "0,90,0.1")] public float DetectionSemiConeAngle
+    public float DetectionSemiConeAngle
     {
         get => _detectionSemiConeAngle;
         set
         {
             // Guard needed to avoid infinite calls between this component and _coneRange
             // when changing the angle.
-            if (Mathf.IsEqualApprox(_detectionSemiConeAngle, value)) return;
+            // if (Mathf.IsEqualApprox(_detectionSemiConeAngle, value)) return;
             
             _detectionSemiConeAngle = value;
             UpdateDetectionArea();
@@ -76,15 +81,10 @@ public partial class ConeSensor : Node2D
                 DetectionRange,
                 value);
             
-            if (Mathf.IsEqualApprox(_coneRange.SemiConeDegrees, value)) return;
-            _coneRange.SemiConeDegrees = value;
+            // if (Mathf.IsEqualApprox(_coneRange.SemiConeDegrees, value)) return;
+            // _coneRange.SemiConeDegrees = value;
         }
     }
-    
-    /// <summary>
-    /// Specifies the physics layers that the sensor will monitor for objects.
-    /// </summary>
-    [Export(PropertyHint.Layers2DPhysics)] private int LayersToDetect { get; set; } = 1;
     
     /// <summary>
     /// This sensor forward vector.
@@ -114,9 +114,13 @@ public partial class ConeSensor : Node2D
         _coneRange = this.FindChild<ConeRange>();
         
         _sensor.DetectionLayers = LayersToDetect;
-        
-        _coneRange.Range = DetectionRange;
-        _coneRange.SemiConeDegrees = DetectionSemiConeAngle;
+
+        if (_coneRange == null ) return;
+        _coneRange.Connect(
+            ConeRange.SignalName.Updated,
+            Callable.From(OnConeRangeUpdated));
+        DetectionRange = _coneRange.Range;
+        DetectionSemiConeAngle = _coneRange.SemiConeDegrees;
     }
     
     private void UpdateDetectionArea()
@@ -153,10 +157,10 @@ public partial class ConeSensor : Node2D
     }
     
     /// <summary>
-    /// Event handler to use when another object enters our cone area.
+    /// Event handler to use when another object enters the detection area.
     /// </summary>
-    /// <param name="otherObject">The object who enters our cone area.</param>
-    public void OnObjectEnteredCone(Node2D otherObject)
+    /// <param name="otherObject">The object who enters the detection area.</param>
+    public void OnObjectEnteredArea(Node2D otherObject)
     {
         if (!PositionIsInConeRange(otherObject.GlobalPosition)) return;
         
@@ -164,12 +168,30 @@ public partial class ConeSensor : Node2D
         
         EmitSignal(SignalName.ObjectEnteredCone, otherObject);
     }
+
+    /// <summary>
+    /// Event handler to use when another object stays in the detection area.
+    /// </summary>
+    /// <param name="otherObject">The object stays in the detection area.</param>
+    public void OnObjectStayedInArea(Node2D otherObject)
+    {
+        if (!PositionIsInConeRange(otherObject.GlobalPosition) &&
+            DetectedObjects.Contains(otherObject))
+        {
+            DetectedObjects.Remove(otherObject);
+            return;
+        }
+
+        if (!PositionIsInConeRange(otherObject.GlobalPosition)) return;
+        
+        if (!DetectedObjects.Contains(otherObject)) DetectedObjects.Add(otherObject);
+    }
     
     /// <summary>
     /// Event handler to use when another object exits our detection area.
     /// </summary>
     /// <param name="otherObject">The object who exits our detection area.</param>
-    public void OnObjectLeftCone(Node2D otherObject)
+    public void OnObjectLeftArea(Node2D otherObject)
     {
         if (!DetectedObjects.Contains(otherObject)) return;
         

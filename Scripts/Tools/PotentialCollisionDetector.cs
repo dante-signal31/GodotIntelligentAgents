@@ -4,6 +4,7 @@ using Godot;
 using Godot.Collections;
 using GodotGameAIbyExample.addons.InteractiveRanges.ConeRange;
 using GodotGameAIbyExample.Scripts.Extensions;
+using GodotGameAIbyExample.Scripts.Sensors;
 
 namespace GodotGameAIbyExample.Scripts.Tools;
 
@@ -23,7 +24,7 @@ public partial class PotentialCollisionDetector : Node2D
     /// will monitor for potential collisions. This variable is used to configure
     /// which 2D physics layers should be included in detection.
     /// </summary>
-    [Export(PropertyHint.Layers2DPhysics)] private uint _layersToDetect = 1;
+    // [Export(PropertyHint.Layers2DPhysics)] private uint _layersToDetect = 1;
 
     /// <summary>
     /// Represents the radius of an agent used for potential collision detection.
@@ -33,6 +34,7 @@ public partial class PotentialCollisionDetector : Node2D
     /// detecting potential collisions with other objects or agents.
     /// </remarks>
     [Export] public float AgentRadius { get; set; }
+    
 
     /// <summary>
     /// Indicates whether a potential collision has been detected if current agent
@@ -106,84 +108,65 @@ public partial class PotentialCollisionDetector : Node2D
     /// </remarks>
     public float CollisionDistance { get; private set; }
 
-    private ConeRange _coneRange;
-    private Area2D _detectionArea;
+    private ConeSensor _sensor;
     private CollisionShape2D _collisionShape;
     private MovingAgent _currentAgent;
+    private HashSet<MovingAgent> _detectedAgents = new();
     
     public override void _EnterTree()
     {
         // Find out who our father is.
         _currentAgent = this.FindAncestor<MovingAgent>();
+        CollisionDistance = 2 * AgentRadius;
     }
 
     public override void _Ready()
     {
-        _coneRange = this.FindChild<ConeRange>();
-        _detectionArea = this.FindChild<Area2D>();
-        _detectionArea.CollisionMask = _layersToDetect;
-        _collisionShape = _detectionArea.FindChild<CollisionShape2D>();
-        CollisionDistance = 2 * AgentRadius;
-        _coneRange?.Connect(
-            ConeRange.SignalName.Updated, 
-            new Callable(this, MethodName.OnConeRangeUpdated));
-        UpdateDetectionArea();
+        _sensor = this.FindChild<ConeSensor>();
+        if (_sensor == null) return;
+        _sensor.Connect(
+            ConeSensor.SignalName.ObjectEnteredCone,
+            new Callable(this, MethodName.OnObjectEnteredSensor));
+        _sensor.Connect(
+            ConeSensor.SignalName.ObjectLeftCone,
+            new Callable(this, MethodName.OnObjectExitedSensor));
+    }
+    
+    /// <summary>
+    /// Event handler to use when another agent enters our detection area.
+    /// </summary>
+    /// <param name="otherObject">The agent who enters our detection area.</param>
+    private void OnObjectEnteredSensor(Node2D otherObject)
+    {
+        if (otherObject is MovingAgent otherAgent)
+        {
+            _detectedAgents.Add(otherAgent);
+        }
+    }
+    
+    /// <summary>
+    /// Event handler to use when another agent exits our detection area.
+    /// </summary>
+    /// <param name="otherAgent">The agent who exits our detection area.</param>
+    private void OnObjectExitedSensor(Node2D otherObject)
+    {
+        if (otherObject is MovingAgent otherAgent)
+        {
+            if (!_detectedAgents.Contains(otherAgent)) return;
+            _detectedAgents.Remove(otherAgent);
+        }
     }
 
-    private void OnConeRangeUpdated()
+    public override void _PhysicsProcess(double delta)
     {
-        UpdateDetectionArea();
-    }
-
-    private void UpdateDetectionArea()
-    {
-        if (_collisionShape == null || _coneRange == null) return;
-        
-        RectangleShape2D rectangleShape = new RectangleShape2D();
-        
-        rectangleShape.Size = new Vector2(
-            _coneRange.Range, 
-            _coneRange.Range * 
-            Mathf.Sin(float.DegreesToRadians(_coneRange.SemiConeDegrees)) * 
-            2);
-        
-        // Set position offset to center the rectangle properly.
-        // Move it half its length to the right since we want it to grow in that
-        // direction.
-        _collisionShape.Position = new Vector2(_coneRange.Range / 2, 0);
-        
-        _collisionShape.Shape = rectangleShape;
-    }
-
-    private Array<MovingAgent> GetDetectedAgents()
-    {
-        Array<Node2D> detections = _detectionArea.GetOverlappingBodies();
-        Array<MovingAgent> detectedAgents = new Array<MovingAgent>(
-            detections.Where(x => 
+        Array<MovingAgent> targets = new Array<MovingAgent>(
+            _sensor.DetectedObjects.Where(x => 
                     x is MovingAgent && 
                     // Don't take in count our own agent.
                     ((MovingAgent)x).Name != _currentAgent.Name)
                 .Cast<MovingAgent>()
                 .ToArray());
-        Array<MovingAgent> detectedAgentsInCone = new Array<MovingAgent>();
-        foreach (MovingAgent agent in detectedAgents)
-        {
-            float distance = agent.GlobalPosition.DistanceTo(
-                _currentAgent.GlobalPosition);
-            float heading = Mathf.Abs(Mathf.RadToDeg(
-                _currentAgent.Forward.AngleToPoint(
-                _currentAgent.ToLocal(agent.GlobalPosition))));
-            if (distance < _coneRange.Range && heading < _coneRange.SemiConeDegrees)
-            {
-                detectedAgentsInCone.Add(agent);
-            }
-        }
-        return detectedAgentsInCone;
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        Array<MovingAgent> targets = GetDetectedAgents();
+        
         if (targets.Count == 0)
         {
             PotentialCollisionDetected = false;
@@ -263,19 +246,13 @@ public partial class PotentialCollisionDetector : Node2D
 
     public override string[] _GetConfigurationWarnings()
     {
-        ConeRange coneRange = this.FindChild<ConeRange>();
-        Area2D detectionArea = this.FindChild<Area2D>();
+        ConeSensor sensor = this.FindChild<ConeSensor>();
 
         List<string> warnings = new();
 
-        if (coneRange == null)
+        if (sensor == null)
         {
-            warnings.Add("This node needs a child ConeRange node to work. ");
-        }
-
-        if (detectionArea == null)
-        {
-            warnings.Add("This node needs a child Area2D node to work");
+            warnings.Add("This node needs a child ConeSensor node to work. ");
         }
 
         return warnings.ToArray();

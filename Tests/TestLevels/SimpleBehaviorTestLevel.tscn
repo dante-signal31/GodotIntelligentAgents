@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://b62033ep2w41i"]
+[gd_scene load_steps=23 format=3 uid="uid://b62033ep2w41i"]
 
 [ext_resource type="PackedScene" uid="uid://dqt1t3nk4wc4b" path="res://Levels/ClearCourtyard.tscn" id="1_oy3cc"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="3_hsc70"]
@@ -21,6 +21,7 @@
 [ext_resource type="PackedScene" uid="uid://068cpctdscth" path="res://Scenes/SteeringBehaviors/AgentAvoiderSteeringBehavior.tscn" id="19_gd0kq"]
 [ext_resource type="PackedScene" uid="uid://cnlu57k6d60rt" path="res://Scenes/Tools/PotentialCollisionDetector.tscn" id="20_qd6kt"]
 [ext_resource type="Script" uid="uid://x00e0v0m34tl" path="res://addons/InteractiveRanges/ConeRange/ConeRange.cs" id="21_6oyvm"]
+[ext_resource type="PackedScene" uid="uid://be350relk3jqo" path="res://Scenes/Sensors/ConeSensor.tscn" id="21_qd6kt"]
 
 [node name="SimpleBehaviorTestLevel" type="Node2D"]
 
@@ -75,14 +76,14 @@ position = Vector2(1486, 506)
 [node name="SeekMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(537, 367)
+position = Vector2(1521, 775)
 MaximumSpeed = 200.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
-Target = NodePath("../../../Positions/Position6")
+Target = NodePath("../../../Positions/Position4")
 ArrivalDistance = 10.0
 
 [node name="ArriveMovingAgentLA" parent="Agents" instance=ExtResource("4_d5nib")]
@@ -287,7 +288,7 @@ position = Vector2(288, -22)
 [node name="AgentAvoiderMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(285, 511)
+position = Vector2(334, 742)
 MaximumSpeed = 300.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
@@ -300,9 +301,11 @@ TooAlignedFactor = 0.9
 [node name="PotentialCollisionDetector" parent="Agents/AgentAvoiderMovingAgent/AgentAvoiderSteeringBehavior" instance=ExtResource("20_qd6kt")]
 AgentRadius = 55.0
 
-[node name="ConeRange" type="Node2D" parent="Agents/AgentAvoiderMovingAgent/AgentAvoiderSteeringBehavior/PotentialCollisionDetector"]
+[node name="ConeSensor" parent="Agents/AgentAvoiderMovingAgent/AgentAvoiderSteeringBehavior/PotentialCollisionDetector" instance=ExtResource("21_qd6kt")]
+
+[node name="ConeRange" type="Node2D" parent="Agents/AgentAvoiderMovingAgent/AgentAvoiderSteeringBehavior/PotentialCollisionDetector/ConeSensor"]
 script = ExtResource("21_6oyvm")
 SemiConeDegrees = 90.0
 Resolution = 10
-Range = 600.0
+Range = 300.0
 metadata/_custom_type_script = "uid://x00e0v0m34tl"

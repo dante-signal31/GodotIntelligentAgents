@@ -13,14 +13,16 @@ public partial class VolumetricSensor : Node2D
 {
 
     [Signal] private delegate void ObjectEnteredAreaEventHandler(Node2D detectedObject);
-    [Signal] private delegate void ObjectStayedAreaEventHandler(Node2D detectedObject);
+    
+    [Signal] private delegate void ObjectStayedInAreaEventHandler(Node2D detectedObject);
+    
     [Signal] private delegate void ObjectLeftAreaEventHandler(Node2D detectedObject);
 
     [ExportCategory("CONFIGURATION:")]
     /// <summary>
     /// Specifies the physics layers that the will monitor for detections.
     /// </summary>
-    [Export(PropertyHint.Layers2DPhysics)] public int DetectionLayers { get; set; }
+    [Export(PropertyHint.Layers2DPhysics)] public uint DetectionLayers { get; set; }
     
     /// <summary>
     /// Current set of objects that is inside the detection area.
@@ -38,14 +40,37 @@ public partial class VolumetricSensor : Node2D
     public override void _Ready()
     {
         _area = this.FindChild<Area2D>();
+        if (_area == null) return;
+        // Look for collision shape. It may be under VolumetricSensor or under Area2D.
+        // If it's under VolumetricSensor, we need to reparent it to Area2D to run the
+        // game. But if we are in the editor, we need to reparent it to VolumetricSensor
+        // in order to be able to link collision shape with BoxManager.
         _collisionShape = this.FindChild<CollisionShape2D>();
-
-        if (_area == null || _collisionShape == null) return;
-        _area.AddChild(_collisionShape);
+        if (_collisionShape == null)
+        {
+            _collisionShape = this.FindChild<CollisionShape2D>(recursive: true);
+            if (_collisionShape == null) return;
+        }
+        
+        if (Engine.IsEditorHint())
+        {
+            _collisionShape.Reparent(this);
+        }
+        else
+        {
+            _collisionShape.Reparent(_area);
+        }
+        
         _area.BodyEntered += OnObjectEntered;
         _area.BodyExited += OnObjectExited;
 
         UpdateDetectedObjectsSet();
+    }
+
+    
+    public override void _ExitTree()
+    {
+        _collisionShape.Reparent(this);
     }
 
     /// <summary>
@@ -68,14 +93,22 @@ public partial class VolumetricSensor : Node2D
     {
         if (DetectedObjects.Contains(body)) return;
         DetectedObjects.Add(body);
-        EmitSignal(nameof(ObjectEnteredAreaEventHandler), body);
+        EmitSignal(SignalName.ObjectEnteredArea, body);
     }
 
     private void OnObjectExited(Node2D body)
     {
         if (!DetectedObjects.Contains(body)) return;
         DetectedObjects.Remove(body);
-        EmitSignal(nameof(ObjectLeftAreaEventHandler), body);
+        EmitSignal(SignalName.ObjectLeftArea, body);
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        foreach (var detectedObject in DetectedObjects)
+        {
+            EmitSignal(SignalName.ObjectStayedInArea, detectedObject);
+        }
     }
 
     public override string[] _GetConfigurationWarnings()
