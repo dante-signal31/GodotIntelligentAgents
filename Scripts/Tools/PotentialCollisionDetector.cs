@@ -202,7 +202,7 @@ public partial class PotentialCollisionDetector : Node2D
             // https://medium.com/@knave/collision-avoidance-the-math-1f6cdf383b5c
             //
             // So, I've multiplied by -1.0 the numerator.
-            float timeToClosestPosition = -relativePosition.Dot(relativeVelocity) / 
+            float timeToClosestPosition = -1 * relativePosition.Dot(relativeVelocity) / 
                                     (float) Mathf.Pow(relativeSpeed, 2.0);
 
             // They are moving away, so no collision possible.
