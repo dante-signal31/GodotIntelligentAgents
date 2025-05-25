@@ -30,7 +30,7 @@ public partial class ArriveSteeringBehaviorNLA: Node, ISteeringBehavior, ITarget
     /// </summary>
     [Export] private Curve _accelerationCurve;
     /// <summary>
-    /// Radius to start slowing down using deceleration curve.
+    /// Radius to start slowing down using a deceleration curve.
     /// </summary>
     [Export] public float BrakingRadius { get; set; }
     /// <summary>
