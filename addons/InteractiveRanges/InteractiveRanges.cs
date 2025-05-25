@@ -17,12 +17,18 @@ public partial class InteractiveRanges: EditorPlugin
             "Node2D",
             "res://addons/InteractiveRanges/ConeRange/ConeRange.cs",
             "res://addons/InteractiveRanges/ConeRange/ConeRangeIcon.svg");
+        RegisterCustomNode(
+            "SectorRange",
+            "Node2D",
+            "res://addons/InteractiveRanges/SectorRange/SectorRange.cs",
+            "res://addons/InteractiveRanges/SectorRange/SectorRangeIcon.svg");
     }
 
     public override void _ExitTree()
     {
         RemoveCustomType("CircularRange");
         RemoveCustomType("ConeRange");
+        RemoveCustomType("SectorRange");
     }
 
     private void RegisterCustomNode(

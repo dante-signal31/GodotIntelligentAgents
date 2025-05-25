@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
+using GodotGameAIbyExample.addons.InteractiveRanges.SectorRange;
+using GodotGameAIbyExample.Scripts.Extensions;
 
 namespace GodotGameAIbyExample.Scripts.Sensors;
 
@@ -538,7 +540,7 @@ public partial class WhiskersSensor : Node2D
         
         List<string> warnings = new();
         
-        if (!sectorRange == null)
+        if (sectorRange != null)
         {
             warnings.Add("This node needs a child node of type " +
                          "SectorRange to work properly.");  
