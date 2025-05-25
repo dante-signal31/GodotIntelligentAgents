@@ -201,7 +201,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     }
 
     public override void _PhysicsProcess(double delta)
-    {
+    { // TODO: Hide agent stays frozen while threat moves. Fix it.
         if (Threat == null || _rayCast2D == null) return;
         
         // Check if there is a line of sight with the threat.
@@ -298,7 +298,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     public override void _Draw()
     {
         if (!ShowGizmos ||
-            Engine.IsEditorHint()) return;
+            !Engine.IsEditorHint()) return;
         
         // Draw detection raycast.
         DrawLine(
