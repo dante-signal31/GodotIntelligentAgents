@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using GdUnit4;
@@ -9,7 +10,7 @@ using static GdUnit4.Assertions;
 
 namespace GodotGameAIbyExample.Tests;
 
-[TestSuite]
+[TestSuite, RequireGodotRuntime]
 public class SimpleBehaviorTests
 {
     private const string TestScenePath = "res://Tests/TestLevels/" +
@@ -20,7 +21,7 @@ public class SimpleBehaviorTests
     [BeforeTest]
     public void LoadScene()
     {
-        _sceneRunner = ISceneRunner.Load(TestScenePath);
+        _sceneRunner = ISceneRunner.Load(TestScenePath, autoFree: true);
         _sceneRunner.MaximizeView();
     }
 
