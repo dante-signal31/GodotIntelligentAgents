@@ -167,7 +167,7 @@ public partial class WhiskersSensor : Node2D
     /// <summary>
     /// Angular width in degrees for this sensor.
     /// </summary>
-    [Export(PropertyHint.Range, "0, 90")] public float SemiConeDegrees
+    public float SemiConeDegrees
     {
         get => _semiConeDegrees;
         set
@@ -184,7 +184,7 @@ public partial class WhiskersSensor : Node2D
     /// <summary>
     /// Maximum range for these rays.
     /// </summary>
-    [Export] public float Range
+    public float Range
     {
         get => _range;
         set
@@ -201,7 +201,7 @@ public partial class WhiskersSensor : Node2D
     /// <summary>
     /// Minimum range for these rays. Useful to make rays start not at the agent's center.
     /// </summary>
-    [Export] public float MinimumRange
+    public float MinimumRange
     {
         get => _minimumRange;
         set
