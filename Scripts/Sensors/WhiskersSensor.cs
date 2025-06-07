@@ -140,6 +140,7 @@ public partial class WhiskersSensor : Node2D
         set
         {
             _sensorsLayersMask = value;
+            if (_sensors == null) return;
             foreach (RaySensor raySensor in _sensors)
             {
                 raySensor.DetectionLayers = _sensorsLayersMask;
@@ -147,17 +148,18 @@ public partial class WhiskersSensor : Node2D
         }
     }
     
-    private uint _sensorResolution = 1;
+    private uint _sensorResolution;
     /// <summary>
     /// Number of rays for this sensor: (sensorResolution * 2) + 3"
     /// </summary>
-    [Export(PropertyHint.Range, "0, 10, 1")] public uint SensorResolution
+    [Export] public uint SensorResolution
     {
         get => _sensorResolution;
         set
         {
+            if (_sensorResolution == value) return;
             _sensorResolution = value;
-            _onValidatingUpdatePending = true;
+            UpdateRayEnds();
         }
     }
 
@@ -165,13 +167,16 @@ public partial class WhiskersSensor : Node2D
     /// <summary>
     /// Angular width in degrees for this sensor.
     /// </summary>
-    [Export(PropertyHint.Range, "0.0, 180.0, 1.0")] public float SemiConeDegrees
+    [Export(PropertyHint.Range, "0, 90")] public float SemiConeDegrees
     {
         get => _semiConeDegrees;
         set
         {
             _semiConeDegrees = value;
+            if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
+            _sectorRange.SemiConeDegrees = value;
+            UpdateRayEnds();
         }
     }
 
@@ -185,7 +190,10 @@ public partial class WhiskersSensor : Node2D
         set
         {
             _range = value;
+            if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
+            _sectorRange.Range = value;
+            UpdateRayEnds();
         }
     }
 
@@ -199,7 +207,10 @@ public partial class WhiskersSensor : Node2D
         set
         {
             _minimumRange = value;
+            if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
+            _sectorRange.MinimumRange = value;
+            UpdateRayEnds();
         }
     }
 
@@ -299,6 +310,7 @@ public partial class WhiskersSensor : Node2D
     private RaySensorList _sensors;
     private bool _onValidatingUpdatePending;
     private HashSet<RayCastHit> _rayCastHits = new();
+    private SectorRange _sectorRange;
 
     private void UpdateRayCastHits()
     {
@@ -320,6 +332,7 @@ public partial class WhiskersSensor : Node2D
     /// <returns>New list for sensor ends local positions.</returns>
     private void UpdateRayEnds()
     {
+        if (_leftRangeSemiCone == null || _rightRangeSemiCone == null) return;
         Array<RayEnds> rayEnds = new();
 
         float totalPlacementAngle = SemiConeDegrees * 2;
@@ -328,7 +341,7 @@ public partial class WhiskersSensor : Node2D
         for (int i = 0; i < SensorAmount; i++)
         {
             float currentAngle = SemiConeDegrees - (placementAngleInterval * i);
-            Vector2 placementVector = Forward.Rotated(currentAngle);
+            Vector2 placementVector = Forward.Rotated(Mathf.DegToRad(currentAngle));
             Vector2 placementVectorStart = placementVector * MinimumRange;
             Vector2 placementVectorEnd =
                 placementVector * (MinimumRange + GetSensorLength(i));
@@ -456,14 +469,41 @@ public partial class WhiskersSensor : Node2D
     {
         
         if (Engine.IsEditorHint())
-        { // If in editor then only place gizmos.
+        { // If in editor then only place gizmos. And link to sector range to set up
+          // fields.
             UpdateRayEnds();
+            _sectorRange = this.FindChild<SectorRange>();
+            SuscribeToSectorRangeEvents();
         }
         else
         { // If not in editor then create real sensors.
             SetupSensors();
             SubscribeToSensorsEvents();
         }
+    }
+
+    private void SuscribeToSectorRangeEvents()
+    {
+        if (_sectorRange == null) return;
+        _sectorRange.Connect(
+            SectorRange.SignalName.Updated,
+            new Callable(this, MethodName.OnSectorRangeUpdated));
+    }
+
+    private void OnSectorRangeUpdated()
+    {
+        // Guard needed to avoid updating loops between these fields and sector range.
+        if (_onValidatingUpdatePending)
+        {
+            _onValidatingUpdatePending = false;
+            return;
+        }
+        
+        _range = _sectorRange.Range;
+        _minimumRange = _sectorRange.MinimumRange;
+        _semiConeDegrees = _sectorRange.SemiConeDegrees;
+        // _sensorResolution = _sectorRange.Resolution;
+        UpdateRayEnds();
     }
 
     /// <summary>
@@ -521,16 +561,16 @@ public partial class WhiskersSensor : Node2D
     
     public override void _Draw()
     {
-        if (!ShowGizmos || !Engine.IsEditorHint()) return;
-
+        if (!ShowGizmos || !Engine.IsEditorHint() || _rayEnds == null) return;
+        
         foreach (RayEnds rayEnd in _rayEnds)
         {
             DrawLine(
                 ToLocal(rayEnd.Start), 
                 ToLocal(rayEnd.End), 
                 GizmoColor);
-            DrawCircle(ToLocal(rayEnd.Start), 10.0f, GizmoColor);
-            DrawCircle(ToLocal(rayEnd.End), 10.0f, GizmoColor);
+            DrawCircle(ToLocal(rayEnd.Start), 1.0f, GizmoColor);
+            DrawCircle(ToLocal(rayEnd.End), 1.0f, GizmoColor);
         }
     }
     
@@ -540,7 +580,7 @@ public partial class WhiskersSensor : Node2D
         
         List<string> warnings = new();
         
-        if (sectorRange != null)
+        if (sectorRange == null)
         {
             warnings.Add("This node needs a child node of type " +
                          "SectorRange to work properly.");  

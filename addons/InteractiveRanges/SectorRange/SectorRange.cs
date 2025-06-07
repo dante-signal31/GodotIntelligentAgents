@@ -48,22 +48,23 @@ public partial class SectorRange: Node2D
         }
     }
 
-    private int _resolution;
+    // private uint _resolution;
     /// <summary>
     /// <p>Resolution for this gizmo.</p>
     /// <p>The higher, the smoother the arc will be.</p>
     /// </summary>
-    [Export] public int Resolution
-    {
-        get => _resolution;
-        set
-        {
-            if (_resolution == value) return;
-            _resolution = value;
-            EmitSignal(SignalName.Updated);
-            QueueRedraw();
-        }
-    }
+    // [Export] public uint Resolution
+    // {
+    //     get => _resolution;
+    //     set
+    //     {
+    //         if (_resolution == value) return;
+    //         _resolution = value;
+    //         EmitSignal(SignalName.Updated);
+    //         QueueRedraw();
+    //     }
+    // }
+    private int Resolution { get; set; } = 40;
 
     private float _range;
     /// <summary>
@@ -119,7 +120,7 @@ public partial class SectorRange: Node2D
             SemiConeRadians, 
             Resolution,
             color: RangeColor,
-            width: 3f);
+            width: 1f);
         
         // Sides.
         Vector2 side = new Vector2(Range, 0);
@@ -141,7 +142,7 @@ public partial class SectorRange: Node2D
             SemiConeRadians, 
             Resolution,
             color: RangeColor,
-            width: 3f);
+            width: 1f);
     }
     
 }

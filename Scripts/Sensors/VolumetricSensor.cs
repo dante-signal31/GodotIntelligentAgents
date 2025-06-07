@@ -51,6 +51,7 @@ public partial class VolumetricSensor : Node2D
     
     public override void _ExitTree()
     {
+        if (_collisionShape == null) return;
         _collisionShape.Reparent(this);
     }
 

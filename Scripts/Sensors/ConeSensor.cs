@@ -152,6 +152,7 @@ public partial class ConeSensor : Node2D
     /// detecting an agent.</param>
     public void OnConeRangeUpdated()
     {
+        if (_coneRange == null) return;
         DetectionRange = _coneRange.Range;
         DetectionSemiConeAngle = _coneRange.SemiConeDegrees;
     }
