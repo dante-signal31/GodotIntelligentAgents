@@ -214,19 +214,39 @@ public partial class WhiskersSensor : Node2D
         }
     }
 
+    private Curve _leftRangeSemiCone;
     /// <summary>
     /// <p>Range proportion for whiskers at left side.</p>
     /// <ul>0.0 = leftmost sensor.</ul>
     /// <ul>1.0 = center sensor.</ul>
     /// </summary>
-    [Export] private Curve _leftRangeSemiCone;
+    [Export] private Curve LeftRangeSemiCone
+    {
+        get => _leftRangeSemiCone;
+        set
+        {
+            if (_leftRangeSemiCone == value) return;
+            _leftRangeSemiCone = value;
+            UpdateRayEnds();
+        }
+    }
     
+    private Curve _rightRangeSemiCone;
     /// <summary>
     /// <p>Range proportion for whiskers at right side.</p>
     /// <ul>0.0 = center sensor</ul>
     /// <ul>1.0 = right sensor.</ul>
     /// </summary>
-    [Export] private Curve _rightRangeSemiCone;
+    [Export] private Curve RightRangeSemiCone
+    {
+        get => _rightRangeSemiCone;
+        set
+        {
+            if (_rightRangeSemiCone == value) return;
+            _rightRangeSemiCone = value;
+            UpdateRayEnds();
+        }
+    }
     
     [Export] private Array<RayEnds> _rayEnds;
 
@@ -264,26 +284,28 @@ public partial class WhiskersSensor : Node2D
     }
 
     /// <summary>
-    /// Set of detected objects.
+    /// <p>Set of detected objects.</p>
+    /// <p>It offers a tuple of (Node2D, int) where the int is the sensor index.</p>
     /// </summary>
-    public HashSet<Node2D> DetectedObjects
+    public HashSet<(Node2D, int)> DetectedObjects
     {
         get
         {
-            HashSet<Node2D> detectedObjects = new();
+            HashSet<(Node2D, int)> detectedObjects = new();
             UpdateRayCastHits();
-            foreach (RayCastHit hit in _rayCastHits)
+            foreach ((RayCastHit hit, int index) in _rayCastHits)
             {
-                detectedObjects.Add(hit.DetectedObject);
+                detectedObjects.Add((hit.DetectedObject, index));
             }
             return detectedObjects;
         }
     }
 
     /// <summary>
-    /// Set of detected hits.
+    /// <p>List of detected hits.</p>
+    /// <p>It offers a tuple of (RayCastHit, int) where the int is the sensor index.</p>
     /// </summary>
-    public HashSet<RayCastHit> DetectedHits
+    public List<(RayCastHit, int)> DetectedHits
     {
         get
         {
@@ -309,7 +331,7 @@ public partial class WhiskersSensor : Node2D
     
     private RaySensorList _sensors;
     private bool _onValidatingUpdatePending;
-    private HashSet<RayCastHit> _rayCastHits = new();
+    private List<(RayCastHit, int)> _rayCastHits = new();
     private SectorRange _sectorRange;
 
     private void UpdateRayCastHits()
@@ -321,7 +343,7 @@ public partial class WhiskersSensor : Node2D
             index++;
             if (!sensor.IsObjectDetected) continue;
             RayCastHit currentHit = sensor.DetectedHit;
-            _rayCastHits.Add(currentHit);
+            _rayCastHits.Add((currentHit, index));
         }
     }
     
@@ -332,7 +354,7 @@ public partial class WhiskersSensor : Node2D
     /// <returns>New list for sensor ends local positions.</returns>
     private void UpdateRayEnds()
     {
-        if (_leftRangeSemiCone == null || _rightRangeSemiCone == null) return;
+        if (LeftRangeSemiCone == null || RightRangeSemiCone == null) return;
         Array<RayEnds> rayEnds = new();
 
         float totalPlacementAngle = SemiConeDegrees * 2;
@@ -364,33 +386,15 @@ public partial class WhiskersSensor : Node2D
     /// </summary>
     /// <param name="sensorIndex">Index of this sensor</param>
     /// <returns>This sensor length from the minimum range.</returns>
-    private float GetSensorLength(int sensorIndex)
+    public float GetSensorLength(int sensorIndex)
     {
         uint middleSensorIndex = SensorAmount / 2;
 
         if (sensorIndex < middleSensorIndex)
         {
-            return GetLeftSensorLength(sensorIndex, middleSensorIndex);
+            return GetRightSensorLength(sensorIndex, middleSensorIndex);
         }
-        return GetRightSensorLength(sensorIndex, middleSensorIndex);
-    }
-
-    /// <summary>
-    /// Calculate the length of the right sensor based on the sensor index using
-    /// a right range semicone curve.
-    /// </summary>
-    /// <param name="sensorIndex">Index of this sensor.</param>
-    /// <param name="middleSensorIndex">Middle sensor index.</param>
-    /// <returns>This sensor length from minimum range.</returns>
-    private float GetRightSensorLength(int sensorIndex, uint middleSensorIndex)
-    {
-        float curvePoint = Mathf.InverseLerp(
-            middleSensorIndex, 
-            SensorAmount - 1, 
-            sensorIndex);
-        float curvePointRange = _rightRangeSemiCone.Sample(curvePoint) * 
-                                (Range - MinimumRange);
-        return curvePointRange;
+        return GetLeftSensorLength(sensorIndex, middleSensorIndex);
     }
 
     /// <summary>
@@ -402,8 +406,26 @@ public partial class WhiskersSensor : Node2D
     /// <returns>This sensor length from minimum range.</returns>
     private float GetLeftSensorLength(int sensorIndex, uint middleSensorIndex)
     {
+        float curvePoint = Mathf.InverseLerp(
+            middleSensorIndex, 
+            SensorAmount - 1, 
+            sensorIndex);
+        float curvePointRange = LeftRangeSemiCone.Sample(1-curvePoint) * 
+                                (Range - MinimumRange);
+        return curvePointRange;
+    }
+
+    /// <summary>
+    /// Calculate the length of the right sensor based on the sensor index using
+    /// a right range semicone curve.
+    /// </summary>
+    /// <param name="sensorIndex">Index of this sensor.</param>
+    /// <param name="middleSensorIndex">Middle sensor index.</param>
+    /// <returns>This sensor length from minimum range.</returns>
+    private float GetRightSensorLength(int sensorIndex, uint middleSensorIndex)
+    {
         float curvePoint = Mathf.InverseLerp(0, middleSensorIndex, sensorIndex);
-        float curvePointRange = _leftRangeSemiCone.Sample(curvePoint) * 
+        float curvePointRange = RightRangeSemiCone.Sample(1-curvePoint) * 
                                 (Range - MinimumRange);
         return curvePointRange;
     }
@@ -502,7 +524,6 @@ public partial class WhiskersSensor : Node2D
         _range = _sectorRange.Range;
         _minimumRange = _sectorRange.MinimumRange;
         _semiConeDegrees = _sectorRange.SemiConeDegrees;
-        // _sensorResolution = _sectorRange.Resolution;
         UpdateRayEnds();
     }
 
@@ -561,16 +582,33 @@ public partial class WhiskersSensor : Node2D
     
     public override void _Draw()
     {
-        if (!ShowGizmos || !Engine.IsEditorHint() || _rayEnds == null) return;
-        
-        foreach (RayEnds rayEnd in _rayEnds)
-        {
-            DrawLine(
-                ToLocal(rayEnd.Start), 
-                ToLocal(rayEnd.End), 
-                GizmoColor);
-            DrawCircle(ToLocal(rayEnd.Start), 1.0f, GizmoColor);
-            DrawCircle(ToLocal(rayEnd.End), 1.0f, GizmoColor);
+        if (!ShowGizmos) return;
+
+        if (Engine.IsEditorHint())
+        { // If we are in editor then draw sensors placeholder.
+            if (_rayEnds == null) return;
+            foreach (RayEnds rayEnd in _rayEnds)
+            {
+                DrawLine(
+                    ToLocal(rayEnd.Start), 
+                    ToLocal(rayEnd.End), 
+                    GizmoColor);
+                DrawCircle(ToLocal(rayEnd.Start), 1.0f, GizmoColor);
+                DrawCircle(ToLocal(rayEnd.End), 1.0f, GizmoColor);
+            }
+        }
+        else
+        { // If we are playing game then draw sensors.
+            if (_sensors == null) return;
+            foreach (RaySensor raySensor in _sensors)
+            {
+                DrawLine(
+                    ToLocal(raySensor.StartPosition), 
+                    ToLocal(raySensor.EndPosition), 
+                    GizmoColor);
+                DrawCircle(ToLocal(raySensor.StartPosition), 1.0f, GizmoColor);
+                DrawCircle(ToLocal(raySensor.EndPosition), 1.0f, GizmoColor);
+            }
         }
     }
     
