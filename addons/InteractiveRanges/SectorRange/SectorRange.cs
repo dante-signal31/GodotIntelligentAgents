@@ -47,23 +47,7 @@ public partial class SectorRange: Node2D
             QueueRedraw();
         }
     }
-
-    // private uint _resolution;
-    /// <summary>
-    /// <p>Resolution for this gizmo.</p>
-    /// <p>The higher, the smoother the arc will be.</p>
-    /// </summary>
-    // [Export] public uint Resolution
-    // {
-    //     get => _resolution;
-    //     set
-    //     {
-    //         if (_resolution == value) return;
-    //         _resolution = value;
-    //         EmitSignal(SignalName.Updated);
-    //         QueueRedraw();
-    //     }
-    // }
+    
     private int Resolution { get; set; } = 40;
 
     private float _range;
