@@ -82,6 +82,13 @@ public partial class SectorRange: Node2D
             QueueRedraw();
         }
     }
+    
+    // <summary>
+    /// <p>This node Forward vector.</p>
+    /// <p>Actually looking to local screen right direction. So, X in Godot's 2D local
+    /// axis.</p>
+    /// </summary>
+    public Vector2 Forward => GlobalTransform.X.Normalized(); 
 
     private Node2D _parent;
     

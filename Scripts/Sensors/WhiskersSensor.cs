@@ -319,7 +319,14 @@ public partial class WhiskersSensor : Node2D
     /// <p>Actually looking to local screen up direction. So, -Y in Godot's 2D local
     /// axis.</p>
     /// </summary>
-    public Vector2 Forward => -GlobalTransform.Y.Normalized();
+    public Vector2 Forward
+    {
+        get
+        {
+            if (_sectorRange == null) return -GlobalTransform.Y.Normalized();
+            return _sectorRange.Forward;
+        }
+    }
     
     /// <summary>
     /// Whether this index is the one of the center sensor.
