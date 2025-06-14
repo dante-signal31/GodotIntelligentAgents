@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Godot;
@@ -73,14 +72,14 @@ public partial class WhiskersSensor : Node2D
         /// </summary>
         public RaySensor RightMostSensor => _raySensors[Count - 1];
         
-        // <summary>
+        /// <summary>
         /// Get the sensor at the given index counting from the leftmost sensor to center.
         /// </summary>
         /// <param name="index">0 index is the leftmost sensor</param>
         /// <returns></returns>
         public RaySensor GetSensorFromLeft(int index) => _raySensors[index];
         
-        // <summary>
+        /// <summary>
         ///  Get the sensor at the given index counting from the rightmost sensor to
         /// center.
         /// </summary>
@@ -147,6 +146,12 @@ public partial class WhiskersSensor : Node2D
             }
         }
     }
+
+    /// <summary>
+    /// Whether this sensor should detect its own agent if its ray sensors start inside
+    /// him.
+    /// </summary>
+    [Export] public bool IgnoreOwnerAgent = true;
     
     private uint _sensorResolution;
     /// <summary>
@@ -163,7 +168,6 @@ public partial class WhiskersSensor : Node2D
         }
     }
     
-    // private float _semiConeDegrees = 45.0f;
     /// <summary>
     /// Angular width in degrees for this sensor.
     /// </summary>
@@ -172,15 +176,13 @@ public partial class WhiskersSensor : Node2D
         get => _sectorRange.SemiConeDegrees;
         set
         {
-            // _semiConeDegrees = value;
             if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
             _sectorRange.SemiConeDegrees = value;
             UpdateSensor();
         }
     }
-
-    // private float _range = 1.0f;
+    
     /// <summary>
     /// Maximum range for these rays.
     /// </summary>
@@ -189,15 +191,13 @@ public partial class WhiskersSensor : Node2D
         get => _sectorRange.Range;
         set
         {
-            // _range = value;
             if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
             _sectorRange.Range = value;
             UpdateSensor();
         }
     }
-
-    // private float _minimumRange = 0.2f;
+    
     /// <summary>
     /// Minimum range for these rays. Useful to make rays start not at the agent's center.
     /// </summary>
@@ -206,7 +206,6 @@ public partial class WhiskersSensor : Node2D
         get => _sectorRange.MinimumRange;
         set
         {
-            // _minimumRange = value;
             if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
             _sectorRange.MinimumRange = value;
@@ -248,6 +247,11 @@ public partial class WhiskersSensor : Node2D
         }
     }
     
+    /// <summary>
+    /// Sensor positions are calculated at editor and serialized here, so that is the
+    /// "Export" label. But this variable is not intended to be edited from inspector, so
+    /// this field is hidden from the inspector at _ValidateProperty() method.
+    /// </summary>
     [Export] private Array<RayEnds> _rayEnds;
 
     [ExportCategory("DEBUG:")]
@@ -450,27 +454,17 @@ public partial class WhiskersSensor : Node2D
     }
 
     /// <summary>
-    /// Create a new list of sensors and place them.
+    /// Create a new list of sensors, place and configure them.
     /// </summary>
     private void SetupSensors()
     {
         PopulateSensors();
         PlaceSensors();
-        SetSensorsLayerMask();
-    }
-
-
-    /// <summary>
-    /// <p>Sets the detection layers mask for all sensors to the configured layer mask
-    /// value.</p>
-    /// <p>Updates the layer mask of each RaySensor in the sensor list to match the
-    /// specified SensorsLayersMask.</p>
-    /// </summary>
-    private void SetSensorsLayerMask()
-    {
         foreach (RaySensor raySensor in _sensors)
         {
             raySensor.DetectionLayers = SensorsLayersMask;
+            raySensor.IgnoreColliderOverlappingStartPoint = IgnoreOwnerAgent;
+            raySensor.ShowGizmos = ShowGizmos;
         }
     }
 
@@ -540,11 +534,6 @@ public partial class WhiskersSensor : Node2D
             _onValidatingUpdatePending = false;
             return;
         }
-        
-        // _range = _sectorRange.Range;
-        // _minimumRange = _sectorRange.MinimumRange;
-        // _semiConeDegrees = _sectorRange.SemiConeDegrees;
-        // UpdateRayEnds();
         UpdateSensor();
     }
 
@@ -605,8 +594,9 @@ public partial class WhiskersSensor : Node2D
     {
         if (!ShowGizmos) return;
 
+        // If we are in editor then draw sensors placeholder.
         if (Engine.IsEditorHint())
-        { // If we are in editor then draw sensors placeholder.
+        { 
             if (_rayEnds == null) return;
             foreach (RayEnds rayEnd in _rayEnds)
             {
@@ -618,19 +608,19 @@ public partial class WhiskersSensor : Node2D
                 DrawCircle(ToLocal(rayEnd.End), 1.0f, GizmoColor);
             }
         }
-        else
-        { // If we are playing game then draw sensors.
-            if (_sensors == null) return;
-            foreach (RaySensor raySensor in _sensors)
-            {
-                DrawLine(
-                    ToLocal(raySensor.StartPosition), 
-                    ToLocal(raySensor.EndPosition), 
-                    GizmoColor);
-                DrawCircle(ToLocal(raySensor.StartPosition), 1.0f, GizmoColor);
-                DrawCircle(ToLocal(raySensor.EndPosition), 1.0f, GizmoColor);
-            }
-        }
+        // else
+        // { // If we are playing game then draw sensors.
+        //     if (_sensors == null) return;
+        //     foreach (RaySensor raySensor in _sensors)
+        //     {
+        //         DrawLine(
+        //             ToLocal(raySensor.StartPosition), 
+        //             ToLocal(raySensor.EndPosition), 
+        //             GizmoColor);
+        //         DrawCircle(ToLocal(raySensor.StartPosition), 1.0f, GizmoColor);
+        //         DrawCircle(ToLocal(raySensor.EndPosition), 1.0f, GizmoColor);
+        //     }
+        // }
     }
     
     public override string[] _GetConfigurationWarnings()

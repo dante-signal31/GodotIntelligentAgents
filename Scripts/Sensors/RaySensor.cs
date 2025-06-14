@@ -41,7 +41,7 @@ public partial class RaySensor : Node2D
     /// <summary>
     /// Whether to ignore colliders overlapping start point.
     /// </summary>
-    [Export] private bool IgnoreColliderOverlappingStartPoint
+    [Export] public bool IgnoreColliderOverlappingStartPoint
     {
         get => _ignoreCollidersOverlappingStartPoint;
         set
@@ -55,22 +55,22 @@ public partial class RaySensor : Node2D
     /// <summary>
     /// Whether to show debugging gizmos for this sensor.
     /// </summary>
-    [Export] private bool ShowGizmos { get; set; }
+    [Export] public bool ShowGizmos { get; set; }
     
     /// <summary>
     /// Gizmo color for this sensor.
     /// </summary>
-    [Export] private Color GizmoColor { get; set; } = new Color(1, 0, 0);
+    [Export] public Color GizmoColor { get; set; } = new Color(1, 0, 0);
     
     /// <summary>
     /// Color to show when the sensor detects an object.
     /// </summary>
-    [Export] private Color GizmoDetectedColor { get; set; } = new Color(0, 1, 0);
+    [Export] public Color GizmoDetectedColor { get; set; } = new Color(0, 1, 0);
     
     /// <summary>
     /// Radius for the gizmos that mark the ray ends.
     /// </summary>
-    [Export] private float GizmoRadius { get; set; } = 5.0f;
+    [Export] public float GizmoRadius { get; set; } = 5.0f;
 
     /// <summary>
     /// <p>Whether this sensor has detected any object.</p>
@@ -204,7 +204,7 @@ public partial class RaySensor : Node2D
     
     public override void _Draw()
     {
-        if (!ShowGizmos || !Engine.IsEditorHint()) return;
+        if (!ShowGizmos) return;
         
         DrawLine(
             ToLocal(_rayCast.GlobalPosition), 
