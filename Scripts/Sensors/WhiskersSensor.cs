@@ -159,58 +159,58 @@ public partial class WhiskersSensor : Node2D
         {
             if (_sensorResolution == value) return;
             _sensorResolution = value;
-            UpdateRayEnds();
+            UpdateSensor();
         }
     }
-
-    private float _semiConeDegrees = 45.0f;
+    
+    // private float _semiConeDegrees = 45.0f;
     /// <summary>
     /// Angular width in degrees for this sensor.
     /// </summary>
     public float SemiConeDegrees
     {
-        get => _semiConeDegrees;
+        get => _sectorRange.SemiConeDegrees;
         set
         {
-            _semiConeDegrees = value;
+            // _semiConeDegrees = value;
             if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
             _sectorRange.SemiConeDegrees = value;
-            UpdateRayEnds();
+            UpdateSensor();
         }
     }
 
-    private float _range = 1.0f;
+    // private float _range = 1.0f;
     /// <summary>
     /// Maximum range for these rays.
     /// </summary>
     public float Range
     {
-        get => _range;
+        get => _sectorRange.Range;
         set
         {
-            _range = value;
+            // _range = value;
             if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
             _sectorRange.Range = value;
-            UpdateRayEnds();
+            UpdateSensor();
         }
     }
 
-    private float _minimumRange = 0.2f;
+    // private float _minimumRange = 0.2f;
     /// <summary>
     /// Minimum range for these rays. Useful to make rays start not at the agent's center.
     /// </summary>
     public float MinimumRange
     {
-        get => _minimumRange;
+        get => _sectorRange.MinimumRange;
         set
         {
-            _minimumRange = value;
+            // _minimumRange = value;
             if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
             _sectorRange.MinimumRange = value;
-            UpdateRayEnds();
+            UpdateSensor();
         }
     }
 
@@ -227,7 +227,7 @@ public partial class WhiskersSensor : Node2D
         {
             if (_leftRangeSemiCone == value) return;
             _leftRangeSemiCone = value;
-            UpdateRayEnds();
+            if (_sectorRange != null) UpdateSensor();
         }
     }
     
@@ -244,7 +244,7 @@ public partial class WhiskersSensor : Node2D
         {
             if (_rightRangeSemiCone == value) return;
             _rightRangeSemiCone = value;
-            UpdateRayEnds();
+            if (_sectorRange != null) UpdateSensor();
         }
     }
     
@@ -266,6 +266,18 @@ public partial class WhiskersSensor : Node2D
     /// Number of rays for this sensor with the given resolution.
     /// </summary>
     public uint SensorAmount => (_sensorResolution * 2) + 3;
+
+    /// <summary>
+    /// <p>Updates the sensor system by recalculating ray end points and scheduling a
+    /// redraw of the sensor visualization.</p>
+    /// <p>This method ensures that the sensor setup is refreshed when configuration
+    /// changes occur, such as resolution or other related properties.</p>
+    /// </summary>
+    private void UpdateSensor()
+    {
+        UpdateRayEnds();
+        QueueRedraw();
+    }
     
     /// <summary>
     /// Whether this sensor detects any collider.
@@ -500,9 +512,10 @@ public partial class WhiskersSensor : Node2D
         if (Engine.IsEditorHint())
         { // If in editor then only place gizmos. And link to sector range to set up
           // fields.
-            UpdateRayEnds();
             _sectorRange = this.FindChild<SectorRange>();
             SuscribeToSectorRangeEvents();
+            if (_sectorRange == null) return;
+            UpdateSensor();
         }
         else
         { // If not in editor then create real sensors.
@@ -528,10 +541,11 @@ public partial class WhiskersSensor : Node2D
             return;
         }
         
-        _range = _sectorRange.Range;
-        _minimumRange = _sectorRange.MinimumRange;
-        _semiConeDegrees = _sectorRange.SemiConeDegrees;
-        UpdateRayEnds();
+        // _range = _sectorRange.Range;
+        // _minimumRange = _sectorRange.MinimumRange;
+        // _semiConeDegrees = _sectorRange.SemiConeDegrees;
+        // UpdateRayEnds();
+        UpdateSensor();
     }
 
     /// <summary>
