@@ -608,19 +608,8 @@ public partial class WhiskersSensor : Node2D
                 DrawCircle(ToLocal(rayEnd.End), 1.0f, GizmoColor);
             }
         }
-        // else
-        // { // If we are playing game then draw sensors.
-        //     if (_sensors == null) return;
-        //     foreach (RaySensor raySensor in _sensors)
-        //     {
-        //         DrawLine(
-        //             ToLocal(raySensor.StartPosition), 
-        //             ToLocal(raySensor.EndPosition), 
-        //             GizmoColor);
-        //         DrawCircle(ToLocal(raySensor.StartPosition), 1.0f, GizmoColor);
-        //         DrawCircle(ToLocal(raySensor.EndPosition), 1.0f, GizmoColor);
-        //     }
-        // }
+        // If we are in game and ShowGizmos is set to true, then RaySensors draw by
+        // themselves.
     }
     
     public override string[] _GetConfigurationWarnings()
