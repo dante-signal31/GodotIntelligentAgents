@@ -120,12 +120,24 @@ public partial class WhiskersSensor : Node2D
     }
 
     /// <summary>
-    /// Class to represent ray ends for every sensor in the editor local space.
+    /// Struct to represent ray ends for every sensor in the editor local space.
     /// </summary>
-    public partial class RayEnds: Resource
+    public struct RayEnds
     {
         public Vector2 Start;
         public Vector2 End;
+
+        public RayEnds()
+        {
+            Start = Vector2.Zero;
+            End = Vector2.Zero;
+        }
+        
+        public RayEnds(Vector2 start, Vector2 end)
+        {
+            Start = start;
+            End = end;
+        }
     }
     
     [ExportCategory("CONFIGURATION:")]
@@ -247,12 +259,7 @@ public partial class WhiskersSensor : Node2D
         }
     }
     
-    /// <summary>
-    /// Sensor positions are calculated at editor and serialized here, so that is the
-    /// "Export" label. But this variable is not intended to be edited from inspector, so
-    /// this field is hidden from the inspector at _ValidateProperty() method.
-    /// </summary>
-    [Export] private Array<RayEnds> _rayEnds;
+    private List<RayEnds> _rayEnds;
 
     [ExportCategory("DEBUG:")]
     /// <summary>
@@ -264,6 +271,11 @@ public partial class WhiskersSensor : Node2D
     /// Color for this script gizmos.
     /// </summary>
     [Export] private Color GizmoColor { get; set; }= new Color(1, 0, 0);
+    
+    /// <summary>
+    /// Radius for the senson ends.
+    /// </summary>
+    [Export] private float GizmoRadius { get; set; }= 10.0f;
     
     
     /// <summary>
@@ -377,8 +389,11 @@ public partial class WhiskersSensor : Node2D
     /// <returns>New list for sensor ends local positions.</returns>
     private void UpdateRayEnds()
     {
-        if (LeftRangeSemiCone == null || RightRangeSemiCone == null) return;
-        Array<RayEnds> rayEnds = new();
+        if (LeftRangeSemiCone == null || 
+            RightRangeSemiCone == null || 
+            _sectorRange == null) 
+            return;
+        List<RayEnds> rayEnds = new();
 
         float totalPlacementAngle = SemiConeDegrees * 2;
         float placementAngleInterval = totalPlacementAngle / (SensorAmount - 1);
@@ -391,10 +406,7 @@ public partial class WhiskersSensor : Node2D
             Vector2 placementVectorEnd =
                 placementVector * (MinimumRange + GetSensorLength(i));
             
-            RayEnds rayEnd = new RayEnds{
-                Start = placementVectorStart,
-                End = placementVectorEnd,
-            };
+            RayEnds rayEnd = new RayEnds(placementVectorStart, placementVectorEnd);
             
             rayEnds.Add(rayEnd);
         }
@@ -478,7 +490,7 @@ public partial class WhiskersSensor : Node2D
         foreach (RayEnds rayEnd in _rayEnds)
         {
             RaySensor raySensor = _sensors.GetSensorFromLeft(i);
-            raySensor.GlobalPosition = ToGlobal(rayEnd.Start);
+            raySensor.StartPosition = ToGlobal(rayEnd.Start);
             raySensor.EndPosition = ToGlobal(rayEnd.End);
             i++;
         }
@@ -494,7 +506,14 @@ public partial class WhiskersSensor : Node2D
         for (int i = 0; i < SensorAmount; i++)
         {
             RaySensor raySensor = new RaySensor();
+            Marker2D startPointMarker = new();
+            Marker2D endPointMarker = new();
+            startPointMarker.Name = "StartPoint";
+            endPointMarker.Name = "EndPoint";
+            raySensor.AddChild(startPointMarker);
+            raySensor.AddChild(endPointMarker);
             AddChild(raySensor);
+            raySensor.UpdateEnds();
             raySensors.Add(raySensor);
         }
         _sensors = new RaySensorList(raySensors);
@@ -513,6 +532,9 @@ public partial class WhiskersSensor : Node2D
         }
         else
         { // If not in editor then create real sensors.
+            _sectorRange = this.FindChild<SectorRange>();
+            if (_sectorRange == null) return;
+            UpdateRayEnds();
             SetupSensors();
             SubscribeToSensorsEvents();
         }
@@ -601,11 +623,11 @@ public partial class WhiskersSensor : Node2D
             foreach (RayEnds rayEnd in _rayEnds)
             {
                 DrawLine(
-                    ToLocal(rayEnd.Start), 
-                    ToLocal(rayEnd.End), 
+                    rayEnd.Start, 
+                    rayEnd.End, 
                     GizmoColor);
-                DrawCircle(ToLocal(rayEnd.Start), 1.0f, GizmoColor);
-                DrawCircle(ToLocal(rayEnd.End), 1.0f, GizmoColor);
+                DrawCircle(rayEnd.Start, GizmoRadius, GizmoColor);
+                DrawCircle(rayEnd.End, GizmoRadius, GizmoColor);
             }
         }
         // If we are in game and ShowGizmos is set to true, then RaySensors draw by
@@ -621,7 +643,7 @@ public partial class WhiskersSensor : Node2D
         if (sectorRange == null)
         {
             warnings.Add("This node needs a child node of type " +
-                         "SectorRange to work properly.");  
+                         "SectorRange to detect objects to avoid.");  
         }
         
         return warnings.ToArray();

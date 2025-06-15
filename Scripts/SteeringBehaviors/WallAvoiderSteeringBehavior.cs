@@ -12,7 +12,7 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <summary>
 /// Steering behavior to avoid walls and obstacles.
 /// </summary>
-public partial class WallAvoidanceSteeringBehavior : Node, ISteeringBehavior
+public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
 {
     /// <summary>
     /// Data about the closest hit.
@@ -42,23 +42,23 @@ public partial class WallAvoidanceSteeringBehavior : Node, ISteeringBehavior
         }
     }
     
-    private uint _layersToAvoid;
-
-    /// <summary>
-    /// Layers to avoid.
-    /// </summary>
-    [Export] public uint LayersToAvoid
-    {
-        get => _layersToAvoid;
-        private set
-        {
-            if (_layersToAvoid == value) return;
-            _layersToAvoid = value;
-            
-            if (_whiskersSensor == null) return;
-            _whiskersSensor.SensorsLayersMask = value;
-        }
-    }
+    // private uint _layersToAvoid;
+    //
+    // /// <summary>
+    // /// Layers to avoid.
+    // /// </summary>
+    // [Export(PropertyHint.Layers2DPhysics)] public uint LayersToAvoid
+    // {
+    //     get => _layersToAvoid;
+    //     private set
+    //     {
+    //         if (_layersToAvoid == value) return;
+    //         _layersToAvoid = value;
+    //         
+    //         if (_whiskersSensor == null) return;
+    //         _whiskersSensor.SensorsLayersMask = value;
+    //     }
+    // }
     
     [ExportCategory("DEBUG:")]
     /// <summary>
@@ -93,7 +93,7 @@ public partial class WallAvoidanceSteeringBehavior : Node, ISteeringBehavior
         
         _whiskersSensor = this.FindChild<WhiskersSensor>();
         if (_whiskersSensor == null) return;
-        _whiskersSensor.SensorsLayersMask = LayersToAvoid;
+        // _whiskersSensor.SensorsLayersMask = LayersToAvoid;
         _whiskersSensor.Connect(
             WhiskersSensor.SignalName.ObjectDetected,
             new Callable(this, MethodName.OnObstacleDetected));

@@ -166,8 +166,20 @@ public partial class RaySensor : Node2D
 
     public override void _Ready()
     {
-        _startPoint = (Marker2D) FindChild(StartPointName);
-        _endPoint = (Marker2D) FindChild(EndPointName);
+        UpdateEnds();
+    }
+
+    public void UpdateEnds()
+    {
+        _startPoint = (Marker2D) FindChild(
+            StartPointName, 
+            false, 
+            false);
+        _endPoint = (Marker2D) FindChild(
+            EndPointName, 
+            false, 
+            false);
+        if (_startPoint == null || _endPoint == null) return;
         UpdateRayData();
     }
 
@@ -207,19 +219,19 @@ public partial class RaySensor : Node2D
         if (!ShowGizmos) return;
         
         DrawLine(
-            ToLocal(_rayCast.GlobalPosition), 
-            ToLocal(ToGlobal(_rayCast.TargetPosition)), 
+            ToLocal(StartPosition), 
+            ToLocal(EndPosition), 
             GizmoColor);
-        DrawCircle(ToLocal(_rayCast.GlobalPosition), 10.0f, GizmoColor);
+        DrawCircle(ToLocal(StartPosition), 10.0f, GizmoColor);
         DrawCircle(
-            ToLocal(ToGlobal(_rayCast.TargetPosition)), 
+            ToLocal(EndPosition), 
             10.0f, 
             GizmoColor);
         
         if (!IsObjectDetected) return;
 
         DrawLine(
-            ToLocal(_rayCast.GlobalPosition),
+            ToLocal(StartPosition),
             ToLocal(DetectedHit.Position),
             GizmoDetectedColor);
     }
