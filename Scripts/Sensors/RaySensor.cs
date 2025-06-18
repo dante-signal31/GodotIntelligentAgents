@@ -166,6 +166,7 @@ public partial class RaySensor : Node2D
 
     public override void _Ready()
     {
+        AddChild(_rayCast);
         UpdateEnds();
     }
 
