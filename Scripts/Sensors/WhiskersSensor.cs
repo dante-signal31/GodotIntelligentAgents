@@ -27,9 +27,9 @@ public partial class WhiskersSensor : Node2D
 {
     /// <summary>
     /// <p>Event to trigger when an object is detected by this sensor.</p>
-    /// <p>The event is emitted with the detected object Node2D as a parameter.</p>
+    /// <p>The event is emitted with the detected RayCastHit as a parameter.</p>
     /// </summary>
-    [Signal] public delegate void ObjectDetectedEventHandler(Node2D detectedObject);
+    [Signal] public delegate void ObjectDetectedEventHandler(RayCastHit hit);
     
     /// <summary>
     /// <p>Event to trigger when no object is detected by this sensor.</p>
@@ -583,7 +583,7 @@ public partial class WhiskersSensor : Node2D
     /// object.</param>
     private void OnObjectDetected(RaySensor detectingSensor)
     {
-        EmitSignal(SignalName.ObjectDetected, detectingSensor);  
+        EmitSignal(SignalName.ObjectDetected, detectingSensor.DetectedHit);  
     }
 
     /// <summary>

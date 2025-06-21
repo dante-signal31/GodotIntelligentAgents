@@ -4,10 +4,12 @@ using Godot;
 namespace GodotGameAIbyExample.Scripts.Sensors;
 
 /// <summary>
-/// Struct to represent many pieces of information about a detection result from
-/// a ray cast.
+/// <p>Class to represent many pieces of information about a detection result from
+/// a ray cast.</p>
+/// <p> I've made it inherit from Resource to make it a Variant type so it can be passed
+/// as a signal parameter. </p>
 /// </summary>
-public struct RayCastHit : IEquatable<RayCastHit>
+public partial class RayCastHit : Resource, IEquatable<RayCastHit>
 {
     /// <summary>
     /// Hit global position.

@@ -57,13 +57,15 @@ StopRotationDegThreshold = 1.0
 Target = NodePath("../../../Target")
 
 [node name="WhiskersSensor" parent="Agents/WallAvoiderMovingAgent/WallAvoiderSteeringBehavior" instance=ExtResource("7_8prle")]
+SensorsLayersMask = 8
+SensorResolution = 2
 LeftRangeSemiCone = ExtResource("8_ib2b3")
 RightRangeSemiCone = ExtResource("9_1atku")
 
 [node name="SectorRange" type="Node2D" parent="Agents/WallAvoiderMovingAgent/WallAvoiderSteeringBehavior/WhiskersSensor"]
 script = ExtResource("8_dgjwj")
-SemiConeDegrees = 21.347
-Range = 400.0
+SemiConeDegrees = 78.128
+Range = 300.0
 metadata/_custom_type_script = "uid://d1u7qmneniqg0"
 
 [node name="Positions" type="Node" parent="."]

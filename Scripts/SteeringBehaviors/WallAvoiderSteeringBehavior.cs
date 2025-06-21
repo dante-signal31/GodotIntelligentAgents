@@ -3,6 +3,7 @@ using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.Sensors;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
+using Timer = System.Timers.Timer;
 
 // It must be marked as Tool to be found by MovingAgent when it uses my custom extension
 // method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
@@ -42,6 +43,12 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
         }
     }
     
+    /// <summary>
+    /// Timeout started, in seconds, after no further collision detected, before
+    /// resuming travel to target.
+    /// </summary>
+    [Export] public float AvoidanceTimeout { get; set; } = 0.5f;
+    
     // private uint _layersToAvoid;
     //
     // /// <summary>
@@ -78,11 +85,22 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
     private RayCastHit _closestHit;
     private Vector2 _avoidVector;
     private MovingAgent _currentAgent;
+    private System.Timers.Timer _avoidanceTimer;
+    private bool _waitingForAvoidanceTimeout;
+    private SteeringOutput _currentSteering;
     
     public override void _EnterTree()
     {
         // Find out who our father is.
         _currentAgent = this.FindAncestor<MovingAgent>();
+        _setTimer();
+    }
+
+    private void _setTimer()
+    {
+        _avoidanceTimer = new Timer(AvoidanceTimeout * 1000);
+        _avoidanceTimer.AutoReset = false;
+        _avoidanceTimer.Elapsed += OnTimerTimeout;
     }
     
     public override void _Ready()
@@ -101,12 +119,29 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
             WhiskersSensor.SignalName.NoObjectDetected,
             new Callable(this, MethodName.OnNoObstacleDetected));
     }
+    
+    private void OnTimerTimeout(object sender, System.Timers.ElapsedEventArgs e)
+    {
+        _stopAvoidanceTimer();
+        _waitingForAvoidanceTimeout = false;
+    }
+
+    private void _startAvoidanceTimer()
+    {
+        _avoidanceTimer.Interval = AvoidanceTimeout * 1000;
+        _avoidanceTimer.Enabled = true;
+    }
+
+    private void _stopAvoidanceTimer()
+    {
+        _avoidanceTimer.Enabled = false;
+    }
 
     /// <summary>
     /// Method to bind to whisker's ColliderDetected event.
     /// </summary>
     /// <param name="_"></param>
-    private void OnObstacleDetected(RaySensor _)
+    private void OnObstacleDetected(RayCastHit _)
     {
         _obstacleDetected = true;
     }
@@ -121,6 +156,8 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
     
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
+        if (_waitingForAvoidanceTimeout) return _currentSteering;
+        
         SteeringOutput steeringToTargetVelocity = _steeringBehavior.GetSteering(args);
         _avoidVector = Vector2.Zero;
         if (_obstacleDetected)
@@ -145,7 +182,7 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
             // 0 is right side, 1 is left side, 0.5 is center.
             float indexSide = Mathf.InverseLerp(
                 0, 
-                _whiskersSensor.SensorAmount,
+                _whiskersSensor.SensorAmount-1,
                 closestHitData.detectionSensorIndex);
             
             // Positive means the detecting sensor is in the right side of the
@@ -189,10 +226,16 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
             
             // Add the push vector to the avoidVector.
             _avoidVector += pushVector;
+            
+            // Start avoid timer to avoid jittering.
+            _startAvoidanceTimer();
+            _waitingForAvoidanceTimeout = true;
         }
 
-        // TODO: Add avoid vector to steering output.
-        return steeringToTargetVelocity;
+        _currentSteering = new SteeringOutput(
+            linear: steeringToTargetVelocity.Linear + _avoidVector,
+            angular: steeringToTargetVelocity.Angular);
+        return _currentSteering;
     }
 
     /// <summary>

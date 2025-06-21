@@ -17,12 +17,17 @@ texture_region_size = Vector2i(107, 108)
 1:2/0 = 0
 2:2/0 = 0
 2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-53.5, -54, 53.5, -54, 53.5, 54, -53.5, 54)
+2:2/0/physics_layer_2/polygon_0/points = PackedVector2Array(-53.5, -54, 53.5, -54, 53.5, 54, -53.5, 54)
 2:2/0/custom_data_0 = true
 
 [resource]
 tile_size = Vector2i(107, 108)
 physics_layer_0/collision_layer = 2
 physics_layer_0/collision_mask = 0
+physics_layer_1/collision_layer = 4
+physics_layer_1/collision_mask = 0
+physics_layer_2/collision_layer = 8
+physics_layer_2/collision_mask = 0
 navigation_layer_0/layers = 1
 custom_data_layer_0/name = "Obstacle"
 custom_data_layer_0/type = 1
