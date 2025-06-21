@@ -48,7 +48,7 @@ ArrivalDistance = 5.0
 
 [node name="WallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
 position = Vector2(258, 706)
-MaximumSpeed = 600.0
+MaximumSpeed = 50.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0

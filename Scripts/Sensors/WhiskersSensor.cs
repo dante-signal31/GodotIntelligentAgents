@@ -579,10 +579,11 @@ public partial class WhiskersSensor : Node2D
     /// <summary>
     /// Handles the detection of an object by emitting the ObjectDetected signal.
     /// </summary>
-    /// <param name="detectedObject">The object that was detected by the sensor.</param>
-    private void OnObjectDetected(Node2D detectedObject)
+    /// <param name="detectingSensor">The detecting sensor that detected this
+    /// object.</param>
+    private void OnObjectDetected(RaySensor detectingSensor)
     {
-        EmitSignal(SignalName.ObjectDetected, detectedObject);  
+        EmitSignal(SignalName.ObjectDetected, detectingSensor);  
     }
 
     /// <summary>

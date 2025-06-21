@@ -13,7 +13,7 @@ public partial class RaySensor : Node2D
     /// <p>Signal to emit when the sensor detects a node.</p>
     /// <p>It's emitted with the detected object as parameter.</p>
     /// </summary>
-    [Signal] private delegate void ObjectDetectedEventHandler(Node2D detectedObject);
+    [Signal] private delegate void ObjectDetectedEventHandler(RaySensor detectingSensor);
     
     /// <summary>
     /// <p>Signal to emit when the sensor doesn't detect any node.</p>
@@ -78,7 +78,7 @@ public partial class RaySensor : Node2D
     /// </summary>
     public bool IsObjectDetected => DetectedObject != null;
     
-    private Node2D _detectedObject;
+    private Node2D _detectedObject = null;
 
     /// <summary>
     /// Current object detected by this sensor.
@@ -96,7 +96,7 @@ public partial class RaySensor : Node2D
             }
             else
             {
-                EmitSignal(SignalName.ObjectDetected, value);
+                EmitSignal(SignalName.ObjectDetected, this);
             }
         }
     }
@@ -186,7 +186,7 @@ public partial class RaySensor : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (_rayCast.IsColliding() && DetectedObject == _rayCast.GetCollider()) return;
+        //if (_rayCast.IsColliding() && DetectedObject == _rayCast.GetCollider()) return;
 
         if (!_rayCast.IsColliding() && DetectedObject == null) return;
         
@@ -195,7 +195,7 @@ public partial class RaySensor : Node2D
             Node2D collider = (Node2D) _rayCast.GetCollider();
             DetectedObject = collider;
             UpdateDetectionHit();
-            EmitSignal(SignalName.ObjectDetected, collider);
+            EmitSignal(SignalName.ObjectDetected, this);
         }
         else
         {
@@ -223,10 +223,10 @@ public partial class RaySensor : Node2D
             ToLocal(StartPosition), 
             ToLocal(EndPosition), 
             GizmoColor);
-        DrawCircle(ToLocal(StartPosition), 10.0f, GizmoColor);
+        DrawCircle(ToLocal(StartPosition), 5.0f, GizmoColor);
         DrawCircle(
             ToLocal(EndPosition), 
-            10.0f, 
+            5.0f, 
             GizmoColor);
         
         if (!IsObjectDetected) return;
@@ -234,7 +234,8 @@ public partial class RaySensor : Node2D
         DrawLine(
             ToLocal(StartPosition),
             ToLocal(DetectedHit.Position),
-            GizmoDetectedColor);
+            GizmoDetectedColor,
+            width:2.0f);
     }
     
     public override string[] _GetConfigurationWarnings()

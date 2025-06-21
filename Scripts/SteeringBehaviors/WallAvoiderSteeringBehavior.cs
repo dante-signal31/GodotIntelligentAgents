@@ -106,7 +106,7 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
     /// Method to bind to whisker's ColliderDetected event.
     /// </summary>
     /// <param name="_"></param>
-    private void OnObstacleDetected(Node2D _)
+    private void OnObstacleDetected(RaySensor _)
     {
         _obstacleDetected = true;
     }
