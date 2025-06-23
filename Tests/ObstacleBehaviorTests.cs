@@ -141,4 +141,47 @@ public class ObstacleBehaviorTests
         AssertThat(!rayTest.IsColliding() || 
                    ((Node2D)rayTest.GetCollider()).Name != hideAgent.Name).IsTrue();
     }
+    
+    /// <summary>
+    /// Test that WallAvoiderBehavior can move an agent from a point A to a point B
+    /// avoiding obstacles.
+    /// </summary>
+    [TestCase]
+    public async Task WallAvoiderBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent wallAvoiderAgent = 
+            (MovingAgent) _sceneRunner.FindChild("WallAvoiderMovingAgent");
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position1");
+        Marker2D position5 = 
+            (Marker2D) _sceneRunner.FindChild("Position5");
+        
+        // Get references to behaviors.
+        WallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
+            wallAvoiderAgent.FindChild<WallAvoiderSteeringBehavior>();
+        
+        // Setup agents before the test.
+        target.GlobalPosition = position5.GlobalPosition;
+        wallAvoiderAgent.GlobalPosition = position1.GlobalPosition;
+        wallAvoiderAgent.MaximumSpeed = 300.0f;
+        wallAvoiderAgent.StopSpeed = 1f;
+        wallAvoiderAgent.MaximumRotationalDegSpeed = 1080f;
+        wallAvoiderAgent.StopRotationDegThreshold = 1f;
+        wallAvoiderAgent.AgentColor = new Color(1, 0, 0);
+        wallAvoiderSteeringBehavior.Target = target;
+        wallAvoiderAgent.Visible = true;
+        wallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Give hide agent time to reach target.
+        await _sceneRunner.AwaitMillis(6000);
+        
+        // Assert that wall avoider has reached target.
+        AssertThat(
+            wallAvoiderAgent.GlobalPosition.DistanceTo(target.GlobalPosition) <
+            10.0f).IsTrue();
+    }
 }

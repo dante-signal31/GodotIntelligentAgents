@@ -16,7 +16,7 @@
 [node name="ObstacleCourtyard" parent="." instance=ExtResource("1_n20uv")]
 
 [node name="Target" parent="." instance=ExtResource("4_sfy1w")]
-position = Vector2(1647, 496)
+position = Vector2(1619, 507)
 
 [node name="Agents" type="Node" parent="."]
 
@@ -47,8 +47,10 @@ Target = NodePath("../../../Target")
 ArrivalDistance = 5.0
 
 [node name="WallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
-position = Vector2(258, 706)
-MaximumSpeed = 50.0
+process_mode = 4
+visible = false
+position = Vector2(371, 658)
+MaximumSpeed = 300.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
@@ -81,3 +83,6 @@ position = Vector2(1198, 846)
 
 [node name="Position4" type="Marker2D" parent="Positions"]
 position = Vector2(1190, 299)
+
+[node name="Position5" type="Marker2D" parent="Positions"]
+position = Vector2(1622, 503)
