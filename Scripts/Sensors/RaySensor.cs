@@ -4,6 +4,13 @@ using GodotGameAIbyExample.Scripts.Extensions;
 
 namespace GodotGameAIbyExample.Scripts.Sensors;
 
+/// <summary>
+/// <p>Generic component for ray sensors.</p>
+///
+/// <p>Just place it and give it the layer were you want to detect colliders. It will emit
+/// an ObjectDetected event whenever one is hit by ray and a NoObjectDetected event when
+/// ray is clear. </p>s
+/// </summary>
 public partial class RaySensor : Node2D
 {
     private const string StartPointName = "StartPoint";
@@ -74,11 +81,10 @@ public partial class RaySensor : Node2D
 
     /// <summary>
     /// <p>Whether this sensor has detected any object.</p>
-    /// <p>It's null if no object is detected.</p>
     /// </summary>
     public bool IsObjectDetected => DetectedObject != null;
     
-    private Node2D _detectedObject = null;
+    private Node2D _detectedObject;
 
     /// <summary>
     /// Current object detected by this sensor.
