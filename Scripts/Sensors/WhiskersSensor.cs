@@ -17,10 +17,6 @@ namespace GodotGameAIbyExample.Scripts.Sensors;
 /// comments I say "UP-screen" I really mean the natural UP as you see the screen i.e.,
 /// Godot's -Y axis. So, in this script, the Forward vector I defined in the last
 /// paragraph and "UP-screen" direction are equivalent.</p> 
-///
-/// <p>Be aware that when this script detects that you are in editor mode, it will just
-/// populate a list of placements shown with gizmos, but it won't instance any sensor
-/// until this prefab is placed in the scene.</p>
 /// </summary>
 [Tool]
 public partial class WhiskersSensor : Node2D
@@ -273,7 +269,7 @@ public partial class WhiskersSensor : Node2D
     [Export] private Color GizmoColor { get; set; }= new Color(1, 0, 0);
     
     /// <summary>
-    /// Radius for the senson ends.
+    /// Radius for the sensor ends.
     /// </summary>
     [Export] private float GizmoRadius { get; set; }= 10.0f;
     
@@ -526,7 +522,7 @@ public partial class WhiskersSensor : Node2D
         { // If in editor then only place gizmos. And link to sector range to set up
           // fields.
             _sectorRange = this.FindChild<SectorRange>();
-            SuscribeToSectorRangeEvents();
+            SubscribeToSectorRangeEvents();
             if (_sectorRange == null) return;
             UpdateSensor();
         }
@@ -540,7 +536,7 @@ public partial class WhiskersSensor : Node2D
         }
     }
 
-    private void SuscribeToSectorRangeEvents()
+    private void SubscribeToSectorRangeEvents()
     {
         if (_sectorRange == null) return;
         _sectorRange.Connect(
