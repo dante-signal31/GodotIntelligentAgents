@@ -159,8 +159,8 @@ public class ObstacleBehaviorTests
             (Marker2D) _sceneRunner.FindChild("Position5");
         
         // Get references to behaviors.
-        WallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
-            wallAvoiderAgent.FindChild<WallAvoiderSteeringBehavior>();
+        Scripts.SteeringBehaviors.WallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
+            wallAvoiderAgent.FindChild<Scripts.SteeringBehaviors.WallAvoiderSteeringBehavior>();
         
         // Setup agents before the test.
         target.GlobalPosition = position5.GlobalPosition;

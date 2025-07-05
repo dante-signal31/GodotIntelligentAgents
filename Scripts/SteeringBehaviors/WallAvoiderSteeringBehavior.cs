@@ -2,18 +2,19 @@ using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.Sensors;
-using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 using Timer = System.Timers.Timer;
 
 // It must be marked as Tool to be found by MovingAgent when it uses my custom extension
 // method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
 // seems and old Godot C# problem:
 // https://github.com/godotengine/godot/issues/36395
+namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
+
 [Tool]
 /// <summary>
 /// Steering behavior to avoid walls and obstacles.
 /// </summary>
-public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
+public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior
 {
     /// <summary>
     /// Data about the closest hit.
@@ -49,24 +50,6 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
     /// </summary>
     [Export] public float AvoidanceTimeout { get; set; } = 0.5f;
     
-    // private uint _layersToAvoid;
-    //
-    // /// <summary>
-    // /// Layers to avoid.
-    // /// </summary>
-    // [Export(PropertyHint.Layers2DPhysics)] public uint LayersToAvoid
-    // {
-    //     get => _layersToAvoid;
-    //     private set
-    //     {
-    //         if (_layersToAvoid == value) return;
-    //         _layersToAvoid = value;
-    //         
-    //         if (_whiskersSensor == null) return;
-    //         _whiskersSensor.SensorsLayersMask = value;
-    //     }
-    // }
-    
     [ExportCategory("DEBUG:")]
     /// <summary>
     /// Show gizmos.
@@ -93,10 +76,10 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
     {
         // Find out who our father is.
         _currentAgent = this.FindAncestor<MovingAgent>();
-        _setTimer();
+        SetTimer();
     }
 
-    private void _setTimer()
+    private void SetTimer()
     {
         _avoidanceTimer = new Timer(AvoidanceTimeout * 1000);
         _avoidanceTimer.AutoReset = false;
@@ -122,17 +105,17 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
     
     private void OnTimerTimeout(object sender, System.Timers.ElapsedEventArgs e)
     {
-        _stopAvoidanceTimer();
+        StopAvoidanceTimer();
         _waitingForAvoidanceTimeout = false;
     }
 
-    private void _startAvoidanceTimer()
+    private void StartAvoidanceTimer()
     {
         _avoidanceTimer.Interval = AvoidanceTimeout * 1000;
         _avoidanceTimer.Enabled = true;
     }
 
-    private void _stopAvoidanceTimer()
+    private void StopAvoidanceTimer()
     {
         _avoidanceTimer.Enabled = false;
     }
@@ -215,8 +198,20 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
             }
             
             // Calculate right vector relative to our current Forward vector.
-            Vector2 rightVector = _currentAgent.Forward.Rotated(
-                Mathf.Pi / 2).Normalized();
+            //
+            // TIP --------------------------
+            // I could have done:
+            // Vector2 rightVector = _currentAgent.Forward.Rotated(Mathf.Pi / 2).Normalized();
+            // 
+            // But when you are rotating exactly 90 degrees is more performant just
+            // inverting the components.
+            // To rotate clockwise (In Godot):
+            // Vector2 rightVector = new Vector2(-_currentAgent.Forward.y, _currentAgent.Forward.x);
+            // To rotate counterclockwise:
+            // Vector2 rightVector = new Vector2(_currentAgent.Forward.y, -_currentAgent.Forward.x);
+            Vector2 rightVector = new Vector2(
+                -_currentAgent.Forward.Y, 
+                _currentAgent.Forward.X);
             
             // Calculate the push vector.
             Vector2 pushVector = rightVector * 
@@ -228,7 +223,7 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
             _avoidVector += pushVector;
             
             // Start avoid timer to avoid jittering.
-            _startAvoidanceTimer();
+            StartAvoidanceTimer();
             _waitingForAvoidanceTimeout = true;
         }
 
@@ -243,7 +238,7 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
     /// </summary>
     /// <param name="args">SteeringBehaviorArgs arguments passed to this class
     /// <see cref="GetSteering"/> method.</param>
-    /// <returns></returns>
+    /// <returns>Hit data.</returns>
     private ClosestHitData GetClosestHit(SteeringBehaviorArgs args)
     {
         ClosestHitData closestHit = new();
@@ -281,6 +276,29 @@ public partial class WallAvoiderSteeringBehavior : Node, ISteeringBehavior
         float overShoot = sensorLength - closestDistance;
         float overShootFactor = Mathf.InverseLerp(0, sensorLength, overShoot);
         return overShootFactor;
+    }
+    
+    public override void _Process(double delta)
+    {
+        if (ShowGizmos) DrawGizmos();
+    }
+
+    private void DrawGizmos()
+    {
+        QueueRedraw();
+    }
+    
+    public override void _Draw()
+    {
+        if (!ShowGizmos || 
+            !_whiskersSensor.IsAnyObjectDetected || 
+            _closestHit == null) return;
+        
+        DrawCircle(ToLocal(_closestHit.Position), 10.0f, GizmoColor);
+        DrawLine(
+            ToLocal(_closestHit.Position), 
+            ToLocal(_closestHit.Position + _avoidVector), 
+            GizmoColor);
     }
     
     public override string[] _GetConfigurationWarnings()

@@ -441,8 +441,7 @@ public partial class WhiskersSensor : Node2D
             middleSensorIndex, 
             SensorAmount - 1, 
             sensorIndex);
-        float curvePointRange = LeftRangeSemiCone.Sample(1-curvePoint) * 
-                                (Range - MinimumRange);
+        float curvePointRange = LeftRangeSemiCone.Sample(1-curvePoint) * Range;
         return curvePointRange;
     }
 
@@ -456,8 +455,7 @@ public partial class WhiskersSensor : Node2D
     private float GetRightSensorLength(int sensorIndex, uint middleSensorIndex)
     {
         float curvePoint = Mathf.InverseLerp(0, middleSensorIndex, sensorIndex);
-        float curvePointRange = RightRangeSemiCone.Sample(1-curvePoint) * 
-                                (Range - MinimumRange);
+        float curvePointRange = RightRangeSemiCone.Sample(1-curvePoint) * Range;
         return curvePointRange;
     }
 

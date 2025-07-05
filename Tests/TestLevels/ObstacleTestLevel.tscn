@@ -47,16 +47,15 @@ Target = NodePath("../../../Target")
 ArrivalDistance = 5.0
 
 [node name="WallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
-process_mode = 4
-visible = false
 position = Vector2(371, 658)
-MaximumSpeed = 300.0
+MaximumSpeed = 50.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
 
 [node name="WallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("6_3e5d2")]
 Target = NodePath("../../../Target")
+AvoidanceTimeout = 0.5
 
 [node name="WhiskersSensor" parent="Agents/WallAvoiderMovingAgent/WallAvoiderSteeringBehavior" instance=ExtResource("7_8prle")]
 SensorsLayersMask = 8
@@ -66,7 +65,7 @@ RightRangeSemiCone = ExtResource("9_1atku")
 
 [node name="SectorRange" type="Node2D" parent="Agents/WallAvoiderMovingAgent/WallAvoiderSteeringBehavior/WhiskersSensor"]
 script = ExtResource("8_dgjwj")
-SemiConeDegrees = 78.128
+SemiConeDegrees = 90.0
 Range = 300.0
 metadata/_custom_type_script = "uid://d1u7qmneniqg0"
 
