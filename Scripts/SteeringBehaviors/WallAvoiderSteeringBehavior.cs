@@ -4,17 +4,17 @@ using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.Sensors;
 using Timer = System.Timers.Timer;
 
+namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
+
 // It must be marked as Tool to be found by MovingAgent when it uses my custom extension
 // method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
 // seems and old Godot C# problem:
 // https://github.com/godotengine/godot/issues/36395
-namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
-
 [Tool]
 /// <summary>
 /// Steering behavior to avoid walls and obstacles.
 /// </summary>
-public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior
+public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, ITargeter
 {
     /// <summary>
     /// Data about the closest hit.
@@ -111,6 +111,7 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior
 
     private void StartAvoidanceTimer()
     {
+        // TODO: Is really needed to set Interval whenever i restart the timer?
         _avoidanceTimer.Interval = AvoidanceTimeout * 1000;
         _avoidanceTimer.Enabled = true;
     }
@@ -305,8 +306,7 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior
     {
         WhiskersSensor whiskers= this.FindChild<WhiskersSensor>();
         
-        ITargeter targeterBehavior = 
-            this.FindChild<ITargeter>();
+        ITargeter targeterBehavior = this.FindChild<ITargeter>();
         
         List<string> warnings = new();
         

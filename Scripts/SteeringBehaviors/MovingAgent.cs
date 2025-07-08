@@ -66,7 +66,11 @@ public partial class MovingAgent : CharacterBody2D
     /// </summary>
     public Vector2 Forward => GlobalTransform.X;
     
-    private ISteeringBehavior _steeringBehavior;
+    /// <summary>
+    /// This agent current steering behavior.
+    /// </summary>
+    public ISteeringBehavior SteeringBehavior { get; private set; }
+    
     private SteeringBehaviorArgs _behaviorArgs;
     private float _maximumRotationSpeedRadNormalized;
     private float _stopRotationRadThreshold;
@@ -96,12 +100,12 @@ public partial class MovingAgent : CharacterBody2D
     {
         _bodySprite.Modulate = AgentColor;
         _behaviorArgs = GetSteeringBehaviorArgs();
-        _steeringBehavior = this.FindChild<ISteeringBehavior>();
+        SteeringBehavior = this.FindChild<ISteeringBehavior>();
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        if (_steeringBehavior == null || Engine.IsEditorHint()) return;
+        if (SteeringBehavior == null || Engine.IsEditorHint()) return;
         
         // Update steering behavior args.
         _behaviorArgs.MaximumSpeed = MaximumSpeed;
@@ -114,7 +118,7 @@ public partial class MovingAgent : CharacterBody2D
         _behaviorArgs.DeltaTime = delta;
         
         // Get steering output.
-        SteeringOutput steeringOutput = _steeringBehavior.GetSteering(_behaviorArgs);
+        SteeringOutput steeringOutput = SteeringBehavior.GetSteering(_behaviorArgs);
         
         // Apply new steering output to our agent. I don't enforce the StopSpeed because
         // I've found more flexible to do it at steering behavior level.
@@ -147,11 +151,11 @@ public partial class MovingAgent : CharacterBody2D
 
     public override string[] _GetConfigurationWarnings()
     {
-        _steeringBehavior = this.FindChild<ISteeringBehavior>();
+        SteeringBehavior = this.FindChild<ISteeringBehavior>();
         
         List<string> warnings = new();
         
-        if (_steeringBehavior == null)
+        if (SteeringBehavior == null)
         {
             warnings.Add("This node needs a child of type SteeringBehavior to work.");
         }

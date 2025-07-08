@@ -22,7 +22,7 @@ public class SteeringOutput
     /// </summary>
     public float Angular { get; }
 
-    public SteeringOutput(Vector2 linear=new Vector2(), float angular=0)
+    public SteeringOutput(Vector2 linear=new(), float angular=0)
     {
         Linear = linear;
         Angular = angular;
