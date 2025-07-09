@@ -75,7 +75,7 @@ metadata/_custom_type_script = "uid://d1u7qmneniqg0"
 
 [node name="SmoothedWallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
 position = Vector2(333, 794)
-MaximumSpeed = 50.0
+MaximumSpeed = 100.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
@@ -84,6 +84,8 @@ StopRotationDegThreshold = 1.0
 Target = NodePath("../../../Target")
 _usherScene = ExtResource("12_1atku")
 _usherAdvantage = 200.0
+_reachingDistanceToUsher = 40.0
+_secondsToWaitAfterReachingUsher = 2.0
 
 [node name="Positions" type="Node" parent="."]
 

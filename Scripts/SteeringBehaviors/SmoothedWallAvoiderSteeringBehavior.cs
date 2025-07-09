@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Timers;
@@ -75,6 +76,7 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     private ITargeter _usherTargeter;
     private System.Timers.Timer _advantageTimer;
     private bool _givingAdvantageToUsher;
+    private bool _usherReached;
     private SteeringOutput _currentSteering;
     
     
@@ -96,27 +98,23 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     private void OnTimerTimeout(object sender, ElapsedEventArgs e)
     {
         _givingAdvantageToUsher = false;
+        GD.Print($"Advantage timer ended at {DateTime.Now:HH:mm:ss}.");
     }
     
     private void StartTimer()
     {
-        // TODO: Is really needed to set Interval whenever i restart the timer?
-        _advantageTimer.Interval = _secondsToWaitAfterReachingUsher * 1000;
-        _advantageTimer.Enabled = true;
+        _givingAdvantageToUsher = true;
+        _advantageTimer.Start();
+        GD.Print($"Advantage timer started at {DateTime.Now:HH:mm:ss}.");
     }
-
-    private void StopTimer()
-    {
-        _advantageTimer.Enabled = false;
-    }
-
+    
     public override void _Ready()
     {
         if (Engine.IsEditorHint() || _usherScene == null) return;
         
         // Create usher to follow.
         _usherAgent = (MovingAgent) _usherScene.Instantiate();
-        GetTree().Root.AddChild(_usherAgent);
+        GetTree().Root.CallDeferred(Window.MethodName.AddChild, _usherAgent);
         
         // Place usher ahead of our agent.
         _usherAgent.Position = _currentAgent.Position + 
@@ -152,15 +150,24 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
         // stops, and we reach it, then we wait to let it advance again and get advantage.
         if (distanceToUsher < _reachingDistanceToUsher)
         {
-            // If we are too near to usher, stay still to let it get some advantage.
-            StartTimer();
+            // If we are too near to usher, stay still.
+            _usherReached = true;
             _currentSteering = new SteeringOutput(
                 linear: Vector2.Zero,
                 angular: _currentSteering.Angular);
+        } 
+        else if (_usherReached && distanceToUsher > _reachingDistanceToUsher)
+        {
+            // Usher is going away from us. Wait for a time to give him some advantage.
+            _usherReached = false;
+            _currentSteering = new SteeringOutput(
+                linear: Vector2.Zero,
+                angular: _currentSteering.Angular);
+            StartTimer();
         }
         else if (_givingAdvantageToUsher)
         {
-            // If we are giving advantage to usher, stay still.
+            // If we are waiting to give advantage to usher, stay still.
             _currentSteering = new SteeringOutput(
                 linear: Vector2.Zero,
                 angular: _currentSteering.Angular);

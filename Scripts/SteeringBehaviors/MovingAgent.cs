@@ -66,10 +66,23 @@ public partial class MovingAgent : CharacterBody2D
     /// </summary>
     public Vector2 Forward => GlobalTransform.X;
     
+    private ISteeringBehavior _steeringBehavior;
     /// <summary>
     /// This agent current steering behavior.
     /// </summary>
-    public ISteeringBehavior SteeringBehavior { get; private set; }
+    public ISteeringBehavior SteeringBehavior {
+        get
+        {
+            // I cannot leave this as a usual assignment at _Ready(), because some
+            // nodes call it from their _Ready() methods and I were suffering race 
+            // conditions.
+            if (_steeringBehavior == null)
+            {
+                _steeringBehavior = this.FindChild<ISteeringBehavior>();
+            }
+            return _steeringBehavior;
+        }
+    }
     
     private SteeringBehaviorArgs _behaviorArgs;
     private float _maximumRotationSpeedRadNormalized;
@@ -100,7 +113,6 @@ public partial class MovingAgent : CharacterBody2D
     {
         _bodySprite.Modulate = AgentColor;
         _behaviorArgs = GetSteeringBehaviorArgs();
-        SteeringBehavior = this.FindChild<ISteeringBehavior>();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -151,8 +163,6 @@ public partial class MovingAgent : CharacterBody2D
 
     public override string[] _GetConfigurationWarnings()
     {
-        SteeringBehavior = this.FindChild<ISteeringBehavior>();
-        
         List<string> warnings = new();
         
         if (SteeringBehavior == null)
