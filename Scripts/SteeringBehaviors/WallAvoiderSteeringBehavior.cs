@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
@@ -105,21 +106,21 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
     
     private void OnTimerTimeout(object sender, System.Timers.ElapsedEventArgs e)
     {
-        StopAvoidanceTimer();
         _waitingForAvoidanceTimeout = false;
+        GD.Print($"Advantage timer stopped at {DateTime.Now:HH:mm:ss}.");
     }
 
     private void StartAvoidanceTimer()
     {
-        // TODO: Is really needed to set Interval whenever i restart the timer?
-        _avoidanceTimer.Interval = AvoidanceTimeout * 1000;
-        _avoidanceTimer.Enabled = true;
+        _waitingForAvoidanceTimeout = true;
+        _avoidanceTimer.Start();
+        GD.Print($"Avoid timer started at {DateTime.Now:HH:mm:ss}.");
     }
 
-    private void StopAvoidanceTimer()
-    {
-        _avoidanceTimer.Enabled = false;
-    }
+    // private void StopAvoidanceTimer()
+    // {
+    //     _avoidanceTimer.Stop();
+    // }
 
     /// <summary>
     /// Method to bind to whisker's ColliderDetected event.
@@ -225,7 +226,6 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
             
             // Start avoid timer to avoid jittering.
             StartAvoidanceTimer();
-            _waitingForAvoidanceTimeout = true;
         }
 
         _currentSteering = new SteeringOutput(
