@@ -58,7 +58,6 @@ MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
 
 [node name="SmoothedWallAvoiderSteeringBehavior" parent="Agents/SmoothedWallAvoiderMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("11_ib2b3")]
-process_mode = 4
 Target = NodePath("../../../Target")
 _usherScene = ExtResource("12_1atku")
 _usherAdvantage = 200.0
@@ -66,6 +65,8 @@ _reachingDistanceToUsher = 40.0
 _secondsToWaitAfterReachingUsher = 2.0
 
 [node name="WallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
+process_mode = 4
+visible = false
 position = Vector2(371, 658)
 MaximumSpeed = 50.0
 StopSpeed = 1.0

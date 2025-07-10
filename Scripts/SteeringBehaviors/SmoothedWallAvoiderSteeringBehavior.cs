@@ -98,21 +98,21 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     private void OnTimerTimeout(object sender, ElapsedEventArgs e)
     {
         _givingAdvantageToUsher = false;
-        GD.Print($"Advantage timer ended at {DateTime.Now:HH:mm:ss}.");
+        //GD.Print($"Advantage timer ended at {DateTime.Now:HH:mm:ss}.");
     }
     
     private void StartTimer()
     {
         _givingAdvantageToUsher = true;
         _advantageTimer.Start();
-        GD.Print($"Advantage timer started at {DateTime.Now:HH:mm:ss}.");
+        //GD.Print($"Advantage timer started at {DateTime.Now:HH:mm:ss}.");
     }
     
     public override void _Ready()
     {
         if (Engine.IsEditorHint() || 
             _usherScene == null || 
-            ProcessMode == ProcessModeEnum.Disabled) return;
+            _currentAgent.ProcessMode == ProcessModeEnum.Disabled) return;
         
         // Create usher to follow.
         _usherAgent = (MovingAgent) _usherScene.Instantiate();

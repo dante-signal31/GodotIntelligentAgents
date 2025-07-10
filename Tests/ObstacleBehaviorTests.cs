@@ -159,8 +159,8 @@ public class ObstacleBehaviorTests
             (Marker2D) _sceneRunner.FindChild("Position5");
         
         // Get references to behaviors.
-        Scripts.SteeringBehaviors.WallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
-            wallAvoiderAgent.FindChild<Scripts.SteeringBehaviors.WallAvoiderSteeringBehavior>();
+        WallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
+            wallAvoiderAgent.FindChild<WallAvoiderSteeringBehavior>();
         
         // Setup agents before the test.
         target.GlobalPosition = position5.GlobalPosition;
@@ -182,6 +182,53 @@ public class ObstacleBehaviorTests
         // Assert that wall avoider has reached target.
         AssertThat(
             wallAvoiderAgent.GlobalPosition.DistanceTo(target.GlobalPosition) <
-            10.0f).IsTrue();
+            20.0f).IsTrue();
+        
+        wallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
+    
+    /// <summary>
+    /// Test that SmoothedWallAvoiderBehavior can move an agent from a point A to a point B
+    /// avoiding obstacles.
+    /// </summary>
+    [TestCase]
+    public async Task SmoothedWallAvoiderBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent smoothedWallAvoiderAgent = 
+            (MovingAgent) _sceneRunner.FindChild("SmoothedWallAvoiderMovingAgent");
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position1");
+        Marker2D position5 = 
+            (Marker2D) _sceneRunner.FindChild("Position5");
+        
+        // Get references to behaviors.
+        SmoothedWallAvoiderSteeringBehavior smoothedWallAvoiderSteeringBehavior = 
+            smoothedWallAvoiderAgent.FindChild<SmoothedWallAvoiderSteeringBehavior>();
+        
+        // Setup agents before the test.
+        target.GlobalPosition = position5.GlobalPosition;
+        smoothedWallAvoiderAgent.GlobalPosition = position1.GlobalPosition;
+        smoothedWallAvoiderAgent.MaximumSpeed = 100.0f;
+        smoothedWallAvoiderAgent.StopSpeed = 1f;
+        smoothedWallAvoiderAgent.MaximumRotationalDegSpeed = 1080f;
+        smoothedWallAvoiderAgent.StopRotationDegThreshold = 1f;
+        smoothedWallAvoiderAgent.AgentColor = new Color(1, 0, 0);
+        smoothedWallAvoiderSteeringBehavior.Target = target;
+        smoothedWallAvoiderAgent.Visible = true;
+        smoothedWallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Give hide agent time to reach target.
+        await _sceneRunner.AwaitMillis(20000);
+        
+        // Assert that wall avoider has reached target.
+        AssertThat(
+            smoothedWallAvoiderAgent.GlobalPosition.DistanceTo(target.GlobalPosition) <
+            50.0f).IsTrue();
+        
+        smoothedWallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
 }

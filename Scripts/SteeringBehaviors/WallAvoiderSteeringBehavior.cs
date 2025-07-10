@@ -89,6 +89,8 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
     
     public override void _Ready()
     {
+        // if (_currentAgent.ProcessMode == ProcessModeEnum.Disabled) return;
+        
         _targeter = this.FindChild<ITargeter>();
         _steeringBehavior = (ISteeringBehavior)_targeter;
         _targeter.Target = Target;
@@ -107,14 +109,14 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
     private void OnTimerTimeout(object sender, System.Timers.ElapsedEventArgs e)
     {
         _waitingForAvoidanceTimeout = false;
-        GD.Print($"Advantage timer stopped at {DateTime.Now:HH:mm:ss}.");
+        //GD.Print($"Avoid timer stopped at {DateTime.Now:HH:mm:ss}.");
     }
 
     private void StartAvoidanceTimer()
     {
         _waitingForAvoidanceTimeout = true;
         _avoidanceTimer.Start();
-        GD.Print($"Avoid timer started at {DateTime.Now:HH:mm:ss}.");
+        //GD.Print($"Avoid timer started at {DateTime.Now:HH:mm:ss}.");
     }
 
     // private void StopAvoidanceTimer()
