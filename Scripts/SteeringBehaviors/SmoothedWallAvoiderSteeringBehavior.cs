@@ -110,7 +110,9 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     
     public override void _Ready()
     {
-        if (Engine.IsEditorHint() || _usherScene == null) return;
+        if (Engine.IsEditorHint() || 
+            _usherScene == null || 
+            ProcessMode == ProcessModeEnum.Disabled) return;
         
         // Create usher to follow.
         _usherAgent = (MovingAgent) _usherScene.Instantiate();
