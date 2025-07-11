@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
@@ -15,7 +14,7 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <summary>
 /// Steering behavior to avoid walls and obstacles.
 /// </summary>
-public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, ITargeter
+public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, ITargeter, IGizmos
 {
     /// <summary>
     /// Data about the closest hit.
@@ -24,7 +23,7 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
     {
         public float Distance;
         public RayCastHit Hit;
-        public int detectionSensorIndex;
+        public int DetectionSensorIndex;
     }
     
     [ExportCategory("CONFIGURATION:")]
@@ -52,15 +51,30 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
     [Export] public float AvoidanceTimeout { get; set; } = 0.5f;
     
     [ExportCategory("DEBUG:")]
+    private bool _showGizmos;
     /// <summary>
     /// Show gizmos.
     /// </summary>
-    [Export] public bool ShowGizmos { get; private set; }
-    
+    [Export] public bool ShowGizmos
+    {
+        get => _showGizmos;
+        set
+        {
+            _showGizmos = value;
+            if (_whiskersSensor == null) return;
+            _whiskersSensor.ShowGizmos = value;
+        }
+    }
+
+    private Color _gizmosColor;
     /// <summary>
     /// Colors for this object's gizmos.
     /// </summary>
-    [Export] public Color GizmoColor { get; private set; } = Colors.White;
+    [Export] public Color GizmosColor
+    {
+        get => _gizmosColor;
+        set => _gizmosColor = value;
+    }
     
     private WhiskersSensor _whiskersSensor;
     private bool _obstacleDetected;
@@ -72,7 +86,8 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
     private System.Timers.Timer _avoidanceTimer;
     private bool _waitingForAvoidanceTimeout;
     private SteeringOutput _currentSteering;
-    
+
+
     public override void _EnterTree()
     {
         // Find out who our father is.
@@ -153,7 +168,7 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
             _closestHit = closestHitData.Hit;
             
             float overShootFactor = GetOverShootFactor(
-                closestHitData.detectionSensorIndex, 
+                closestHitData.DetectionSensorIndex, 
                 closestHitData.Distance);
 
             // Buckland and Millington calculate avoidVector this way but I is 
@@ -170,7 +185,7 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
             float indexSide = Mathf.InverseLerp(
                 0, 
                 _whiskersSensor.SensorAmount-1,
-                closestHitData.detectionSensorIndex);
+                closestHitData.DetectionSensorIndex);
             
             // Positive means the detecting sensor is in the right side of the
             // agent. Negative means the detecting sensor is in the left side of the
@@ -244,9 +259,11 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
     /// <returns>Hit data.</returns>
     private ClosestHitData GetClosestHit(SteeringBehaviorArgs args)
     {
-        ClosestHitData closestHit = new();
-        closestHit.Distance = float.MaxValue;
-        closestHit.detectionSensorIndex = -1;
+        ClosestHitData closestHit = new()
+        {
+            Distance = float.MaxValue,
+            DetectionSensorIndex = -1
+        };
 
         foreach ((RayCastHit hit, int index) in _whiskersSensor.DetectedHits)
         {
@@ -255,7 +272,7 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
             {
                 closestHit.Distance = hitDistance;
                 closestHit.Hit = hit;
-                closestHit.detectionSensorIndex= index;
+                closestHit.DetectionSensorIndex= index;
             }
         }
 
@@ -297,11 +314,11 @@ public partial class WallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, IT
             !_whiskersSensor.IsAnyObjectDetected || 
             _closestHit == null) return;
         
-        DrawCircle(ToLocal(_closestHit.Position), 10.0f, GizmoColor);
+        DrawCircle(ToLocal(_closestHit.Position), 10.0f, GizmosColor);
         DrawLine(
             ToLocal(_closestHit.Position), 
             ToLocal(_closestHit.Position + _avoidVector), 
-            GizmoColor);
+            GizmosColor);
     }
     
     public override string[] _GetConfigurationWarnings()

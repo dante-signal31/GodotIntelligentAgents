@@ -59,10 +59,20 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
 
     [ExportCategory("DEBUG:")]
     
+    private bool _showGizmos;
     /// <summary>
     /// Show gizmos.
     /// </summary>
-    [Export] public bool ShowGizmos { get; private set; }
+    [Export] public bool ShowGizmos
+    {
+        get => _showGizmos;
+        set
+        {
+            _showGizmos = value;
+            if (_usherAgentSteeringBehaviorGizmos == null) return;
+            _usherAgentSteeringBehaviorGizmos.ShowGizmos = value;
+        }
+    }
     
     /// <summary>
     /// Colors for this object's gizmos.
@@ -73,6 +83,7 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     private ISteeringBehavior _chaseToUsherSteeringBehavior;
     private MovingAgent _currentAgent;
     private MovingAgent _usherAgent;
+    private IGizmos _usherAgentSteeringBehaviorGizmos;
     private ITargeter _usherTargeter;
     private System.Timers.Timer _advantageTimer;
     private bool _givingAdvantageToUsher;
@@ -110,14 +121,19 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     
     public override void _Ready()
     {
-        if (Engine.IsEditorHint() || 
-            _usherScene == null || 
-            _currentAgent.ProcessMode == ProcessModeEnum.Disabled) return;
-        
-        // Create usher to follow.
-        _usherAgent = (MovingAgent) _usherScene.Instantiate();
-        GetTree().Root.CallDeferred(Window.MethodName.AddChild, _usherAgent);
-        
+        _currentSteering = new SteeringOutput();
+    }
+
+    private void MakeFollowUsher()
+    {
+        // Prepare to follow the usher.
+        _chaseToUsherTargeter = this.FindChild<ITargeter>();
+        _chaseToUsherTargeter.Target = _usherAgent;
+        _chaseToUsherSteeringBehavior = (ISteeringBehavior) _chaseToUsherTargeter;
+    }
+
+    private void ConfigureUsher()
+    {
         // Place usher ahead of our agent.
         _usherAgent.Position = _currentAgent.Position + 
                                _usherAdvantage * _currentAgent.Forward;
@@ -132,18 +148,32 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
         // Give usher a place to go to.
         _usherTargeter = (ITargeter)_usherAgent.SteeringBehavior;
         _usherTargeter.Target = _target;
-        
-        // Prepare to follow the usher.
-        _chaseToUsherTargeter = this.FindChild<ITargeter>();
-        _chaseToUsherTargeter.Target = _usherAgent;
-        _chaseToUsherSteeringBehavior = (ISteeringBehavior) _chaseToUsherTargeter;
-        
-        _currentSteering = new SteeringOutput();
+    }
+
+    private void CreateUsher()
+    {
+        // Create usher to follow.
+        _usherAgent = (MovingAgent) _usherScene.Instantiate();
+        GetTree().Root.CallDeferred(Window.MethodName.AddChild, _usherAgent);
+        _usherAgentSteeringBehaviorGizmos = (IGizmos) _usherAgent.SteeringBehavior;
     }
     
+    
+
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
-        if (_chaseToUsherSteeringBehavior == null) return new SteeringOutput();
+        // I cannot create usher at _Ready() because it is executed even when agent is
+        // disabled. So, in my test I found an usher created even when no
+        // SmoothedWallAvoider agent was active. 
+        if (_usherAgent == null)
+        {
+            CreateUsher();
+            ConfigureUsher();
+            MakeFollowUsher();
+        }
+        
+        if (_chaseToUsherSteeringBehavior == null || _usherAgent == null) 
+            return new SteeringOutput();
         
         float distanceToUsher =
             _currentAgent.GlobalPosition.DistanceTo(_usherAgent.GlobalPosition);

@@ -257,11 +257,25 @@ public partial class WhiskersSensor : Node2D
     
     private List<RayEnds> _rayEnds;
 
-    [ExportCategory("DEBUG:")]
+    [ExportCategory("DEBUG:")] 
+    
+    private bool _showGizmos = true;
     /// <summary>
     /// Whether to show gizmos for sensors.
     /// </summary>
-    [Export] private bool ShowGizmos { get; set; }= true;
+    [Export] public bool ShowGizmos
+    {
+        get => _showGizmos;
+        set
+        {
+            _showGizmos = value;
+            if (_sensors == null) return;
+            foreach (RaySensor raySensor in _sensors)
+            {
+                raySensor.ShowGizmos = value;
+            }
+        }
+    }
     
     /// <summary>
     /// Color for this script gizmos.

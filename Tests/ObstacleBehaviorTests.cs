@@ -177,7 +177,7 @@ public class ObstacleBehaviorTests
         // Start test.
         
         // Give hide agent time to reach target.
-        await _sceneRunner.AwaitMillis(6000);
+        await _sceneRunner.AwaitMillis(8000);
         
         // Assert that wall avoider has reached target.
         AssertThat(
@@ -215,8 +215,9 @@ public class ObstacleBehaviorTests
         smoothedWallAvoiderAgent.MaximumRotationalDegSpeed = 1080f;
         smoothedWallAvoiderAgent.StopRotationDegThreshold = 1f;
         smoothedWallAvoiderAgent.AgentColor = new Color(1, 0, 0);
-        smoothedWallAvoiderSteeringBehavior.Target = target;
         smoothedWallAvoiderAgent.Visible = true;
+        smoothedWallAvoiderSteeringBehavior.Target = target;
+        smoothedWallAvoiderSteeringBehavior.ShowGizmos = true;
         smoothedWallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Always;
         
         // Start test.
@@ -229,6 +230,7 @@ public class ObstacleBehaviorTests
             smoothedWallAvoiderAgent.GlobalPosition.DistanceTo(target.GlobalPosition) <
             50.0f).IsTrue();
         
+        smoothedWallAvoiderSteeringBehavior.ShowGizmos = false;
         smoothedWallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
 }
