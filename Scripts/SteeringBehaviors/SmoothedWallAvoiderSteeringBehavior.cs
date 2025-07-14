@@ -109,14 +109,12 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     private void OnTimerTimeout(object sender, ElapsedEventArgs e)
     {
         _givingAdvantageToUsher = false;
-        //GD.Print($"Advantage timer ended at {DateTime.Now:HH:mm:ss}.");
     }
     
     private void StartTimer()
     {
         _givingAdvantageToUsher = true;
         _advantageTimer.Start();
-        //GD.Print($"Advantage timer started at {DateTime.Now:HH:mm:ss}.");
     }
     
     public override void _Ready()
