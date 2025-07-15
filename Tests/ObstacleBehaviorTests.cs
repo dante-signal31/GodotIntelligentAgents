@@ -77,69 +77,51 @@ public class ObstacleBehaviorTests
         hideAgent.AgentColor = new Color(0, 1, 0);
         hideSteeringBehavior.Threat = seekAgent;
         hideSteeringBehavior.ArrivalDistance = 3f;
-        // Layer 2, only obstacles.
-        hideSteeringBehavior.ObstaclesLayers = 2;
+        // Layer 4, only obstacles.
+        hideSteeringBehavior.ObstaclesLayers = 8;
         hideSteeringBehavior.SeparationFromObstacles = 30f;
         hideSteeringBehavior.AgentRadius = 50f;
-        // Layer 2, only obstacles.
-        hideSteeringBehavior.NotEmptyGroundLayers = 2;
+        // Layer 4, only obstacles.
+        hideSteeringBehavior.NotEmptyGroundLayers = 8;
         hideSteeringBehavior.ShowGizmos = true;
         hideAgent.Visible = true;
         hideAgent.ProcessMode = Node.ProcessModeEnum.Always;
         
-        // Setup tester raycast.
-        RayCast2D rayTest = new RayCast2D();
-        // Layer 2 and 1, obstacles and agents.
-        rayTest.CollisionMask = 3;
-        rayTest.CollideWithBodies = true;
-        rayTest.CollideWithAreas = false;
-        rayTest.HitFromInside = false;
-        seekAgent.AddChild(rayTest);
-        // Make ray start at the center of its parent node.
-        rayTest.Position = Vector2.Zero;
-        rayTest.TargetPosition = Vector2.Zero;
-        rayTest.Enabled = true;
-        
         // Start test.
         
         // Assert that seek agent can see hide agent.
-        rayTest.TargetPosition = rayTest.ToLocal(hideAgent.GlobalPosition);
-        rayTest.ForceRaycastUpdate();
-        AssertThat(rayTest.IsColliding()).IsTrue();
-        AssertThat(((Node2D)rayTest.GetCollider()).Name == hideAgent.Name).IsTrue();
+        await _sceneRunner.AwaitIdleFrame();
+        AssertThat(hideSteeringBehavior.VisibleByThreat).IsTrue();
         
         // Give hide agent time to hide.
         await _sceneRunner.AwaitMillis(2000);
         
         // Assert that seek agent can no longer see hide agent.
-        rayTest.TargetPosition = rayTest.ToLocal(hideAgent.GlobalPosition);
-        rayTest.ForceRaycastUpdate();
-        AssertThat(!rayTest.IsColliding() || 
-                   ((Node2D)rayTest.GetCollider()).Name != hideAgent.Name).IsTrue();
+        AssertThat(hideSteeringBehavior.VisibleByThreat).IsFalse();
         
         // Move seek agent to another position.
         target.GlobalPosition = position3.GlobalPosition;
         
-        // Give agent time to hide agent to hide again target.
+        // Give agent time to hide again.
         await _sceneRunner.AwaitMillis(2000);
         
         // Assert that seek agent can no longer see hide agent.
-        rayTest.TargetPosition = rayTest.ToLocal(hideAgent.GlobalPosition);
-        rayTest.ForceRaycastUpdate();
-        AssertThat(!rayTest.IsColliding() || 
-                   ((Node2D)rayTest.GetCollider()).Name != hideAgent.Name).IsTrue();
+        AssertThat(hideSteeringBehavior.VisibleByThreat).IsFalse();
         
         // Move seek agent to another position.
         target.GlobalPosition = position4.GlobalPosition;
         
-        // Give agent time to hide agent to hide again target.
+        // Give agent time to hide again.
         await _sceneRunner.AwaitMillis(2000);
         
         // Assert that seek agent can no longer see hide agent.
-        rayTest.TargetPosition = rayTest.ToLocal(hideAgent.GlobalPosition);
-        rayTest.ForceRaycastUpdate();
-        AssertThat(!rayTest.IsColliding() || 
-                   ((Node2D)rayTest.GetCollider()).Name != hideAgent.Name).IsTrue();
+        AssertThat(hideSteeringBehavior.VisibleByThreat).IsFalse();
+        
+        // Cleanup.
+        seekAgent.Visible = false;
+        seekAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+        hideAgent.Visible = false;
+        hideAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
     
     /// <summary>
@@ -184,6 +166,8 @@ public class ObstacleBehaviorTests
             wallAvoiderAgent.GlobalPosition.DistanceTo(target.GlobalPosition) <
             20.0f).IsTrue();
         
+        // Cleanup.
+        wallAvoiderAgent.Visible = false;
         wallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
     
@@ -230,7 +214,119 @@ public class ObstacleBehaviorTests
             smoothedWallAvoiderAgent.GlobalPosition.DistanceTo(target.GlobalPosition) <
             50.0f).IsTrue();
         
+        // Cleanup.
         smoothedWallAvoiderSteeringBehavior.ShowGizmos = false;
+        await _sceneRunner.AwaitIdleFrame();
+        smoothedWallAvoiderAgent.Visible = false;
         smoothedWallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
+    
+    /// <summary>
+    /// Test that HideWallAvoiderBehavior can hide from a moving SeekBehavior and reach
+    /// its final destination.
+    /// </summary>
+    // I don't know why this test works if run alone, but fails if batch executes with
+    // every other test.
+    [TestCase]
+    public async Task HideWallAvoiderBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent seekAgent = 
+            (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
+        MovingAgent hideAgent = 
+            (MovingAgent) _sceneRunner.FindChild("HideWallAvoiderMovingAgent");
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position1");
+        Marker2D position2 = 
+            (Marker2D) _sceneRunner.FindChild("Position2");
+        Marker2D position3 = 
+            (Marker2D) _sceneRunner.FindChild("Position3");
+        Marker2D position4 = 
+            (Marker2D) _sceneRunner.FindChild("Position4");
+        
+        // Get references to behaviors.
+        SeekSteeringBehavior seekSteeringBehavior = 
+            seekAgent.FindChild<SeekSteeringBehavior>();
+        HideSteeringBehavior hideSteeringBehavior =
+            hideAgent.FindChild<HideSteeringBehavior>(recursive: true);
+        WallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
+            hideAgent.FindChild<WallAvoiderSteeringBehavior>(recursive: true);
+        
+        // Setup agents before the test.
+        target.GlobalPosition = position2.GlobalPosition;
+        seekAgent.GlobalPosition = position1.GlobalPosition;
+        seekAgent.MaximumSpeed = 200.0f;
+        seekAgent.StopSpeed = 1f;
+        seekAgent.MaximumRotationalDegSpeed = 1080f;
+        seekAgent.StopRotationDegThreshold = 1f;
+        seekAgent.AgentColor = new Color(1, 0, 0);
+        seekSteeringBehavior.Target = target;
+        seekSteeringBehavior.ArrivalDistance = 3f;
+        seekAgent.Visible = true;
+        seekAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        hideAgent.GlobalPosition = position3.GlobalPosition;
+        hideAgent.MaximumSpeed = 150.0f;
+        hideAgent.StopSpeed = 1f;
+        hideAgent.MaximumRotationalDegSpeed = 1080f;
+        hideAgent.StopRotationDegThreshold = 1f;
+        hideAgent.AgentColor = new Color(0, 1, 0);
+        hideSteeringBehavior.Threat = seekAgent;
+        hideSteeringBehavior.ArrivalDistance = 3f;
+        // Layer 4, only obstacles.
+        hideSteeringBehavior.ObstaclesLayers = 8;
+        hideSteeringBehavior.SeparationFromObstacles = 30f;
+        hideSteeringBehavior.AgentRadius = 50f;
+        // Layer 4, only obstacles.
+        hideSteeringBehavior.NotEmptyGroundLayers = 8;
+        hideSteeringBehavior.ShowGizmos = true;
+        hideAgent.Visible = true;
+        hideAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Set HiderWallAvoider agent its final destination.
+        wallAvoiderSteeringBehavior.Target = position2;
+        
+        // Start test.
+        
+        // Assert that seek agent can see hide agent.
+        await _sceneRunner.AwaitMillis(100);
+        AssertThat(hideSteeringBehavior.VisibleByThreat).IsTrue();
+        
+        // Give hide agent time to hide.
+        await _sceneRunner.AwaitMillis(2000);
+        
+        // Assert that seek agent can no longer see hide agent.
+        AssertThat(hideSteeringBehavior.VisibleByThreat).IsFalse();
+        
+        // Move seek agent to another position.
+        target.GlobalPosition = position3.GlobalPosition;
+        
+        // Give agent time to hide again.
+        await _sceneRunner.AwaitMillis(4000);
+        
+        // Assert that seek agent can no longer see hide agent.
+        AssertThat(hideSteeringBehavior.VisibleByThreat).IsFalse();
+        
+        // Move seek agent to another position.
+        target.GlobalPosition = position4.GlobalPosition;
+        
+        // Give agent time to hide again.
+        await _sceneRunner.AwaitMillis(3000);
+        
+        // Assert that seek agent can no longer see hide agent.
+        AssertThat(hideSteeringBehavior.VisibleByThreat).IsFalse();
+        
+        // Give agent time to reach its final destination.
+        await _sceneRunner.AwaitMillis(2000);
+        AssertThat(
+            hideAgent.GlobalPosition.DistanceTo(position2.GlobalPosition) <
+            50.0f).IsTrue();
+        
+        // Cleanup.
+        seekAgent.Visible = false;
+        seekAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+        hideAgent.Visible = false;
+        hideAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
 }

@@ -121,26 +121,30 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
                 _navigationAgent2D.TargetPosition = value;
         }
     }
+
+    /// <summary>
+    /// Whether this agent is currently visible by its threat.
+    /// </summary>
+    public bool VisibleByThreat => _threatCanSeeUs;
     
     private HidingPointsDetector _hidingPointsDetector;
     private INavigationAgent _navigationAgent2D;
     private SeekSteeringBehavior _seekSteeringBehavior;
     private Courtyard _currentLevel;
     private RayCast2D _rayCast2D;
-    private MovingAgent _parentMovingAgent;
     private Vector2 _previousThreatPosition = Vector2.Zero;
     
     private bool ThreatHasJustMoved => Threat.GlobalPosition != _previousThreatPosition;
     
     private bool _threatCanSeeUs;
     private bool _hidingPointRecheckNeeded;
+    private bool _hidingPointReached;
     private Node2D _nextMovementTarget;
     
     public override void _EnterTree()
     {
         if (_nextMovementTarget == null) _nextMovementTarget = new Node2D();
         HidingPoint = GlobalPosition;
-        _parentMovingAgent = this.FindAncestor<MovingAgent>();
     }
 
     public override void _ExitTree()
@@ -201,7 +205,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     }
 
     public override void _PhysicsProcess(double delta)
-    { // TODO: Hide agent stays frozen while threat moves. Fix it.
+    { 
         if (Threat == null || _rayCast2D == null) return;
         
         // Check if there is a line of sight with the threat.
@@ -212,6 +216,10 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
             Node detectedCollider = (Node) _rayCast2D.GetCollider();
             _threatCanSeeUs = (detectedCollider.Name == Threat.Name);
         }
+        else
+        {
+            _threatCanSeeUs = true;
+        }
         
         // Starting threat position counts as ThreatHasJustMoved because
         // _previousThreatPosition is init as Vector2.Zero.
@@ -221,15 +229,25 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         // Do not query when the map has never synchronized and is empty.
         if (!_navigationAgent2D.IsReady) return;
         // Only query when the navigation agent has not reached the target yet.
-        if (!_navigationAgent2D.IsNavigationFinished())
+        if (_navigationAgent2D.IsNavigationFinished())
+        {
+            _hidingPointReached = true;
+        }
+        else
+        {
             _nextMovementTarget.GlobalPosition = _navigationAgent2D.GetNextPathPosition();
+        }
     }
     
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
         // Look for a new hiding point if the threat can see us and if it is threat first 
         // position (only once) or has just moved.
-        if (_threatCanSeeUs && _hidingPointRecheckNeeded)
+        if (_threatCanSeeUs && _hidingPointRecheckNeeded ||
+            // This second condition is needed for blender steeringBehaviors, where 
+            // another steering behavior can move this agent without HideSteeringBehavior
+            // intervention.
+            _threatCanSeeUs && _hidingPointReached) 
         { // Search for the nearest hiding point.
             List<Vector2> hidingPoints = _hidingPointsDetector.HidingPoints;
             if (hidingPoints.Count > 0)
@@ -239,6 +257,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
                 foreach (Vector2 candidatePoint in hidingPoints)
                 {
                     _navigationAgent2D.TargetPosition = candidatePoint;
+                    _hidingPointReached = false;
                     float currentDistance =_navigationAgent2D.DistanceToTarget();
                     if (currentDistance < minimumDistance)
                     {
@@ -250,10 +269,16 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
                 _hidingPointRecheckNeeded = false;
             }
         }
-        
-        // Head to the next point in the path to the heading target. That next point
-        // position is updated in _PhysicsProcess.
-        return _seekSteeringBehavior.GetSteering(args);
+
+        if (!_hidingPointReached)
+        {
+            // Head to the next step in the path to the hiding point. That next point
+            // position is updated in _PhysicsProcess.
+            return _seekSteeringBehavior.GetSteering(args);
+        }
+
+        // If we don't need to hide, then return zero.
+        return SteeringOutput.Zero;
     }
     
     public override string[] _GetConfigurationWarnings()
@@ -275,7 +300,8 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         }
         if (_navigationAgent2D == null)
         {
-            warnings.Add("This node needs a child that complies with the INavigationAgent interface to work.");
+            warnings.Add("This node needs a child that complies with the " +
+                         "INavigationAgent interface to work.");
         }
         if (_rayCast2D == null)
         {

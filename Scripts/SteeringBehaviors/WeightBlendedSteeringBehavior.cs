@@ -89,18 +89,10 @@ public partial class WeightBlendedSteeringBehavior : Node2D, ISteeringBehavior, 
     private float _totalWeight;
     
     private SteeringOutput _currentSteering;
-    
-    private MovingAgent _currentAgent;
-
-    public override void _EnterTree()
-    {
-        // Find out who our father is.
-        _currentAgent = this.FindAncestor<MovingAgent>();
-    }
 
     public override void _Ready()
     {
-        // Resolve all node paths into real nodes and calculate the total weight.
+        // Resolve all node paths into real nodes.
         foreach (var weightedBehavior in WeightedBehaviors)
         {
             ISteeringBehavior currentSteeringBehavior = 
@@ -112,7 +104,6 @@ public partial class WeightBlendedSteeringBehavior : Node2D, ISteeringBehavior, 
                 DebugColor = weightedBehavior.DebugColor
             };
             _nodeWeightedBehaviors.Add(currentWeightedBehavior);
-            _totalWeight += weightedBehavior.Weight;
         }
     }
 
@@ -121,8 +112,9 @@ public partial class WeightBlendedSteeringBehavior : Node2D, ISteeringBehavior, 
         // We need two passes: one to get the active outputs
         // and one to blend them taking their relative weights for the active outputs.
         _activeOutputs.Clear();
+        _totalWeight = 0.0f;
         
-        // First pass: get only active outputs.
+        // First pass: take in count only active outputs.
         foreach (var weightedBehavior in _nodeWeightedBehaviors)
         {
             SteeringOutput output = weightedBehavior.SteeringBehavior.GetSteering(args);
@@ -132,6 +124,7 @@ public partial class WeightBlendedSteeringBehavior : Node2D, ISteeringBehavior, 
                     output, 
                     weightedBehavior.Weight,
                     weightedBehavior.DebugColor));
+            _totalWeight += weightedBehavior.Weight;
         }
     
         // Second pass: blend them.
@@ -141,7 +134,6 @@ public partial class WeightBlendedSteeringBehavior : Node2D, ISteeringBehavior, 
             float outputRelativeWeight = weightedOutput.Weight / _totalWeight;
             _currentSteering += weightedOutput.SteeringOutput * outputRelativeWeight;
         }
-    
         return _currentSteering;
     }
 
@@ -159,13 +151,16 @@ public partial class WeightBlendedSteeringBehavior : Node2D, ISteeringBehavior, 
     {
         if (!ShowGizmos) return;
         
+        if (_currentSteering == null) return;
+        
         // Draw first partial steerings.
         foreach (WeightedOutput weightedOutput in _activeOutputs)
         {
             float outputRelativeWeight = weightedOutput.Weight / _totalWeight;
             DrawLine(
                 Vector2.Zero, 
-                ToLocal(GlobalPosition + weightedOutput.SteeringOutput.Linear * outputRelativeWeight), 
+                ToLocal(GlobalPosition + 
+                        weightedOutput.SteeringOutput.Linear * outputRelativeWeight), 
                 weightedOutput.DebugColor, width: 3f);
         }
         
