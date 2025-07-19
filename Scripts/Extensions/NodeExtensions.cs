@@ -9,7 +9,7 @@ namespace GodotGameAIbyExample.Scripts.Extensions;
 public static class NodeExtensions
 {
     /// <summary>
-    /// <p>Find first child node of given T type.</p>
+    /// <p>Find the first child node of a given T type.</p>
     /// </summary>
     /// <param name="parentNode">Parent of the searched node.</param>
     /// <param name="recursive">Whether to search recursively.</param>
@@ -36,7 +36,7 @@ public static class NodeExtensions
     }
     
     /// <summary>
-    /// <p>Find children nodes of given T type.</p>
+    /// <p>Find children nodes of a given T type.</p>
     /// </summary>
     /// <param name="parentNode">Parent of the searched node.</param>
     /// <param name="recursive">Whether to search recursively.</param>
@@ -68,7 +68,8 @@ public static class NodeExtensions
     }
     
     /// <summary>
-    /// <p>Find first ancestor node of given T type.</p>
+    /// <p>Find the first ancestor node of a given T type.</p>
+    /// <p>This method performs a recursive search upwards.</p> 
     /// </summary>
     /// <param name="childNode">Descendant of the searched node.</param>
     /// <typeparam name="T">Type of the node to search.</typeparam>
