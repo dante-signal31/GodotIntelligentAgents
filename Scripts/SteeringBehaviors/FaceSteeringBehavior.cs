@@ -40,7 +40,7 @@ public partial class FaceSteeringBehavior : Node, ISteeringBehavior, ITargeter
 
     public override void _ExitTree()
     {
-        _marker.QueueFree();
+        _marker?.QueueFree();
     }
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
