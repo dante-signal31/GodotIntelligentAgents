@@ -33,7 +33,7 @@ public partial class PotentialCollisionDetector : Node2D
     /// This property defines the distance around the agent that is considered for
     /// detecting potential collisions with other objects or agents.
     /// </remarks>
-    [Export] public float AgentRadius { get; set; }
+    [Export] public float AgentRadius { get; set; } = 50f;
     
 
     /// <summary>
@@ -159,6 +159,8 @@ public partial class PotentialCollisionDetector : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (_sensor == null) return;
+        
         Array<MovingAgent> targets = new Array<MovingAgent>(
             _sensor.DetectedObjects.Where(x => 
                     x is MovingAgent && 

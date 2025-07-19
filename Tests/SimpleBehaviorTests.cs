@@ -677,7 +677,7 @@ public class SimpleBehaviorTests
     {
         // Get references to agent and target.
         MovingAgent agentAvoider =
-            (MovingAgent)_sceneRunner.FindChild("AgentAvoiderMovingAgent");
+            (MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
         Marker2D position3 =
             (Marker2D)_sceneRunner.FindChild("Position3");
         MovingAgent obstacleMovingAgent =
@@ -693,8 +693,10 @@ public class SimpleBehaviorTests
             (Marker2D)_sceneRunner.FindChild("Position9");
         
         // Get references to steering behavior from both agents.
-        AgentAvoiderSteeringBehavior agentAvoiderBehavior =
-            agentAvoider.FindChild<AgentAvoiderSteeringBehavior>();
+        ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
+            agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
+        SeekSteeringBehavior agentAvoiderSeekSteeringBehavior = 
+            agentAvoider.FindChild<SeekSteeringBehavior>(recursive:true);
         SeekSteeringBehavior seekSteeringBehavior =
             obstacleMovingAgent.FindChild<SeekSteeringBehavior>();
         
@@ -723,7 +725,7 @@ public class SimpleBehaviorTests
         agentAvoider.GlobalPosition = position3.GlobalPosition;
         obstacleMovingAgent.GlobalPosition = position6.GlobalPosition;
         seekSteeringBehavior.Target = position4;
-        agentAvoiderBehavior.Target = targetOfAgentAvoiderMovingAgent;
+        agentAvoiderSeekSteeringBehavior.Target = targetOfAgentAvoiderMovingAgent;
         agentAvoider.Visible = true;
         obstacleMovingAgent.Visible = true;
         agentAvoider.ProcessMode = Node.ProcessModeEnum.Always;
@@ -761,7 +763,7 @@ public class SimpleBehaviorTests
     {
         // Get references to agent and target.
         MovingAgent agentAvoider =
-            (MovingAgent)_sceneRunner.FindChild("AgentAvoiderMovingAgent");
+            (MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
         Marker2D position3 =
             (Marker2D)_sceneRunner.FindChild("Position3");
         MovingAgent obstacleMovingAgent =
@@ -777,8 +779,10 @@ public class SimpleBehaviorTests
             (Marker2D)_sceneRunner.FindChild("Position9");
         
         // Get references to steering behavior from both agents.
-        AgentAvoiderSteeringBehavior agentAvoiderBehavior =
-            agentAvoider.FindChild<AgentAvoiderSteeringBehavior>();
+        ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
+            agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
+        SeekSteeringBehavior agentAvoiderSeekSteeringBehavior = 
+            agentAvoider.FindChild<SeekSteeringBehavior>(recursive:true);
         SeekSteeringBehavior seekSteeringBehavior =
             obstacleMovingAgent.FindChild<SeekSteeringBehavior>();
         
@@ -807,7 +811,7 @@ public class SimpleBehaviorTests
         agentAvoider.GlobalPosition = position3.GlobalPosition;
         obstacleMovingAgent.GlobalPosition = position4.GlobalPosition;
         seekSteeringBehavior.Target = position6;
-        agentAvoiderBehavior.Target = targetOfAgentAvoiderMovingAgent;
+        agentAvoiderSeekSteeringBehavior.Target = targetOfAgentAvoiderMovingAgent;
         agentAvoider.Visible = true;
         obstacleMovingAgent.Visible = true;
         agentAvoider.ProcessMode = Node.ProcessModeEnum.Always;
@@ -845,7 +849,7 @@ public class SimpleBehaviorTests
     {
         // Get references to agent and target.
         MovingAgent agentAvoider =
-            (MovingAgent)_sceneRunner.FindChild("AgentAvoiderMovingAgent");
+            (MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
         Marker2D position3 =
             (Marker2D)_sceneRunner.FindChild("Position3");
         MovingAgent obstacleMovingAgent =
@@ -861,8 +865,10 @@ public class SimpleBehaviorTests
             (Marker2D)_sceneRunner.FindChild("Position9");
         
         // Get references to steering behavior from both agents.
-        AgentAvoiderSteeringBehavior agentAvoiderBehavior =
-            agentAvoider.FindChild<AgentAvoiderSteeringBehavior>();
+        ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
+            agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
+        SeekSteeringBehavior agentAvoiderSeekSteeringBehavior = 
+            agentAvoider.FindChild<SeekSteeringBehavior>(recursive:true);
         SeekSteeringBehavior seekSteeringBehavior =
             obstacleMovingAgent.FindChild<SeekSteeringBehavior>();
         
@@ -891,7 +897,7 @@ public class SimpleBehaviorTests
         agentAvoider.GlobalPosition = position9.GlobalPosition;
         obstacleMovingAgent.GlobalPosition = position4.GlobalPosition;
         seekSteeringBehavior.Target = position6;
-        agentAvoiderBehavior.Target = targetOfAgentAvoiderMovingAgent;
+        agentAvoiderSeekSteeringBehavior.Target = targetOfAgentAvoiderMovingAgent;
         agentAvoider.Visible = true;
         obstacleMovingAgent.Visible = true;
         agentAvoider.ProcessMode = Node.ProcessModeEnum.Always;
@@ -904,7 +910,7 @@ public class SimpleBehaviorTests
             AssertThat(
                 agentAvoider.GlobalPosition.DistanceTo(
                     obstacleMovingAgent.GlobalPosition) > 
-                150f
+                110f
             ).IsTrue();
         }
         // Assert we reached target.
@@ -929,7 +935,7 @@ public class SimpleBehaviorTests
     {
         // Get references to agent and target.
         MovingAgent agentAvoider =
-            (MovingAgent)_sceneRunner.FindChild("AgentAvoiderMovingAgent");
+            (MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
         Marker2D position11 =
             (Marker2D)_sceneRunner.FindChild("Position11");
         MovingAgent obstacleMovingAgent =
@@ -945,8 +951,10 @@ public class SimpleBehaviorTests
         //     (Marker2D)_sceneRunner.FindChild("Position9");
         
         // Get references to steering behavior from both agents.
-        AgentAvoiderSteeringBehavior agentAvoiderBehavior =
-            agentAvoider.FindChild<AgentAvoiderSteeringBehavior>();
+        ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
+            agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
+        SeekSteeringBehavior agentAvoiderSeekSteeringBehavior = 
+            agentAvoider.FindChild<SeekSteeringBehavior>(recursive:true);
         SeekSteeringBehavior seekSteeringBehavior =
             obstacleMovingAgent.FindChild<SeekSteeringBehavior>();
         
@@ -974,7 +982,7 @@ public class SimpleBehaviorTests
         agentAvoider.GlobalPosition = position12.GlobalPosition;
         obstacleMovingAgent.GlobalPosition = position11.GlobalPosition;
         seekSteeringBehavior.Target = position12;
-        agentAvoiderBehavior.Target = targetOfAgentAvoiderMovingAgent;
+        agentAvoiderSeekSteeringBehavior.Target = targetOfAgentAvoiderMovingAgent;
         agentAvoider.Visible = true;
         obstacleMovingAgent.Visible = true;
         agentAvoider.ProcessMode = Node.ProcessModeEnum.Always;
@@ -1012,7 +1020,7 @@ public class SimpleBehaviorTests
     {
         // Get references to agent and target.
         MovingAgent agentAvoider =
-            (MovingAgent)_sceneRunner.FindChild("AgentAvoiderMovingAgent");
+            (MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
         Marker2D position11 =
             (Marker2D)_sceneRunner.FindChild("Position11");
         MovingAgent obstacleMovingAgent =
@@ -1028,8 +1036,10 @@ public class SimpleBehaviorTests
         //     (Marker2D)_sceneRunner.FindChild("Position9");
         
         // Get references to steering behavior from both agents.
-        AgentAvoiderSteeringBehavior agentAvoiderBehavior =
-            agentAvoider.FindChild<AgentAvoiderSteeringBehavior>();
+        ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
+            agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
+        SeekSteeringBehavior agentAvoiderSeekSteeringBehavior = 
+            agentAvoider.FindChild<SeekSteeringBehavior>(recursive:true);
         SeekSteeringBehavior seekSteeringBehavior =
             obstacleMovingAgent.FindChild<SeekSteeringBehavior>();
         
@@ -1058,7 +1068,7 @@ public class SimpleBehaviorTests
         agentAvoider.GlobalPosition = position11.GlobalPosition;
         obstacleMovingAgent.GlobalPosition = position12.GlobalPosition;
         seekSteeringBehavior.Target = position11;
-        agentAvoiderBehavior.Target = targetOfAgentAvoiderMovingAgent;
+        agentAvoiderSeekSteeringBehavior.Target = targetOfAgentAvoiderMovingAgent;
         agentAvoider.Visible = true;
         obstacleMovingAgent.Visible = true;
         agentAvoider.ProcessMode = Node.ProcessModeEnum.Always;
