@@ -45,19 +45,12 @@ public partial class ConeSensor : Node2D
         get => _detectionRange;
         set
         {
-            // // Guard needed to avoid infinite calls between this component and _coneRange
-            // // when changing the range.
-            // if (Mathf.IsEqualApprox(_detectionRange, value)) return;
-            
             _detectionRange = value;
             UpdateDetectionArea();
             EmitSignal(
                 SignalName.ConeSensorDimensionsChanged, 
                 value, 
                 DetectionSemiConeAngle);
-            
-            // if (Mathf.IsEqualApprox(_coneRange.Range, value)) return;
-            // _coneRange.Range = value;
         }
     } 
     
@@ -70,19 +63,12 @@ public partial class ConeSensor : Node2D
         get => _detectionSemiConeAngle;
         set
         {
-            // Guard needed to avoid infinite calls between this component and _coneRange
-            // when changing the angle.
-            // if (Mathf.IsEqualApprox(_detectionSemiConeAngle, value)) return;
-            
             _detectionSemiConeAngle = value;
             UpdateDetectionArea();
             EmitSignal(
                 SignalName.ConeSensorDimensionsChanged,
                 DetectionRange,
                 value);
-            
-            // if (Mathf.IsEqualApprox(_coneRange.SemiConeDegrees, value)) return;
-            // _coneRange.SemiConeDegrees = value;
         }
     }
     
