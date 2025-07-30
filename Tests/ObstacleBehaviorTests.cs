@@ -136,18 +136,18 @@ public class ObstacleBehaviorTests
             (MovingAgent) _sceneRunner.FindChild("WallAvoiderMovingAgent");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
-            (Marker2D) _sceneRunner.FindChild("Position1");
+            (Marker2D) _sceneRunner.FindChild("Position2");
         Marker2D position5 = 
             (Marker2D) _sceneRunner.FindChild("Position5");
         
         // Get references to behaviors.
-        WallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
-            wallAvoiderAgent.FindChild<WallAvoiderSteeringBehavior>();
+        ActiveWallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
+            wallAvoiderAgent.FindChild<ActiveWallAvoiderSteeringBehavior>();
         
         // Setup agents before the test.
         target.GlobalPosition = position5.GlobalPosition;
         wallAvoiderAgent.GlobalPosition = position1.GlobalPosition;
-        wallAvoiderAgent.MaximumSpeed = 300.0f;
+        wallAvoiderAgent.MaximumSpeed = 200.0f;
         wallAvoiderAgent.StopSpeed = 1f;
         wallAvoiderAgent.MaximumRotationalDegSpeed = 1080f;
         wallAvoiderAgent.StopRotationDegThreshold = 1f;
@@ -207,7 +207,7 @@ public class ObstacleBehaviorTests
         // Start test.
         
         // Give hide agent time to reach target.
-        await _sceneRunner.AwaitMillis(20000);
+        await _sceneRunner.AwaitMillis(23000);
         
         // Assert that wall avoider has reached target.
         AssertThat(
@@ -228,13 +228,13 @@ public class ObstacleBehaviorTests
     // I don't know why this test works if run alone, but fails if batch executes with
     // every other test.
     [TestCase]
-    public async Task HideWallAvoiderBehaviorTest()
+    public async Task WeightBlendedHideWallAvoiderBehaviorTest()
     {
         // Get references to agent and target.
         MovingAgent seekAgent = 
             (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
         MovingAgent hideAgent = 
-            (MovingAgent) _sceneRunner.FindChild("HideWallAvoiderMovingAgent");
+            (MovingAgent) _sceneRunner.FindChild("WeightBlendedHideWallAvoiderMovingAgent");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
@@ -250,8 +250,8 @@ public class ObstacleBehaviorTests
             seekAgent.FindChild<SeekSteeringBehavior>();
         HideSteeringBehavior hideSteeringBehavior =
             hideAgent.FindChild<HideSteeringBehavior>(recursive: true);
-        WallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
-            hideAgent.FindChild<WallAvoiderSteeringBehavior>(recursive: true);
+        ActiveWallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
+            hideAgent.FindChild<ActiveWallAvoiderSteeringBehavior>(recursive: true);
         
         // Setup agents before the test.
         target.GlobalPosition = position2.GlobalPosition;
@@ -290,11 +290,11 @@ public class ObstacleBehaviorTests
         // Start test.
         
         // Assert that seek agent can see hide agent.
-        await _sceneRunner.AwaitMillis(100);
+        await _sceneRunner.AwaitMillis(200);
         AssertThat(hideSteeringBehavior.VisibleByThreat).IsTrue();
         
         // Give hide agent time to hide.
-        await _sceneRunner.AwaitMillis(2000);
+        await _sceneRunner.AwaitMillis(3000);
         
         // Assert that seek agent can no longer see hide agent.
         AssertThat(hideSteeringBehavior.VisibleByThreat).IsFalse();
@@ -303,7 +303,7 @@ public class ObstacleBehaviorTests
         target.GlobalPosition = position3.GlobalPosition;
         
         // Give agent time to hide again.
-        await _sceneRunner.AwaitMillis(4000);
+        await _sceneRunner.AwaitMillis(5000);
         
         // Assert that seek agent can no longer see hide agent.
         AssertThat(hideSteeringBehavior.VisibleByThreat).IsFalse();

@@ -68,20 +68,12 @@ public partial class WeightBlendedSteeringBehavior : Node2D, ISteeringBehavior, 
     /// <summary>
     /// Show gizmos.
     /// </summary>
-    [Export] public bool ShowGizmos
-    {
-        get => _showGizmos;
-        set => _showGizmos = value;
-    }
+    [Export] public bool ShowGizmos { get; set; }
 
     /// <summary>
     /// Colors for this object's gizmos.
     /// </summary>
-    [Export] public Color GizmosColor
-    {
-        get => _gizmosColor;
-        set => _gizmosColor = value;
-    }
+    [Export] public Color GizmosColor { get; set; }
     
     private readonly List<RealWeightedBehavior> _nodeWeightedBehaviors = new();
     private readonly List<WeightedOutput> _activeOutputs = new();
