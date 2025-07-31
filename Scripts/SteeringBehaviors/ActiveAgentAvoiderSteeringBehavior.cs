@@ -31,8 +31,8 @@ public partial class ActiveAgentAvoiderSteeringBehavior:
     [Export] public float AvoidanceTimeout { get; set; } = 1.0f;
     
     [ExportCategory("DEBUG:")]
-    public bool ShowGizmos { get; set; }
-    public Color GizmosColor { get; set;}
+    [Export] public bool ShowGizmos { get; set; }
+    [Export] public Color GizmosColor { get; set;}
 
     private ITargeter _targeter;
     private ISteeringBehavior _steeringBehavior;
