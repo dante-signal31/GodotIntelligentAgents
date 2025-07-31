@@ -243,6 +243,8 @@ public partial class HidingPointsDetector : Node2D
     private bool IsCleanHidingPoint(Vector2 hidingPoint)
     {
         _cleanAreaChecker.GlobalPosition = hidingPoint;
+        // This call is rather expensive. An improvement would be finding a way to not
+        // call ForceShapecastUpdate several times in every physics frame.
         _cleanAreaChecker.ForceShapecastUpdate();
         return (!_cleanAreaChecker.IsColliding());
     }

@@ -98,6 +98,11 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
         SetTimer();
     }
 
+    public override void _ExitTree()
+    {
+        DestroyUsher();
+    }
+
     private void SetTimer()
     {
         _advantageTimer = new System.Timers.Timer(
@@ -155,9 +160,16 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
         GetTree().Root.CallDeferred(Window.MethodName.AddChild, _usherAgent);
         _usherAgentSteeringBehaviorGizmos = (IGizmos) _usherAgent.SteeringBehavior;
     }
-    
-    
 
+    private void DestroyUsher()
+    {
+        // Destroy usher.
+        _usherAgent.QueueFree();
+        _usherAgent = null;
+        _usherAgentSteeringBehaviorGizmos = null;
+    }
+    
+    
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
         // I cannot create usher at _Ready() because it is executed even when agent is
