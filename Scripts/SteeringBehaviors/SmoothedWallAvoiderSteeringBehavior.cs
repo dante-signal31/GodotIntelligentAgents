@@ -32,8 +32,8 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
         {
             if (_target == value) return;
             _target = value;
-            if (_chaseToUsherTargeter == null) return;
-            _chaseToUsherTargeter.Target = value;
+            if (_usherTargeter == null) return;
+            _usherTargeter.Target = value;
         }
     }
 

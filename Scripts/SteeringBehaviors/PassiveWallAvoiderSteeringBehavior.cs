@@ -104,7 +104,7 @@ public partial class PassiveWallAvoiderSteeringBehavior:
         return _currentSteering;
     }
 
-    protected Vector2 GetAvoidVector(SteeringBehaviorArgs args)
+    private Vector2 GetAvoidVector(SteeringBehaviorArgs args)
     {
         Vector2 avoidVector = Vector2.Zero;
         
