@@ -274,7 +274,7 @@ public class ObstacleBehaviorTests
         hideAgent.AgentColor = new Color(0, 1, 0);
         hideSteeringBehavior.Threat = seekAgent;
         hideSteeringBehavior.ArrivalDistance = 3f;
-        // Layer 4, only obstacles.
+        // Layer 4, only agents.
         hideSteeringBehavior.ObstaclesLayers = 8;
         hideSteeringBehavior.SeparationFromObstacles = 30f;
         hideSteeringBehavior.AgentRadius = 50f;

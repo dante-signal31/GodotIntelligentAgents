@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Timers;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.Pathfinding;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
@@ -99,6 +100,10 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
                 _hidingPointsDetector.NotEmptyGroundLayers = value;
         }
     }
+    /// <summary>
+    /// Minimum time in seconds between hiding point path recalculations.
+    /// </summary>
+    [Export] private float pathRecalculationTime = 0.5f;
 
     [ExportCategory("DEBUG:")]
     /// <summary>
@@ -140,11 +145,28 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     private bool _hidingPointRecheckNeeded;
     private bool _hidingPointReached;
     private Node2D _nextMovementTarget;
+    private System.Timers.Timer _pathRecalculationTimer;
+    private bool _pathRecalculationCooldownActive;
     
     public override void _EnterTree()
     {
         if (_nextMovementTarget == null) _nextMovementTarget = new Node2D();
         HidingPoint = GlobalPosition;
+        _pathRecalculationTimer = new System.Timers.Timer(pathRecalculationTime * 1000);
+        _pathRecalculationTimer.Elapsed += OnRecalculationPathTimerTimeout;
+        _pathRecalculationTimer.AutoReset = false;
+    }
+    
+    private void OnRecalculationPathTimerTimeout(object sender, ElapsedEventArgs e)
+    {
+        _pathRecalculationCooldownActive = false;
+    }
+
+    private void StartPathRecalculationTimer()
+    {
+        _pathRecalculationTimer.Stop();
+        _pathRecalculationTimer.Start();
+        _pathRecalculationCooldownActive = true;
     }
 
     public override void _ExitTree()
@@ -223,7 +245,14 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         
         // Starting threat position counts as ThreatHasJustMoved because
         // _previousThreatPosition is init as Vector2.Zero.
-        if (ThreatHasJustMoved) _hidingPointRecheckNeeded = true;
+        if (ThreatHasJustMoved && !_pathRecalculationCooldownActive)
+        {
+            _hidingPointRecheckNeeded = true;
+            // A path recalculation cooldown is needed, or the path will be recalculated
+            // repeatedly while the threat moves without giving a useful hiding path until
+            // the threat stops for the first time.
+            StartPathRecalculationTimer();
+        }
         _previousThreatPosition = Threat.GlobalPosition;
         
         // Do not query when the map has never synchronized and is empty.
@@ -243,7 +272,8 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     {
         // Look for a new hiding point if the threat can see us and if it is threat first 
         // position (only once) or has just moved.
-        if (_threatCanSeeUs && _hidingPointRecheckNeeded ||
+        if (_threatCanSeeUs && _hidingPointRecheckNeeded && 
+            !_pathRecalculationCooldownActive ||
             // This second condition is needed for blender steeringBehaviors, where 
             // another steering behavior can move this agent without HideSteeringBehavior
             // intervention.
