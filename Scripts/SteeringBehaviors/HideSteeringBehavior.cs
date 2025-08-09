@@ -153,6 +153,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
         if (_nextMovementTarget == null) _nextMovementTarget = new Node2D();
         HidingPoint = GlobalPosition;
         _pathRecalculationTimer = new System.Timers.Timer(pathRecalculationTime * 1000);
+        _pathRecalculationTimer.Enabled = false;
         _pathRecalculationTimer.Elapsed += OnRecalculationPathTimerTimeout;
         _pathRecalculationTimer.AutoReset = false;
     }

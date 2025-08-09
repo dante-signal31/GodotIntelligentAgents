@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Godot;
-using Godot.Collections;
 using GodotGameAIbyExample.Scripts.Extensions;
 
 namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
@@ -13,11 +11,10 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 [Tool]
 /// <summary>
 /// <p> This steering behavior takes its children WeightBlendedSteeringBehavior nodes
-/// and gets the steering of the first node that returns a non zero steering. </p>
+/// by order and gets the steering of the first node that returns a non zero steering.</p>
 /// </summary>
 public partial class PriorityWeightBlendedSteeringBehavior : Node2D, ISteeringBehavior, IGizmos
 {
-
     [ExportCategory("DEBUG:")]
     /// <summary>
     /// Show gizmos.
@@ -88,7 +85,7 @@ public partial class PriorityWeightBlendedSteeringBehavior : Node2D, ISteeringBe
         if (weightBlendedSteeringBehavior == null)
         {
             warnings.Add("This node needs at least one child of type " +
-                         "WeightBlendedSteeringBehavior ITargeter to work. ");  
+                         "WeightBlendedSteeringBehavior to work. ");  
         }
         
         return warnings.ToArray();

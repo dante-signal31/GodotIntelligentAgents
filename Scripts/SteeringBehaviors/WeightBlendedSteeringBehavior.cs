@@ -17,9 +17,6 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// </summary>
 public partial class WeightBlendedSteeringBehavior : Node2D, ISteeringBehavior, IGizmos
 {
-    private bool _showGizmos;
-    private Color _gizmosColor;
-    
     private struct RealWeightedBehavior
     {
         public ISteeringBehavior SteeringBehavior;
