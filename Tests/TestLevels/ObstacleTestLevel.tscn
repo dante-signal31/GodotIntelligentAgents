@@ -97,7 +97,7 @@ metadata/_custom_type_script = "uid://c1hmtt20hub48"
 [node name="ObstacleCourtyard" parent="." instance=ExtResource("1_n20uv")]
 
 [node name="Target" parent="." instance=ExtResource("4_sfy1w")]
-position = Vector2(776, 856)
+position = Vector2(1619, 415)
 
 [node name="Agents" type="Node" parent="."]
 
@@ -109,6 +109,7 @@ MaximumSpeed = 600.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="HideSteeringBehavior" parent="Agents/HideMovingAgent" node_paths=PackedStringArray("Threat") instance=ExtResource("5_tck3o")]
 Threat = NodePath("../../SeekMovingAgent")
@@ -136,6 +137,7 @@ MaximumSpeed = 100.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="SmoothedWallAvoiderSteeringBehavior" parent="Agents/SmoothedWallAvoiderMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("11_ib2b3")]
 Target = NodePath("../../../Target")
@@ -153,15 +155,14 @@ StopRotationDegThreshold = 1.0
 [node name="ActiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("6_3e5d2")]
 Target = NodePath("../../../Target")
 AvoidanceTimeout = 0.75
-ShowGizmos = true
 GizmosColor = Color(1, 0.501961, 0, 1)
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior" instance=ExtResource("10_km65h")]
-ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 1)
 
 [node name="WhiskersSensor" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior" instance=ExtResource("7_8prle")]
 SensorResolution = 2
+ShowGizmos = false
 
 [node name="SectorRange" type="Node2D" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor"]
 script = ExtResource("8_dgjwj")
@@ -177,6 +178,7 @@ MaximumSpeed = 75.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="WeightBlendedSteeringBehavior" parent="Agents/WeightBlendedHideWallAvoiderMovingAgent" instance=ExtResource("10_1atku")]
 WeightedBehaviors = Array[ExtResource("11_e34o5")]([SubResource("Resource_36lvx"), SubResource("Resource_ib2b3")])
@@ -213,6 +215,7 @@ MaximumSpeed = 200.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="PriorityWeightBlendedSteeringBehavior" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent" instance=ExtResource("14_km65h")]
 ShowGizmos = true
@@ -269,6 +272,7 @@ MaximumSpeed = 200.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="PriorityDitheringBlendedSteeringBehavior" parent="Agents/PriorityDitheringBlendedHideWallAvoiderMovingAgent" instance=ExtResource("20_acdjf")]
 RandomBehaviors = Array[ExtResource("21_vx4id")]([SubResource("Resource_6salh"), SubResource("Resource_xwcat"), SubResource("Resource_ni8xx"), SubResource("Resource_3f7ow")])

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
+using GodotGameAIbyExample.Scripts.Tools;
 
 // Needs to be a Tool to be able to averride _GetConfigurationWarnings() and find out
 // if it has a child of type ISteeringBehavior.
@@ -45,7 +46,27 @@ public partial class MovingAgent : CharacterBody2D
     /// Maximum deceleration for this agent.
     /// </summary>
     [Export] public float MaximumDeceleration { get; set; }
-    // [Export] private SteeringBehavior _steeringBehavior;
+    
+    /// <summary>
+    /// Smooth heading averaging velocity vector.
+    /// </summary>
+    [Export] public bool AutoSmooth { get; set; }
+
+    private int _autoSmoothSamples = 10;
+    /// <summary>
+    /// How many samples to use to smooth heading.
+    /// </summary>
+    [Export]
+    public int AutoSmoothSamples
+    {
+        get => _autoSmoothSamples;
+        set
+        {
+            _autoSmoothSamples = value;
+            if (!AutoSmooth) return;
+            _lastRotations = new MovingWindow(value);
+        }
+    }
     
     [ExportGroup("WIRING:")]
     [Export] private Sprite2D _bodySprite;
@@ -86,6 +107,7 @@ public partial class MovingAgent : CharacterBody2D
     private SteeringBehaviorArgs _behaviorArgs;
     private float _maximumRotationSpeedRadNormalized;
     private float _stopRotationRadThreshold;
+    private MovingWindow _lastRotations;
 
     private SteeringBehaviorArgs GetSteeringBehaviorArgs()
     {
@@ -106,6 +128,9 @@ public partial class MovingAgent : CharacterBody2D
         _maximumRotationSpeedRadNormalized =
             Mathf.DegToRad(MaximumRotationalDegSpeed) / (2 * Mathf.Pi);
         _stopRotationRadThreshold = Mathf.DegToRad(StopRotationDegThreshold);
+        
+        if (!AutoSmooth) return;
+        _lastRotations = new MovingWindow(AutoSmoothSamples);
     }
 
     public override void _Ready()
@@ -137,18 +162,23 @@ public partial class MovingAgent : CharacterBody2D
         
         if (steeringOutput.Angular == 0 && Velocity != Vector2.Zero)
         {
-            // If no explicit angular steering, we will just look at the direction we
-            // are moving, but clamping our rotation by our rotational speed.
-            float totalRotationNeeded = Forward.AngleTo(Velocity);
-            if (Mathf.Abs(totalRotationNeeded) > _stopRotationRadThreshold)
+            if (AutoSmooth)
             {
-                float newHeading = Mathf.LerpAngle(
-                    Forward.Angle(), 
-                    Velocity.Angle(), 
-                    _maximumRotationSpeedRadNormalized * (float)delta);
-                float rotation = newHeading - Forward.Angle();
-                Vector2 rotatedForward = Forward.Rotated(rotation);
-                LookAt(rotatedForward + GlobalPosition);
+                // If no explicit angular steering, but autoSmoothing is desired, we will
+                // smooth the heading by averaging the last few rotations.
+                float rotationNeeded = Forward.AngleTo(steeringOutput.Linear);
+                _lastRotations.Add(rotationNeeded);
+                float averageRotation = _lastRotations.Average;
+                Vector2 averageHeading = Forward.Rotated(averageRotation);
+                SetRotation(averageHeading, delta);
+            }
+            else
+            {
+                // If no explicit angular steering and no autoSmoothing desired, we will
+                // just look at the direction we are moving, but clamping our rotation by
+                // our rotational speed.
+                SetRotation(Velocity, delta);
+                
             }
         }
         else if (steeringOutput.Angular != 0)
@@ -158,6 +188,31 @@ public partial class MovingAgent : CharacterBody2D
             GlobalRotationDegrees += steeringOutput.Angular * (float)delta;
         }
         MoveAndSlide();
+    }
+
+    /// <summary>
+    /// Rotates the agent towards the specified heading vector, adhering to the agent's
+    /// rotational speed and rotation threshold constraints.
+    /// </summary>
+    /// <param name="heading">
+    /// A 2D vector representing the target direction the agent should face.
+    /// </param>
+    /// <param name="delta">
+    /// The frame's elapsed time, used to calculate the agent's interpolated rotation.
+    /// </param>
+    private void SetRotation(Vector2 heading, double delta)
+    {
+        float totalRotationNeeded = Forward.AngleTo(heading);
+        if (Mathf.Abs(totalRotationNeeded) > _stopRotationRadThreshold)
+        {
+            float newHeading = Mathf.LerpAngle(
+                Forward.Angle(),
+                heading.Angle(),
+                _maximumRotationSpeedRadNormalized * (float) delta);
+            float rotation = newHeading - Forward.Angle();
+            Vector2 rotatedForward = Forward.Rotated(rotation);
+            LookAt(rotatedForward + GlobalPosition);
+        }
     }
 
     public override string[] _GetConfigurationWarnings()

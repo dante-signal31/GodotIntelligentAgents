@@ -82,6 +82,7 @@ MaximumSpeed = 200.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
 Target = NodePath("../../../Target")
@@ -97,6 +98,7 @@ MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 300.0
+AutoSmoothSamples = 0
 
 [node name="ArriveSteeringBehaviorLa" parent="Agents/ArriveMovingAgentLA" node_paths=PackedStringArray("Target") instance=ExtResource("10_ippjy")]
 Target = NodePath("../../../Positions/Position4")
@@ -109,6 +111,7 @@ MaximumSpeed = 600.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="ArriveSteeringBehaviorNLA" parent="Agents/ArriveMovingAgentNLA" node_paths=PackedStringArray("Target") instance=ExtResource("5_xfglb")]
 Target = NodePath("../../../Target")
@@ -118,6 +121,7 @@ ArrivalDistance = 10.0
 process_mode = 4
 visible = false
 position = Vector2(1378, 678)
+AutoSmoothSamples = 0
 
 [node name="FleeSteeringBehavior" parent="Agents/FleeMovingAgent" instance=ExtResource("6_4ry8j")]
 PanicDistance = 200.0
@@ -130,6 +134,7 @@ MaximumSpeed = 600.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 180.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="AlignSteeringBehavior" parent="Agents/AlignMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("7_jhf1f")]
 Target = NodePath("../../SeekMovingAgent")
@@ -142,6 +147,7 @@ MaximumSpeed = 600.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 180.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="FaceSteeringBehavior" parent="Agents/FaceMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("8_mvp47")]
 Target = NodePath("../../SeekMovingAgent")
@@ -156,6 +162,7 @@ MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 400.0
+AutoSmoothSamples = 0
 
 [node name="VelocityMatchingSteeringBehavior" parent="Agents/VelocityMatchingMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("9_p6qlj")]
 Target = NodePath("../../ArriveMovingAgentLA")
@@ -169,6 +176,7 @@ MaximumSpeed = 100.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="PursueSteeringBehavior" parent="Agents/PursueMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("11_0ln1b")]
 Target = NodePath("../../SeekMovingAgent")
@@ -183,6 +191,7 @@ MaximumSpeed = 600.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="InterposeSteeringBehavior" parent="Agents/InterposeMovingAgent" node_paths=PackedStringArray("AgentA", "AgentB") instance=ExtResource("12_vep10")]
 AgentA = NodePath("../../ArriveMovingAgentLA")
@@ -198,6 +207,7 @@ MaximumSpeed = 100.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="EvadeSteeringBehavior" parent="Agents/EvadeMovingAgent" node_paths=PackedStringArray("Threat") instance=ExtResource("13_exiqe")]
 Threat = NodePath("../../SeekMovingAgent")
@@ -214,6 +224,7 @@ MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 300.0
+AutoSmoothSamples = 0
 
 [node name="SeparationSteeringBehavior" parent="Agents/SeparationMovingAgent" node_paths=PackedStringArray("Threats") instance=ExtResource("14_t8tiy")]
 Threats = [NodePath("../../ArriveMovingAgentLA"), NodePath("../../VelocityMatchingMovingAgent")]
@@ -230,6 +241,7 @@ MaximumSpeed = 600.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 180.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="GroupAlignSteeringBehavior" parent="Agents/GroupAlignMovingAgent" node_paths=PackedStringArray("Targets") instance=ExtResource("15_cm7y6")]
 Targets = [NodePath("../../ArriveMovingAgentLA"), NodePath("../../SeekMovingAgent")]
@@ -245,6 +257,7 @@ MaximumSpeed = 600.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="CohesionSteeringBehavior" parent="Agents/CohesionMovingAgent" node_paths=PackedStringArray("Targets") instance=ExtResource("16_4hd86")]
 Targets = [NodePath("../../SeekMovingAgent"), NodePath("../../ArriveMovingAgentLA"), NodePath("../../VelocityMatchingMovingAgent")]
@@ -260,6 +273,7 @@ MaximumSpeed = 100.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="WanderSteeringBehavior" parent="Agents/WanderMovingAgent" instance=ExtResource("17_38cq1")]
 WanderRadius = 60.0
@@ -274,6 +288,7 @@ MaximumSpeed = 150.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="OffsetFollowBehavior" parent="Agents/OffsetFollowMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("18_q0gcs")]
 Target = NodePath("../../SeekMovingAgent")
@@ -294,6 +309,7 @@ MaximumSpeed = 200.0
 StopSpeed = 1.0
 MaximumRotationalDegSpeed = 1080.0
 StopRotationDegThreshold = 1.0
+AutoSmoothSamples = 0
 
 [node name="ActiveAgentAvoiderSteeringBehavior" parent="Agents/ActiveAgentAvoiderMovingAgent" instance=ExtResource("23_ujip5")]
 

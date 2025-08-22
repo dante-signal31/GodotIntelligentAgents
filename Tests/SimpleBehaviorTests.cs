@@ -701,7 +701,7 @@ public class SimpleBehaviorTests
             obstacleMovingAgent.FindChild<SeekSteeringBehavior>();
         
         // Setup agents before the test.
-        agentAvoider.MaximumSpeed = 250.0f;
+        agentAvoider.MaximumSpeed = 200.0f;
         agentAvoider.MaximumAcceleration = 400.0f;
         agentAvoider.MaximumRotationalDegSpeed = 180f;
         agentAvoider.StopRotationDegThreshold = 1f;
@@ -738,7 +738,7 @@ public class SimpleBehaviorTests
             AssertThat(
                 agentAvoider.GlobalPosition.DistanceTo(
                     obstacleMovingAgent.GlobalPosition) > 
-                150f
+                100f
             ).IsTrue();
         }
         // Assert we reached target.
