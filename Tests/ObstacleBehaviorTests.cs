@@ -172,6 +172,55 @@ public class ObstacleBehaviorTests
     }
     
     /// <summary>
+    /// Test that WallAvoiderBehavior can move an agent from a point A to a point B
+    /// avoiding obstacles and using auto-smoothed movement.
+    /// </summary>
+    [TestCase]
+    public async Task AutoSmoothedWallAvoiderBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent wallAvoiderAgent = 
+            (MovingAgent) _sceneRunner.FindChild("WallAvoiderMovingAgent");
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position2");
+        Marker2D position5 = 
+            (Marker2D) _sceneRunner.FindChild("Position5");
+        
+        // Get references to behaviors.
+        ActiveWallAvoiderSteeringBehavior wallAvoiderSteeringBehavior = 
+            wallAvoiderAgent.FindChild<ActiveWallAvoiderSteeringBehavior>();
+        
+        // Setup agents before the test.
+        target.GlobalPosition = position5.GlobalPosition;
+        wallAvoiderAgent.GlobalPosition = position1.GlobalPosition;
+        wallAvoiderAgent.MaximumSpeed = 200.0f;
+        wallAvoiderAgent.StopSpeed = 1f;
+        wallAvoiderAgent.MaximumRotationalDegSpeed = 1080f;
+        wallAvoiderAgent.StopRotationDegThreshold = 1f;
+        wallAvoiderAgent.AutoSmooth = true;
+        wallAvoiderAgent.AutoSmoothSamples = 10;
+        wallAvoiderAgent.AgentColor = new Color(1, 0, 0);
+        wallAvoiderSteeringBehavior.Target = target;
+        wallAvoiderAgent.Visible = true;
+        wallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Give hide agent time to reach target.
+        await _sceneRunner.AwaitMillis(8000);
+        
+        // Assert that wall avoider has reached target.
+        AssertThat(
+            wallAvoiderAgent.GlobalPosition.DistanceTo(target.GlobalPosition) <
+            20.0f).IsTrue();
+        
+        // Cleanup.
+        wallAvoiderAgent.Visible = false;
+        wallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
+    
+    /// <summary>
     /// Test that SmoothedWallAvoiderBehavior can move an agent from a point A to a point B
     /// avoiding obstacles.
     /// </summary>
