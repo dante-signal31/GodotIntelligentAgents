@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Timers;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
@@ -163,6 +161,7 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
 
     private void DestroyUsher()
     {
+        if (_usherAgent == null) return;
         // Destroy usher.
         _usherAgent.QueueFree();
         _usherAgent = null;

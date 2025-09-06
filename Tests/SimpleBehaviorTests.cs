@@ -1284,8 +1284,8 @@ public class SimpleBehaviorTests
         VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
             (VelocityMatchingSteeringBehavior) velocityMatchingAgent.FindChild(
                 nameof(VelocityMatchingSteeringBehavior));
-        SeparationSteeringBehavior separationSteeringBehavior =
-            separationAgent.FindChild<SeparationSteeringBehavior>();
+        Scripts.SteeringBehaviors.SeparationSteeringBehavior separationSteeringBehavior =
+            separationAgent.FindChild<Scripts.SteeringBehaviors.SeparationSteeringBehavior>();
         
         // Setup agents before the test.
         targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
@@ -1315,7 +1315,7 @@ public class SimpleBehaviorTests
         separationSteeringBehavior.SeparationThreshold = 410f;
         separationSteeringBehavior.DecayCoefficient = 20f;
         separationSteeringBehavior.SeparationAlgorithm =
-            SeparationSteeringBehavior.SeparationAlgorithms.Linear;
+            Scripts.SteeringBehaviors.SeparationSteeringBehavior.SeparationAlgorithms.Linear;
         velocityMatchingAgent.Visible = true;
         targetMovingAgent.Visible = true;
         separationAgent.Visible = true;
@@ -1381,8 +1381,8 @@ public class SimpleBehaviorTests
         VelocityMatchingSteeringBehavior velocityMatchingSteeringBehavior =
             (VelocityMatchingSteeringBehavior) velocityMatchingAgent.FindChild(
                 nameof(VelocityMatchingSteeringBehavior));
-        SeparationSteeringBehavior separationSteeringBehavior =
-            separationAgent.FindChild<SeparationSteeringBehavior>();
+        Scripts.SteeringBehaviors.SeparationSteeringBehavior separationSteeringBehavior =
+            separationAgent.FindChild<Scripts.SteeringBehaviors.SeparationSteeringBehavior>();
         
         // Setup agents before the test.
         targetOfTargetMovingAgent.GlobalPosition = targetPosition.GlobalPosition;
@@ -1412,7 +1412,7 @@ public class SimpleBehaviorTests
         separationSteeringBehavior.SeparationThreshold = 410f;
         separationSteeringBehavior.DecayCoefficient = 20f;
         separationSteeringBehavior.SeparationAlgorithm =
-            SeparationSteeringBehavior.SeparationAlgorithms.InverseSquare;
+            Scripts.SteeringBehaviors.SeparationSteeringBehavior.SeparationAlgorithms.InverseSquare;
         velocityMatchingAgent.Visible = true;
         targetMovingAgent.Visible = true;
         separationAgent.Visible = true;

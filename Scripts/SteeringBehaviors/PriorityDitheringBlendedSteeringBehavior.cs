@@ -67,6 +67,8 @@ public partial class PriorityDitheringBlendedSteeringBehavior:
     
     public override void _Ready()
     {
+        if (Engine.IsEditorHint()) return;
+        
         // Resolve all node paths into real nodes.
         foreach (var randomBehavior in RandomBehaviors)
         {

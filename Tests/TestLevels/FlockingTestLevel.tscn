@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://duhhqkywjgwyc"]
+[gd_scene load_steps=24 format=3 uid="uid://duhhqkywjgwyc"]
 
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="1_nrpbl"]
 [ext_resource type="PackedScene" uid="uid://uoeqihrae8u6" path="res://Levels/BigClearCourtyard.tscn" id="2_s4j2x"]
@@ -9,29 +9,87 @@
 [ext_resource type="PackedScene" uid="uid://b2cchvb3gddvj" path="res://Scenes/SteeringBehaviors/CohesionSteeringBehavior.tscn" id="7_o31hi"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="8_47jhc"]
 [ext_resource type="PackedScene" uid="uid://b6jxcemj6xp7r" path="res://Scenes/SteeringBehaviors/WanderSteeringBehavior.tscn" id="9_iupko"]
+[ext_resource type="PackedScene" uid="uid://dm5beg83kj6rd" path="res://Scenes/SteeringBehaviors/FlockingSwarmGenerator.tscn" id="10_w46gd"]
+[ext_resource type="PackedScene" uid="uid://cnsqa74xmk8qa" path="res://Scenes/SteeringBehaviors/WeightBlendedBoidMovingAgent.tscn" id="11_o31hi"]
 
-[sub_resource type="Resource" id="Resource_yoh7a"]
+[sub_resource type="Resource" id="Resource_vbjfa"]
 script = ExtResource("5_vbjfa")
 SteeringBehavior = NodePath("SeparationSteeringBehavior")
 Weight = 20.0
 DebugColor = Color(0, 0, 0.988235, 0.984314)
 metadata/_custom_type_script = "uid://3o8nj5mnvovw"
 
-[sub_resource type="Resource" id="Resource_3ec3k"]
+[sub_resource type="Resource" id="Resource_w46gd"]
 script = ExtResource("5_vbjfa")
 SteeringBehavior = NodePath("CohesionSteeringBehavior")
 Weight = 5.0
 DebugColor = Color(1, 0, 0, 1)
 metadata/_custom_type_script = "uid://3o8nj5mnvovw"
 
-[sub_resource type="Resource" id="Resource_jw54m"]
+[sub_resource type="Resource" id="Resource_o31hi"]
 script = ExtResource("5_vbjfa")
 SteeringBehavior = NodePath("SeekSteeringBehavior")
 Weight = 2.0
 DebugColor = Color(1, 0.537255, 0, 1)
 metadata/_custom_type_script = "uid://3o8nj5mnvovw"
 
+[sub_resource type="Resource" id="Resource_47jhc"]
+script = ExtResource("5_vbjfa")
+SteeringBehavior = NodePath("WanderSteeringBehavior")
+Weight = 1.0
+DebugColor = Color(0, 1, 0, 1)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Resource" id="Resource_iupko"]
+script = ExtResource("5_vbjfa")
+SteeringBehavior = NodePath("SeparationSteeringBehavior")
+Weight = 20.0
+DebugColor = Color(0, 0, 0.988235, 0.984314)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Resource" id="Resource_yoh7a"]
+script = ExtResource("5_vbjfa")
+SteeringBehavior = NodePath("CohesionSteeringBehavior")
+Weight = 5.0
+DebugColor = Color(1, 0, 0, 1)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Resource" id="Resource_3ec3k"]
+script = ExtResource("5_vbjfa")
+SteeringBehavior = NodePath("SeekSteeringBehavior")
+Weight = 2.0
+DebugColor = Color(1, 0.537255, 0, 1)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Resource" id="Resource_jw54m"]
+script = ExtResource("5_vbjfa")
+SteeringBehavior = NodePath("WanderSteeringBehavior")
+Weight = 1.0
+DebugColor = Color(0, 1, 0, 1)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
 [sub_resource type="Resource" id="Resource_wv8y4"]
+script = ExtResource("5_vbjfa")
+SteeringBehavior = NodePath("SeparationSteeringBehavior")
+Weight = 20.0
+DebugColor = Color(0, 0, 0.988235, 0.984314)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Resource" id="Resource_p7yh5"]
+script = ExtResource("5_vbjfa")
+SteeringBehavior = NodePath("CohesionSteeringBehavior")
+Weight = 5.0
+DebugColor = Color(1, 0, 0, 1)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Resource" id="Resource_usedh"]
+script = ExtResource("5_vbjfa")
+SteeringBehavior = NodePath("SeekSteeringBehavior")
+Weight = 2.0
+DebugColor = Color(1, 0.537255, 0, 1)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Resource" id="Resource_d1gak"]
 script = ExtResource("5_vbjfa")
 SteeringBehavior = NodePath("WanderSteeringBehavior")
 Weight = 1.0
@@ -40,19 +98,21 @@ metadata/_custom_type_script = "uid://3o8nj5mnvovw"
 
 [node name="FlockingTestLevel" type="Node2D"]
 
-[node name="Target" parent="." instance=ExtResource("1_nrpbl")]
-position = Vector2(5053, 2314)
-gizmo_extents = 169.4
-
 [node name="BigClearCourtyard" parent="." instance=ExtResource("2_s4j2x")]
+
+[node name="Target" parent="." instance=ExtResource("1_nrpbl")]
+position = Vector2(4841, 2252)
+gizmo_extents = 169.4
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(3851, 2157)
 zoom = Vector2(0.25, 0.25)
 
 [node name="WeightBlendedVoids" type="Node" parent="."]
+process_mode = 4
 
 [node name="WeightBlendedBoidMovingAgent" parent="WeightBlendedVoids" instance=ExtResource("3_40o8h")]
+visible = false
 position = Vector2(4835, 1832)
 MaximumSpeed = 200.0
 StopSpeed = 1.0
@@ -63,7 +123,7 @@ MaximumDeceleration = 200.0
 AutoSmooth = true
 
 [node name="WeightBlendedSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent" instance=ExtResource("5_vflvk")]
-WeightedBehaviors = Array[ExtResource("5_vbjfa")]([SubResource("Resource_yoh7a"), SubResource("Resource_3ec3k"), SubResource("Resource_jw54m"), SubResource("Resource_wv8y4")])
+WeightedBehaviors = Array[ExtResource("5_vbjfa")]([SubResource("Resource_vbjfa"), SubResource("Resource_w46gd"), SubResource("Resource_o31hi"), SubResource("Resource_47jhc")])
 
 [node name="SeparationSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent/WeightBlendedSteeringBehavior" node_paths=PackedStringArray("Threats") instance=ExtResource("6_w46gd")]
 Threats = [NodePath("../../../WeightBlendedBoidMovingAgent2"), NodePath("../../../WeightBlendedBoidMovingAgent3")]
@@ -81,7 +141,7 @@ PositionGizmoColor = Color(1, 0, 0, 1)
 
 [node name="SeekSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent/WeightBlendedSteeringBehavior" node_paths=PackedStringArray("Target") instance=ExtResource("8_47jhc")]
 Target = NodePath("../../../../Target")
-ArrivalDistance = 1000.0
+ArrivalDistance = 1400.0
 
 [node name="WanderSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent/WeightBlendedSteeringBehavior" instance=ExtResource("9_iupko")]
 ArrivalDistance = 10.0
@@ -91,6 +151,7 @@ WanderJitter = 400.0
 WanderRecalculationTime = 1.0
 
 [node name="WeightBlendedBoidMovingAgent2" parent="WeightBlendedVoids" instance=ExtResource("3_40o8h")]
+visible = false
 position = Vector2(4819, 2801)
 MaximumSpeed = 200.0
 StopSpeed = 1.0
@@ -101,7 +162,7 @@ MaximumDeceleration = 200.0
 AutoSmooth = true
 
 [node name="WeightBlendedSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent2" instance=ExtResource("5_vflvk")]
-WeightedBehaviors = Array[ExtResource("5_vbjfa")]([SubResource("Resource_yoh7a"), SubResource("Resource_3ec3k"), SubResource("Resource_jw54m"), SubResource("Resource_wv8y4")])
+WeightedBehaviors = Array[ExtResource("5_vbjfa")]([SubResource("Resource_iupko"), SubResource("Resource_yoh7a"), SubResource("Resource_3ec3k"), SubResource("Resource_jw54m")])
 
 [node name="SeparationSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent2/WeightBlendedSteeringBehavior" node_paths=PackedStringArray("Threats") instance=ExtResource("6_w46gd")]
 Threats = [NodePath("../../../WeightBlendedBoidMovingAgent"), NodePath("../../../WeightBlendedBoidMovingAgent3")]
@@ -119,7 +180,7 @@ PositionGizmoColor = Color(1, 0, 0, 1)
 
 [node name="SeekSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent2/WeightBlendedSteeringBehavior" node_paths=PackedStringArray("Target") instance=ExtResource("8_47jhc")]
 Target = NodePath("../../../../Target")
-ArrivalDistance = 1000.0
+ArrivalDistance = 1400.0
 
 [node name="WanderSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent2/WeightBlendedSteeringBehavior" instance=ExtResource("9_iupko")]
 ArrivalDistance = 10.0
@@ -129,6 +190,7 @@ WanderJitter = 400.0
 WanderRecalculationTime = 1.0
 
 [node name="WeightBlendedBoidMovingAgent3" parent="WeightBlendedVoids" instance=ExtResource("3_40o8h")]
+visible = false
 position = Vector2(5723, 2215)
 MaximumSpeed = 200.0
 StopSpeed = 1.0
@@ -139,7 +201,7 @@ MaximumDeceleration = 200.0
 AutoSmooth = true
 
 [node name="WeightBlendedSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent3" instance=ExtResource("5_vflvk")]
-WeightedBehaviors = Array[ExtResource("5_vbjfa")]([SubResource("Resource_yoh7a"), SubResource("Resource_3ec3k"), SubResource("Resource_jw54m"), SubResource("Resource_wv8y4")])
+WeightedBehaviors = Array[ExtResource("5_vbjfa")]([SubResource("Resource_wv8y4"), SubResource("Resource_p7yh5"), SubResource("Resource_usedh"), SubResource("Resource_d1gak")])
 
 [node name="SeparationSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent3/WeightBlendedSteeringBehavior" node_paths=PackedStringArray("Threats") instance=ExtResource("6_w46gd")]
 Threats = [NodePath("../../../WeightBlendedBoidMovingAgent"), NodePath("../../../WeightBlendedBoidMovingAgent2")]
@@ -157,7 +219,7 @@ PositionGizmoColor = Color(1, 0, 0, 1)
 
 [node name="SeekSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent3/WeightBlendedSteeringBehavior" node_paths=PackedStringArray("Target") instance=ExtResource("8_47jhc")]
 Target = NodePath("../../../../Target")
-ArrivalDistance = 1000.0
+ArrivalDistance = 1400.0
 
 [node name="WanderSteeringBehavior" parent="WeightBlendedVoids/WeightBlendedBoidMovingAgent3/WeightBlendedSteeringBehavior" instance=ExtResource("9_iupko")]
 ArrivalDistance = 10.0
@@ -165,3 +227,14 @@ WanderRadius = 300.0
 WanderDistance = 600.0
 WanderJitter = 400.0
 WanderRecalculationTime = 1.0
+
+[node name="FlockingSwarmGenerator" parent="." node_paths=PackedStringArray("_boidSeekTarget") instance=ExtResource("10_w46gd")]
+position = Vector2(4808, 2278)
+_swarmSize = 3
+_boidScene = ExtResource("11_o31hi")
+_swarmRadius = 1400
+_obstaclesForGenerationLayers = 11
+_randomizeBoidRotation = true
+_boidSeekTarget = NodePath("../Target")
+ShowGizmos = true
+GizmosColor = Color(0.894118, 0, 0.972549, 0.996078)

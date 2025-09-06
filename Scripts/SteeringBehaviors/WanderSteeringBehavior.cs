@@ -47,11 +47,23 @@ public partial class WanderSteeringBehavior : Node2D, ISteeringBehavior
     /// second. KEEP IT OVER wanderRadius.
     /// </summary>
     [Export] public float WanderJitter { get; set; }
-    
+
+    private float _wanderRecalculationTime;
+
     /// <summary>
     /// Time in seconds to recalculate the wander position.
     /// </summary>
-    [Export] public float WanderRecalculationTime { get; set; }
+    [Export]
+    public float WanderRecalculationTime
+    {
+        get=> _wanderRecalculationTime;
+        set
+        {
+            _wanderRecalculationTime = value;
+            if (_updateTimer != null)
+                _updateTimer.WaitTime = value;
+        }
+    }
     
     [ExportCategory("DEBUG:")]
     /// <summary>

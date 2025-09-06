@@ -123,6 +123,7 @@ public partial class HidingPointsDetector : Node2D
     
     private RayCast2D _rayCaster;
     private ShapeCast2D _cleanAreaChecker;
+    // TODO: _cleanAreaShape should not be global. It can be local to InitCleanAreaChecker()
     private CollisionShape2D _cleanAreaShape;
     private CircleShape2D _cleanAreaShapeCircle;
 

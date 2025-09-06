@@ -86,7 +86,7 @@ AutoSmoothSamples = 0
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
 Target = NodePath("../../../Target")
-ArrivalDistance = 10.0
+ArrivalDistance = 100.0
 
 [node name="ArriveMovingAgentLA" parent="Agents" instance=ExtResource("4_d5nib")]
 process_mode = 4
@@ -314,8 +314,7 @@ AutoSmoothSamples = 0
 [node name="ActiveAgentAvoiderSteeringBehavior" parent="Agents/ActiveAgentAvoiderMovingAgent" instance=ExtResource("23_ujip5")]
 
 [node name="SeekSteeringBehavior" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior" node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
-Target = NodePath("../../../../Positions/Position3")
-ArrivalDistance = 2.0
+Target = NodePath("../../../../Target")
 
 [node name="PassiveAgentAvoiderSteeringBehavior" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior" instance=ExtResource("24_cmigx")]
 TooAlignedFactor = 0.99

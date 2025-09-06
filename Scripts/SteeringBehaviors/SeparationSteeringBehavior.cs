@@ -1,10 +1,11 @@
-using Godot;
 using System;
 using System.Collections.Generic;
+using Godot;
 using Godot.Collections;
 using GodotGameAIbyExample.addons.InteractiveRanges.CircularRange;
 using GodotGameAIbyExample.Scripts.Extensions;
-using GodotGameAIbyExample.Scripts.SteeringBehaviors;
+
+namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
 // It must be marked as Tool to be found by MovingAgent when it uses my custom extension
 // method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It

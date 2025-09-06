@@ -10,8 +10,11 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <summary>
 /// <p>Seek steering behaviour makes the agent move towards a target position.</p>
 /// </summary>
-public partial class SeekSteeringBehavior: Node, ISteeringBehavior, ITargeter
+public partial class SeekSteeringBehavior: Node2D, ISteeringBehavior, ITargeter, IGizmos
 {
+    private bool _showGizmos;
+    private Color _gizmosColor;
+
     [ExportCategory("CONFIGURATION:")]
     /// <summary>
     /// Point this agent is going to.
@@ -21,6 +24,12 @@ public partial class SeekSteeringBehavior: Node, ISteeringBehavior, ITargeter
     /// Distance at which we give our goal as reached and we stop our agent.
     /// </summary>
     [Export] public float ArrivalDistance { get; set; } = .1f;
+    
+    [ExportCategory("DEBUG:")]
+    
+    [Export] public bool ShowGizmos { get; set; }
+
+    [Export] public Color GizmosColor { get; set; }
     
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
@@ -39,4 +48,29 @@ public partial class SeekSteeringBehavior: Node, ISteeringBehavior, ITargeter
         return new SteeringOutput(newVelocity, 0);
     }
     
+    public override void _Process(double delta)
+    {
+        if (ShowGizmos) DrawGizmos();
+    }
+
+    private void DrawGizmos()
+    {
+        QueueRedraw();
+    }
+    
+    public override void _Draw()
+    {
+        if (!ShowGizmos) return;
+
+        if (Engine.IsEditorHint())
+        {
+            DrawCircle(
+                Position, 
+                ArrivalDistance, 
+                GizmosColor,
+                filled: false);
+        }
+    }
+
+
 }

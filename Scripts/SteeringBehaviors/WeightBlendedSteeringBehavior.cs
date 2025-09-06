@@ -78,11 +78,17 @@ public partial class WeightBlendedSteeringBehavior : Node2D, ISteeringBehavior, 
     private float _totalWeight;
     
     private SteeringOutput _currentSteering;
+    private Array<WeightedBehavior> _duplicatedWeightedBehaviors = new();
 
     public override void _Ready()
     {
-        // Resolve all node paths into real nodes.
+        // This is a workaround to avoid the issue described here:
+        // https://www.reddit.com/r/godot/comments/1425ei3/custom_resources_in_arraysalways_seem_to_be_shared/
         foreach (var weightedBehavior in WeightedBehaviors)
+            _duplicatedWeightedBehaviors.Add((WeightedBehavior) weightedBehavior.Duplicate(true));
+        
+        // Resolve all node paths into real nodes.
+        foreach (var weightedBehavior in _duplicatedWeightedBehaviors)
         {
             ISteeringBehavior currentSteeringBehavior = 
                 GetNode<ISteeringBehavior>(weightedBehavior.SteeringBehavior);
