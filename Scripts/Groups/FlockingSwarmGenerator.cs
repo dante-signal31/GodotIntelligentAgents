@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using Godot;
-using Godot.Collections;
 using GodotGameAIbyExample.Scripts.Extensions;
+using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 using Vector2 = Godot.Vector2;
 
-namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
+namespace GodotGameAIbyExample.Scripts.Groups;
 
 // TODO: This component is actually not working as expected.
 // When boids are added to the scene, and configured manually, they work right but when
@@ -253,7 +252,7 @@ public partial class FlockingSwarmGenerator : Node2D, IGizmos
     {
         if (Engine.IsEditorHint()) return;
         
-        CallDeferred(MethodName.AddChild, _cleanAreaChecker);
+        CallDeferred(Node.MethodName.AddChild, _cleanAreaChecker);
     }
 
     /// <summary>

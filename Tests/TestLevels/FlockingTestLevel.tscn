@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://b2cchvb3gddvj" path="res://Scenes/SteeringBehaviors/CohesionSteeringBehavior.tscn" id="7_o31hi"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="8_47jhc"]
 [ext_resource type="PackedScene" uid="uid://b6jxcemj6xp7r" path="res://Scenes/SteeringBehaviors/WanderSteeringBehavior.tscn" id="9_iupko"]
-[ext_resource type="PackedScene" uid="uid://dm5beg83kj6rd" path="res://Scenes/SteeringBehaviors/FlockingSwarmGenerator.tscn" id="10_w46gd"]
+[ext_resource type="PackedScene" uid="uid://dm5beg83kj6rd" path="res://Scenes/Groups/FlockingSwarmGenerator.tscn" id="10_w46gd"]
 [ext_resource type="PackedScene" uid="uid://cnsqa74xmk8qa" path="res://Scenes/SteeringBehaviors/WeightBlendedBoidMovingAgent.tscn" id="11_o31hi"]
 
 [sub_resource type="Resource" id="Resource_vbjfa"]
