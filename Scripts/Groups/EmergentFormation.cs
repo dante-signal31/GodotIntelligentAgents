@@ -26,7 +26,7 @@ public partial class EmergentFormation : Node2D
     /// <summary>
     /// Radius to check for clean areas.
     /// </summary>
-    [Export] private float _cleanAreaRadius = 55.0f;
+    [Export] public float CleanAreaRadius { get; private set; }= 55.0f;
     
     /// <summary>
     /// Possible offsets to try with a selected formation partner.
@@ -81,10 +81,10 @@ public partial class EmergentFormation : Node2D
     /// Specifies the partnered agent to synchronize movements or behaviors within the
     /// formation.
     /// </summary>
-    private Node2D Partner
+    public Node2D Partner
     {
         get => _partner;
-        set
+        private set
         {
             _partner = value;
             _followSteeringBehavior.Target = (MovingAgent) value;
@@ -98,10 +98,10 @@ public partial class EmergentFormation : Node2D
     /// Specifies the offset position of the partnered agent to synchronize movements or
     /// behaviors within the formation.
     /// </summary>
-    private Vector2 PartnerOffset
+    public  Vector2 PartnerOffset
     {
         get => _partnerOffset;
-        set
+        private set
         {
             _partnerOffset = value;
             if (_followSteeringBehavior == null) return;
@@ -167,7 +167,7 @@ public partial class EmergentFormation : Node2D
         _groupMembers = new Queue<Node2D>(groupNodes.Cast<Node2D>().ToArray());
         _followSteeringBehavior = GetParent().FindChild<OffsetFollowBehavior>();
         _cleanAreaChecker = new CleanAreaChecker(
-            _cleanAreaRadius, 
+            CleanAreaRadius, 
             _notCleanLayers, 
             this);
     }
@@ -251,7 +251,7 @@ public partial class EmergentFormation : Node2D
             // selected offset position.
             Vector2 offsetGlobalPosition = Partner.ToGlobal(PartnerOffset);
             // If we are within the offset area, then there is no need to check anything.
-            if ((GlobalPosition.DistanceTo(offsetGlobalPosition) <= 2 * _cleanAreaRadius ||
+            if ((GlobalPosition.DistanceTo(offsetGlobalPosition) <= 2 * CleanAreaRadius ||
                 // If we are outside the clean area, then we need to check if we can still
                 // use the offset position.
                 _cleanAreaChecker.IsCleanArea(offsetGlobalPosition)) &&

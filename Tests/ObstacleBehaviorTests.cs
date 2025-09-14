@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Threading.Tasks;
 using GdUnit4;
 using Godot;
