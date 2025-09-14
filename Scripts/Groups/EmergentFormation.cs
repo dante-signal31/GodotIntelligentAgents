@@ -75,6 +75,7 @@ public partial class EmergentFormation : Node2D
     private EmergentFormation _partnerEmergentFormation;
     
     private Node2D _partner;
+    private HashSet<Node2D> _loopMembers = new();
 
     /// <summary>
     /// Specifies the partnered agent to synchronize movements or behaviors within the
@@ -129,9 +130,9 @@ public partial class EmergentFormation : Node2D
     
     private void SetLoopDetectionCooldownTimer()
     {
-        _newAttemptTimer = new System.Timers.Timer(_loopDetectionCooldown * 1000);
-        _newAttemptTimer.AutoReset = false;
-        _newAttemptTimer.Elapsed += OnLoopDetectionCooldownTimerTimeout;
+        _loopDetectionCooldownTimer = new System.Timers.Timer(_loopDetectionCooldown * 1000);
+        _loopDetectionCooldownTimer.AutoReset = false;
+        _loopDetectionCooldownTimer.Elapsed += OnLoopDetectionCooldownTimerTimeout;
     }
     
     private void OnNewAttemptTimerTimeout(object sender, System.Timers.ElapsedEventArgs e)
@@ -156,8 +157,8 @@ public partial class EmergentFormation : Node2D
     private void StartLoopDetectionCooldownTimer()
     {
         _waitingForLoopDetectionCooldownTimeout = true;
-        _newAttemptTimer.Stop();
-        _newAttemptTimer.Start();
+        _loopDetectionCooldownTimer.Stop();
+        _loopDetectionCooldownTimer.Start();
     }
     
     public override void _Ready()
@@ -205,7 +206,8 @@ public partial class EmergentFormation : Node2D
     /// <returns>True if we are in a loop detached from the leader.
     /// False instead.</returns>
     /// </summary>
-    public bool WeAreInALoop(int currentLoopDetectionCalls = 0)
+    public bool WeAreInALoop(ref HashSet<Node2D> loopMembers, 
+        int currentLoopDetectionCalls = 0)
     {
         // Recursive calls are very expensive. So we should avoid use them in every frame.
         // Instead, we should use a cooldown timer to check if we are in a loop only every
@@ -226,8 +228,11 @@ public partial class EmergentFormation : Node2D
         
         // If our partner is not the leader, and we have not reached maximum recursion
         // depth, then we continue checking with from our current partner.
+        loopMembers.Add(_ownAgent);
         _loopDetected = 
-            _partnerEmergentFormation.WeAreInALoop(++currentLoopDetectionCalls);
+            _partnerEmergentFormation.WeAreInALoop(
+                ref loopMembers, 
+                ++currentLoopDetectionCalls);
         
         // After our check, start a cooldown timer to wait until the new check.
         StartLoopDetectionCooldownTimer();
@@ -241,6 +246,7 @@ public partial class EmergentFormation : Node2D
         
         if (_partner != null)
         {
+            _loopMembers.Clear();
             // If we have a suitable formation partner, then check we can still use the
             // selected offset position.
             Vector2 offsetGlobalPosition = Partner.ToGlobal(PartnerOffset);
@@ -250,7 +256,7 @@ public partial class EmergentFormation : Node2D
                 // use the offset position.
                 _cleanAreaChecker.IsCleanArea(offsetGlobalPosition)) &&
                 // If we were in a loop, then we should look for a new partner.
-                !WeAreInALoop())
+                !WeAreInALoop(ref _loopMembers))
                 return;
             Partner = null;
             PartnerOffset = Vector2.Zero;
@@ -280,6 +286,9 @@ public partial class EmergentFormation : Node2D
             if (memberEmergentFormation != null &&
                 memberEmergentFormation.Partner == _ownAgent)
                 continue;
+            
+            // Don't try to partner with agents that are already in our loop.
+            if (_loopMembers.Contains(member)) continue;
             
             foreach (Vector2 offset in _offsets.Offsets)
             {
