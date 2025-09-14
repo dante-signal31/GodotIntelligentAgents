@@ -153,10 +153,10 @@ public partial class EmergentFormation : Node2D
     {
         if (Engine.IsEditorHint()) return;
         
-        // If we have a suitable formation partner, then check we can still use the
-        // selected offset position.
         if (_partner != null)
         {
+            // If we have a suitable formation partner, then check we can still use the
+            // selected offset position.
             Vector2 offsetGlobalPosition = Partner.ToGlobal(PartnerOffset);
             // If we are within the offset area, then there is no need to check anything.
             if (GlobalPosition.DistanceTo(offsetGlobalPosition) <= 2 * _cleanAreaRadius ||
@@ -182,14 +182,14 @@ public partial class EmergentFormation : Node2D
         // If we get here, it means we have no suitable formation partner. So, we must
         // find one.
         //
-        // This algorithm has a weak point. There is a small chance that three members 
+        // Vanilla algorithm has a weak point. There is a small chance that three members 
         // (or more) partner to follow each other, forming a ring apart from the main
         // formation. So, the main formation can go away while these other members chase
         // each other in a loop. This problem is inherent to a simple behavior where a
         // formation member just follows another member.
         //
         // A more complex behavior could be used to avoid this problem, running graph
-        // searches periodically to check that following Partner references up in the 
+        // searches to check that following Partner references up in the 
         // graph you eventually reach the formation leader. If a formation leader cannot
         // be reached, then a member can assume that it is in a loop and can run a search
         // for a new partner to break the loop and join the main formation.
