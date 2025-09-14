@@ -124,10 +124,6 @@ process_mode = 4
 visible = false
 position = Vector2(383, 806)
 AgentColor = Color(0.876078, 0.0670398, 0.0128302, 1)
-MaximumSpeed = 200.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("3_kftuo")]
 visible = false

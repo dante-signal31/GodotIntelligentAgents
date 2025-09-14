@@ -292,6 +292,8 @@ AutoSmoothSamples = 0
 
 [node name="OffsetFollowBehavior" parent="Agents/OffsetFollowMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("18_q0gcs")]
 Target = NodePath("../../SeekMovingAgent")
+OffsetFromTarget = Vector2(-664, -266)
+ShowGizmos = false
 
 [node name="ArriveSteeringBehaviorNLA" parent="Agents/OffsetFollowMovingAgent/OffsetFollowBehavior" node_paths=PackedStringArray("Target") instance=ExtResource("5_xfglb")]
 Target = NodePath("../OffsetFromTargetMarker")
@@ -299,7 +301,7 @@ AccelerationRadius = 10.0
 BrakingRadius = 10.0
 
 [node name="OffsetFromTargetMarker" type="Node2D" parent="Agents/OffsetFollowMovingAgent/OffsetFollowBehavior"]
-position = Vector2(288, -22)
+position = Vector2(287, -6)
 
 [node name="ActiveAgentAvoiderMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
 process_mode = 4

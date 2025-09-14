@@ -20,28 +20,34 @@ public partial class MovingAgent : CharacterBody2D
             _agentColor = value;
             _bodySprite.Modulate = _agentColor;
         }
-    } 
+    }
+
     /// <summary>
     /// This agent maximum speed.
     /// </summary>
-    [Export] public float MaximumSpeed { get; set; }
+    [Export] public float MaximumSpeed { get; set; } = 100;
+
     /// <summary>
     /// When speed is less than this value, we consider the agent stopped.
     /// </summary>
-    [Export] public float StopSpeed { get; set; }
+    [Export] public float StopSpeed { get; set; } = 1;
+
     /// <summary>
     /// The agent maximum rotational speed in degrees.
     /// </summary>
-    [Export] public float MaximumRotationalDegSpeed { get; set; }
+    [Export] public float MaximumRotationalDegSpeed { get; set; } = 1080;
+
     /// <summary>
     /// Rotation will stop when the difference in degrees between the current rotation and
-    /// current forward vector is less than this value.
+    /// the current forward vector is less than this value.
     /// </summary>
-    [Export] public float StopRotationDegThreshold { get; set; }
+    [Export] public float StopRotationDegThreshold { get; set; } = 1; 
+    
     /// <summary>
     /// Maximum acceleration for this agent.
     /// </summary>
     [Export] public float MaximumAcceleration { get; set; }
+    
     /// <summary>
     /// Maximum deceleration for this agent.
     /// </summary>

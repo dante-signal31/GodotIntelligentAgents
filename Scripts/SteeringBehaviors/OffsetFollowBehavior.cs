@@ -28,6 +28,19 @@ public partial class OffsetFollowBehavior: Node2D, ISteeringBehavior
     /// </summary>
     [Export] public MovingAgent Target { get; set; }
     
+    [Export] public Vector2 OffsetFromTarget
+    {
+        get => _offsetFromTargetMarker == null || Target == null ? 
+            Vector2.Zero : 
+            Target.ToLocal(_offsetFromTargetMarker.GlobalPosition);
+        set
+        {
+            if ((_offsetFromTargetMarker == null) || (Target == null)) return; 
+            _offsetFromTargetMarker.GlobalPosition = Target.ToGlobal(value);
+            _offsetFromTarget = value;
+        }
+    }
+    
     [ExportCategory("DEBUG:")]
     [Export] private bool ShowGizmos { get; set; }
 
@@ -63,6 +76,7 @@ public partial class OffsetFollowBehavior: Node2D, ISteeringBehavior
     /// </summary>
     public void UpdateOffsetFromTarget()
     {
+        if (_offsetFromTargetMarker == null || Target == null) return;
         _offsetFromTarget = Target.ToLocal(_offsetFromTargetMarker.GlobalPosition);
     }
 
@@ -78,8 +92,8 @@ public partial class OffsetFollowBehavior: Node2D, ISteeringBehavior
 
     public override void _Draw()
     {
-        if (Target == null || _offsetFromTargetMarker == null || Engine.IsEditorHint()) 
-            return;
+        if (Target == null || _offsetFromTargetMarker == null) return;
+        
         DrawLine(
             Vector2.Zero, 
             ToLocal(_offsetFromTargetMarker.GlobalPosition), 
@@ -89,19 +103,20 @@ public partial class OffsetFollowBehavior: Node2D, ISteeringBehavior
             30f,
             AgentColor,
             filled:false);
-        DrawLine(
+        DrawDashedLine(
             ToLocal(Target.GlobalPosition), 
             ToLocal(_offsetFromTargetMarker.GlobalPosition), 
-            AgentColor);
+            AgentColor,
+            dash: 8f);
     }
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
         // Buckland uses a look-ahead algorithm to place marker. In my tests I didn't
-        // like it because in movement the follower approached nearer than offset and
-        // when target stopped the follower retreated in an oddly way. So I discarded
-        // the look-ahead algorithm. Nevertheless I let it commented if you want to
-        // assess it.
+        // like it because in movement the follower approached nearer than the offset,
+        // and when the target stopped, the follower retreated in an odd way. So I
+        // discarded the look-ahead algorithm. Nevertheless, I let it commented if you
+        // want to assess it.
         //
         // The look-ahead time is proportional to the distance between the target and
         // the followed; and is inversely proportional to the sum of the agent's
@@ -114,10 +129,12 @@ public partial class OffsetFollowBehavior: Node2D, ISteeringBehavior
         //                                          (Target.Velocity *
         //                                           lookAheadTime);
         
-        // In editor, offset marker can be moved freely to define the offset from
-        // target. But at execution time, offset marker should follow the target to
-        // be used as target by child steering behavior. Luckily, GetSteering()
-        // is not called from editor.
+        if (Target == null) return new SteeringOutput(Vector2.Zero, 0);
+        
+        // In the editor, offset marker can be moved freely to define the offset from
+        // the target. But at execution time, the offset marker should follow the target
+        // to be used as a target by child steering behavior. Luckily, GetSteering()
+        // is not called from the editor.
         _offsetFromTargetMarker.GlobalPosition = Target.ToGlobal(_offsetFromTarget);
         
         // Let the child steering behavior get to the new marker position.
