@@ -46,6 +46,11 @@ public partial class EmergentFormation : Node2D
     [Export] private float _newAttemptDelay = 1.0f;
     
     /// <summary>
+    /// Time before checking again if we are in a loop.
+    /// </summary>
+    [Export] private float _loopDetectionCooldown = 1.0f;
+    
+    /// <summary>
     /// Indicates whether we have a suitable formation partner.
     /// </summary>
     public bool NoSuitableFormationPartner => _partner == null;
@@ -62,8 +67,12 @@ public partial class EmergentFormation : Node2D
     private CleanAreaChecker _cleanAreaChecker;
     private int _formationAttempts;
     private System.Timers.Timer _newAttemptTimer;
+    private System.Timers.Timer _loopDetectionCooldownTimer;
     private bool _waitingForNewAttemptTimeout;
+    private bool _waitingForLoopDetectionCooldownTimeout;
+    private bool _loopDetected;
     private MovingAgent _ownAgent;
+    private EmergentFormation _partnerEmergentFormation;
     
     private Node2D _partner;
 
@@ -78,6 +87,7 @@ public partial class EmergentFormation : Node2D
         {
             _partner = value;
             _followSteeringBehavior.Target = (MovingAgent) value;
+            _partnerEmergentFormation = value?.FindChild<EmergentFormation>();
         }
     }
     
@@ -97,28 +107,55 @@ public partial class EmergentFormation : Node2D
             _followSteeringBehavior.OffsetFromTarget = value;
         }
     }
+    
+    /// <summary>
+    /// Whether the current partner is the leader of the formation.
+    /// </summary>
+    private bool PartnerIsLeader => _partnerEmergentFormation == null;
 
     public override void _EnterTree()
     {
-        SetTimer();
+        SetNewAttemptTimer();
+        SetLoopDetectionCooldownTimer();
         _ownAgent = (MovingAgent) GetParent();
     }
 
-    private void SetTimer()
+    private void SetNewAttemptTimer()
     {
         _newAttemptTimer = new System.Timers.Timer(_newAttemptDelay * 1000);
         _newAttemptTimer.AutoReset = false;
-        _newAttemptTimer.Elapsed += OnTimerTimeout;
+        _newAttemptTimer.Elapsed += OnNewAttemptTimerTimeout;
     }
     
-    private void OnTimerTimeout(object sender, System.Timers.ElapsedEventArgs e)
+    private void SetLoopDetectionCooldownTimer()
+    {
+        _newAttemptTimer = new System.Timers.Timer(_loopDetectionCooldown * 1000);
+        _newAttemptTimer.AutoReset = false;
+        _newAttemptTimer.Elapsed += OnLoopDetectionCooldownTimerTimeout;
+    }
+    
+    private void OnNewAttemptTimerTimeout(object sender, System.Timers.ElapsedEventArgs e)
     {
         _waitingForNewAttemptTimeout = false;
+    }
+    
+    private void OnLoopDetectionCooldownTimerTimeout(
+        object sender, 
+        System.Timers.ElapsedEventArgs e)
+    {
+        _waitingForLoopDetectionCooldownTimeout = false;
     }
 
     private void StartNewAttemptTimer()
     {
         _waitingForNewAttemptTimeout = true;
+        _newAttemptTimer.Stop();
+        _newAttemptTimer.Start();
+    }
+    
+    private void StartLoopDetectionCooldownTimer()
+    {
+        _waitingForLoopDetectionCooldownTimeout = true;
         _newAttemptTimer.Stop();
         _newAttemptTimer.Start();
     }
@@ -148,6 +185,55 @@ public partial class EmergentFormation : Node2D
     {
         _formationAttempts = 0;
     }
+
+    /// <summary>
+    /// <p>Vanilla algorithm has a weak point. There is a small chance that three members 
+    /// (or more) partner to follow each other, forming a loop apart from the main
+    /// formation. So, the main formation can go away while these other members chase
+    /// each other endlessly. This problem is inherent to a simple behavior where a
+    /// formation member just follows another member.</p>
+    /// 
+    /// <p>A more complex behavior could be used to avoid this problem, running graph
+    /// searches to check that following Partner references up in the 
+    /// graph until you eventually reach the formation leader. If a formation leader
+    /// cannot be reached, then a member can assume that it is in a loop and can run
+    /// a new search for a new partner to break the loop and join the main formation.</p>
+    ///
+    /// <p>This method runs a recursive check to see if we are in a loop.</p>
+    /// <param name="currentLoopDetectionCalls">Current number of steps in the
+    /// recursive callstack.</param>
+    /// <returns>True if we are in a loop detached from the leader.
+    /// False instead.</returns>
+    /// </summary>
+    public bool WeAreInALoop(int currentLoopDetectionCalls = 0)
+    {
+        // Recursive calls are very expensive. So we should avoid use them in every frame.
+        // Instead, we should use a cooldown timer to check if we are in a loop only every
+        // _loopDetectionCooldown seconds.
+        // So, if we are in a cooldown, then we return the cached result.
+        if (_waitingForLoopDetectionCooldownTimeout) return _loopDetected;
+        
+        // If we don't have a partner, then we are not in a loop.
+        if (Partner == null) return false;
+        
+        // If our current partner is the leader, then we are not in a loop.
+        if (PartnerIsLeader) return false;
+        
+        // Maximum recursion deep would be If we were in a loop composed of all group
+        // members, except the leader (extremely odd situation, but theoretically
+        // possible). This would end in endless recursion calls, so we break from it.
+        if (currentLoopDetectionCalls > _groupMembers.Count - 1) return true;
+        
+        // If our partner is not the leader, and we have not reached maximum recursion
+        // depth, then we continue checking with from our current partner.
+        _loopDetected = 
+            _partnerEmergentFormation.WeAreInALoop(++currentLoopDetectionCalls);
+        
+        // After our check, start a cooldown timer to wait until the new check.
+        StartLoopDetectionCooldownTimer();
+        
+        return _loopDetected;
+    }
     
     public override void _PhysicsProcess(double delta)
     {
@@ -159,10 +245,12 @@ public partial class EmergentFormation : Node2D
             // selected offset position.
             Vector2 offsetGlobalPosition = Partner.ToGlobal(PartnerOffset);
             // If we are within the offset area, then there is no need to check anything.
-            if (GlobalPosition.DistanceTo(offsetGlobalPosition) <= 2 * _cleanAreaRadius ||
+            if ((GlobalPosition.DistanceTo(offsetGlobalPosition) <= 2 * _cleanAreaRadius ||
                 // If we are outside the clean area, then we need to check if we can still
                 // use the offset position.
-                _cleanAreaChecker.IsCleanArea(offsetGlobalPosition))
+                _cleanAreaChecker.IsCleanArea(offsetGlobalPosition)) &&
+                // If we were in a loop, then we should look for a new partner.
+                !WeAreInALoop())
                 return;
             Partner = null;
             PartnerOffset = Vector2.Zero;
@@ -181,18 +269,6 @@ public partial class EmergentFormation : Node2D
         
         // If we get here, it means we have no suitable formation partner. So, we must
         // find one.
-        //
-        // Vanilla algorithm has a weak point. There is a small chance that three members 
-        // (or more) partner to follow each other, forming a ring apart from the main
-        // formation. So, the main formation can go away while these other members chase
-        // each other in a loop. This problem is inherent to a simple behavior where a
-        // formation member just follows another member.
-        //
-        // A more complex behavior could be used to avoid this problem, running graph
-        // searches to check that following Partner references up in the 
-        // graph you eventually reach the formation leader. If a formation leader cannot
-        // be reached, then a member can assume that it is in a loop and can run a search
-        // for a new partner to break the loop and join the main formation.
         foreach (Node2D member in _groupMembers)
         {
             // Don't try to partner with our own agent.
