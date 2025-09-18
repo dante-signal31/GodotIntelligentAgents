@@ -221,6 +221,9 @@ public partial class EmergentFormation : Node2D
         // If our current partner is the leader, then we are not in a loop.
         if (PartnerIsLeader) return false;
         
+        // If we have visited before this member, then we are in a loop.
+        if (loopMembers.Contains(_ownAgent)) return true;
+        
         // Maximum recursion deep would be If we were in a loop composed of all group
         // members, except the leader (extremely odd situation, but theoretically
         // possible). This would end in endless recursion calls, so we break from it.
@@ -247,9 +250,11 @@ public partial class EmergentFormation : Node2D
         if (_partner != null)
         {
             _loopMembers.Clear();
+            
             // If we have a suitable formation partner, then check we can still use the
             // selected offset position.
             Vector2 offsetGlobalPosition = Partner.ToGlobal(PartnerOffset);
+            
             // If we are within the offset area, then there is no need to check anything.
             if ((GlobalPosition.DistanceTo(offsetGlobalPosition) <= 2 * CleanAreaRadius ||
                 // If we are outside the clean area, then we need to check if we can still
@@ -258,6 +263,7 @@ public partial class EmergentFormation : Node2D
                 // If we were in a loop, then we should look for a new partner.
                 !WeAreInALoop(ref _loopMembers))
                 return;
+            
             Partner = null;
             PartnerOffset = Vector2.Zero;
         }
@@ -279,6 +285,9 @@ public partial class EmergentFormation : Node2D
         {
             // Don't try to partner with our own agent.
             if (member == _ownAgent) continue;
+            
+            // Don't try to partner with agents that are already in our loop.
+            if (_loopMembers.Contains(member)) continue;
             
             // Don't try to partner with agents that are using us as partners.
             EmergentFormation memberEmergentFormation = 

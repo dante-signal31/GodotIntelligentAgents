@@ -106,9 +106,6 @@ process_mode = 4
 visible = false
 position = Vector2(1133, 844)
 MaximumSpeed = 600.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="HideSteeringBehavior" parent="Agents/HideMovingAgent" node_paths=PackedStringArray("Threat") instance=ExtResource("5_tck3o")]
@@ -133,10 +130,6 @@ Target = NodePath("../../../Target")
 process_mode = 4
 visible = false
 position = Vector2(333, 794)
-MaximumSpeed = 100.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="SmoothedWallAvoiderSteeringBehavior" parent="Agents/SmoothedWallAvoiderMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("11_ib2b3")]
@@ -147,10 +140,6 @@ _usherScene = ExtResource("7_1atku")
 process_mode = 4
 visible = false
 position = Vector2(515, 836)
-MaximumSpeed = 100.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 
 [node name="ActiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("6_3e5d2")]
 Target = NodePath("../../../Target")
@@ -175,9 +164,6 @@ process_mode = 4
 visible = false
 position = Vector2(1199, 851)
 MaximumSpeed = 75.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="WeightBlendedSteeringBehavior" parent="Agents/WeightBlendedHideWallAvoiderMovingAgent" instance=ExtResource("10_1atku")]
@@ -212,9 +198,6 @@ process_mode = 4
 visible = false
 position = Vector2(1512, 869)
 MaximumSpeed = 200.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="PriorityWeightBlendedSteeringBehavior" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent" instance=ExtResource("14_km65h")]
@@ -269,9 +252,6 @@ process_mode = 4
 visible = false
 position = Vector2(1130, 807)
 MaximumSpeed = 200.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="PriorityDitheringBlendedSteeringBehavior" parent="Agents/PriorityDitheringBlendedHideWallAvoiderMovingAgent" instance=ExtResource("20_acdjf")]

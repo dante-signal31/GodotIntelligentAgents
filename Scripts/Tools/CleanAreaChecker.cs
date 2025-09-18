@@ -3,6 +3,7 @@ using System;
 
 namespace GodotGameAIbyExample.Scripts.Tools;
 
+// TODO: Use this class in HidingPointsDetector.cs
 /// <summary>
 /// Helper class to check if a given position is within a clean area, meaning it is not
 /// colliding with any objects in the specified detection layers.
@@ -40,17 +41,17 @@ public class CleanAreaChecker : IDisposable
         }
     }
     
-    private Vector2 _position;
-
-    public Vector2 Position
-    {
-        get => _position;
-        set
-        {
-            _position = value;
-            _cleanAreaChecker.Position = value;
-        }
-    }
+    // private Vector2 _position;
+    //
+    // public Vector2 Position
+    // {
+    //     get => _position;
+    //     set
+    //     {
+    //         _position = value;
+    //         _cleanAreaChecker.Position = value;
+    //     }
+    // }
     
     private ShapeCast2D _cleanAreaChecker = new();
 

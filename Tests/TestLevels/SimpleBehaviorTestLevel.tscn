@@ -79,9 +79,6 @@ process_mode = 4
 visible = false
 position = Vector2(1639, 819)
 MaximumSpeed = 200.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
@@ -93,9 +90,6 @@ process_mode = 4
 visible = false
 position = Vector2(1235, 314)
 MaximumSpeed = 600.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 300.0
 AutoSmoothSamples = 0
@@ -108,9 +102,6 @@ process_mode = 4
 visible = false
 position = Vector2(1630, 761)
 MaximumSpeed = 600.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="ArriveSteeringBehaviorNLA" parent="Agents/ArriveMovingAgentNLA" node_paths=PackedStringArray("Target") instance=ExtResource("5_xfglb")]
@@ -131,9 +122,7 @@ process_mode = 4
 visible = false
 position = Vector2(1219, 267)
 MaximumSpeed = 600.0
-StopSpeed = 1.0
 MaximumRotationalDegSpeed = 180.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="AlignSteeringBehavior" parent="Agents/AlignMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("7_jhf1f")]
@@ -144,9 +133,7 @@ process_mode = 4
 visible = false
 position = Vector2(1484, 364)
 MaximumSpeed = 600.0
-StopSpeed = 1.0
 MaximumRotationalDegSpeed = 180.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="FaceSteeringBehavior" parent="Agents/FaceMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("8_mvp47")]
@@ -157,9 +144,6 @@ process_mode = 4
 visible = false
 position = Vector2(1290, 755)
 MaximumSpeed = 600.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 400.0
 AutoSmoothSamples = 0
@@ -172,10 +156,6 @@ TimeToMatch = 0.1
 process_mode = 4
 visible = false
 position = Vector2(175, 199)
-MaximumSpeed = 100.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="PursueSteeringBehavior" parent="Agents/PursueMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("11_0ln1b")]
@@ -188,9 +168,6 @@ process_mode = 4
 visible = false
 position = Vector2(1759, 486)
 MaximumSpeed = 600.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="InterposeSteeringBehavior" parent="Agents/InterposeMovingAgent" node_paths=PackedStringArray("AgentA", "AgentB") instance=ExtResource("12_vep10")]
@@ -203,10 +180,6 @@ PredictedPositionMarkerVisible = true
 process_mode = 4
 visible = false
 position = Vector2(890, 758)
-MaximumSpeed = 100.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="EvadeSteeringBehavior" parent="Agents/EvadeMovingAgent" node_paths=PackedStringArray("Threat") instance=ExtResource("13_exiqe")]
@@ -219,9 +192,6 @@ process_mode = 4
 visible = false
 position = Vector2(975, 559)
 MaximumSpeed = 600.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 300.0
 AutoSmoothSamples = 0
@@ -238,9 +208,7 @@ process_mode = 4
 visible = false
 position = Vector2(898, 765)
 MaximumSpeed = 600.0
-StopSpeed = 1.0
 MaximumRotationalDegSpeed = 180.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="GroupAlignSteeringBehavior" parent="Agents/GroupAlignMovingAgent" node_paths=PackedStringArray("Targets") instance=ExtResource("15_cm7y6")]
@@ -254,9 +222,6 @@ process_mode = 4
 visible = false
 position = Vector2(1636, 463)
 MaximumSpeed = 600.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="CohesionSteeringBehavior" parent="Agents/CohesionMovingAgent" node_paths=PackedStringArray("Targets") instance=ExtResource("16_4hd86")]
@@ -269,10 +234,6 @@ PositionGizmoColor = Color(1, 0, 0, 1)
 process_mode = 4
 visible = false
 position = Vector2(969, 905)
-MaximumSpeed = 100.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="WanderSteeringBehavior" parent="Agents/WanderMovingAgent" instance=ExtResource("17_38cq1")]
@@ -285,9 +246,6 @@ process_mode = 4
 visible = false
 position = Vector2(688, 559)
 MaximumSpeed = 150.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="OffsetFollowBehavior" parent="Agents/OffsetFollowMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("18_q0gcs")]
@@ -308,9 +266,6 @@ process_mode = 4
 visible = false
 position = Vector2(1604, 273)
 MaximumSpeed = 200.0
-StopSpeed = 1.0
-MaximumRotationalDegSpeed = 1080.0
-StopRotationDegThreshold = 1.0
 AutoSmoothSamples = 0
 
 [node name="ActiveAgentAvoiderSteeringBehavior" parent="Agents/ActiveAgentAvoiderMovingAgent" instance=ExtResource("23_ujip5")]

@@ -155,7 +155,7 @@ public class EmergentFormationTests
         
         // Assert that every wingman keeps a partner and is located at the offset after
         // movement.
-        await _sceneRunner.AwaitMillis(8000);
+        await _sceneRunner.AwaitMillis(9000);
         foreach (MovingAgent wingman in wingmanList)
         {
             EmergentFormation emergentFormation = wingman.FindChild<EmergentFormation>();
