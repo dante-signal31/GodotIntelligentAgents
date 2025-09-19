@@ -247,10 +247,10 @@ public partial class EmergentFormation : Node2D
     {
         if (Engine.IsEditorHint()) return;
         
+        _loopMembers.Clear();
+        
         if (_partner != null)
         {
-            _loopMembers.Clear();
-            
             // If we have a suitable formation partner, then check we can still use the
             // selected offset position.
             Vector2 offsetGlobalPosition = Partner.ToGlobal(PartnerOffset);
