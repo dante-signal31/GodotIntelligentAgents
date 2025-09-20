@@ -10,21 +10,7 @@ namespace GodotGameAIbyExample.Scripts.Groups;
 public partial class FormationPattern : Node2D, IGizmos
 {
     [ExportCategory("CONFIGURATION:")]
-    private OffsetList _positions;
-
-    [Export]
-    public OffsetList Positions
-    {
-        get => _positions;
-        set
-        {
-            _positions = value;
-            
-            if (value == null) return;
-            
-            _OnPositionListChanged();
-        }
-    }
+    [Export] public OffsetList Positions { get; set; }
 
     [ExportCategory("DEBUG:")] 
     [Export] public bool ShowGizmos { get; set; } = true;
@@ -38,6 +24,13 @@ public partial class FormationPattern : Node2D, IGizmos
     private bool _recreatingPositionsNodes;
     private Array<Vector2> _previousPositions = new();
     private List<FormationPatternPosition> _positionNodes = new();
+
+    public override void _Ready()
+    {
+        // Start on a blank canvas, or new position nodes will be created with those
+        // stored inside the scene when this was closed.
+        RemoveOldPositionsNodes();
+    }
     
     public override void _Process(double delta)
     {
@@ -214,15 +207,7 @@ public partial class FormationPattern : Node2D, IGizmos
         if (!ShowGizmos) return;
         
         // Mark Formation Pattern origin.
-        DrawCircle(Vector2.Zero, _originGizmoRadius, GizmosColor, filled: false);
-        DrawLine(
-            new Vector2(-_originGizmoRadius, 0), 
-            new Vector2(_originGizmoRadius, 0), 
-            GizmosColor);
-        DrawLine(
-            new Vector2(0, -_originGizmoRadius),
-            new Vector2(0, _originGizmoRadius),
-            GizmosColor);
+        DrawCircle(Vector2.Zero, _originGizmoRadius, GizmosColor, filled: true);
         
         if (Positions == null) return;
         
@@ -236,7 +221,7 @@ public partial class FormationPattern : Node2D, IGizmos
                 Positions.Offsets[i], 
                 _positionGizmoRadius, 
                 GizmosColor, 
-                filled: true);
+                filled: false);
         }
     }
 }

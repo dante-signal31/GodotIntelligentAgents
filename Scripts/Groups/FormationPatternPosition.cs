@@ -2,6 +2,7 @@ using Godot;
 
 namespace GodotGameAIbyExample.Scripts.Groups;
 
+[Tool]
 public partial class FormationPatternPosition : Node2D
 {
     [Signal] public delegate void PositionChangedEventHandler(
