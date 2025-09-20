@@ -15,5 +15,5 @@ namespace GodotGameAIbyExample.Scripts.Groups;
 public partial class OffsetList : Resource
 {
     [ExportCategory("CONFIGURATION:")]
-    [Export] public Array<Vector2> Offsets;
+    [Export] public Array<Vector2> Offsets = new();
 }
