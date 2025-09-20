@@ -37,6 +37,7 @@ public partial class FormationPattern : Node2D, IGizmos
     private int _previousPositionsSize;
     private bool _recreatingPositionsNodes;
     private Array<Vector2> _previousPositions = new();
+    private List<FormationPatternPosition> _positionNodes = new();
     
     public override void _Process(double delta)
     {
@@ -54,7 +55,10 @@ public partial class FormationPattern : Node2D, IGizmos
     /// </summary>
     private void CheckForChangesInPositionsList()
     {
-        if (Positions == null) return;
+        if (Positions == null || !Engine.IsEditorHint()) return;
+        
+        // If any position has been added or removed from the list, we need to recreate
+        // the position nodes.
         if (_previousPositions.Count != Positions.Offsets.Count)
         {
             _OnPositionListChanged();
@@ -64,10 +68,20 @@ public partial class FormationPattern : Node2D, IGizmos
         {
             for (int i = 0; i < Positions.Offsets.Count; i++)
             {
+                // If any position in the list has been modified, then apply that
+                // modification to its respective node.
+                //
+                // When you change the position value in the list, the gizmo will move,
+                // but the position node will stay the same in the viewport until you
+                // move the mouse into the viewport or click on the modified node. Don't
+                // worry; the node position has been updated, although the viewport
+                // doesn't. Actually, this is a bug in Godot, as you can read here:
+                // https://stackoverflow.com/questions/78590785/node2d-position-marker-not-updating-in-editor
+                // https://github.com/godotengine/godot/issues/92894
                 if (_previousPositions[i] != Positions.Offsets[i])
                 {
-                    _OnPositionListChanged();
-                    _previousPositions = Positions.Offsets;
+                    _positionNodes[i].Position = Positions.Offsets[i];
+                    _previousPositions[i] = Positions.Offsets[i];
                     break;
                 }
             }
@@ -82,7 +96,8 @@ public partial class FormationPattern : Node2D, IGizmos
     /// </summary>
     private void CleanPositionNodesHierarchy()
     {
-        if (Positions == null) return;
+        if (Positions == null || !Engine.IsEditorHint()) return;
+        
         List<FormationPatternPosition> currentNodePositions = 
             this.FindChildren<FormationPatternPosition>();
         if ((currentNodePositions == null ||
@@ -100,6 +115,8 @@ public partial class FormationPattern : Node2D, IGizmos
     /// </summary>
     private void CreateNewPositionNodes()
     {
+        _positionNodes.Clear();
+        _previousPositions.Clear();
         for (int i=0; i < Positions.Offsets.Count; i++)
         {
             FormationPatternPosition formationPosition = new();
@@ -111,6 +128,8 @@ public partial class FormationPattern : Node2D, IGizmos
             formationPosition.Connect(
                 FormationPatternPosition.SignalName.PositionChanged, 
                 new Callable(this, MethodName._OnPositionChanged));
+            _positionNodes.Add(formationPosition);
+            _previousPositions.Add(Positions.Offsets[i]);
         }
     }
 
