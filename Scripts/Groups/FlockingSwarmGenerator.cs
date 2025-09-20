@@ -263,7 +263,7 @@ public partial class FlockingSwarmGenerator : Node2D, IGizmos
     /// </summary>
     private void CreateBoids()
     {
-        List<MovingAgent> createdBoids = new();
+        List<SteeringBehaviors.MovingAgent> createdBoids = new();
         
         // Create boids.
         for (int i=0; i < _swarmSize; i++)
@@ -272,7 +272,7 @@ public partial class FlockingSwarmGenerator : Node2D, IGizmos
             
             if (locationFound)
             {
-                MovingAgent newBoid = CreateBoid(i, spawnPosition);
+                SteeringBehaviors.MovingAgent newBoid = CreateBoid(i, spawnPosition);
                 createdBoids.Add(newBoid);
             }
         }
@@ -289,9 +289,9 @@ public partial class FlockingSwarmGenerator : Node2D, IGizmos
     /// <param name="createdBoids">The list of boid agents to configure. Each boid will
     /// have its steering behaviors initialized and linked with other boids in the
     /// group.</param>
-    private void InitializeBoidSteeringBehaviors(List<MovingAgent> createdBoids)
+    private void InitializeBoidSteeringBehaviors(List<SteeringBehaviors.MovingAgent> createdBoids)
     {
-        foreach (MovingAgent boid in createdBoids)
+        foreach (SteeringBehaviors.MovingAgent boid in createdBoids)
         {
             Node2D steeringBehavior = (Node2D) boid.FindChild<ISteeringBehavior>();
             SeparationSteeringBehavior separationBehavior = 
@@ -330,7 +330,7 @@ public partial class FlockingSwarmGenerator : Node2D, IGizmos
             
             // Register all the rest boids in every boid's separation and cohesion
             // behavior.
-            List<MovingAgent> otherBoids = createdBoids
+            List<SteeringBehaviors.MovingAgent> otherBoids = createdBoids
                 .Where(b => b != boid)
                 .ToList();
             separationBehavior.Threats.AddRange(otherBoids.ToArray());
@@ -348,10 +348,10 @@ public partial class FlockingSwarmGenerator : Node2D, IGizmos
     /// in the scene.</param>
     /// <returns>The newly created boid instance configured with the provided
     /// parameters.</returns>
-    private MovingAgent CreateBoid(int i, Vector2 spawnPosition)
+    private SteeringBehaviors.MovingAgent CreateBoid(int i, Vector2 spawnPosition)
     {
         // Create the boid if a free location was found.
-        var boid = _boidScene.Instantiate<MovingAgent>();
+        var boid = _boidScene.Instantiate<SteeringBehaviors.MovingAgent>();
         boid.Name = $"Boid_{i}";
                 
         // Add boid to the scene.

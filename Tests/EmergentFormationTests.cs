@@ -38,20 +38,20 @@ public class EmergentFormationTests
     {
         // // Get references to agent and target.
         Node emergentFormationGroup = (Node) _sceneRunner.FindChild("EmergentFormation");
-        MovingAgent leaderMovingAgent = 
-            (MovingAgent) _sceneRunner.FindChild("LeaderMovingAgent");
-        MovingAgent wingmanMovingAgent = 
-            (MovingAgent) _sceneRunner.FindChild("WingmanMovingAgent");
-        MovingAgent wingmanMovingAgent2 = 
-            (MovingAgent) _sceneRunner.FindChild("WingmanMovingAgent2");
-        MovingAgent wingmanMovingAgent3 = 
-            (MovingAgent) _sceneRunner.FindChild("WingmanMovingAgent3");
-        MovingAgent wingmanMovingAgent4 = 
-            (MovingAgent) _sceneRunner.FindChild("WingmanMovingAgent4");
-        MovingAgent wingmanMovingAgent5 = 
-            (MovingAgent) _sceneRunner.FindChild("WingmanMovingAgent5");
+        Scripts.SteeringBehaviors.MovingAgent leaderMovingAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("LeaderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent wingmanMovingAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WingmanMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent wingmanMovingAgent2 = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WingmanMovingAgent2");
+        Scripts.SteeringBehaviors.MovingAgent wingmanMovingAgent3 = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WingmanMovingAgent3");
+        Scripts.SteeringBehaviors.MovingAgent wingmanMovingAgent4 = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WingmanMovingAgent4");
+        Scripts.SteeringBehaviors.MovingAgent wingmanMovingAgent5 = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WingmanMovingAgent5");
         
-        List<MovingAgent> wingmanList = new();
+        List<Scripts.SteeringBehaviors.MovingAgent> wingmanList = new();
         wingmanList.Add(wingmanMovingAgent);
         wingmanList.Add(wingmanMovingAgent2);
         wingmanList.Add(wingmanMovingAgent3);
@@ -105,7 +105,7 @@ public class EmergentFormationTests
         
         // Assert that every wingman has found a partner and is located at the offset.
         await _sceneRunner.AwaitMillis(7000);
-        foreach (MovingAgent wingman in wingmanList)
+        foreach (Scripts.SteeringBehaviors.MovingAgent wingman in wingmanList)
         {
             EmergentFormation emergentFormation = wingman.FindChild<EmergentFormation>();
             AssertThat(emergentFormation.Partner != null).IsTrue();
@@ -122,7 +122,7 @@ public class EmergentFormationTests
         // Assert that every wingman keeps a partner and is located at the offset after
         // movement.
         await _sceneRunner.AwaitMillis(8000);
-        foreach (MovingAgent wingman in wingmanList)
+        foreach (Scripts.SteeringBehaviors.MovingAgent wingman in wingmanList)
         {
             EmergentFormation emergentFormation = wingman.FindChild<EmergentFormation>();
             AssertThat(emergentFormation.Partner != null).IsTrue();
@@ -139,7 +139,7 @@ public class EmergentFormationTests
         // Assert that every wingman keeps a partner and is located at the offset after
         // movement.
         await _sceneRunner.AwaitMillis(8000);
-        foreach (MovingAgent wingman in wingmanList)
+        foreach (Scripts.SteeringBehaviors.MovingAgent wingman in wingmanList)
         {
             EmergentFormation emergentFormation = wingman.FindChild<EmergentFormation>();
             AssertThat(emergentFormation.Partner != null).IsTrue();
@@ -156,7 +156,7 @@ public class EmergentFormationTests
         // Assert that every wingman keeps a partner and is located at the offset after
         // movement.
         await _sceneRunner.AwaitMillis(9000);
-        foreach (MovingAgent wingman in wingmanList)
+        foreach (Scripts.SteeringBehaviors.MovingAgent wingman in wingmanList)
         {
             EmergentFormation emergentFormation = wingman.FindChild<EmergentFormation>();
             AssertThat(emergentFormation.Partner != null).IsTrue();

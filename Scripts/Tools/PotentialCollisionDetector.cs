@@ -54,7 +54,7 @@ public partial class PotentialCollisionDetector : Node2D
     /// closest agent which may collide with the current agent. It facilitates collision
     /// prediction and subsequent decision-making processes.
     /// </remarks>
-    public MovingAgent PotentialCollisionAgent { get; private set; }
+    public SteeringBehaviors.MovingAgent PotentialCollisionAgent { get; private set; }
 
     /// <summary>
     /// Represents the calculated time remaining before a potential collision occurs.
@@ -110,13 +110,13 @@ public partial class PotentialCollisionDetector : Node2D
 
     private ConeSensor _sensor;
     private CollisionShape2D _collisionShape;
-    private MovingAgent _currentAgent;
-    private HashSet<MovingAgent> _detectedAgents = new();
+    private SteeringBehaviors.MovingAgent _currentAgent;
+    private HashSet<SteeringBehaviors.MovingAgent> _detectedAgents = new();
     
     public override void _EnterTree()
     {
         // Find out who our father is.
-        _currentAgent = this.FindAncestor<MovingAgent>();
+        _currentAgent = this.FindAncestor<SteeringBehaviors.MovingAgent>();
         CollisionDistance = 2 * AgentRadius;
     }
 
@@ -138,7 +138,7 @@ public partial class PotentialCollisionDetector : Node2D
     /// <param name="otherObject">The agent who enters our detection area.</param>
     private void OnObjectEnteredSensor(Node2D otherObject)
     {
-        if (otherObject is MovingAgent otherAgent)
+        if (otherObject is SteeringBehaviors.MovingAgent otherAgent)
         {
             _detectedAgents.Add(otherAgent);
         }
@@ -150,7 +150,7 @@ public partial class PotentialCollisionDetector : Node2D
     /// <param name="otherAgent">The agent who exits our detection area.</param>
     private void OnObjectExitedSensor(Node2D otherObject)
     {
-        if (otherObject is MovingAgent otherAgent)
+        if (otherObject is SteeringBehaviors.MovingAgent otherAgent)
         {
             if (!_detectedAgents.Contains(otherAgent)) return;
             _detectedAgents.Remove(otherAgent);
@@ -161,12 +161,12 @@ public partial class PotentialCollisionDetector : Node2D
     {
         if (_sensor == null) return;
         
-        Array<MovingAgent> targets = new Array<MovingAgent>(
+        Array<SteeringBehaviors.MovingAgent> targets = new Array<SteeringBehaviors.MovingAgent>(
             _sensor.DetectedObjects.Where(x => 
-                    x is MovingAgent && 
+                    x is SteeringBehaviors.MovingAgent && 
                     // Don't take in count our own agent.
-                    ((MovingAgent)x).Name != _currentAgent.Name)
-                .Cast<MovingAgent>()
+                    ((SteeringBehaviors.MovingAgent)x).Name != _currentAgent.Name)
+                .Cast<SteeringBehaviors.MovingAgent>()
                 .ToArray());
         
         if (targets.Count == 0)
@@ -178,12 +178,12 @@ public partial class PotentialCollisionDetector : Node2D
         float shortestTimeToCollision = float.MaxValue;
         Vector2 relativePositionAtPotentialCollision = Vector2.Zero;
         float minSeparationAtClosestCollisionCandidate = float.MaxValue;
-        MovingAgent closestCollidingAgentCandidate = null;
+        SteeringBehaviors.MovingAgent closestCollidingAgentCandidate = null;
         Vector2 currentRelativePositionToPotentialCollisionAgent = Vector2.Zero;
         Vector2 currentRelativeVelocityToPotentialCollisionAgent = Vector2.Zero;
         PotentialCollisionDetected = false;
         
-        foreach (MovingAgent target in targets)
+        foreach (SteeringBehaviors.MovingAgent target in targets)
         {
             // Calculate time to collision.
             Vector2 relativePosition = target.GlobalPosition - 

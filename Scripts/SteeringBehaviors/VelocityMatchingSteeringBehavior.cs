@@ -14,7 +14,7 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 public partial class VelocityMatchingSteeringBehavior : Node, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")]
-    [Export] public MovingAgent Target { get; set; }
+    [Export] public GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent Target { get; set; }
     [Export] public float TimeToMatch { get; set; }
     
     private Vector2 _targetVelocity;

@@ -62,14 +62,14 @@ public partial class CohesionSteeringBehavior : Node2D, ISteeringBehavior
     // Actually, it could be an ArriveSteeringBehavior too. Anything that gets you from
     // current position to a desired position.
     private SeekSteeringBehavior _seekSteeringBehavior;
-    private MovingAgent _currentAgent;
+    private GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent _currentAgent;
     
     public override void _EnterTree()
     {
         // _positionMarker will be the target of _seekSteeringBehavior.
         _positionMarker = new Node2D();
         // Find out who is our father.
-        _currentAgent = this.FindAncestor<MovingAgent>();
+        _currentAgent = this.FindAncestor<GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent>();
     }
     
     public override void _ExitTree()
@@ -137,7 +137,7 @@ public partial class CohesionSteeringBehavior : Node2D, ISteeringBehavior
             DrawLine(
                 ToLocal(target.GlobalPosition), 
                 ToLocal(_positionMarker.GlobalPosition), 
-                ((MovingAgent) target).AgentColor);
+                ((GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent) target).AgentColor);
         }
         
         // Draw center of mass.

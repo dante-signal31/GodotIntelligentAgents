@@ -17,8 +17,8 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 public partial class InterposeSteeringBehavior : Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")] 
-    [Export] public MovingAgent AgentA { get; set; }
-    [Export] public MovingAgent AgentB { get; set; }
+    [Export] public GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent AgentA { get; set; }
+    [Export] public GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent AgentB { get; set; }
     /// <summary>
     /// Distance at which we give our goal as reached and we stop our agent.
     /// </summary>

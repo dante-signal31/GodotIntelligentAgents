@@ -18,11 +18,11 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")] 
-    private MovingAgent _threat;
+    private GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent _threat;
     /// <summary>
     /// Agent to hide from.
     /// </summary>
-    [Export] public MovingAgent Threat
+    [Export] public GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent Threat
     {
         get => _threat;
         set

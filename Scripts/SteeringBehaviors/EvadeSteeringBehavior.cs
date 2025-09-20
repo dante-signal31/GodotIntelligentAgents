@@ -20,7 +20,7 @@ public partial class EvadeSteeringBehavior : Node2D, ISteeringBehavior
     /// <summary>
     /// Agent to run from.
     /// </summary>
-    [Export] public MovingAgent Threat { get; set; }
+    [Export] public GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent Threat { get; set; }
 
     private float _panicDistance = 1.0f;
     /// <summary>
@@ -45,7 +45,7 @@ public partial class EvadeSteeringBehavior : Node2D, ISteeringBehavior
     
     private FleeSteeringBehavior _fleeSteeringBehavior;
     private Node2D _predictedPositionMarker;
-    private MovingAgent _currentAgent;
+    private GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent _currentAgent;
     
     private Color AgentColor => _currentAgent.AgentColor;
     private Color ThreatColor => Threat.AgentColor;
@@ -74,7 +74,7 @@ public partial class EvadeSteeringBehavior : Node2D, ISteeringBehavior
     {
         _predictedPositionMarker = new Node2D();
         // Find out who is our father.
-        _currentAgent = this.FindAncestor<MovingAgent>();
+        _currentAgent = this.FindAncestor<GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent>();
     }
     
     public override void _Ready()

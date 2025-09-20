@@ -38,8 +38,8 @@ public class SimpleBehaviorTests
     public async Task SeekBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent movingAgent = 
-            (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent movingAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
         Marker2D agentStartPosition = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Target target = (Target) _sceneRunner.FindChild("Target");
@@ -80,8 +80,8 @@ public class SimpleBehaviorTests
     public async Task ArriveBehaviorNLATest()
     {
         // Get references to agent and target.
-        MovingAgent movingAgent = 
-            (MovingAgent) _sceneRunner.FindChild("ArriveMovingAgentNLA");
+        Scripts.SteeringBehaviors.MovingAgent movingAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("ArriveMovingAgentNLA");
         Marker2D agentStartPosition = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Target target = (Target) _sceneRunner.FindChild("Target");
@@ -163,8 +163,8 @@ public class SimpleBehaviorTests
     public async Task ArriveBehaviorLATest()
     {
         // Get references to agent and target.
-        MovingAgent movingAgent = 
-            (MovingAgent) _sceneRunner.FindChild("ArriveMovingAgentLA");
+        Scripts.SteeringBehaviors.MovingAgent movingAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("ArriveMovingAgentLA");
         Marker2D agentStartPosition = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Target target = (Target) _sceneRunner.FindChild("Target");
@@ -238,8 +238,8 @@ public class SimpleBehaviorTests
     public async Task FleeBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent movingAgent =
-            (MovingAgent)_sceneRunner.FindChild("FleeMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent movingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("FleeMovingAgent");
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position2");
         Target target = (Target)_sceneRunner.FindChild("Target");
@@ -293,12 +293,12 @@ public class SimpleBehaviorTests
     {
         // Get references to the target agent that will rotate and that our tested agent
         // will copy its alignment from.
-        MovingAgent movingAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent movingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D movingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position2");
-        MovingAgent alignAgent =
-            (MovingAgent)_sceneRunner.FindChild("AlignMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent alignAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("AlignMovingAgent");
         Marker2D alignAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position1");
         Target target = (Target) _sceneRunner.FindChild("Target");
@@ -371,12 +371,12 @@ public class SimpleBehaviorTests
     public async Task FaceBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent faceAgent =
-            (MovingAgent)_sceneRunner.FindChild("FaceMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent faceAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("FaceMovingAgent");
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position3");
-        MovingAgent targetMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent targetMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D targetMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -441,12 +441,12 @@ public class SimpleBehaviorTests
     public async Task VelocityMatchingBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent velocityMatchingAgent =
-            (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent velocityMatchingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position1");
-        MovingAgent arriveMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Scripts.SteeringBehaviors.MovingAgent arriveMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
         Marker2D arriveMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfArriveMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -528,12 +528,12 @@ public class SimpleBehaviorTests
     public async Task PursuitBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent pursueAgent =
-            (MovingAgent)_sceneRunner.FindChild("PursueMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent pursueAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("PursueMovingAgent");
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position4");
-        MovingAgent targetMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent targetMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D targetMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -591,13 +591,13 @@ public class SimpleBehaviorTests
     public async Task OffsetFollowBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent followAgent =
-            (MovingAgent)_sceneRunner.FindChild("OffsetFollowMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent followAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("OffsetFollowMovingAgent");
         Node2D offsetFromTargetMarker = (Node2D)_sceneRunner.FindChild("OffsetFromTargetMarker");
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position4");
-        MovingAgent targetMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent targetMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D targetMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -676,12 +676,12 @@ public class SimpleBehaviorTests
     public async Task AgentAvoiderBehaviorTestFirstScenario()
     {
         // Get references to agent and target.
-        MovingAgent agentAvoider =
-            (MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent agentAvoider =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
         Marker2D position3 =
             (Marker2D)_sceneRunner.FindChild("Position3");
-        MovingAgent obstacleMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent obstacleMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D position6 =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfAgentAvoiderMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -762,12 +762,12 @@ public class SimpleBehaviorTests
     public async Task AgentAvoiderBehaviorTestSecondScenario()
     {
         // Get references to agent and target.
-        MovingAgent agentAvoider =
-            (MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent agentAvoider =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
         Marker2D position3 =
             (Marker2D)_sceneRunner.FindChild("Position3");
-        MovingAgent obstacleMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent obstacleMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D position6 =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfAgentAvoiderMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -848,12 +848,12 @@ public class SimpleBehaviorTests
     public async Task AgentAvoiderBehaviorTestThirdScenario()
     {
         // Get references to agent and target.
-        MovingAgent agentAvoider =
-            (MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent agentAvoider =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
         Marker2D position3 =
             (Marker2D)_sceneRunner.FindChild("Position3");
-        MovingAgent obstacleMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent obstacleMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D position6 =
             (Marker2D)_sceneRunner.FindChild("Position6");
         Target targetOfAgentAvoiderMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -934,12 +934,12 @@ public class SimpleBehaviorTests
     public async Task AgentAvoiderBehaviorTestFourthScenario()
     {
         // Get references to agent and target.
-        MovingAgent agentAvoider =
-            (MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent agentAvoider =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
         Marker2D position11 =
             (Marker2D)_sceneRunner.FindChild("Position11");
-        MovingAgent obstacleMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent obstacleMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D position12 =
             (Marker2D)_sceneRunner.FindChild("Position12");
         Target targetOfAgentAvoiderMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -1019,12 +1019,12 @@ public class SimpleBehaviorTests
     public async Task AgentAvoiderBehaviorTestFifthScenario()
     {
         // Get references to agent and target.
-        MovingAgent agentAvoider =
-            (MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent agentAvoider =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ActiveAgentAvoiderMovingAgent");
         Marker2D position11 =
             (Marker2D)_sceneRunner.FindChild("Position11");
-        MovingAgent obstacleMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent obstacleMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D position12 =
             (Marker2D)_sceneRunner.FindChild("Position12");
         Target targetOfAgentAvoiderMovingAgent = (Target)_sceneRunner.FindChild("Target");
@@ -1104,19 +1104,19 @@ public class SimpleBehaviorTests
     public async Task InterposeBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent velocityMatchingAgent =
-            (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent velocityMatchingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position7");
-        MovingAgent targetMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Scripts.SteeringBehaviors.MovingAgent targetMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
         Marker2D targetMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position8");
         Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
         Marker2D targetPosition =
             (Marker2D)_sceneRunner.FindChild("Position3");
-        MovingAgent interposeAgent = 
-            (MovingAgent)_sceneRunner.FindChild("InterposeMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent interposeAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("InterposeMovingAgent");
         Marker2D interposeAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position9");
         
@@ -1204,12 +1204,12 @@ public class SimpleBehaviorTests
     public async Task EvadeBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent seekAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent seekAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D seekAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position6");
-        MovingAgent evadeAgent =
-            (MovingAgent)_sceneRunner.FindChild("EvadeMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent evadeAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("EvadeMovingAgent");
         Marker2D evadeMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position5");
         
@@ -1262,19 +1262,19 @@ public class SimpleBehaviorTests
     public async Task SeparationBehaviorLinearTest()
     {
         // Get references to agent and target.
-        MovingAgent velocityMatchingAgent =
-            (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent velocityMatchingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position7");
-        MovingAgent targetMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Scripts.SteeringBehaviors.MovingAgent targetMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
         Marker2D targetMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position8");
         Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
         Marker2D targetPosition =
             (Marker2D)_sceneRunner.FindChild("Position5");
-        MovingAgent separationAgent = 
-            (MovingAgent)_sceneRunner.FindChild("SeparationMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent separationAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeparationMovingAgent");
         Marker2D separationAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position2");
         
@@ -1359,19 +1359,19 @@ public class SimpleBehaviorTests
     public async Task SeparationBehaviorInverseSquareTest()
     {
         // Get references to agent and target.
-        MovingAgent velocityMatchingAgent =
-            (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent velocityMatchingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
         Marker2D agentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position7");
-        MovingAgent targetMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Scripts.SteeringBehaviors.MovingAgent targetMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
         Marker2D targetMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position8");
         Target targetOfTargetMovingAgent = (Target)_sceneRunner.FindChild("Target");
         Marker2D targetPosition =
             (Marker2D)_sceneRunner.FindChild("Position5");
-        MovingAgent separationAgent = 
-            (MovingAgent)_sceneRunner.FindChild("SeparationMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent separationAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeparationMovingAgent");
         Marker2D separationAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position2");
         
@@ -1458,19 +1458,19 @@ public class SimpleBehaviorTests
     public async Task GroupAlignBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent seekMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent seekMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D seekStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position4");
-        MovingAgent arriveMovingAgent =
-            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Scripts.SteeringBehaviors.MovingAgent arriveMovingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
         Marker2D arriveMovingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position8");
         Target targetOfArriveMovingAgent = (Target)_sceneRunner.FindChild("Target");
         Marker2D targetPosition =
             (Marker2D)_sceneRunner.FindChild("Position7");
-        MovingAgent groupAlignAgent = 
-            (MovingAgent)_sceneRunner.FindChild("GroupAlignMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent groupAlignAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("GroupAlignMovingAgent");
         Marker2D groupAlignAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position5");
         
@@ -1542,24 +1542,24 @@ public class SimpleBehaviorTests
     public async Task CohesionBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent velocityMatchingAgent =
-            (MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent velocityMatchingAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("VelocityMatchingMovingAgent");
         Marker2D velocityMatchingAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position8");
-        MovingAgent arriveAgent =
-            (MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
+        Scripts.SteeringBehaviors.MovingAgent arriveAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("ArriveMovingAgentLA");
         Marker2D arriveAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position7");
         Marker2D arriveAgentTarget =
             (Marker2D)_sceneRunner.FindChild("Position4");
-        MovingAgent seekAgent =
-            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent seekAgent =
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
         Marker2D seekAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position2");
         Marker2D seekAgentTarget =
             (Marker2D)_sceneRunner.FindChild("Position3");
-        MovingAgent cohesionAgent = 
-            (MovingAgent)_sceneRunner.FindChild("CohesionMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent cohesionAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent)_sceneRunner.FindChild("CohesionMovingAgent");
         Marker2D cohesionAgentStartPosition =
             (Marker2D)_sceneRunner.FindChild("Position9");
         
@@ -1653,8 +1653,8 @@ public class SimpleBehaviorTests
     public async Task WanderBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent wanderAgent = 
-            (MovingAgent) _sceneRunner.FindChild("WanderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent wanderAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WanderMovingAgent");
         Marker2D agentStartPosition = 
             (Marker2D) _sceneRunner.FindChild("Position10");
         

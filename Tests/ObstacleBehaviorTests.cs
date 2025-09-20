@@ -35,10 +35,10 @@ public class ObstacleBehaviorTests
     public async Task HideBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent seekAgent = 
-            (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
-        MovingAgent hideAgent = 
-            (MovingAgent) _sceneRunner.FindChild("HideMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent seekAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent hideAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("HideMovingAgent");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
@@ -131,8 +131,8 @@ public class ObstacleBehaviorTests
     public async Task WallAvoiderBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent wallAvoiderAgent = 
-            (MovingAgent) _sceneRunner.FindChild("WallAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent wallAvoiderAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WallAvoiderMovingAgent");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position2");
@@ -178,8 +178,8 @@ public class ObstacleBehaviorTests
     public async Task AutoSmoothedWallAvoiderBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent wallAvoiderAgent = 
-            (MovingAgent) _sceneRunner.FindChild("WallAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent wallAvoiderAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WallAvoiderMovingAgent");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position2");
@@ -227,8 +227,8 @@ public class ObstacleBehaviorTests
     public async Task SmoothedWallAvoiderBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent smoothedWallAvoiderAgent = 
-            (MovingAgent) _sceneRunner.FindChild("SmoothedWallAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent smoothedWallAvoiderAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SmoothedWallAvoiderMovingAgent");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
@@ -279,10 +279,10 @@ public class ObstacleBehaviorTests
     public async Task WeightBlendedHideWallAvoiderBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent seekAgent = 
-            (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
-        MovingAgent hideAgent = 
-            (MovingAgent) _sceneRunner.FindChild("WeightBlendedHideWallAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent seekAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent hideAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WeightBlendedHideWallAvoiderMovingAgent");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
@@ -388,10 +388,10 @@ public class ObstacleBehaviorTests
     public async Task PriorityWeightBlendedHideWallAvoiderBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent seekAgent = 
-            (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
-        MovingAgent hideAgent = 
-            (MovingAgent) _sceneRunner.FindChild("PriorityWeightBlendedHideWallAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent seekAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent hideAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("PriorityWeightBlendedHideWallAvoiderMovingAgent");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
@@ -497,10 +497,10 @@ public class ObstacleBehaviorTests
     public async Task PriorityDitheringBlendedHideWallAvoiderBehaviorTest()
     {
         // Get references to agent and target.
-        MovingAgent seekAgent = 
-            (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
-        MovingAgent hideAgent = 
-            (MovingAgent) _sceneRunner.FindChild("PriorityDitheringBlendedHideWallAvoiderMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent seekAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
+        Scripts.SteeringBehaviors.MovingAgent hideAgent = 
+            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("PriorityDitheringBlendedHideWallAvoiderMovingAgent");
         Target target = (Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");

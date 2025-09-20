@@ -71,7 +71,7 @@ public partial class EmergentFormation : Node2D
     private bool _waitingForNewAttemptTimeout;
     private bool _waitingForLoopDetectionCooldownTimeout;
     private bool _loopDetected;
-    private MovingAgent _ownAgent;
+    private SteeringBehaviors.MovingAgent _ownAgent;
     private EmergentFormation _partnerEmergentFormation;
     
     private Node2D _partner;
@@ -87,7 +87,7 @@ public partial class EmergentFormation : Node2D
         private set
         {
             _partner = value;
-            _followSteeringBehavior.Target = (MovingAgent) value;
+            _followSteeringBehavior.Target = (SteeringBehaviors.MovingAgent) value;
             _partnerEmergentFormation = value?.FindChild<EmergentFormation>();
         }
     }
@@ -118,7 +118,7 @@ public partial class EmergentFormation : Node2D
     {
         SetNewAttemptTimer();
         SetLoopDetectionCooldownTimer();
-        _ownAgent = (MovingAgent) GetParent();
+        _ownAgent = (SteeringBehaviors.MovingAgent) GetParent();
     }
 
     private void SetNewAttemptTimer()
