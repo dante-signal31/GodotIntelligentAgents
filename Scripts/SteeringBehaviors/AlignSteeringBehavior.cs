@@ -74,7 +74,7 @@ public partial class AlignSteeringBehavior : Node, ISteeringBehavior, ITargeter
       // ArriveSteeringBehavior.
         if (Target == null) return new SteeringOutput(Vector2.Zero, 0);
         
-        float targetOrientation = Target.RotationDegrees;
+        float targetOrientation = Target.GlobalRotationDegrees;
         float currentOrientation = args.Orientation;
         float maximumRotationalSpeedRad = Mathf.DegToRad(args.MaximumRotationalSpeed);
         float arrivingMarginRad = Mathf.DegToRad(args.StopRotationThreshold);

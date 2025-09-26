@@ -5,7 +5,7 @@ using GodotGameAIbyExample.Scripts.Tools;
 
 namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
-// Needs to be a Tool to be able to averride _GetConfigurationWarnings() and find out
+// Needs to be a Tool to be able to override _GetConfigurationWarnings() and find out
 // if it has a child of type ISteeringBehavior.
 [Tool]
 public partial class MovingAgent : CharacterBody2D
@@ -19,6 +19,7 @@ public partial class MovingAgent : CharacterBody2D
         {
             if (_agentColor == value) return;
             _agentColor = value;
+            if (_bodySprite == null) return;
             _bodySprite.Modulate = _agentColor;
         }
     }
@@ -111,12 +112,12 @@ public partial class MovingAgent : CharacterBody2D
         }
     }
     
-    private SteeringBehaviorArgs _behaviorArgs;
+    protected SteeringBehaviorArgs _behaviorArgs;
     private float _maximumRotationSpeedRadNormalized;
     private float _stopRotationRadThreshold;
     private MovingWindow _lastRotations;
 
-    private SteeringBehaviorArgs GetSteeringBehaviorArgs()
+    protected virtual SteeringBehaviorArgs GetSteeringBehaviorArgs()
     {
         return new SteeringBehaviorArgs(
             this, 
@@ -142,7 +143,7 @@ public partial class MovingAgent : CharacterBody2D
 
     public override void _Ready()
     {
-        _bodySprite.Modulate = AgentColor;
+        if (_bodySprite != null) _bodySprite.Modulate = AgentColor;
         _behaviorArgs = GetSteeringBehaviorArgs();
     }
 
@@ -150,16 +151,8 @@ public partial class MovingAgent : CharacterBody2D
     {
         if (SteeringBehavior == null || Engine.IsEditorHint()) return;
         
-        // Update steering behavior args.
-        _behaviorArgs.MaximumSpeed = MaximumSpeed;
-        _behaviorArgs.StopSpeed = StopSpeed;
-        _behaviorArgs.CurrentVelocity = Velocity;
-        _behaviorArgs.MaximumRotationalSpeed = MaximumRotationalDegSpeed;
-        _behaviorArgs.StopRotationThreshold = StopRotationDegThreshold;
-        _behaviorArgs.MaximumAcceleration = MaximumAcceleration;
-        _behaviorArgs.MaximumDeceleration = MaximumDeceleration;
-        _behaviorArgs.DeltaTime = delta;
-        
+        UpdateSteeringBehaviorArgs(delta);
+
         // Get steering output.
         SteeringOutput steeringOutput = SteeringBehavior.GetSteering(_behaviorArgs);
         
@@ -195,6 +188,19 @@ public partial class MovingAgent : CharacterBody2D
             GlobalRotationDegrees += steeringOutput.Angular * (float)delta;
         }
         MoveAndSlide();
+    }
+
+    protected virtual void UpdateSteeringBehaviorArgs(double delta)
+    {
+        // Update steering behavior args.
+        _behaviorArgs.MaximumSpeed = MaximumSpeed;
+        _behaviorArgs.StopSpeed = StopSpeed;
+        _behaviorArgs.CurrentVelocity = Velocity;
+        _behaviorArgs.MaximumRotationalSpeed = MaximumRotationalDegSpeed;
+        _behaviorArgs.StopRotationThreshold = StopRotationDegThreshold;
+        _behaviorArgs.MaximumAcceleration = MaximumAcceleration;
+        _behaviorArgs.MaximumDeceleration = MaximumDeceleration;
+        _behaviorArgs.DeltaTime = delta;
     }
 
     /// <summary>

@@ -387,9 +387,9 @@ public class SimpleBehaviorTests
         SeekSteeringBehavior seekSteeringBehavior =
             (SeekSteeringBehavior) targetMovingAgent.FindChild(
                 nameof(SeekSteeringBehavior));
-        FaceSteeringBehavior faceSteeringBehavior =
-            (FaceSteeringBehavior) faceAgent.FindChild(
-                nameof(FaceSteeringBehavior));
+        Scripts.SteeringBehaviors.FaceSteeringBehavior faceSteeringBehavior =
+            (Scripts.SteeringBehaviors.FaceSteeringBehavior) faceAgent.FindChild(
+                nameof(Scripts.SteeringBehaviors.FaceSteeringBehavior));
         
         // Place and setup both agents before the test.
         faceAgent.GlobalPosition = agentStartPosition.GlobalPosition;
