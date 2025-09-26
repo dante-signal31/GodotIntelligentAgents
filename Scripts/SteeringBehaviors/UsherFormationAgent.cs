@@ -24,8 +24,6 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
 
     [Export(PropertyHint.Range,"0.0,1.0,0.01")] 
     public float DeviationToleranceBeforeTurn = 0.1f;
-
-    // [Export] private float _agentRadius = 50;
     
     [ExportCategory("DEBUG:")] 
     [Export] public bool ShowGizmos { get; set; }
@@ -139,8 +137,6 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
                     TurnRight(steeringOutput.Linear);
                     break;
             }
-
-            // MoveAndSlide();
         }
     }
 
@@ -222,8 +218,6 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
         // If we make the hinge loot to the formation target, the rotation will end
         // before the formation center looks at the target directly. So, we must make
         // the hinge look to a target parallel to the one of the formation center.
-        // _hingeTarget.GlobalPosition = 
-        //     _engagedHinge.GlobalPosition + direction.Normalized() * _agentRadius * 2;
         _hingeTarget.GlobalPosition = _engagedHinge.GlobalPosition + direction;
     }
 
@@ -261,9 +255,6 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
     public override void _Draw()
     {
         if (!ShowGizmos) return;
-
-        // Draw agentRadius size.
-        // DrawCircle(Vector2.Zero, _agentRadius, GizmosColor, filled: false);
         
         // Draw a line to target.
         DrawLine(
