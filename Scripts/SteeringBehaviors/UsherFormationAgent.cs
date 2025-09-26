@@ -25,7 +25,7 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
     [Export(PropertyHint.Range,"0.0,1.0,0.01")] 
     public float DeviationToleranceBeforeTurn = 0.1f;
 
-    [Export] private float _agentRadius = 50;
+    // [Export] private float _agentRadius = 50;
     
     [ExportCategory("DEBUG:")] 
     [Export] public bool ShowGizmos { get; set; }
@@ -222,8 +222,9 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
         // If we make the hinge loot to the formation target, the rotation will end
         // before the formation center looks at the target directly. So, we must make
         // the hinge look to a target parallel to the one of the formation center.
-        _hingeTarget.GlobalPosition = 
-            _engagedHinge.GlobalPosition + direction.Normalized() * _agentRadius * 2;
+        // _hingeTarget.GlobalPosition = 
+        //     _engagedHinge.GlobalPosition + direction.Normalized() * _agentRadius * 2;
+        _hingeTarget.GlobalPosition = _engagedHinge.GlobalPosition + direction;
     }
 
     private void EngageHinge(UsherHingeAgent hinge)
@@ -262,7 +263,7 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
         if (!ShowGizmos) return;
 
         // Draw agentRadius size.
-        DrawCircle(Vector2.Zero, _agentRadius, GizmosColor, filled: false);
+        // DrawCircle(Vector2.Zero, _agentRadius, GizmosColor, filled: false);
         
         // Draw a line to target.
         DrawLine(
@@ -274,19 +275,6 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
             30f, 
             GizmosColor, 
             filled:false);
-        
-        // // Draw a line from hinge to hinge target.
-        // if (_hingeTarget == null || _engagedHinge == null) return;
-        // DrawLine(
-        //     ToLocal(_engagedHinge.GlobalPosition), 
-        //     ToLocal(_hingeTarget.GlobalPosition), 
-        //     GizmosColor);
-        // DrawCircle(
-        //     ToLocal(_engagedHinge.GlobalPosition), 
-        //     20f, 
-        //     GizmosColor, 
-        //     filled:false);
-        
     }
     
     public override string[] _GetConfigurationWarnings()
