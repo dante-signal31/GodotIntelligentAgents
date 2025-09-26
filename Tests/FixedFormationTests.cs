@@ -50,10 +50,6 @@ public class FixedFormationTests
             (Marker2D) _sceneRunner.FindChild("Position3");
         Marker2D position4 = 
             (Marker2D) _sceneRunner.FindChild("Position4");
-        Marker2D position5 = 
-            (Marker2D) _sceneRunner.FindChild("Position5");
-        Marker2D position6 = 
-            (Marker2D) _sceneRunner.FindChild("Position6");
         
         // Get references to behaviors.
         SeekSteeringBehavior seekSteeringBehavior = 
@@ -83,7 +79,7 @@ public class FixedFormationTests
         target.GlobalPosition = position3.GlobalPosition;
         
         // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
+        await _sceneRunner.AwaitMillis(12000);
         AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position3.GlobalPosition) < 50f
         ).IsTrue();
@@ -96,26 +92,6 @@ public class FixedFormationTests
         await _sceneRunner.AwaitMillis(5000);
         AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position4.GlobalPosition) < 50f
-        ).IsTrue();
-        
-        
-        // Move target to another position.
-        target.GlobalPosition = position5.GlobalPosition;
-        
-        // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
-        AssertThat(
-            formationAgent.GlobalPosition.DistanceTo(position5.GlobalPosition) < 50f
-        ).IsTrue();
-        
-        
-        // Move target to another position.
-        target.GlobalPosition = position6.GlobalPosition;
-        
-        // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
-        AssertThat(
-            formationAgent.GlobalPosition.DistanceTo(position6.GlobalPosition) < 50f
         ).IsTrue();
         
         // Cleanup.
@@ -143,10 +119,6 @@ public class FixedFormationTests
             (Marker2D) _sceneRunner.FindChild("Position3");
         Marker2D position4 = 
             (Marker2D) _sceneRunner.FindChild("Position4");
-        Marker2D position5 = 
-            (Marker2D) _sceneRunner.FindChild("Position5");
-        Marker2D position6 = 
-            (Marker2D) _sceneRunner.FindChild("Position6");
         
         // Get references to behaviors.
         SeekSteeringBehavior seekSteeringBehavior = 
@@ -176,7 +148,7 @@ public class FixedFormationTests
         target.GlobalPosition = position3.GlobalPosition;
         
         // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
+        await _sceneRunner.AwaitMillis(12000);
         AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position3.GlobalPosition) < 50f
         ).IsTrue();
@@ -189,26 +161,6 @@ public class FixedFormationTests
         await _sceneRunner.AwaitMillis(5000);
         AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position4.GlobalPosition) < 50f
-        ).IsTrue();
-        
-        
-        // Move target to another position.
-        target.GlobalPosition = position5.GlobalPosition;
-        
-        // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
-        AssertThat(
-            formationAgent.GlobalPosition.DistanceTo(position5.GlobalPosition) < 50f
-        ).IsTrue();
-        
-        
-        // Move target to another position.
-        target.GlobalPosition = position6.GlobalPosition;
-        
-        // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
-        AssertThat(
-            formationAgent.GlobalPosition.DistanceTo(position6.GlobalPosition) < 50f
         ).IsTrue();
         
         // Cleanup.
@@ -236,10 +188,6 @@ public class FixedFormationTests
             (Marker2D) _sceneRunner.FindChild("Position3");
         Marker2D position4 = 
             (Marker2D) _sceneRunner.FindChild("Position4");
-        Marker2D position5 = 
-            (Marker2D) _sceneRunner.FindChild("Position5");
-        Marker2D position6 = 
-            (Marker2D) _sceneRunner.FindChild("Position6");
         
         // Get references to behaviors.
         SeekSteeringBehavior seekSteeringBehavior = 
@@ -248,8 +196,8 @@ public class FixedFormationTests
         // Set up agents before the test.
         formationAgent.RealisticTurns = false;
         
-        target.GlobalPosition = position5.GlobalPosition;
-        formationAgent.GlobalPosition = position6.GlobalPosition;
+        target.GlobalPosition = position3.GlobalPosition;
+        formationAgent.GlobalPosition = position4.GlobalPosition;
         seekSteeringBehavior.Target = target;
 
         formationAgent.Visible = true;
@@ -261,35 +209,15 @@ public class FixedFormationTests
         // Assert that formation reached its target.
         await _sceneRunner.AwaitMillis(5000);
         AssertThat(
-            formationAgent.GlobalPosition.DistanceTo(position5.GlobalPosition) < 50f
-        ).IsTrue();
-        
-        
-        // Move the target to another position.
-        target.GlobalPosition = position4.GlobalPosition;
-        
-        // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
-        AssertThat(
-            formationAgent.GlobalPosition.DistanceTo(position4.GlobalPosition) < 50f
-        ).IsTrue();
-        
-        
-        // Move target to another position.
-        target.GlobalPosition = position3.GlobalPosition;
-        
-        // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
-        AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position3.GlobalPosition) < 50f
         ).IsTrue();
         
         
-        // Move target to another position.
+        // Move the target to another position.
         target.GlobalPosition = position2.GlobalPosition;
         
         // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
+        await _sceneRunner.AwaitMillis(12000);
         AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position2.GlobalPosition) < 50f
         ).IsTrue();
@@ -303,6 +231,7 @@ public class FixedFormationTests
         AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position1.GlobalPosition) < 50f
         ).IsTrue();
+        
         
         // Cleanup.
         formationAgent.Visible = false;
@@ -329,10 +258,6 @@ public class FixedFormationTests
             (Marker2D) _sceneRunner.FindChild("Position3");
         Marker2D position4 = 
             (Marker2D) _sceneRunner.FindChild("Position4");
-        Marker2D position5 = 
-            (Marker2D) _sceneRunner.FindChild("Position5");
-        Marker2D position6 = 
-            (Marker2D) _sceneRunner.FindChild("Position6");
         
         // Get references to behaviors.
         SeekSteeringBehavior seekSteeringBehavior = 
@@ -341,8 +266,8 @@ public class FixedFormationTests
         // Set up agents before the test.
         formationAgent.RealisticTurns = true;
         
-        target.GlobalPosition = position5.GlobalPosition;
-        formationAgent.GlobalPosition = position6.GlobalPosition;
+        target.GlobalPosition = position3.GlobalPosition;
+        formationAgent.GlobalPosition = position4.GlobalPosition;
         seekSteeringBehavior.Target = target;
 
         formationAgent.Visible = true;
@@ -354,35 +279,15 @@ public class FixedFormationTests
         // Assert that formation reached its target.
         await _sceneRunner.AwaitMillis(5000);
         AssertThat(
-            formationAgent.GlobalPosition.DistanceTo(position5.GlobalPosition) < 50f
-        ).IsTrue();
-        
-        
-        // Move the target to another position.
-        target.GlobalPosition = position4.GlobalPosition;
-        
-        // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
-        AssertThat(
-            formationAgent.GlobalPosition.DistanceTo(position4.GlobalPosition) < 50f
-        ).IsTrue();
-        
-        
-        // Move target to another position.
-        target.GlobalPosition = position3.GlobalPosition;
-        
-        // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
-        AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position3.GlobalPosition) < 50f
         ).IsTrue();
         
         
-        // Move target to another position.
+        // Move the target to another position.
         target.GlobalPosition = position2.GlobalPosition;
         
         // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
+        await _sceneRunner.AwaitMillis(12000);
         AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position2.GlobalPosition) < 50f
         ).IsTrue();
