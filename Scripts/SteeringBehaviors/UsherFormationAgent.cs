@@ -19,7 +19,12 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
         TurnRight
     }
     
-    [ExportCategory("USHER FORMATION CONFIGURATION:")] 
+    [ExportCategory("USHER FORMATION CONFIGURATION:")]
+    // Vanilla formation movement algorithm turns it taking its origin as axis. The
+    // problem is that real formations don't turn that way because one wing would advance
+    // but the other would go backwards, which is awkward or even impossible for a real
+    // formation of soldiers. Instead of that, a realistic turn would use formation
+    // corners as its turning axis (hinge).
     [Export] public bool RealisticTurns = false;
 
     [Export(PropertyHint.Range,"0.0,1.0,0.01")] 
@@ -87,15 +92,36 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
         base._Ready();
         
         // You only want to get parent once, at the beginning. So, you cannot call it
-        // from _EnterTree because it is called every time we reparent this node.
+        // from _EnterTree because that method is called every time we reparent this node.
         _agentParent = GetParent();
         
         List<UsherHingeAgent> usherHingeAgents = this.FindChildren<UsherHingeAgent>();
         if (usherHingeAgents == null) return;
         _rightHinge = usherHingeAgents.Find(hinge => hinge.Name == "RightHinge");
         _leftHinge = usherHingeAgents.Find(hinge => hinge.Name == "LeftHinge");
-        _rightHingeRelativePosition =  _rightHinge.GlobalPosition - GlobalPosition;
-        _leftHingeRelativePosition = _leftHinge.GlobalPosition - GlobalPosition;
+        
+        // Limit rotational speed if needed to comply with the maximum speed of formation
+        // members.
+        float turnRadius = _rightHinge.GlobalPosition.DistanceTo(_leftHinge.GlobalPosition);
+        // Tangential speed es equal to the turn radius times the maximum rotational
+        // speed.
+        float externalAgentTangencialSpeed =
+            Mathf.DegToRad(MaximumRotationalDegSpeed) * turnRadius;
+        // If maximum rotational speed makes the most external agent (from the turn hinge)
+        // go faster than its maximum speed, then we must limit the maximum rotational
+        // speed for the hinges.
+        if (externalAgentTangencialSpeed > MaximumSpeed)
+        {
+            float maximumRotationalDegPossible = Mathf.RadToDeg(MaximumSpeed / turnRadius);
+            _rightHinge.MaximumRotationalDegSpeed = maximumRotationalDegPossible;
+            _leftHinge.MaximumRotationalDegSpeed = maximumRotationalDegPossible;
+        }
+        else
+        {
+            _rightHinge.MaximumRotationalDegSpeed = MaximumRotationalDegSpeed;
+            _leftHinge.MaximumRotationalDegSpeed = MaximumRotationalDegSpeed;
+        }
+
     }
 
     public override void _ExitTree()
@@ -215,7 +241,7 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
             _engagedHinge.TargetToLookAt = _hingeTarget;
         }
         
-        // If we make the hinge loot to the formation target, the rotation will end
+        // If we make the hinge look to the formation target, the rotation will end
         // before the formation center looks at the target directly. So, we must make
         // the hinge look to a target parallel to the one of the formation center.
         _hingeTarget.GlobalPosition = _engagedHinge.GlobalPosition + direction;
