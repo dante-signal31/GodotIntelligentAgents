@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://cqbcg2qri2h4j"]
+
+[ext_resource type="Script" uid="uid://c8dg35v1id3kw" path="res://Scripts/Groups/FormationPattern.cs" id="1_0g3l4"]
+[ext_resource type="Script" uid="uid://d1ouy1q86lot" path="res://Scripts/Groups/OffsetList.cs" id="2_62fyc"]
+
+[sub_resource type="Resource" id="Resource_wrrs2"]
+script = ExtResource("2_62fyc")
+Offsets = Array[Vector2]([])
+metadata/_custom_type_script = "uid://d1ouy1q86lot"
+
+[node name="FormationPattern" type="Node2D"]
+script = ExtResource("1_0g3l4")
+Positions = SubResource("Resource_wrrs2")
+GizmosColor = Color(0, 1, 0, 1)

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://o1aayb5a0b4r"]
+
+[ext_resource type="Script" uid="uid://blmxh6m2pkvxa" path="res://Scripts/Groups/FixedFormation.cs" id="1_dyav0"]
+
+[node name="FixedFormation" type="Node2D"]
+script = ExtResource("1_dyav0")

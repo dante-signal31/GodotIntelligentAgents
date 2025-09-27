@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="OffsetList" load_steps=2 format=3 uid="uid://gkah4jy2gee4"]
+
+[ext_resource type="Script" uid="uid://d1ouy1q86lot" path="res://Scripts/Groups/OffsetList.cs" id="1_oyh43"]
+
+[resource]
+script = ExtResource("1_oyh43")
+Offsets = Array[Vector2]([Vector2(-200, 200), Vector2(-200, -200)])
+metadata/_custom_type_script = "uid://d1ouy1q86lot"

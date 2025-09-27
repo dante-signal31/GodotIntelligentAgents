@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://47hy4x35li7d"]
+
+[ext_resource type="Script" uid="uid://cshv3y4h81drk" path="res://Scripts/Tools/BoxRangeManager.cs" id="1_qtl7l"]
+
+[node name="BoxRangeManager" type="Node2D"]
+script = ExtResource("1_qtl7l")

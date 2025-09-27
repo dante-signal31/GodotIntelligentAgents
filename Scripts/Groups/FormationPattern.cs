@@ -6,6 +6,10 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
 namespace GodotGameAIbyExample.Scripts.Groups;
 
+/// <summary>
+/// The class is used to define and manage defines the positions of the formation members
+/// in relation with formation origin. 
+/// </summary>
 [Tool]
 public partial class FormationPattern : Node2D, IGizmos
 {

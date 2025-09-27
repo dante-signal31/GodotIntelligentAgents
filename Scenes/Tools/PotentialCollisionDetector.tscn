@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnlu57k6d60rt"]
+
+[ext_resource type="Script" uid="uid://cv8x1niniloje" path="res://Scripts/Tools/PotentialCollisionDetector.cs" id="1_lyr8o"]
+
+[node name="PotentialCollisionDetector" type="Node2D"]
+script = ExtResource("1_lyr8o")
+AgentRadius = 50.0

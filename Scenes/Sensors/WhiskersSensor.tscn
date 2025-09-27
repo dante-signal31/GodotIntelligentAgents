@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=3 uid="uid://kphwl01n3lyj"]
+
+[ext_resource type="Script" uid="uid://br1uiiomrxdrs" path="res://Scripts/Sensors/WhiskersSensor.cs" id="1_x5m14"]
+[ext_resource type="Curve" uid="uid://f0voiei0g5sy" path="res://Curves/WhiskerSensorLeftRangeSemiCone.tres" id="2_6dk18"]
+[ext_resource type="Curve" uid="uid://bc8d5yu8u0xwx" path="res://Curves/WhiskerSensorRightRangeSemiCone.tres" id="3_niohx"]
+
+[node name="WhiskersSensor" type="Node2D"]
+script = ExtResource("1_x5m14")
+SensorsLayersMask = 8
+LeftRangeSemiCone = ExtResource("2_6dk18")
+RightRangeSemiCone = ExtResource("3_niohx")

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dm5beg83kj6rd"]
+
+[ext_resource type="Script" uid="uid://1wl4il828su1" path="res://Scripts/Groups/FlockingSwarmGenerator.cs" id="1_h286t"]
+
+[node name="FlockingSwarmGenerator" type="Node2D"]
+z_index = 100
+script = ExtResource("1_h286t")
