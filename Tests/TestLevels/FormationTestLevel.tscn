@@ -34,7 +34,6 @@ collision_layer = 17
 velocity = Vector2(198.977, -20.2051)
 RealisticTurns = true
 DeviationToleranceBeforeTurn = 0.01
-_agentRadius = 647.04
 ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 1)
 MaximumSpeed = 200.0
@@ -117,14 +116,14 @@ script = ExtResource("9_x3qa4")
 
 [node name="RightHinge" parent="FixedFormation/UsherFormationAgent" instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 401)
-MaximumRotationalDegSpeed = 180.0
-MaximumRotationalDegSpeed = 180.0
+MaximumRotationalDegSpeed = 14.2882
+MaximumRotationalDegSpeed = 14.2882
 
 [node name="LeftHinge" parent="FixedFormation/UsherFormationAgent" instance=ExtResource("10_dhgyl")]
 position = Vector2(0, -401)
-MaximumRotationalDegSpeed = 180.0
+MaximumRotationalDegSpeed = 14.2882
 GizmosColor = Color(1, 1, 0, 1)
-MaximumRotationalDegSpeed = 180.0
+MaximumRotationalDegSpeed = 14.2882
 
 [node name="Positions" type="Node" parent="."]
 
