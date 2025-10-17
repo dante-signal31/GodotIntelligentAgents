@@ -95,7 +95,8 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
         // from _EnterTree because that method is called every time we reparent this node.
         _agentParent = GetParent();
         
-        List<UsherHingeAgent> usherHingeAgents = this.FindChildren<UsherHingeAgent>();
+        List<UsherHingeAgent> usherHingeAgents = 
+            this.FindChildren<UsherHingeAgent>(recursive:true);
         if (usherHingeAgents == null) return;
         _rightHinge = usherHingeAgents.Find(hinge => hinge.Name == "RightHinge");
         _leftHinge = usherHingeAgents.Find(hinge => hinge.Name == "LeftHinge");
@@ -298,12 +299,13 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
     {
         List<string> warnings = new(base._GetConfigurationWarnings());
 
-        List<UsherHingeAgent> usherHingeAgents = this.FindChildren<UsherHingeAgent>();
+        List<UsherHingeAgent> usherHingeAgents = 
+            this.FindChildren<UsherHingeAgent>(recursive:true);
         
         if (usherHingeAgents == null || usherHingeAgents.Count < 2)
         {
             warnings.Add("This node needs at least 2 UsherHingeAgents children nodes " +
-                         "to work.");
+                         "to work. They don't need to be direct children.");
         }
         
         if (usherHingeAgents == null) return warnings.ToArray();

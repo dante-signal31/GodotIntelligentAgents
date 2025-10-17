@@ -1,34 +1,86 @@
-[gd_scene load_steps=12 format=3 uid="uid://4h3ubldn68qj"]
+[gd_scene load_steps=13 format=3 uid="uid://4h3ubldn68qj"]
 
 [ext_resource type="PackedScene" uid="uid://bqiois541s161" path="res://Levels/BigObstacleCourtyard.tscn" id="1_o46ag"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="2_dhgyl"]
 [ext_resource type="PackedScene" uid="uid://ob6715i2iini" path="res://Scenes/SteeringBehaviors/UsherFormationAgent.tscn" id="3_o46ag"]
+[ext_resource type="Script" uid="uid://dx0qtd4s5ksnv" path="res://Scripts/Groups/FormationShapeManager.cs" id="4_emhl0"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="4_o46ag"]
 [ext_resource type="PackedScene" uid="uid://o1aayb5a0b4r" path="res://Scenes/Groups/FixedFormation.tscn" id="5_b4w4m"]
+[ext_resource type="PackedScene" uid="uid://2ntv3njjewht" path="res://Scenes/Groups/ScalableFormation.tscn" id="5_emhl0"]
 [ext_resource type="PackedScene" uid="uid://mxho5r22apy1" path="res://Scenes/SteeringBehaviors/MovingAgent.tscn" id="6_8csmf"]
 [ext_resource type="PackedScene" uid="uid://cqbcg2qri2h4j" path="res://Scenes/Groups/FormationPattern.tscn" id="7_rin61"]
 [ext_resource type="Resource" uid="uid://db716mmhs4qru" path="res://Resources/FormationPattern_Box3x5_Centered.tres" id="8_hubku"]
-[ext_resource type="Script" uid="uid://b31cjkyfc6swq" path="res://Scripts/Groups/FormationPatternPosition.cs" id="9_x3qa4"]
 [ext_resource type="PackedScene" uid="uid://b8ettivyhu5tv" path="res://Scenes/SteeringBehaviors/UsherHingeAgent.tscn" id="10_dhgyl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o46ag"]
-size = Vector2(513, 907)
+size = Vector2(900, 300)
 
 [node name="FormationTestLevel" type="Node2D"]
 
 [node name="BigObstacleCourtyard" parent="." instance=ExtResource("1_o46ag")]
 
 [node name="Target" parent="." instance=ExtResource("2_dhgyl")]
-position = Vector2(3281, 3101)
+position = Vector2(6000, 2451)
 gizmo_extents = 169.4
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(3851, 2157)
 zoom = Vector2(0.25, 0.25)
 
+[node name="ScalableFormation" type="Node" parent="."]
+
+[node name="UsherScalableFormationAgent" parent="ScalableFormation" instance=ExtResource("3_o46ag")]
+position = Vector2(4868, 2899)
+collision_layer = 17
+velocity = Vector2(198.977, -20.2051)
+RealisticTurns = true
+DeviationToleranceBeforeTurn = 0.01
+ShowGizmos = true
+GizmosColor = Color(1, 0, 0, 1)
+MaximumSpeed = 200.0
+StopSpeed = 3.0
+MaximumRotationalDegSpeed = 360.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ScalableFormation/UsherScalableFormationAgent" node_paths=PackedStringArray("_formationNode")]
+position = Vector2(-150, -50)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_o46ag")
+script = ExtResource("4_emhl0")
+_formationNode = NodePath("../ScalableFormation")
+
+[node name="SeekSteeringBehavior" parent="ScalableFormation/UsherScalableFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
+Target = NodePath("../../../Target")
+ArrivalDistance = 20.0
+ShowGizmos = true
+
+[node name="ScalableFormation" parent="ScalableFormation/UsherScalableFormationAgent" instance=ExtResource("5_emhl0")]
+position = Vector2(0, -500)
+rotation = 1.5708
+_memberScene = ExtResource("6_8csmf")
+Distribution = 2
+MemberRadius = 50.0
+FormationDimensions = Vector2(1000, 400)
+Density = Vector2(200, 200)
+Quantity = 10
+
+[node name="RightHinge" parent="ScalableFormation/UsherScalableFormationAgent/ScalableFormation" instance=ExtResource("10_dhgyl")]
+position = Vector2(850, 50)
+rotation = -1.5708
+MaximumRotationalDegSpeed = 19.0986
+MaximumRotationalDegSpeed = 19.0986
+
+[node name="LeftHinge" parent="ScalableFormation/UsherScalableFormationAgent/ScalableFormation" instance=ExtResource("10_dhgyl")]
+position = Vector2(50, 50)
+rotation = -1.5708
+MaximumRotationalDegSpeed = 19.0986
+GizmosColor = Color(1, 1, 0, 1)
+MaximumRotationalDegSpeed = 19.0986
+
 [node name="FixedFormation" type="Node" parent="."]
+process_mode = 4
 
 [node name="UsherFormationAgent" parent="FixedFormation" instance=ExtResource("3_o46ag")]
+visible = false
 position = Vector2(2310, 3105)
 collision_layer = 17
 velocity = Vector2(198.977, -20.2051)
@@ -54,65 +106,6 @@ _memberScene = ExtResource("6_8csmf")
 
 [node name="FormationPattern" parent="FixedFormation/UsherFormationAgent/FixedFormation" instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
-
-[node name="FormationPosition0" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="0"]
-position = Vector2(0, -400)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition1" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="1"]
-position = Vector2(0, -200)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition2" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="2"]
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition3" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="3"]
-position = Vector2(0, 200)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition4" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="4"]
-position = Vector2(0, 400)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition5" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="5"]
-position = Vector2(-200, -400)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition6" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="6"]
-position = Vector2(-200, -200)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition7" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="7"]
-position = Vector2(-200, 0)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition8" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="8"]
-position = Vector2(-200, 200)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition9" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="9"]
-position = Vector2(-200, 400)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition10" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="10"]
-position = Vector2(-400, -400)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition11" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="11"]
-position = Vector2(-400, -200)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition12" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="12"]
-position = Vector2(-400, 0)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition13" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="13"]
-position = Vector2(-400, 200)
-script = ExtResource("9_x3qa4")
-
-[node name="FormationPosition14" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="14"]
-position = Vector2(-400, 400)
-script = ExtResource("9_x3qa4")
 
 [node name="RightHinge" parent="FixedFormation/UsherFormationAgent" instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 401)

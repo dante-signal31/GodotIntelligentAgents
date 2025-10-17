@@ -17,6 +17,8 @@ namespace GodotGameAIbyExample.Scripts.Groups;
 [Tool]
 public partial class FixedFormation : Node2D
 {
+    // TODO: Implement IFormation interface.
+    
     [ExportCategory("CONFIGURATION:")] 
     [Export] private PackedScene _memberScene;
     
