@@ -9,6 +9,10 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 public partial class UsherWaiterFormationAgent: UsherFormationAgent
 {
     [ExportCategory("USHER WAITER CONFIGURATION:")]
+    /// <summary>
+    /// Maximum distance in pixels that the usher can lag behind the formation members
+    /// average position.
+    /// </summary>
     [Export] public int MaximumLaggingBehindDistance { get; set; } = 500;
     
     private IFormation _formation;
@@ -33,10 +37,16 @@ public partial class UsherWaiterFormationAgent: UsherFormationAgent
             return averagePosition / _formation.Members.Count;
         }
     }
-    
+
+    /// <summary>
+    /// Distance between the members' average positions and formation usher.
+    /// </summary>
     private float LaggingBehindDistance => GlobalPosition.DistanceTo(
         FormationAveragePosition) - _originalAveragePositionDistance;
-
+    
+    /// <summary>
+    /// Whether usher is going away from the formation members. 
+    /// </summary>
     private bool GoingAwayFromAveragePosition =>
         ToLocal(_targeter.Target.GlobalPosition).Dot(
             ToLocal(FormationAveragePosition)) < 0;
