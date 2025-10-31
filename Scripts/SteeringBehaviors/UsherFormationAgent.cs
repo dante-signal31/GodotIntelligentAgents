@@ -281,7 +281,7 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
 
     public override void _Draw()
     {
-        if (!ShowGizmos) return;
+        if (!ShowGizmos || SteeringBehavior == null) return;
         
         // Draw a line to target.
         DrawLine(

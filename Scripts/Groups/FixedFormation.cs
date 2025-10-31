@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
 
@@ -15,26 +16,46 @@ namespace GodotGameAIbyExample.Scripts.Groups;
 /// collisions and formation needs a global collider.</remarks>
 /// </summary>
 [Tool]
-public partial class FixedFormation : Node2D
+public partial class FixedFormation : Node2D, IFormation
 {
+    public event EventHandler<FormationDimensionsChangedArgs> FormationDimensionsChanged;
+    
     [ExportCategory("CONFIGURATION:")] 
     [Export] private PackedScene _memberScene;
+    [Export] public float MemberRadius { get; private set; } = 50.0f;
     
-    public List<Node2D> Members { get; private set; } = new();
-    
+    public List<Node2D> Members { get; } = new();
+
+    public List<Vector2> MemberPositions => new(FormationPattern.Positions.Offsets);
+
     private FormationPattern _formationPattern;
+
+    public FormationPattern FormationPattern
+    {
+        get => _formationPattern;
+        private set
+        {
+            _formationPattern = value;
+            if (value == null) return;
+            var args = new FormationDimensionsChangedArgs(
+                value.Positions.Offsets.ToArray(),
+                MemberRadius);
+            FormationDimensionsChanged?.Invoke(this, args);
+            UpdateFormation();
+        }
+    }
     
     public override void _Ready()
     {
         if (Engine.IsEditorHint()) return;
         
-        _formationPattern = this.FindChild<FormationPattern>();
+        FormationPattern = this.FindChild<FormationPattern>();
         GenerateMembers();
     }
 
     private void GenerateMembers()
     {
-        foreach (Vector2 positionOffset in _formationPattern.Positions.Offsets)
+        foreach (Vector2 positionOffset in FormationPattern.Positions.Offsets)
         {
             Node2D member = _memberScene.Instantiate<Node2D>();
             member.Position = positionOffset;
@@ -49,6 +70,16 @@ public partial class FixedFormation : Node2D
             AddChild(member);
             Members.Add(member);
         }
+    }
+
+    private void UpdateFormation()
+    {
+        foreach (Node2D member in Members)
+        {
+            member.QueueFree();
+        }
+        Members.Clear();
+        GenerateMembers();
     }
 
     public override string[] _GetConfigurationWarnings()

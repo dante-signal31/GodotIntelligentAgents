@@ -15,7 +15,7 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// Steering behavior to avoid walls and obstacles using usher algorithm to smooth
 /// movements.
 /// </summary>
-public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBehavior
+public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBehavior, ITargeter
 {
     [ExportCategory("CONFIGURATION:")]
     
