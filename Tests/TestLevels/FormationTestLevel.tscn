@@ -130,10 +130,10 @@ Target = NodePath("../../../Target")
 [node name="TwoLevelFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("9_emhl0")]
 _memberScene = ExtResource("10_b4w4m")
 
-[node name="FixedFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation" instance=ExtResource("5_b4w4m")]
+[node name="UsherFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation" instance=ExtResource("5_b4w4m")]
 _memberScene = ExtResource("2_dhgyl")
 
-[node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation/FixedFormation" instance=ExtResource("7_rin61")]
+[node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation/UsherFormation" instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
 
 [node name="RightHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
