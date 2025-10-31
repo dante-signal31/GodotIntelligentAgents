@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://4h3ubldn68qj"]
+[gd_scene load_steps=16 format=3 uid="uid://4h3ubldn68qj"]
 
 [ext_resource type="PackedScene" uid="uid://bqiois541s161" path="res://Levels/BigObstacleCourtyard.tscn" id="1_o46ag"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="2_dhgyl"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://cf3nraba3xedm" path="res://Scenes/Groups/TwoLevelFormation.tscn" id="9_emhl0"]
 [ext_resource type="PackedScene" uid="uid://drq0xfneg0o1y" path="res://Scenes/Groups/SmoothedWallAvoiderMember.tscn" id="10_b4w4m"]
 [ext_resource type="PackedScene" uid="uid://b8ettivyhu5tv" path="res://Scenes/SteeringBehaviors/UsherHingeAgent.tscn" id="10_dhgyl"]
+[ext_resource type="PackedScene" uid="uid://dibmh52j5pc6t" path="res://Scenes/SteeringBehaviors/UsherWaiterFormationAgent.tscn" id="14_8csmf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o46ag"]
 size = Vector2(900, 300)
@@ -83,7 +84,9 @@ MaximumRotationalDegSpeed = 14.323945
 [node name="TwoLevelFormation" type="Node" parent="."]
 
 [node name="UsherTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("3_o46ag")]
-position = Vector2(1418, 2255)
+process_mode = 4
+visible = false
+position = Vector2(1353, 847)
 RealisticTurns = true
 DeviationToleranceBeforeTurn = 0.02
 ShowGizmos = true
@@ -104,14 +107,45 @@ Positions = ExtResource("8_hubku")
 
 [node name="RightHinge" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 400)
-MaximumRotationalDegSpeed = 7.1619725
-MaximumRotationalDegSpeed = 7.1619725
+MaximumRotationalDegSpeed = 14.323945
+MaximumRotationalDegSpeed = 14.323945
 
 [node name="LeftHinge" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
 position = Vector2(0, -400)
-MaximumRotationalDegSpeed = 7.1619725
+MaximumRotationalDegSpeed = 14.323945
 GizmosColor = Color(1, 0, 0, 1)
-MaximumRotationalDegSpeed = 7.1619725
+MaximumRotationalDegSpeed = 14.323945
+
+[node name="UsherWaiterTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_8csmf")]
+position = Vector2(1303, 2508)
+RealisticTurns = true
+DeviationToleranceBeforeTurn = 0.02
+ShowGizmos = true
+GizmosColor = Color(0, 1, 0, 1)
+MaximumSpeed = 200.0
+
+[node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
+Target = NodePath("../../../Target")
+
+[node name="TwoLevelFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("9_emhl0")]
+_memberScene = ExtResource("10_b4w4m")
+
+[node name="FixedFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation" instance=ExtResource("5_b4w4m")]
+_memberScene = ExtResource("2_dhgyl")
+
+[node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation/FixedFormation" instance=ExtResource("7_rin61")]
+Positions = ExtResource("8_hubku")
+
+[node name="RightHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+position = Vector2(0, 400)
+MaximumRotationalDegSpeed = 14.323945
+MaximumRotationalDegSpeed = 14.323945
+
+[node name="LeftHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+position = Vector2(0, -400)
+MaximumRotationalDegSpeed = 14.323945
+GizmosColor = Color(1, 0, 0, 1)
+MaximumRotationalDegSpeed = 14.323945
 
 [node name="FixedFormation" type="Node" parent="."]
 process_mode = 4

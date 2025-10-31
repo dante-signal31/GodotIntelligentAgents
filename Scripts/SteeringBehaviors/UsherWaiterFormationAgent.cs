@@ -1,0 +1,110 @@
+using System.Collections.Generic;
+using Godot;
+using GodotGameAIbyExample.Scripts.Groups;
+using GodotGameAIbyExample.Scripts.Extensions;
+
+namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
+
+[Tool]
+public partial class UsherWaiterFormationAgent: UsherFormationAgent
+{
+    [ExportCategory("USHER WAITER CONFIGURATION:")]
+    [Export] public int MaximumLaggingBehindDistance { get; set; } = 500;
+    
+    private IFormation _formation;
+    private ITargeter _targeter;
+    
+    private float _originalMaximumSpeed;
+    // Our formation origin is not actually centered at the average position, so we
+    // must compensate for that difference.
+    private float _originalAveragePositionDistance;
+    
+    private Vector2 FormationAveragePosition
+    {
+        get
+        {
+            Vector2 averagePosition = Vector2.Zero;
+            if (_formation == null || _formation.Members.Count == 0) 
+                return averagePosition;
+            foreach (Node2D member in _formation.Members)
+            {
+                averagePosition += member.GlobalPosition;
+            }
+            return averagePosition / _formation.Members.Count;
+        }
+    }
+    
+    private float LaggingBehindDistance => GlobalPosition.DistanceTo(
+        FormationAveragePosition) - _originalAveragePositionDistance;
+
+    private bool GoingAwayFromAveragePosition =>
+        ToLocal(_targeter.Target.GlobalPosition).Dot(
+            ToLocal(FormationAveragePosition)) < 0;
+    
+    public override void _Ready()
+    {
+        base._Ready();
+        _formation = this.FindChild<IFormation>();
+        _targeter = this.FindChild<ITargeter>();
+        _originalAveragePositionDistance = 
+            GlobalPosition.DistanceTo(FormationAveragePosition);
+        _originalMaximumSpeed = MaximumSpeed;
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (Engine.IsEditorHint() || _formation == null) return;
+        
+        if (GoingAwayFromAveragePosition)
+        {
+            // If we are leaving behind the average position, then that means some members
+            // are lagging behind. We want to slow down so that members have time to catch
+            // the formation.
+            MaximumSpeed = _originalMaximumSpeed * 
+                           (1 - Mathf.Min(
+                                LaggingBehindDistance, 
+                                MaximumLaggingBehindDistance) / MaximumLaggingBehindDistance);
+        }
+        else
+        {
+            // We are going towards the average position, so we can go at full speed
+            // because we are meeting with those members that are lagging behind.
+            MaximumSpeed = _originalMaximumSpeed;       
+        }
+
+        base._PhysicsProcess(delta);
+    }
+
+    public override string[] _GetConfigurationWarnings()
+    {
+        List<string> warnings = new();
+        
+        List<Node2D> nodeChildren = this.FindChildren<Node2D>();
+        IFormation formation = null;
+        foreach (var node in nodeChildren)
+        {
+            formation = node as IFormation;
+            if (formation != null) break;
+        }
+        if (formation == null)
+        {
+            warnings.Add("This node needs a child node of type " +
+                         "IFormation to work properly.");  
+        }
+        
+        ITargeter targeter = null;
+        foreach (var node in nodeChildren)
+        {
+            targeter = node as ITargeter;
+            if (targeter != null) break;
+        }
+
+        if (targeter == null)
+        {
+            warnings.Add("This node needs a child node of type " +
+                         "ITargeter to work properly."); 
+        }
+        
+        return warnings.ToArray();
+    }
+}

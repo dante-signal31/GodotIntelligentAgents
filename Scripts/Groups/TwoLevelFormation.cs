@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
@@ -9,8 +10,11 @@ namespace GodotGameAIbyExample.Scripts.Groups;
 /// This class takes an IFormation object and generates ushers at every of its positions
 /// and one agent following every usher.
 /// </summary>
-public partial class TwoLevelFormation : Node2D
+[Tool]
+public partial class TwoLevelFormation : Node2D, IFormation
 {
+    public event EventHandler<FormationDimensionsChangedArgs> FormationDimensionsChanged;
+    
     [ExportCategory("CONFIGURATION:")] 
     /// <summary>
     /// <p>Scene for the agent to instance.</p>
@@ -21,21 +25,37 @@ public partial class TwoLevelFormation : Node2D
     public List<Node2D> Members { get; } = new();
 
     public List<Vector2> MemberPositions => _usherFormation.MemberPositions;
-    
+
+    public float MemberRadius => _usherFormation.MemberRadius;
+
     private IFormation _usherFormation;
     private bool _membersUpdated;
-    
+
     public override void _Ready()
     {
-        if (Engine.IsEditorHint()) return;
-        
         // Find the formation node.
         List<Node2D> nodeChildren = this.FindChildren<Node2D>();
+        if (nodeChildren == null) return;
         foreach (var node in nodeChildren)
         {
             _usherFormation = node as IFormation;
-            if (_usherFormation != null) break;
+            if (_usherFormation != null)
+            {
+                _usherFormation.FormationDimensionsChanged += 
+                    OnFormationDimensionsChanged;
+                break;
+            } 
         }
+        
+        // Generate formation members.
+        GenerateMembers();
+    }
+
+    private void OnFormationDimensionsChanged(
+        object sender,
+        FormationDimensionsChangedArgs e)
+    {
+        FormationDimensionsChanged?.Invoke(this, e);
     }
     
     private void GenerateMembers()
@@ -48,7 +68,8 @@ public partial class TwoLevelFormation : Node2D
         {
             Node2D member = _memberScene.Instantiate<Node2D>();
             member.GlobalPosition = ToGlobal(positionOffset);
-            GetTree().Root.AddChild(member);
+            // Agent members should be out of this node hierarchy to move freely.
+            GetTree().Root.CallDeferred(Node.MethodName.AddChild, member);
             Members.Add(member);
         }
     }
@@ -64,11 +85,10 @@ public partial class TwoLevelFormation : Node2D
 
     public override void _Process(double delta)
     {
+        if (Engine.IsEditorHint()) return;
+        
         if (!_membersUpdated)
         {
-            // GenerateMembers can be at Ready() but AssignUshersToAgents cannot. So I
-            // think it is clearer to have them next to each other.
-            GenerateMembers();
             // AssignUshersToAgents cannot be at Ready() because _usherFormation is
             // creating ushers at Ready() and we need to wait for them to be created. 
             AssignUshersToAgents();
