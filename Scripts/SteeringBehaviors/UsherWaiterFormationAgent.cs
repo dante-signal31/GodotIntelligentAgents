@@ -5,13 +5,19 @@ using GodotGameAIbyExample.Scripts.Extensions;
 
 namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
+/// <summary>
+/// <p>This agent is the invisible leader of a formation. It decides where to move the
+/// formation and its members follow him.</p>
+/// <p>This agent is different from the UsherFormationAgent in that it slows down when
+/// the members are lagging behind the ushers.</p>
+/// </summary>
 [Tool]
 public partial class UsherWaiterFormationAgent: UsherFormationAgent
 {
     [ExportCategory("USHER WAITER CONFIGURATION:")]
     /// <summary>
-    /// Maximum distance in pixels that the usher can lag behind the formation members
-    /// average position.
+    /// Maximum distance in pixels that the members average position can lag behind
+    /// ushers formation.
     /// </summary>
     [Export] public int MaximumLaggingBehindDistance { get; set; } = 500;
     
@@ -19,7 +25,7 @@ public partial class UsherWaiterFormationAgent: UsherFormationAgent
     private ITargeter _targeter;
     
     private float _originalMaximumSpeed;
-    // Our formation origin is not actually centered at the average position, so we
+    // Our formation origin is not centered at the average position, so we
     // must compensate for that difference.
     private float _originalAveragePositionDistance;
     

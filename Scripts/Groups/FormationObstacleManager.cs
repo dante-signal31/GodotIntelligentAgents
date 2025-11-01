@@ -8,9 +8,10 @@ using GodotGameAIbyExample.Scripts.Tools;
 namespace GodotGameAIbyExample.Scripts.Groups;
 
 /// <summary>
-/// The FormationObstacleManager class handles formation movement in the presence of large obstacles,
-/// addressing issues where formation agents become stuck attempting to follow ushers trapped within obstacles.
-/// It employs logic to redirect agents to the main formation target or ushers, circumventing obstacles
+/// The FormationObstacleManager class handles formation movement in the presence of
+/// large obstacles, addressing issues where formation agents become stuck attempting
+/// to follow ushers trapped within obstacles. It employs logic to redirect agents to
+/// the main formation target or ushers, circumventing obstacles
 /// and enabling smoother and more realistic navigation.
 /// </summary>
 public partial class FormationObstacleManager : Node2D
@@ -134,8 +135,14 @@ public partial class FormationObstacleManager : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
+        // We are using a shapecast to check for obstacles, and that is a heavy load. So,
+        // we'd better not do it every frame. 
         if (_waitingForDetectionCooldownTimeout) return;
         
+        // To avoid members trying to follow ushers while they are inside obstacles.
+        // Those members are redirected to the main formation target. As soon as their 
+        // respective ushers are outside the obstacle, they are redirected to ushers
+        // again.
         HashSet<int> positionsInsideObstacles = GetFormationPositionsInsideObstacles();
         
         HashSet<int> positionsJustEnteredObstacles = 
