@@ -120,7 +120,7 @@ MaximumRotationalDegSpeed = 14.323945
 [node name="UsherWaiterTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_8csmf")]
 process_mode = 4
 visible = false
-position = Vector2(2044, 3395)
+position = Vector2(1271, 2386)
 RealisticTurns = true
 DeviationToleranceBeforeTurn = 0.02
 ShowGizmos = true

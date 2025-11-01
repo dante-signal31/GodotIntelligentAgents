@@ -123,6 +123,8 @@ visible = false
 Target = NodePath("../../../Target")
 
 [node name="SmoothedWallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
+process_mode = 4
+visible = false
 position = Vector2(398, 559)
 AutoSmoothSamples = 0
 
