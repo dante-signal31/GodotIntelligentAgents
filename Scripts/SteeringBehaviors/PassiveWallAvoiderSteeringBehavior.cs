@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Timers;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.Sensors;
@@ -29,6 +30,9 @@ public partial class PassiveWallAvoiderSteeringBehavior:
         public int DetectionSensorIndex;
     }
     
+    [ExportCategory("CONFIGURATION:")]
+    [Export] private float _coolDownTime = 0.5f;
+    
     [ExportCategory("DEBUG:")]
     private bool _showGizmos;
     /// <summary>
@@ -56,11 +60,20 @@ public partial class PassiveWallAvoiderSteeringBehavior:
     private Vector2 _avoidVector;
     private MovingAgent _currentAgent;
     private SteeringOutput _currentSteering;
+    private Timer _calculationCooldownTimer;
+    private Vector2 _currentAvoidVector;
+    private bool _calculationCooldownActive;
     
     public override void _EnterTree()
     {
         // Find out who our father is.
         _currentAgent = this.FindAncestor<MovingAgent>();
+        SetCalculationCooldownTimer();
+    }
+
+    public override void _ExitTree()
+    {
+        StopCalculationCooldownTimer();
     }
 
     public override void _Ready()
@@ -93,6 +106,31 @@ public partial class PassiveWallAvoiderSteeringBehavior:
         _obstacleDetected = false;
     }
 
+    private void SetCalculationCooldownTimer()
+    {
+        _calculationCooldownTimer = new Timer(_coolDownTime * 1000);
+        _calculationCooldownTimer.AutoReset = false;
+        _calculationCooldownTimer.Elapsed += OnCalculationCooldownTimerTimeout;
+    }
+
+    private void OnCalculationCooldownTimerTimeout(object sender, ElapsedEventArgs e)
+    {
+        _calculationCooldownActive = false;
+    }
+
+    private void StartCalculationCooldownTimer()
+    {
+        _calculationCooldownTimer.Stop();
+        _calculationCooldownTimer.Start();
+        _calculationCooldownActive = true;
+    }
+
+    private void StopCalculationCooldownTimer()
+    {
+        _calculationCooldownTimer.Stop();
+        _calculationCooldownActive = false;
+    }
+
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
         _avoidVector = GetAvoidVector(args);
@@ -106,6 +144,11 @@ public partial class PassiveWallAvoiderSteeringBehavior:
 
     private Vector2 GetAvoidVector(SteeringBehaviorArgs args)
     {
+        // A cooldown is needed when avoiding an obstacle perpendicular to the agent
+        // heading. Without a cooldown, lateral push will not have enough time to displace
+        // the agent to avoid the obstacle.
+        if (_calculationCooldownActive) return _currentAvoidVector;
+        
         Vector2 avoidVector = Vector2.Zero;
         
         if (_obstacleDetected)
@@ -188,6 +231,8 @@ public partial class PassiveWallAvoiderSteeringBehavior:
             avoidVector += pushVector;
         }
         
+        _currentAvoidVector = avoidVector;
+        StartCalculationCooldownTimer();
         return avoidVector;
     }
 

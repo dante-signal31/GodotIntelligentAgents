@@ -99,6 +99,7 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     public override void _ExitTree()
     {
         DestroyUsher();
+        StopTimer();
     }
 
     private void SetTimer()
@@ -117,7 +118,14 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     private void StartTimer()
     {
         _givingAdvantageToUsher = true;
+        _advantageTimer.Stop();
         _advantageTimer.Start();
+    }
+    
+    private void StopTimer()
+    {
+        _advantageTimer.Stop();
+        _givingAdvantageToUsher = false;
     }
     
     public override void _Ready()
