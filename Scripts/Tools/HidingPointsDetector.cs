@@ -77,7 +77,7 @@ public partial class HidingPointsDetector : Node2D
 
     private uint _notEmptyGroundLayers = 1;
     /// <summary>
-    /// A position with any of this physic layers objects is not empty ground to be a
+    /// A position with any of these physic layers objects is not empty ground to be a
     /// valid hiding point.
     /// </summary>
     [Export(PropertyHint.Layers2DPhysics)] public uint NotEmptyGroundLayers
@@ -97,7 +97,7 @@ public partial class HidingPointsDetector : Node2D
     
     /// <summary>
     /// Step length to advance the inner ray. The smaller value gives more accuracy to
-    /// calculate the exit point but it's slower to calculate. 
+    /// calculate the exit point, but it's slower to calculate. 
     /// </summary>
     [Export] public float InnerRayStep { get; set; } = 3f;
     

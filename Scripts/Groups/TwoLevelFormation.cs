@@ -33,6 +33,8 @@ public partial class TwoLevelFormation : Node2D, IFormation
 
     public override void _Ready()
     {
+        if (Engine.IsEditorHint() || !CanProcess() ) return;
+        
         // Find the formation node.
         List<Node2D> nodeChildren = this.FindChildren<Node2D>();
         if (nodeChildren == null) return;
@@ -48,6 +50,7 @@ public partial class TwoLevelFormation : Node2D, IFormation
         }
         
         // Generate formation members.
+        if (_usherFormation == null) return;
         GenerateMembers();
     }
 

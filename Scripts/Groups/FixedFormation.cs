@@ -47,7 +47,7 @@ public partial class FixedFormation : Node2D, IFormation
     
     public override void _Ready()
     {
-        if (Engine.IsEditorHint()) return;
+        if (Engine.IsEditorHint() || !CanProcess()) return;
         
         FormationPattern = this.FindChild<FormationPattern>();
         GenerateMembers();

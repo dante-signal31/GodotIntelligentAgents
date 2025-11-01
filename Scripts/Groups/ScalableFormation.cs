@@ -195,7 +195,7 @@ public partial class ScalableFormation: Node2D, IGizmos, IFormation
         GetHingeReferences();
         AlignWithAgentForward();
         UpdateFormation();
-        if (Engine.IsEditorHint()) return;
+        if (Engine.IsEditorHint() || !CanProcess()) return;
         GenerateMembers();
     }
 
