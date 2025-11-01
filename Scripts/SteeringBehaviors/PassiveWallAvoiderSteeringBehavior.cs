@@ -117,29 +117,29 @@ public partial class PassiveWallAvoiderSteeringBehavior:
                 closestHitData.DetectionSensorIndex, 
                 closestHitData.Distance);
 
-            // Buckland and Millington calculate avoidVector this way but I is 
-            // troublesome when center sensor detect a wall perpendicular to current
-            // heading, because then avoidVector will stop the agent not make it
+            // Buckland and Millington calculate avoidVector this way, but It is 
+            // troublesome when the center sensor detects a wall perpendicular to the
+            // current heading, because then avoidVector will stop the agent not make it
             // evade the wall. So, an additional lateral push must be added to the
-            // avoidVector. That lateral push should be at its maximum when detecting
-            // sensor is in the center and minimum when detecting sensor is in the
+            // avoidVector. That lateral push should be at its maximum when the detecting
+            // sensor is in the center and minimum when the detecting sensor is on the
             // right or left side.
             avoidVector = _closestHit.Normal * (args.MaximumSpeed * overShootFactor);
             
             // Calculate relative side of detecting sensor.
-            // 0 is right side, 1 is left side, 0.5 is center.
+            // 0 is the right side, 1 is the left side, 0.5 is center.
             float indexSide = Mathf.InverseLerp(
                 0, 
                 _whiskersSensor.SensorAmount-1,
                 closestHitData.DetectionSensorIndex);
             
-            // Positive means the detecting sensor is in the right side of the
-            // agent. Negative means the detecting sensor is in the left side of the
+            // Positive means the detecting sensor is on the right side of the
+            // agent. Negative means the detecting sensor is on the left side of the
             // agent.
             float distanceFromCenterFactor = 0.5f - indexSide;
             
-            // Minimum when near 1 (so, when detection is near left or right side) and
-            // maximum when near 0 (so, when detection is near center).
+            // Minimum when near 1 (so, when detection is near the left or right side)
+            // and maximum when near 0 (so, when detection is near the center).
             float pushFactor = Mathf.InverseLerp(
                 1, 
                 0, 
@@ -148,21 +148,21 @@ public partial class PassiveWallAvoiderSteeringBehavior:
             float pushDirection;
             if (Mathf.IsEqualApprox(indexSide, 0.5))
             {
-                // Random direction when sensor detects in the center
+                // Random direction when the sensor detects in the center
                 pushDirection = GD.Randf() < 0.5f ? 1 : -1;
             } 
             else if (indexSide > 0.5)
             {
-                // Push to the right when sensor detects obstacle in the left side.
+                // Push to the right when the sensor detects an obstacle on the left side.
                 pushDirection = 1;
             } 
             else
             {
-                // Push to the left when sensor detects obstacle in the right side.
+                // Push to the left when the sensor detects an obstacle on the right side.
                 pushDirection = -1;
             }
             
-            // Calculate right vector relative to our current Forward vector.
+            // Calculate the right vector relative to our current Forward vector.
             //
             // TIP --------------------------
             // I could have done:
