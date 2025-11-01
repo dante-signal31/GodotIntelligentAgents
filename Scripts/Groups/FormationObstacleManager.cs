@@ -77,6 +77,7 @@ public partial class FormationObstacleManager : Node2D
     private void StartDetectionCooldownTimer()
     {
         _waitingForDetectionCooldownTimeout = true;
+        _detectionCooldownTimer.Stop();
         _detectionCooldownTimer.Start();
     }
     
