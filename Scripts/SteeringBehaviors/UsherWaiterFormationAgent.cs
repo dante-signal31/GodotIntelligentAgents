@@ -21,7 +21,10 @@ public partial class UsherWaiterFormationAgent: UsherFormationAgent
     /// </summary>
     [Export] public int MaximumLaggingBehindDistance { get; set; } = 500;
     
-    private IFormation _formation;
+    // Formation members.
+    public IFormation Formation {get; private set;}
+    
+    // Steering behavior to move the formation.
     private ITargeter _targeter;
     
     private float _originalMaximumSpeed;
@@ -34,13 +37,13 @@ public partial class UsherWaiterFormationAgent: UsherFormationAgent
         get
         {
             Vector2 averagePosition = Vector2.Zero;
-            if (_formation == null || _formation.Members.Count == 0) 
+            if (Formation == null || Formation.Members.Count == 0) 
                 return averagePosition;
-            foreach (Node2D member in _formation.Members)
+            foreach (Node2D member in Formation.Members)
             {
                 averagePosition += member.GlobalPosition;
             }
-            return averagePosition / _formation.Members.Count;
+            return averagePosition / Formation.Members.Count;
         }
     }
 
@@ -60,7 +63,7 @@ public partial class UsherWaiterFormationAgent: UsherFormationAgent
     public override void _Ready()
     {
         base._Ready();
-        _formation = this.FindChild<IFormation>();
+        Formation = this.FindChild<IFormation>();
         _targeter = this.FindChild<ITargeter>();
         _originalAveragePositionDistance = 
             GlobalPosition.DistanceTo(FormationAveragePosition);
@@ -69,7 +72,7 @@ public partial class UsherWaiterFormationAgent: UsherFormationAgent
 
     public override void _PhysicsProcess(double delta)
     {
-        if (Engine.IsEditorHint() || _formation == null) return;
+        if (Engine.IsEditorHint() || Formation == null) return;
         
         if (GoingAwayFromAveragePosition)
         {

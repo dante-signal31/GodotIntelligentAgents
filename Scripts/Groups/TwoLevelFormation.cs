@@ -29,11 +29,12 @@ public partial class TwoLevelFormation : Node2D, IFormation
     public float MemberRadius => _usherFormation.MemberRadius;
 
     private IFormation _usherFormation;
+    private bool _membersGenerated;
     private bool _membersUpdated;
 
     public override void _Ready()
     {
-        if (Engine.IsEditorHint() || !CanProcess() ) return;
+        if (Engine.IsEditorHint()) return;
         
         // Find the formation node.
         List<Node2D> nodeChildren = this.FindChildren<Node2D>();
@@ -50,8 +51,13 @@ public partial class TwoLevelFormation : Node2D, IFormation
         }
         
         // Generate formation members.
-        if (_usherFormation == null) return;
+        if (_usherFormation == null || !CanProcess()) return;
         GenerateMembers();
+        // At automated tests it might happen that members are not generated because
+        // agents are disabled until their specific test enables them. But at that point,
+        // _Ready cannot be called again. So, in those cases, we need to generate members
+        // at _Process().
+        _membersGenerated = true;
     }
 
     private void OnFormationDimensionsChanged(
@@ -89,13 +95,18 @@ public partial class TwoLevelFormation : Node2D, IFormation
     public override void _Process(double delta)
     {
         if (Engine.IsEditorHint()) return;
+
+        if (!_membersGenerated)
+        {
+            GenerateMembers();
+            _membersGenerated = true;
+        }
         
         if (!_membersUpdated)
         {
             // AssignUshersToAgents cannot be at Ready() because _usherFormation is
             // creating ushers at Ready() and we need to wait for them to be created. 
             AssignUshersToAgents();
-            
             _membersUpdated = true;
         }
     }

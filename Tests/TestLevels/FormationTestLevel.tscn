@@ -151,15 +151,13 @@ GizmosColor = Color(1, 0, 0, 1)
 MaximumRotationalDegSpeed = 14.323945
 
 [node name="UsherWaiterObstacleManagedTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_8csmf")]
-position = Vector2(1303, 2508)
-RealisticTurns = true
+position = Vector2(2332, 3108)
 DeviationToleranceBeforeTurn = 0.02
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
 MaximumSpeed = 200.0
 
 [node name="FormationObstacleManager" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" node_paths=PackedStringArray("_iTargeterBehavior", "_iFormation", "_iFormationUshers") instance=ExtResource("15_rin61")]
-DetectionCooldown = 0.5
 _iTargeterBehavior = NodePath("../SeekSteeringBehavior")
 _iFormation = NodePath("../TwoLevelFormation")
 _iFormationUshers = NodePath("../TwoLevelFormation/UsherFormation")
