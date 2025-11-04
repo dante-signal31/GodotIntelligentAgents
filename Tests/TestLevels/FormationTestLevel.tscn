@@ -34,18 +34,31 @@ zoom = Vector2(0.25, 0.25)
 [node name="ScalableFormation" type="Node" parent="."]
 process_mode = 4
 
-[node name="UsherScalableFormationAgent" parent="ScalableFormation" instance=ExtResource("3_o46ag")]
+[node name="UsherScalableFormationAgent" parent="ScalableFormation" node_paths=PackedStringArray("_agentParent", "_rightHinge", "_leftHinge") instance=ExtResource("3_o46ag")]
 visible = false
 position = Vector2(4868, 2899)
 collision_layer = 17
 velocity = Vector2(198.977, -20.2051)
-RealisticTurns = true
-DeviationToleranceBeforeTurn = 0.01
-ShowGizmos = true
-GizmosColor = Color(1, 0, 0, 1)
 MaximumSpeed = 200.0
 StopSpeed = 3.0
 MaximumRotationalDegSpeed = 360.0
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 1.0
+_stopRotationRadThreshold = 0.017453292
+ShowGizmos = true
+GizmosColor = Color(1, 0, 0, 1)
+RealisticTurns = true
+DeviationToleranceBeforeTurn = 0.01
+_agentParent = NodePath("..")
+_rightHinge = NodePath("ScalableFormation/RightHinge")
+_rightHingeRelativePosition = Vector2(0, 0)
+_leftHinge = NodePath("ScalableFormation/LeftHinge")
+_leftHingeRelativePosition = Vector2(0, 0)
+_engagedHinge = null
+_hingeTarget = null
+_showGizmos = false
+_gizmosColor = Color(0, 0, 0, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ScalableFormation/UsherScalableFormationAgent" node_paths=PackedStringArray("_formationNode")]
 position = Vector2(-150, -50)
@@ -53,153 +66,304 @@ rotation = 1.5707964
 shape = SubResource("RectangleShape2D_o46ag")
 script = ExtResource("4_emhl0")
 _formationNode = NodePath("../ScalableFormation")
+_formationShape = SubResource("RectangleShape2D_o46ag")
+_isAlreadyInitialized = false
 
 [node name="SeekSteeringBehavior" parent="ScalableFormation/UsherScalableFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
 Target = NodePath("../../../Target")
 ArrivalDistance = 20.0
 ShowGizmos = true
+_showGizmos = false
+_gizmosColor = Color(0, 0, 0, 0)
 
-[node name="ScalableFormation" parent="ScalableFormation/UsherScalableFormationAgent" instance=ExtResource("5_emhl0")]
+[node name="ScalableFormation" parent="ScalableFormation/UsherScalableFormationAgent" node_paths=PackedStringArray("_parentAgent", "_rightHinge", "_leftHinge") instance=ExtResource("5_emhl0")]
 position = Vector2(0, -500)
 rotation = 1.5707964
-_memberScene = ExtResource("6_8csmf")
 Distribution = 2
 MemberRadius = 50.0
 FormationDimensions = Vector2(1000, 400)
 Density = Vector2(200, 200)
 Quantity = 10
+_memberScene = ExtResource("6_8csmf")
+_distributionType = 2
+_memberRadius = 50.0
+_formationDimensions = Vector2(1000, 400)
+_density = Vector2(200, 200)
+_quantity = 10
+_correctingQuantity = false
+_correctingDimensions = false
+_correctingDensity = false
+_originGizmoRadius = 10
+_gizmoTextOffset = Vector2(10, 10)
+_formationFormerDimensions = Vector2(300, 100)
+_parentAgent = NodePath("..")
+_rightHinge = NodePath("RightHinge")
+_leftHinge = NodePath("LeftHinge")
 
-[node name="RightHinge" parent="ScalableFormation/UsherScalableFormationAgent/ScalableFormation" instance=ExtResource("10_dhgyl")]
+[node name="RightHinge" parent="ScalableFormation/UsherScalableFormationAgent/ScalableFormation" node_paths=PackedStringArray("_faceSteeringBehavior") instance=ExtResource("10_dhgyl")]
 position = Vector2(850, 50)
 rotation = -1.5708
 MaximumRotationalDegSpeed = 14.323945
-MaximumRotationalDegSpeed = 14.323945
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
+_targetToLookAt = null
+_faceSteeringBehavior = NodePath("FaceSteeringBehavior")
 
-[node name="LeftHinge" parent="ScalableFormation/UsherScalableFormationAgent/ScalableFormation" instance=ExtResource("10_dhgyl")]
+[node name="LeftHinge" parent="ScalableFormation/UsherScalableFormationAgent/ScalableFormation" node_paths=PackedStringArray("_faceSteeringBehavior") instance=ExtResource("10_dhgyl")]
 position = Vector2(50, 50)
 rotation = -1.5708
 MaximumRotationalDegSpeed = 14.323945
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
 GizmosColor = Color(1, 1, 0, 1)
-MaximumRotationalDegSpeed = 14.323945
+_targetToLookAt = null
+_faceSteeringBehavior = NodePath("FaceSteeringBehavior")
 
 [node name="TwoLevelFormation" type="Node" parent="."]
 
-[node name="UsherTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("3_o46ag")]
+[node name="UsherTwoLevelFormationAgent" parent="TwoLevelFormation" node_paths=PackedStringArray("_agentParent", "_rightHinge", "_leftHinge") instance=ExtResource("3_o46ag")]
 process_mode = 4
 visible = false
 position = Vector2(1353, 847)
-RealisticTurns = true
-DeviationToleranceBeforeTurn = 0.02
+MaximumSpeed = 200.0
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
-MaximumSpeed = 200.0
+RealisticTurns = true
+DeviationToleranceBeforeTurn = 0.02
+_agentParent = NodePath("..")
+_rightHinge = NodePath("RightHinge")
+_rightHingeRelativePosition = Vector2(0, 0)
+_leftHinge = NodePath("LeftHinge")
+_leftHingeRelativePosition = Vector2(0, 0)
+_engagedHinge = null
+_hingeTarget = null
+_showGizmos = false
+_gizmosColor = Color(0, 0, 0, 0)
 
 [node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
 Target = NodePath("../../../Target")
+_showGizmos = false
+_gizmosColor = Color(0, 0, 0, 0)
 
 [node name="TwoLevelFormation" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" instance=ExtResource("9_emhl0")]
 _memberScene = ExtResource("10_b4w4m")
+_membersGenerated = false
+_membersUpdated = false
 
 [node name="FixedFormation" parent="TwoLevelFormation/UsherTwoLevelFormationAgent/TwoLevelFormation" instance=ExtResource("5_b4w4m")]
+FormationPattern = null
 _memberScene = ExtResource("2_dhgyl")
+_formationPattern = null
 
 [node name="FormationPattern" parent="TwoLevelFormation/UsherTwoLevelFormationAgent/TwoLevelFormation/FixedFormation" instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
+_originGizmoRadius = 10
+_positionGizmoRadius = 50
+_gizmoTextOffset = Vector2(10, 10)
+_previousPositionsSize = 0
+_recreatingPositionsNodes = false
+_previousPositions = Array[Vector2]([])
 
-[node name="RightHinge" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="RightHinge" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" node_paths=PackedStringArray("_faceSteeringBehavior") instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 400)
 MaximumRotationalDegSpeed = 14.323945
-MaximumRotationalDegSpeed = 14.323945
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
+_targetToLookAt = null
+_faceSteeringBehavior = NodePath("FaceSteeringBehavior")
 
-[node name="LeftHinge" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="LeftHinge" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" node_paths=PackedStringArray("_faceSteeringBehavior") instance=ExtResource("10_dhgyl")]
 position = Vector2(0, -400)
 MaximumRotationalDegSpeed = 14.323945
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
 GizmosColor = Color(1, 0, 0, 1)
-MaximumRotationalDegSpeed = 14.323945
+_targetToLookAt = null
+_faceSteeringBehavior = NodePath("FaceSteeringBehavior")
 
-[node name="UsherWaiterTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_8csmf")]
+[node name="UsherWaiterTwoLevelFormationAgent" parent="TwoLevelFormation" node_paths=PackedStringArray("_agentParent", "_rightHinge", "_leftHinge") instance=ExtResource("14_8csmf")]
 process_mode = 4
 visible = false
 position = Vector2(1271, 2386)
-RealisticTurns = true
-DeviationToleranceBeforeTurn = 0.02
+MaximumSpeed = 200.0
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
-MaximumSpeed = 200.0
+RealisticTurns = true
+DeviationToleranceBeforeTurn = 0.02
+_agentParent = NodePath("..")
+_rightHinge = NodePath("RightHinge")
+_rightHingeRelativePosition = Vector2(0, 0)
+_leftHinge = NodePath("LeftHinge")
+_leftHingeRelativePosition = Vector2(0, 0)
+_engagedHinge = null
+_hingeTarget = null
+_showGizmos = false
+_gizmosColor = Color(0, 0, 0, 0)
+_originalMaximumSpeed = 200.0
+_originalAveragePositionDistance = 2703.412
 
 [node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
 Target = NodePath("../../../Target")
+_showGizmos = false
+_gizmosColor = Color(0, 0, 0, 0)
 
 [node name="TwoLevelFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("9_emhl0")]
 _memberScene = ExtResource("10_b4w4m")
+_membersGenerated = false
+_membersUpdated = false
 
 [node name="UsherFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation" instance=ExtResource("5_b4w4m")]
+FormationPattern = null
 _memberScene = ExtResource("2_dhgyl")
+_formationPattern = null
 
 [node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation/UsherFormation" instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
+_originGizmoRadius = 10
+_positionGizmoRadius = 50
+_gizmoTextOffset = Vector2(10, 10)
+_previousPositionsSize = 0
+_recreatingPositionsNodes = false
+_previousPositions = Array[Vector2]([])
 
-[node name="RightHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="RightHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" node_paths=PackedStringArray("_faceSteeringBehavior") instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 400)
 MaximumRotationalDegSpeed = 14.323945
-MaximumRotationalDegSpeed = 14.323945
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
+_targetToLookAt = null
+_faceSteeringBehavior = NodePath("FaceSteeringBehavior")
 
-[node name="LeftHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="LeftHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" node_paths=PackedStringArray("_faceSteeringBehavior") instance=ExtResource("10_dhgyl")]
 position = Vector2(0, -400)
 MaximumRotationalDegSpeed = 14.323945
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
 GizmosColor = Color(1, 0, 0, 1)
-MaximumRotationalDegSpeed = 14.323945
+_targetToLookAt = null
+_faceSteeringBehavior = NodePath("FaceSteeringBehavior")
 
-[node name="UsherWaiterObstacleManagedTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_8csmf")]
+[node name="UsherWaiterObstacleManagedTwoLevelFormationAgent" parent="TwoLevelFormation" node_paths=PackedStringArray("_agentParent", "_rightHinge", "_leftHinge") instance=ExtResource("14_8csmf")]
 position = Vector2(2332, 3108)
-DeviationToleranceBeforeTurn = 0.02
+MaximumSpeed = 200.0
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
-MaximumSpeed = 200.0
+DeviationToleranceBeforeTurn = 0.02
+_agentParent = NodePath("..")
+_rightHinge = NodePath("RightHinge")
+_rightHingeRelativePosition = Vector2(0, 0)
+_leftHinge = NodePath("LeftHinge")
+_leftHingeRelativePosition = Vector2(0, 0)
+_engagedHinge = null
+_hingeTarget = null
+_showGizmos = false
+_gizmosColor = Color(0, 0, 0, 0)
+_originalMaximumSpeed = 200.0
+_originalAveragePositionDistance = 3885.6
 
 [node name="FormationObstacleManager" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" node_paths=PackedStringArray("_iTargeterBehavior", "_iFormation", "_iFormationUshers") instance=ExtResource("15_rin61")]
+ObstacleDetectionRadius = null
 _iTargeterBehavior = NodePath("../SeekSteeringBehavior")
 _iFormation = NodePath("../TwoLevelFormation")
 _iFormationUshers = NodePath("../TwoLevelFormation/UsherFormation")
 
 [node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
 Target = NodePath("../../../Target")
+_showGizmos = false
+_gizmosColor = Color(0, 0, 0, 0)
 
 [node name="TwoLevelFormation" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" instance=ExtResource("9_emhl0")]
 _memberScene = ExtResource("10_b4w4m")
+_membersGenerated = false
+_membersUpdated = false
 
 [node name="UsherFormation" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation" instance=ExtResource("5_b4w4m")]
+FormationPattern = null
 _memberScene = ExtResource("2_dhgyl")
+_formationPattern = null
 
 [node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation" instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
+_originGizmoRadius = 10
+_positionGizmoRadius = 50
+_gizmoTextOffset = Vector2(10, 10)
+_previousPositionsSize = 15
+_recreatingPositionsNodes = false
+_previousPositions = Array[Vector2]([Vector2(0, -400), Vector2(0, -200), Vector2(0, 0), Vector2(0, 200), Vector2(0, 400), Vector2(-200, -400), Vector2(-200, -200), Vector2(-200, 0), Vector2(-200, 200), Vector2(-200, 400), Vector2(-400, -400), Vector2(-400, -200), Vector2(-400, 0), Vector2(-400, 200), Vector2(-400, 400)])
 
-[node name="RightHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="RightHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" node_paths=PackedStringArray("_faceSteeringBehavior") instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 400)
 MaximumRotationalDegSpeed = 14.323945
-MaximumRotationalDegSpeed = 14.323945
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
+_targetToLookAt = null
+_faceSteeringBehavior = NodePath("FaceSteeringBehavior")
 
-[node name="LeftHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="LeftHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" node_paths=PackedStringArray("_faceSteeringBehavior") instance=ExtResource("10_dhgyl")]
 position = Vector2(0, -400)
 MaximumRotationalDegSpeed = 14.323945
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
 GizmosColor = Color(1, 0, 0, 1)
-MaximumRotationalDegSpeed = 14.323945
+_targetToLookAt = null
+_faceSteeringBehavior = NodePath("FaceSteeringBehavior")
 
 [node name="FixedFormation" type="Node" parent="."]
 process_mode = 4
 
-[node name="UsherFormationAgent" parent="FixedFormation" instance=ExtResource("3_o46ag")]
+[node name="UsherFormationAgent" parent="FixedFormation" node_paths=PackedStringArray("_agentParent", "_rightHinge", "_leftHinge") instance=ExtResource("3_o46ag")]
 visible = false
 position = Vector2(2310, 3105)
 collision_layer = 17
 velocity = Vector2(198.977, -20.2051)
-RealisticTurns = true
-DeviationToleranceBeforeTurn = 0.01
-ShowGizmos = true
-GizmosColor = Color(1, 0, 0, 1)
 MaximumSpeed = 200.0
 StopSpeed = 3.0
 MaximumRotationalDegSpeed = 360.0
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 1.0
+_stopRotationRadThreshold = 0.017453292
+ShowGizmos = true
+GizmosColor = Color(1, 0, 0, 1)
+RealisticTurns = true
+DeviationToleranceBeforeTurn = 0.01
+_agentParent = NodePath("..")
+_rightHinge = NodePath("RightHinge")
+_rightHingeRelativePosition = Vector2(0, 0)
+_leftHinge = NodePath("LeftHinge")
+_leftHingeRelativePosition = Vector2(0, 0)
+_engagedHinge = null
+_hingeTarget = null
+_showGizmos = false
+_gizmosColor = Color(0, 0, 0, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FixedFormation/UsherFormationAgent"]
 position = Vector2(-201.5, 0.5)
@@ -209,23 +373,43 @@ shape = SubResource("RectangleShape2D_o46ag")
 Target = NodePath("../../../Target")
 ArrivalDistance = 20.0
 ShowGizmos = true
+_showGizmos = false
+_gizmosColor = Color(0, 0, 0, 0)
 
 [node name="FixedFormation" parent="FixedFormation/UsherFormationAgent" instance=ExtResource("5_b4w4m")]
+FormationPattern = null
 _memberScene = ExtResource("6_8csmf")
+_formationPattern = null
 
 [node name="FormationPattern" parent="FixedFormation/UsherFormationAgent/FixedFormation" instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
+_originGizmoRadius = 10
+_positionGizmoRadius = 50
+_gizmoTextOffset = Vector2(10, 10)
+_previousPositionsSize = 0
+_recreatingPositionsNodes = false
+_previousPositions = Array[Vector2]([])
 
-[node name="RightHinge" parent="FixedFormation/UsherFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="RightHinge" parent="FixedFormation/UsherFormationAgent" node_paths=PackedStringArray("_faceSteeringBehavior") instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 401)
 MaximumRotationalDegSpeed = 14.288225
-MaximumRotationalDegSpeed = 14.288225
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
+_targetToLookAt = null
+_faceSteeringBehavior = NodePath("FaceSteeringBehavior")
 
-[node name="LeftHinge" parent="FixedFormation/UsherFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="LeftHinge" parent="FixedFormation/UsherFormationAgent" node_paths=PackedStringArray("_faceSteeringBehavior") instance=ExtResource("10_dhgyl")]
 position = Vector2(0, -401)
 MaximumRotationalDegSpeed = 14.288225
+_agentColor = Color(0, 1, 0, 1)
+_autoSmoothSamples = 10
+_maximumRotationSpeedRadNormalized = 3.0
+_stopRotationRadThreshold = 0.017453292
 GizmosColor = Color(1, 1, 0, 1)
-MaximumRotationalDegSpeed = 14.288225
+_targetToLookAt = null
+_faceSteeringBehavior = NodePath("FaceSteeringBehavior")
 
 [node name="Positions" type="Node" parent="."]
 
@@ -240,5 +424,8 @@ position = Vector2(3268, 1190)
 
 [node name="Position4" type="Marker2D" parent="Positions"]
 position = Vector2(2347, 1157)
+
+[node name="Position5" type="Marker2D" parent="Positions"]
+position = Vector2(6923, 2408)
 
 [editable path="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern"]
