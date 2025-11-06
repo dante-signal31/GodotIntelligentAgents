@@ -29,7 +29,11 @@ public partial class PassiveWallAvoiderSteeringBehavior:
         public RayCastHit Hit;
         public int DetectionSensorIndex;
     }
-    
+
+    /// <summary>
+    /// The cooldown time, in seconds, used to control the interval between activations
+    /// of the passive wall-avoidance steering behavior.
+    /// </summary>
     [ExportCategory("CONFIGURATION:")]
     [Export] private float _coolDownTime = 0.5f;
     

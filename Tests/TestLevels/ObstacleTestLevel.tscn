@@ -141,16 +141,16 @@ position = Vector2(481, 555)
 
 [node name="ActiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("6_3e5d2")]
 Target = NodePath("../../../Target")
-AvoidanceTimeout = 0.75
+AvoidanceTimeout = 0.25
 GizmosColor = Color(1, 0.501961, 0, 1)
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior" instance=ExtResource("10_km65h")]
 _coolDownTime = 1.75
+ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 1)
 
 [node name="WhiskersSensor" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior" instance=ExtResource("7_8prle")]
 SensorResolution = 2
-ShowGizmos = false
 
 [node name="SectorRange" type="Node2D" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor"]
 script = ExtResource("8_dgjwj")
