@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://4h3ubldn68qj"]
+[gd_scene load_steps=17 format=3 uid="uid://4h3ubldn68qj"]
 
 [ext_resource type="PackedScene" uid="uid://bqiois541s161" path="res://Levels/BigObstacleCourtyard.tscn" id="1_o46ag"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="2_dhgyl"]
@@ -15,7 +15,6 @@
 [ext_resource type="PackedScene" uid="uid://b8ettivyhu5tv" path="res://Scenes/SteeringBehaviors/UsherHingeAgent.tscn" id="10_dhgyl"]
 [ext_resource type="PackedScene" uid="uid://dibmh52j5pc6t" path="res://Scenes/SteeringBehaviors/UsherWaiterFormationAgent.tscn" id="14_8csmf"]
 [ext_resource type="PackedScene" uid="uid://p1fj4pljujk6" path="res://Scenes/Groups/FormationObstacleManager.tscn" id="15_rin61"]
-[ext_resource type="Script" uid="uid://b31cjkyfc6swq" path="res://Scripts/Groups/FormationPatternPosition.cs" id="16_hubku"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o46ag"]
 size = Vector2(900, 300)
@@ -152,8 +151,6 @@ GizmosColor = Color(1, 0, 0, 1)
 MaximumRotationalDegSpeed = 14.323945
 
 [node name="UsherWaiterObstacleManagedTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_8csmf")]
-process_mode = 4
-visible = false
 position = Vector2(2332, 3108)
 DeviationToleranceBeforeTurn = 0.02
 ShowGizmos = true
@@ -218,65 +215,6 @@ _memberScene = ExtResource("6_8csmf")
 
 [node name="FormationPattern" parent="FixedFormation/UsherFormationAgent/FixedFormation" instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
-
-[node name="FormationPosition0" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="0"]
-position = Vector2(0, -400)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition1" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="1"]
-position = Vector2(0, -200)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition2" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="2"]
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition3" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="3"]
-position = Vector2(0, 200)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition4" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="4"]
-position = Vector2(0, 400)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition5" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="5"]
-position = Vector2(-200, -400)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition6" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="6"]
-position = Vector2(-200, -200)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition7" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="7"]
-position = Vector2(-200, 0)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition8" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="8"]
-position = Vector2(-200, 200)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition9" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="9"]
-position = Vector2(-200, 400)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition10" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="10"]
-position = Vector2(-400, -400)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition11" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="11"]
-position = Vector2(-400, -200)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition12" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="12"]
-position = Vector2(-400, 0)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition13" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="13"]
-position = Vector2(-400, 200)
-script = ExtResource("16_hubku")
-
-[node name="FormationPosition14" parent="FixedFormation/UsherFormationAgent/FixedFormation/FormationPattern" index="14"]
-position = Vector2(-400, 400)
-script = ExtResource("16_hubku")
 
 [node name="RightHinge" parent="FixedFormation/UsherFormationAgent" instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 401)

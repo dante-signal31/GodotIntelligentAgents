@@ -99,7 +99,7 @@ public partial class ActiveWallAvoiderSteeringBehavior :
             _passiveWallAvoiderSteeringBehavior.GetSteering(args);
 
         _avoidVector = avoidingSteering.Linear;
-        if (_avoidVector == Vector2.Zero && _previousAvoidVector != Vector2.Zero)
+        if (_avoidVector != Vector2.Zero && _previousAvoidVector == Vector2.Zero)
             StartAvoidanceTimer();
         _previousAvoidVector = _avoidVector;
         

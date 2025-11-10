@@ -123,8 +123,6 @@ visible = false
 Target = NodePath("../../../Target")
 
 [node name="SmoothedWallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
-process_mode = 4
-visible = false
 position = Vector2(398, 559)
 AutoSmoothSamples = 0
 
@@ -141,11 +139,10 @@ position = Vector2(481, 555)
 
 [node name="ActiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("6_3e5d2")]
 Target = NodePath("../../../Target")
-AvoidanceTimeout = 0.25
 GizmosColor = Color(1, 0.501961, 0, 1)
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior" instance=ExtResource("10_km65h")]
-_coolDownTime = 1.75
+_minimumPushFactor = 0.501
 ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 1)
 
@@ -180,6 +177,7 @@ NotEmptyGroundLayers = 10
 Target = NodePath("../../../../Positions/Position2")
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/WeightBlendedHideWallAvoiderMovingAgent/WeightBlendedSteeringBehavior/ActiveWallAvoiderSteeringBehavior" instance=ExtResource("10_km65h")]
+_avoidDistance = 0.5
 ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 1)
 
@@ -234,6 +232,7 @@ GizmosColor = Color(0.0941176, 0, 0.478431, 1)
 Target = NodePath("../../../../../Positions/Position6")
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent/PriorityWeightBlendedSteeringBehavior/ReachDestinationWeightBlendedSteeringBehavior" instance=ExtResource("10_km65h")]
+_avoidDistance = 0.5
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
 
@@ -280,6 +279,7 @@ Range = 200.0
 metadata/_custom_type_script = "uid://x00e0v0m34tl"
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/PriorityDitheringBlendedHideWallAvoiderMovingAgent/PriorityDitheringBlendedSteeringBehavior" instance=ExtResource("10_km65h")]
+_avoidDistance = 0.5
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
 
