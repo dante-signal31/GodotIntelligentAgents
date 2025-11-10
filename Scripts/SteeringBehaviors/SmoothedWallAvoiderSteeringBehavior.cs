@@ -80,7 +80,7 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     private ITargeter _chaseToUsherTargeter;
     private ISteeringBehavior _chaseToUsherSteeringBehavior;
     private MovingAgent _currentAgent;
-    private MovingAgent _usherAgent;
+    private UsherWaiterAgent _usherAgent;
     private IGizmos _usherAgentSteeringBehaviorGizmos;
     private ITargeter _usherTargeter;
     private System.Timers.Timer _advantageTimer;
@@ -148,6 +148,7 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
                                _usherAdvantage * _currentAgent.Forward;
         
         // Configure usher.
+        _usherAgent.FollowingAgent = _currentAgent;
         _usherAgent.MaximumSpeed = _currentAgent.MaximumSpeed;
         _usherAgent.StopSpeed = _currentAgent.StopSpeed;
         _usherAgent.MaximumAcceleration = _currentAgent.MaximumAcceleration;
@@ -162,7 +163,7 @@ public partial class SmoothedWallAvoiderSteeringBehavior : Node2D, ISteeringBeha
     private void CreateUsher()
     {
         // Create usher to follow.
-        _usherAgent = (MovingAgent) _usherScene.Instantiate();
+        _usherAgent = (UsherWaiterAgent) _usherScene.Instantiate();
         GetTree().Root.CallDeferred(Window.MethodName.AddChild, _usherAgent);
         _usherAgentSteeringBehaviorGizmos = (IGizmos) _usherAgent.SteeringBehavior;
     }

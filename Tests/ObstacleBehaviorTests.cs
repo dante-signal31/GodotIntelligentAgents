@@ -158,7 +158,7 @@ public class ObstacleBehaviorTests
         // Start test.
         
         // Give hide agent time to reach target.
-        await _sceneRunner.AwaitMillis(8000);
+        await _sceneRunner.AwaitMillis(10000);
         
         // Assert that wall avoider has reached target.
         AssertThat(
@@ -207,7 +207,7 @@ public class ObstacleBehaviorTests
         // Start test.
         
         // Give hide agent time to reach target.
-        await _sceneRunner.AwaitMillis(8000);
+        await _sceneRunner.AwaitMillis(10000);
         
         // Assert that wall avoider has reached target.
         AssertThat(

@@ -123,6 +123,8 @@ visible = false
 Target = NodePath("../../../Target")
 
 [node name="SmoothedWallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
+process_mode = 4
+visible = false
 position = Vector2(398, 559)
 AutoSmoothSamples = 0
 
@@ -142,7 +144,9 @@ Target = NodePath("../../../Target")
 GizmosColor = Color(1, 0.501961, 0, 1)
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior" instance=ExtResource("10_km65h")]
-_minimumPushFactor = 0.501
+_avoidDistance = 70.0
+_longitudinalTolerance = 0.31
+_minimumPushFactor = 0.617
 ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 1)
 

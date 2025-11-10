@@ -14,7 +14,7 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 [Tool]
 public partial class UsherWaiterFormationAgent: UsherFormationAgent
 {
-    [ExportCategory("USHER WAITER CONFIGURATION:")]
+    [ExportCategory("USHER WAITER FORMATION CONFIGURATION:")]
     /// <summary>
     /// Maximum distance in pixels that the members average position can lag behind
     /// ushers formation.

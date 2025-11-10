@@ -170,8 +170,8 @@ public class TwoLevelFormationTests
         
         // Set up agents before the test.
         formationAgent.RealisticTurns = true;
-        formationAgent.MaximumLaggingBehindDistance = 500;
-        formationAgent.MaximumSpeed = 200;
+        formationAgent.MaximumLaggingBehindDistance = 200;
+        formationAgent.MaximumSpeed = 400;
         
         
         target.GlobalPosition = position2.GlobalPosition;

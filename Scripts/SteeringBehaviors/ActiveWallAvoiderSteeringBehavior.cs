@@ -95,10 +95,11 @@ public partial class ActiveWallAvoiderSteeringBehavior :
     {
         if (_waitingForAvoidanceTimeout) return _currentSteering;
 
+        _avoidVector = Vector2.Zero;
         SteeringOutput avoidingSteering =
             _passiveWallAvoiderSteeringBehavior.GetSteering(args);
-
         _avoidVector = avoidingSteering.Linear;
+        
         if (_avoidVector != Vector2.Zero && _previousAvoidVector == Vector2.Zero)
             StartAvoidanceTimer();
         _previousAvoidVector = _avoidVector;
@@ -126,6 +127,7 @@ public partial class ActiveWallAvoiderSteeringBehavior :
         
         DrawLine(Vector2.Zero, ToLocal(GlobalPosition + _avoidVector), GizmosColor);
         DrawLine(Vector2.Zero, ToLocal(GlobalPosition + _toTargetVector), Colors.Beige);
+        if (_currentSteering == null) return;
         DrawLine(Vector2.Zero, ToLocal(GlobalPosition + _currentSteering.Linear), Colors.Blue);
     }
     

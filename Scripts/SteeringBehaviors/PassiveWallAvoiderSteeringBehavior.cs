@@ -138,6 +138,11 @@ public partial class PassiveWallAvoiderSteeringBehavior:
             avoidVector = _closestHit.Normal * 
                           (args.MaximumSpeed * overShootFactor + _avoidDistance);
             Vector2 normalizedInverseAvoidVector = -avoidVector.Normalized();
+            if (args.CurrentVelocity == Vector2.Zero)
+            {
+                _currentAvoidVector = avoidVector;
+                return avoidVector;
+            }
             Vector2 normalizedHeading = args.CurrentVelocity.Normalized();
             float longitudinalDisplacement = 1 -
                                              normalizedInverseAvoidVector.Dot(
