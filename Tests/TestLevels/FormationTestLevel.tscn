@@ -32,7 +32,7 @@ Target = NodePath("../../Target")
 [node name="BigObstacleCourtyard" parent="." instance=ExtResource("1_o46ag")]
 
 [node name="Target" parent="." instance=ExtResource("2_dhgyl")]
-position = Vector2(2338, 1165)
+position = Vector2(6600, 1944)
 gizmo_extents = 169.4
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -159,13 +159,11 @@ GizmosColor = Color(1, 0, 0, 1)
 MaximumRotationalDegSpeed = 14.323945
 
 [node name="UsherWaiterObstacleManagedTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_8csmf")]
-process_mode = 4
-visible = false
-position = Vector2(2125, 3118)
+position = Vector2(3576, 1963)
 DeviationToleranceBeforeTurn = 0.02
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
-MaximumSpeed = 400.0
+MaximumSpeed = 200.0
 
 [node name="FormationObstacleManager" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" node_paths=PackedStringArray("_iTargeterBehavior", "_iFormation", "_iFormationUshers") instance=ExtResource("15_rin61")]
 _iTargeterBehavior = NodePath("../SeekSteeringBehavior")
