@@ -28,6 +28,13 @@ public partial class PassiveWallAvoiderSteeringBehavior:
         public int DetectionSensorIndex;
     }
 
+    private enum RelativeOrientation
+    {
+        Left, 
+        Front, 
+        Right
+    }
+
     /// <summary>
     /// The cooldown time, in seconds, used to control the interval between activations
     /// of the passive wall-avoidance steering behavior.
@@ -36,8 +43,8 @@ public partial class PassiveWallAvoiderSteeringBehavior:
     [Export] private float _avoidDistance = 60f;
     [Export(PropertyHint.Range, "0.0, 1.0, 0.01")] 
     private float _longitudinalTolerance = 0.1f;
-    [Export(PropertyHint.Range, "0.0, 1.0, 0.01")] 
-    private float _minimumPushFactor = 0.5f;
+    // [Export(PropertyHint.Range, "0.0, 1.0, 0.01")] 
+    // private float _minimumPushFactor = 0.5f;
     
     [ExportCategory("DEBUG:")]
     private bool _showGizmos;
@@ -104,16 +111,42 @@ public partial class PassiveWallAvoiderSteeringBehavior:
         _obstacleDetected = false;
     }
 
+    /// <summary>
+    /// Determines the relative orientation of a given position with respect to the
+    /// current agent.
+    /// </summary>
+    /// <param name="position">The position to evaluate relative to the agent.</param>
+    /// <returns>A value of <see cref="RelativeOrientation"/> indicating whether the
+    /// position is to the left, right, or in front of the agent.</returns>
+    private RelativeOrientation GetRelativeOrientation(Vector2 position)
+    {
+        Vector2 relativePosition = position - _currentAgent.GlobalPosition;
+        float crossProduct = _currentAgent.Forward.Cross(relativePosition.Normalized());
+        if (crossProduct > 0 && crossProduct < _longitudinalTolerance) 
+            return RelativeOrientation.Front;
+        if (crossProduct > 0) return RelativeOrientation.Right;
+        return RelativeOrientation.Left;
+    }
+
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
+        if (!_obstacleDetected)
+        {
+            _currentSteering = new SteeringOutput(linear: Vector2.Zero, angular: 0);
+            return _currentSteering;
+        }
+        
         _avoidVector = GetAvoidVector(args);
-        
+        Vector2 recommendedTargetToAvoidObstacle = _closestHit.Position + _avoidVector;
+        Vector2 vectorToGetRecommendedTarget =
+            (recommendedTargetToAvoidObstacle - _currentAgent.GlobalPosition).Normalized();
         _currentSteering = new SteeringOutput(
-            linear: _avoidVector,
+            linear: vectorToGetRecommendedTarget * args.MaximumSpeed,
             angular: 0);
-        
         return _currentSteering;
     }
+    
+    
 
     private Vector2 GetAvoidVector(SteeringBehaviorArgs args)
     {
@@ -132,87 +165,63 @@ public partial class PassiveWallAvoiderSteeringBehavior:
             // troublesome when the avoid-vector is longitudinal to the
             // current heading, because then avoidVector will stop the agent not make it
             // evade the wall. So, an additional lateral push must be added to the
-            // avoidVector. That lateral push should be at its maximum when the detecting
-            // sensor is in the center and minimum when the detecting sensor is on the
-            // right or left side.
+            // avoidVector. 
             avoidVector = _closestHit.Normal * 
                           (args.MaximumSpeed * overShootFactor + _avoidDistance);
+            
             Vector2 normalizedInverseAvoidVector = -avoidVector.Normalized();
-            // if (args.CurrentVelocity == Vector2.Zero)
-            // {
-            //     _currentAvoidVector = avoidVector;
-            //     return avoidVector;
-            // }
+            
             Vector2 normalizedHeading = args.CurrentVelocity == Vector2.Zero?
                 _currentAgent.Forward:
                 args.CurrentVelocity.Normalized();
             float longitudinalDisplacement = 1 -
                                              normalizedInverseAvoidVector.Dot(
                                                  normalizedHeading);
-
-            // If avoidVector and CurrentVelocity are too aligned, then we must add
+            
+            // If avoidVector and CurrentVelocity are too aligned (avoidVector is
+            // longitudinal to current heading), then we must add
             // a lateral push to avoid the obstacle.
+            // avoidVector and currentVelocity are too aligned in two edge cases:
+            // - When the agent approaches to a wall perpendicular to its heading.
+            // - When one of the lateral sensors touches the end of a wall that is ç
+            // perpendicular to agent heading.
             if (longitudinalDisplacement < _longitudinalTolerance)
             {
-                // Calculate relative side of detecting sensor.
-                // 0 is the right side, 1 is the left side, 0.5 is center.
-                float indexSide = Mathf.InverseLerp(
-                    0,
-                    _whiskersSensor.SensorAmount - 1,
-                    closestHitData.DetectionSensorIndex);
+                // Calculate the right vector relative to our current Forward vector.
+                //
+                // TIP --------------------------
+                // I could have done:
+                // Vector2 rightVector = _currentAgent.Forward.Rotated(Mathf.Pi / 2).Normalized();
+                // 
+                // But when you are rotating exactly 90 degrees is more performant just
+                // inverting the components.
+                // To rotate clockwise (In Godot):
+                // Vector2 rightVector = new Vector2(-_currentAgent.Forward.y, _currentAgent.Forward.x);
+                // To rotate counterclockwise:
+                // Vector2 rightVector = new Vector2(_currentAgent.Forward.y, -_currentAgent.Forward.x);
+                Vector2 rightVector = new Vector2(
+                    -_currentAgent.Forward.Y,
+                    _currentAgent.Forward.X);
 
-                // Positive means the detecting sensor is on the right side of the
-                // agent. Negative means the detecting sensor is on the left side of the
-                // agent.
-                float distanceFromCenterFactor = 0.5f - indexSide;
-
-                // Minimum when near 1 (so, when detection is near the left or right side)
-                // and maximum when near 0 (so, when detection is near the center).
-                float pushFactor = Mathf.Lerp(
-                    1,
-                    _minimumPushFactor,
-                    Mathf.Abs(distanceFromCenterFactor));
-                
-                Vector2 pushVector;
-                if (Mathf.IsEqualApprox(indexSide, 0.5))
+                // The detected obstacle is on the left or right side of the agent?
+                switch (GetRelativeOrientation(_closestHit.Position))
                 {
-                    // Random direction when the sensor detects in the center
-                    float pushDirection = GD.Randf() < 0.5f ? 1 : -1;
-                    
-                    // Calculate the right vector relative to our current Forward vector.
-                    //
-                    // TIP --------------------------
-                    // I could have done:
-                    // Vector2 rightVector = _currentAgent.Forward.Rotated(Mathf.Pi / 2).Normalized();
-                    // 
-                    // But when you are rotating exactly 90 degrees is more performant just
-                    // inverting the components.
-                    // To rotate clockwise (In Godot):
-                    // Vector2 rightVector = new Vector2(-_currentAgent.Forward.y, _currentAgent.Forward.x);
-                    // To rotate counterclockwise:
-                    // Vector2 rightVector = new Vector2(_currentAgent.Forward.y, -_currentAgent.Forward.x);
-                    Vector2 rightVector = new Vector2(
-                        -_currentAgent.Forward.Y,
-                        _currentAgent.Forward.X);
-                    
-                    pushVector = rightVector * 
-                                 pushDirection * 
-                                 pushFactor * 
-                                 args.MaximumSpeed;
+                    // If obstacle on the left, evade to the right.
+                    case RelativeOrientation.Left: 
+                        avoidVector = avoidVector.Length() * rightVector;
+                        break;
+                    // If obstacle on the right, evade to the left.
+                    case RelativeOrientation.Right: 
+                        avoidVector = avoidVector.Length() * rightVector * -1;
+                        break;
+                    // If obstacle on the front, evade to the right or left.
+                    case RelativeOrientation.Front: 
+                        float pushDirection = GD.Randf() < 0.5f ? 1 : -1;
+                        avoidVector = avoidVector.Length() * rightVector * pushDirection;
+                        break;
                 }
-                else 
-                {
-                    // If the wall is laterally detected, then push forward to get
-                    // the wall end.
-                    pushVector = _currentAgent.Forward * 
-                                 pushFactor * 
-                                 args.MaximumSpeed;
-                }
-                // Add the push vector to the avoidVector.
-                avoidVector += pushVector;
             }
         }
-        _currentAvoidVector = avoidVector;
         return avoidVector;
     }
 

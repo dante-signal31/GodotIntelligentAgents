@@ -93,7 +93,7 @@ metadata/_custom_type_script = "uid://c1hmtt20hub48"
 [node name="ObstacleCourtyard" parent="." instance=ExtResource("1_n20uv")]
 
 [node name="Target" parent="." instance=ExtResource("4_sfy1w")]
-position = Vector2(1634, 556)
+position = Vector2(1624, 505)
 
 [node name="Agents" type="Node" parent="."]
 
@@ -129,6 +129,7 @@ position = Vector2(398, 559)
 AutoSmoothSamples = 0
 
 [node name="SmoothedWallAvoiderSteeringBehavior" parent="Agents/SmoothedWallAvoiderMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("11_ib2b3")]
+process_mode = 4
 Target = NodePath("../../../Target")
 _usherScene = ExtResource("7_1atku")
 _usherAdvantage = 200.0
@@ -137,26 +138,26 @@ _secondsToWaitAfterReachingUsher = 2.0
 [node name="WallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
 process_mode = 4
 visible = false
-position = Vector2(481, 555)
+position = Vector2(450, 539)
 
 [node name="ActiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent" node_paths=PackedStringArray("Target") instance=ExtResource("6_3e5d2")]
 Target = NodePath("../../../Target")
+AvoidanceTimeout = 0.5
 GizmosColor = Color(1, 0.501961, 0, 1)
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior" instance=ExtResource("10_km65h")]
-_avoidDistance = 70.0
-_longitudinalTolerance = 0.31
-_minimumPushFactor = 0.617
+_avoidDistance = 100.0
+_longitudinalTolerance = 0.093
 ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 1)
 
 [node name="WhiskersSensor" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior" instance=ExtResource("7_8prle")]
-SensorResolution = 2
+SensorResolution = 3
 
 [node name="SectorRange" type="Node2D" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor"]
 script = ExtResource("8_dgjwj")
-SemiConeDegrees = 90.0
-Range = 300.0
+SemiConeDegrees = 50.509
+Range = 175.0
 metadata/_custom_type_script = "uid://d1u7qmneniqg0"
 
 [node name="WeightBlendedHideWallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
@@ -179,19 +180,21 @@ NotEmptyGroundLayers = 10
 
 [node name="ActiveWallAvoiderSteeringBehavior" parent="Agents/WeightBlendedHideWallAvoiderMovingAgent/WeightBlendedSteeringBehavior" node_paths=PackedStringArray("Target") instance=ExtResource("6_3e5d2")]
 Target = NodePath("../../../../Positions/Position2")
+AvoidanceTimeout = 0.5
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/WeightBlendedHideWallAvoiderMovingAgent/WeightBlendedSteeringBehavior/ActiveWallAvoiderSteeringBehavior" instance=ExtResource("10_km65h")]
-_avoidDistance = 0.5
+_avoidDistance = 100.0
+_longitudinalTolerance = 0.09
 ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 1)
 
 [node name="WhiskersSensor" parent="Agents/WeightBlendedHideWallAvoiderMovingAgent/WeightBlendedSteeringBehavior/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior" instance=ExtResource("7_8prle")]
-SensorResolution = 1
+SensorResolution = 3
 
 [node name="SectorRange" type="Node2D" parent="Agents/WeightBlendedHideWallAvoiderMovingAgent/WeightBlendedSteeringBehavior/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor"]
 script = ExtResource("8_dgjwj")
-SemiConeDegrees = 90.0
-Range = 200.0
+SemiConeDegrees = 50.74
+Range = 175.0
 metadata/_custom_type_script = "uid://d1u7qmneniqg0"
 
 [node name="PriorityWeightBlendedHideWallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
@@ -236,17 +239,18 @@ GizmosColor = Color(0.0941176, 0, 0.478431, 1)
 Target = NodePath("../../../../../Positions/Position6")
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent/PriorityWeightBlendedSteeringBehavior/ReachDestinationWeightBlendedSteeringBehavior" instance=ExtResource("10_km65h")]
-_avoidDistance = 0.5
+_avoidDistance = 100.0
+_longitudinalTolerance = 0.095
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
 
 [node name="WhiskersSensor" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent/PriorityWeightBlendedSteeringBehavior/ReachDestinationWeightBlendedSteeringBehavior/PassiveWallAvoiderSteeringBehavior" instance=ExtResource("7_8prle")]
-SensorResolution = 2
+SensorResolution = 3
 
 [node name="SectorRange" type="Node2D" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent/PriorityWeightBlendedSteeringBehavior/ReachDestinationWeightBlendedSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor"]
 script = ExtResource("8_dgjwj")
-SemiConeDegrees = 90.0
-Range = 200.0
+SemiConeDegrees = 50.969
+Range = 175.0
 metadata/_custom_type_script = "uid://d1u7qmneniqg0"
 
 [node name="PriorityDitheringBlendedHideWallAvoiderMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
@@ -283,17 +287,18 @@ Range = 200.0
 metadata/_custom_type_script = "uid://x00e0v0m34tl"
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/PriorityDitheringBlendedHideWallAvoiderMovingAgent/PriorityDitheringBlendedSteeringBehavior" instance=ExtResource("10_km65h")]
-_avoidDistance = 0.5
+_avoidDistance = 100.0
+_longitudinalTolerance = 0.095
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
 
 [node name="WhiskersSensor" parent="Agents/PriorityDitheringBlendedHideWallAvoiderMovingAgent/PriorityDitheringBlendedSteeringBehavior/PassiveWallAvoiderSteeringBehavior" instance=ExtResource("7_8prle")]
-SensorResolution = 2
+SensorResolution = 3
 
 [node name="SectorRange" type="Node2D" parent="Agents/PriorityDitheringBlendedHideWallAvoiderMovingAgent/PriorityDitheringBlendedSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor"]
 script = ExtResource("8_dgjwj")
-SemiConeDegrees = 90.0
-Range = 200.0
+SemiConeDegrees = 50.969
+Range = 175.0
 metadata/_custom_type_script = "uid://d1u7qmneniqg0"
 
 [node name="ObstacleMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
