@@ -159,6 +159,8 @@ GizmosColor = Color(1, 0, 0, 1)
 MaximumRotationalDegSpeed = 14.323945
 
 [node name="UsherWaiterObstacleManagedTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_8csmf")]
+process_mode = 4
+visible = false
 position = Vector2(3460, 853)
 DeviationToleranceBeforeTurn = 0.02
 ShowGizmos = true

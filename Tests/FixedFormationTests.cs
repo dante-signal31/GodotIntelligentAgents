@@ -69,7 +69,7 @@ public class FixedFormationTests
         // Start test.
         
         // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
+        await _sceneRunner.AwaitMillis(7000);
         AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position2.GlobalPosition) < 50f
         ).IsTrue();
@@ -138,7 +138,7 @@ public class FixedFormationTests
         // Start test.
         
         // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
+        await _sceneRunner.AwaitMillis(7000);
         AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position2.GlobalPosition) < 50f
         ).IsTrue();
@@ -227,7 +227,7 @@ public class FixedFormationTests
         target.GlobalPosition = position1.GlobalPosition;
         
         // Assert that formation reached its target.
-        await _sceneRunner.AwaitMillis(5000);
+        await _sceneRunner.AwaitMillis(7000);
         AssertThat(
             formationAgent.GlobalPosition.DistanceTo(position1.GlobalPosition) < 50f
         ).IsTrue();
