@@ -122,7 +122,7 @@ public partial class PassiveWallAvoiderSteeringBehavior:
     {
         Vector2 relativePosition = position - _currentAgent.GlobalPosition;
         float crossProduct = _currentAgent.Forward.Cross(relativePosition.Normalized());
-        if (crossProduct > 0 && crossProduct < _longitudinalTolerance) 
+        if (Mathf.Abs(crossProduct) < _longitudinalTolerance) 
             return RelativeOrientation.Front;
         if (crossProduct > 0) return RelativeOrientation.Right;
         return RelativeOrientation.Left;
