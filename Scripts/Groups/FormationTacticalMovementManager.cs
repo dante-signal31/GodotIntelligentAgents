@@ -185,21 +185,18 @@ public partial class FormationTacticalMovementManager: Node2D, IGizmos
                     MaximumDistanceFromUshers)
                 .ToArray();
 
-            // Find the nearest hiding point to the current target.
+            // Find the nearest hiding point to the current usher's position.
             Vector2 nearestHidingPoint = Vector2.Zero;
-            if (nearbyHidingPoints.Length > 0 && CurrentTarget != null)
+            if (nearbyHidingPoints.Length > 0)
             {
                 nearestHidingPoint = nearbyHidingPoints
                     .OrderBy(hidingPoint => 
-                        hidingPoint.DistanceTo(CurrentTarget.GlobalPosition))
+                        hidingPoint.DistanceTo(usherGlobalPosition))
                     .First();
             }
             
-            // Assign the hiding point if any and if it is below the maximum distance
-            // threshold.
-            if (nearestHidingPoint != Vector2.Zero &&
-                usherGlobalPosition.DistanceTo(nearestHidingPoint) <=
-                MaximumDistanceFromUshers)
+            // Assign the hiding point if any.
+            if (nearestHidingPoint != Vector2.Zero)
             {
                 RedirectAgentToHidingPoint(agentIndex, nearestHidingPoint);
                 agentsWithSuitableHidingPoints.Add(agentIndex);
