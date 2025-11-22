@@ -39,9 +39,9 @@ public partial class FormationTacticalMovementManager: Node2D, IGizmos
     private IFormation _formationMembers;
     private IFormation _formationUshers;
     // Make sure to configure the HidingPointsDetector node with a SeparationFromObstacles
-    // value higher than the AvoidDistance of the PassiveWallAvoiderSteeringBehavior from
-    // the agents in the formation. Otherwise, agents sensor will touch covers when
-    // approaching hiding points, which will trigger an avoidance movement.
+    // value higher than the range of the WhiskerSensors of the agents in the formation.
+    // Otherwise, agents sensor will touch covers when approaching hiding points, which
+    // will trigger an avoidance movement.
     private HidingPointsDetector _hidingPointsDetector;
     private System.Timers.Timer _detectionCooldownTimer;
     private bool _waitingForDetectionCooldownTimeout;
