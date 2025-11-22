@@ -21,7 +21,7 @@ public interface IFormation
     /// List of formation members nodes.
     /// </summary>
     public List<Node2D> Members { get; }
-    
+
     /// <summary>
     /// List of formation members local positions.
     /// <remarks> At game runtime, this field is redundant with Members one, because

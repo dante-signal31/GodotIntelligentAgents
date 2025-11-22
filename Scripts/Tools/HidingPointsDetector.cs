@@ -1,8 +1,5 @@
-using System;
 using Godot;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Xml.Schema;
 using Godot.Collections;
 using GodotGameAIbyExample.Scripts.Extensions;
 

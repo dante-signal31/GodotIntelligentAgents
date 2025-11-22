@@ -26,12 +26,12 @@ public partial class FormationObstacleManager : Node2D
     /// Layer where our obstacles are.
     /// </summary>
     [Export(PropertyHint.Layers2DPhysics)] public uint ObstaclesLayers { get; set; } = 1;
-
+    
     /// <summary>
     /// Time to let pass between checks for obstacles.
     /// </summary>
     [Export] public float DetectionCooldown { get; set; } = 0.5f;
-
+    
     [ExportCategory("WIRING:")] 
     [Export] private Node2D _iTargeterBehavior;
     [Export] private Node2D _iFormation;
