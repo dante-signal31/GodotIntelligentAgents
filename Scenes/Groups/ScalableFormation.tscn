@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://2ntv3njjewht"]
+
+[ext_resource type="Script" uid="uid://bv7f4r56vtxdp" path="res://Scripts/Groups/ScalableFormation.cs" id="1_5hwt8"]
+
+[node name="ScalableFormation" type="Node2D"]
+position = Vector2(0, -150)
+script = ExtResource("1_5hwt8")
+MinimumDistanceBetweenAgents = Vector2(100, 100)
+FormationDimensions = Vector2(300, 100)
+Density = Vector2(150, inf)
+Quantity = 3
+ShowGizmos = true
+GizmosColor = Color(0, 1, 0, 1)

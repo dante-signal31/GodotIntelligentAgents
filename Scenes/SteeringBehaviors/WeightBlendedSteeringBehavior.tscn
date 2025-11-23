@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7vxaxy25ao56"]
+
+[ext_resource type="Script" uid="uid://bd2uyiy6y147g" path="res://Scripts/SteeringBehaviors/WeightBlendedSteeringBehavior.cs" id="1_fhive"]
+
+[node name="WeightBlendedSteeringBehavior" type="Node2D"]
+script = ExtResource("1_fhive")
+ShowGizmos = true
+GizmosColor = Color(0, 1, 0, 1)

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://ctpd66e545h3v"]
+
+[ext_resource type="Script" uid="uid://bb43145hj6ikn" path="res://Scripts/SteeringBehaviors/ActiveWallAvoiderSteeringBehavior.cs" id="1_ecgs0"]
+[ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="2_4nt8r"]
+
+[node name="ActiveWallAvoiderSteeringBehavior" type="Node2D"]
+script = ExtResource("1_ecgs0")
+AvoidanceTimeout = 1.0
+
+[node name="SeekSteeringBehavior" parent="." instance=ExtResource("2_4nt8r")]
+ArrivalDistance = 3.0

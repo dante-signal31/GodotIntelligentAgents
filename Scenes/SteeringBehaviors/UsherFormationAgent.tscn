@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://ob6715i2iini"]
+
+[ext_resource type="Script" uid="uid://dkt1slyd3ink1" path="res://Scripts/SteeringBehaviors/UsherFormationAgent.cs" id="1_ij2mx"]
+[ext_resource type="Texture2D" uid="uid://bc62gvf0jt0gr" path="res://Sprites/Circle.png" id="2_wclu1"]
+
+[node name="UsherFormationAgent" type="CharacterBody2D" node_paths=PackedStringArray("_bodySprite")]
+collision_layer = 16
+collision_mask = 11
+motion_mode = 1
+script = ExtResource("1_ij2mx")
+_bodySprite = NodePath("Sprite2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(0, 1, 0, 1)
+texture = ExtResource("2_wclu1")

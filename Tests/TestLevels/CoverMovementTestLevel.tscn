@@ -1,0 +1,92 @@
+[gd_scene load_steps=13 format=3 uid="uid://dmy4r6raekbhf"]
+
+[ext_resource type="PackedScene" uid="uid://drq0xfneg0o1y" path="res://Scenes/Groups/SmoothedWallAvoiderMember.tscn" id="1_2lpnm"]
+[ext_resource type="PackedScene" uid="uid://b06efvdbmwab5" path="res://Levels/CoverCourtyard.tscn" id="1_f8huc"]
+[ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="3_gy3gv"]
+[ext_resource type="PackedScene" uid="uid://dow36pxrn048q" path="res://Scenes/Groups/FormationTacticalMovementManager.tscn" id="5_f8huc"]
+[ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="6_oa0dw"]
+[ext_resource type="PackedScene" uid="uid://bjl27ameio1m3" path="res://Scenes/Tools/HidingPointsDetector.tscn" id="6_w67l4"]
+[ext_resource type="PackedScene" uid="uid://b8ettivyhu5tv" path="res://Scenes/SteeringBehaviors/UsherHingeAgent.tscn" id="9_6dcs3"]
+[ext_resource type="PackedScene" uid="uid://cf3nraba3xedm" path="res://Scenes/Groups/TwoLevelFormation.tscn" id="10_8wb1n"]
+[ext_resource type="Resource" uid="uid://bvhkrjmgntclx" path="res://Resources/FormationPattern_InvertedArrow.tres" id="10_f8huc"]
+[ext_resource type="PackedScene" uid="uid://o1aayb5a0b4r" path="res://Scenes/Groups/FixedFormation.tscn" id="11_xruyq"]
+[ext_resource type="PackedScene" uid="uid://cqbcg2qri2h4j" path="res://Scenes/Groups/FormationPattern.tscn" id="12_gjanu"]
+[ext_resource type="PackedScene" uid="uid://dibmh52j5pc6t" path="res://Scenes/SteeringBehaviors/UsherWaiterFormationAgent.tscn" id="14_e7b7k"]
+
+[node name="FormationTestLevel" type="Node2D"]
+
+[node name="CoverCourtyard" parent="." instance=ExtResource("1_f8huc")]
+
+[node name="SmoothedWallAvoiderMember" parent="." instance=ExtResource("1_2lpnm")]
+process_mode = 4
+visible = false
+position = Vector2(3385, 2034)
+
+[node name="SmoothedWallAvoiderSteeringBehavior" parent="SmoothedWallAvoiderMember" index="2" node_paths=PackedStringArray("Target")]
+Target = NodePath("../../Target")
+
+[node name="Target" parent="." instance=ExtResource("3_gy3gv")]
+position = Vector2(6860, 2071)
+gizmo_extents = 169.4
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(3851, 2157)
+zoom = Vector2(0.25, 0.25)
+
+[node name="TwoLevelFormation" type="Node" parent="."]
+
+[node name="UsherWaiterObstacleManagedTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_e7b7k")]
+position = Vector2(562, 2246)
+MaximumLaggingBehindDistance = 1000
+DeviationToleranceBeforeTurn = 0.02
+ShowGizmos = true
+GizmosColor = Color(0, 1, 0, 1)
+MaximumSpeed = 200.0
+
+[node name="FormationTacticalMovementManager" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" node_paths=PackedStringArray("_iTargeterBehavior", "_iFormationMembers", "_iFormationUshers", "_formationPattern") instance=ExtResource("5_f8huc")]
+MaximumDistanceFromUshers = 900.0
+_iTargeterBehavior = NodePath("../SeekSteeringBehavior")
+_iFormationMembers = NodePath("../TwoLevelFormation")
+_iFormationUshers = NodePath("../TwoLevelFormation/UsherFormation")
+_formationPattern = NodePath("../TwoLevelFormation/UsherFormation/FormationPattern")
+ShowGizmos = true
+GizmosColor = Color(1, 0, 0, 1)
+
+[node name="HidingPointsDetector" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/FormationTacticalMovementManager" node_paths=PackedStringArray("Threat") instance=ExtResource("6_w67l4")]
+Threat = NodePath("../../../../Target")
+ObstaclesLayers = 10
+SeparationFromObstacles = 180.0
+NotEmptyGroundLayers = 10
+
+[node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("6_oa0dw")]
+Target = NodePath("../../../Target")
+
+[node name="TwoLevelFormation" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" instance=ExtResource("10_8wb1n")]
+_memberScene = ExtResource("1_2lpnm")
+
+[node name="UsherFormation" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation" instance=ExtResource("11_xruyq")]
+_memberScene = ExtResource("3_gy3gv")
+
+[node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation" instance=ExtResource("12_gjanu")]
+Positions = ExtResource("10_f8huc")
+
+[node name="RightHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" instance=ExtResource("9_6dcs3")]
+position = Vector2(0, 400)
+MaximumRotationalDegSpeed = 14.323945
+MaximumRotationalDegSpeed = 14.323945
+
+[node name="LeftHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" instance=ExtResource("9_6dcs3")]
+position = Vector2(0, -400)
+MaximumRotationalDegSpeed = 14.323945
+GizmosColor = Color(1, 0, 0, 1)
+MaximumRotationalDegSpeed = 14.323945
+
+[node name="Positions" type="Node" parent="."]
+
+[node name="Position1" type="Marker2D" parent="Positions"]
+position = Vector2(6848, 2082)
+
+[node name="Position2" type="Marker2D" parent="Positions"]
+position = Vector2(748, 2042)
+
+[editable path="SmoothedWallAvoiderMember"]

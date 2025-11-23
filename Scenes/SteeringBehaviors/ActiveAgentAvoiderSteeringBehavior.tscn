@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://de8c34qfrri5a"]
+
+[ext_resource type="Script" uid="uid://c8l2s2i88gx2o" path="res://Scripts/SteeringBehaviors/ActiveAgentAvoiderSteeringBehavior.cs" id="1_0mcol"]
+
+[node name="ActiveAgentAvoiderSteeringBehavior" type="Node2D"]
+script = ExtResource("1_0mcol")

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://canr4k1kbhog0"]
+
+[ext_resource type="Script" uid="uid://dh8kc884rxry6" path="res://Scripts/SteeringBehaviors/PassiveWallAvoiderSteeringBehavior.cs" id="1_dyoeo"]
+
+[node name="PassiveWallAvoiderSteeringBehavior" type="Node2D"]
+script = ExtResource("1_dyoeo")
+_coolDownTime = 1.0

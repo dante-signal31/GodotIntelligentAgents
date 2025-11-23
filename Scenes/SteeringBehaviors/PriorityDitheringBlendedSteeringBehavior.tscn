@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpqb1t62g0yfy"]
+
+[ext_resource type="Script" uid="uid://b6uwa63kpqd2n" path="res://Scripts/SteeringBehaviors/PriorityDitheringBlendedSteeringBehavior.cs" id="1_jqflv"]
+
+[node name="PriorityDitheringBlendedSteeringBehavior" type="Node2D"]
+script = ExtResource("1_jqflv")
+ShowGizmos = true
+GizmosColor = Color(0, 1, 0, 1)

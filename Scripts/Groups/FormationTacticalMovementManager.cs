@@ -9,7 +9,7 @@ namespace GodotGameAIbyExample.Scripts.Groups;
 
 /// <summary>
 /// Manages the tactical movement of agents within a formation. Makes formation members
-/// take cover when a hiding point becomes available in their path.
+/// take cover when a hiding point becomes available near their path.
 /// </summary>
 [Tool]
 public partial class FormationTacticalMovementManager: Node2D, IGizmos

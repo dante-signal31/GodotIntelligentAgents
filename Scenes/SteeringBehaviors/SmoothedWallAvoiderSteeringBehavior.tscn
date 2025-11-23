@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://y2ql7dj60glk"]
+
+[ext_resource type="Script" uid="uid://c1cckpscgj37s" path="res://Scripts/SteeringBehaviors/SmoothedWallAvoiderSteeringBehavior.cs" id="1_hl4eo"]
+[ext_resource type="PackedScene" uid="uid://fghynj1qk4qb" path="res://Scenes/SteeringBehaviors/ArriveSteeringBehaviorNLA.tscn" id="2_31acb"]
+
+[node name="SmoothedWallAvoiderSteeringBehavior" type="Node2D"]
+script = ExtResource("1_hl4eo")
+_usherAdvantage = 75.0
+_secondsToWaitAfterReachingUsher = 1.0
+ShowGizmos = true
+
+[node name="ArriveSteeringBehaviorNLA" parent="." instance=ExtResource("2_31acb")]

@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://drq0xfneg0o1y"]
+
+[ext_resource type="PackedScene" uid="uid://mxho5r22apy1" path="res://Scenes/SteeringBehaviors/MovingAgent.tscn" id="1_ja16f"]
+[ext_resource type="PackedScene" uid="uid://y2ql7dj60glk" path="res://Scenes/SteeringBehaviors/SmoothedWallAvoiderSteeringBehavior.tscn" id="2_n5j2h"]
+[ext_resource type="PackedScene" uid="uid://bdtksryxm4q8b" path="res://Scenes/SteeringBehaviors/UsherWallAvoiderAgent.tscn" id="3_rjayi"]
+
+[node name="SmoothedWallAvoiderMember" instance=ExtResource("1_ja16f")]
+collision_mask = 10
+MaximumSpeed = 400.0
+
+[node name="SmoothedWallAvoiderSteeringBehavior" parent="." index="2" instance=ExtResource("2_n5j2h")]
+_usherScene = ExtResource("3_rjayi")
+_usherAdvantage = 200.0
+ShowGizmos = false

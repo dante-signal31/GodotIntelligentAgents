@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cf3nraba3xedm"]
+
+[ext_resource type="Script" uid="uid://dqiucppn28ifa" path="res://Scripts/Groups/TwoLevelFormation.cs" id="1_0kso3"]
+
+[node name="TwoLevelFormation" type="Node2D"]
+script = ExtResource("1_0kso3")

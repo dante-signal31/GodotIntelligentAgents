@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://b8ettivyhu5tv"]
+
+[ext_resource type="Script" uid="uid://c5wpdm75xy5tp" path="res://Scripts/SteeringBehaviors/UsherHingeAgent.cs" id="1_jpepg"]
+[ext_resource type="Texture2D" uid="uid://bc62gvf0jt0gr" path="res://Sprites/Circle.png" id="2_jpepg"]
+[ext_resource type="PackedScene" uid="uid://ddva0787eguoq" path="res://Scenes/SteeringBehaviors/FaceSteeringBehavior.tscn" id="3_63jkc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jpepg"]
+
+[node name="UsherHingeAgent" type="CharacterBody2D"]
+collision_layer = 16
+collision_mask = 0
+motion_mode = 1
+script = ExtResource("1_jpepg")
+ShowGizmos = true
+GizmosColor = Color(0, 1, 0, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(0, 1, 0, 1)
+texture = ExtResource("2_jpepg")
+
+[node name="FaceSteeringBehavior" parent="." instance=ExtResource("3_63jkc")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_jpepg")

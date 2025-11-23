@@ -1,0 +1,64 @@
+[gd_scene load_steps=12 format=3 uid="uid://cnsqa74xmk8qa"]
+
+[ext_resource type="PackedScene" uid="uid://mxho5r22apy1" path="res://Scenes/SteeringBehaviors/MovingAgent.tscn" id="1_j8np4"]
+[ext_resource type="PackedScene" uid="uid://c7vxaxy25ao56" path="res://Scenes/SteeringBehaviors/WeightBlendedSteeringBehavior.tscn" id="2_7iali"]
+[ext_resource type="Script" uid="uid://3o8nj5mnvovw" path="res://Scripts/SteeringBehaviors/WeightedBehavior.cs" id="3_w0m13"]
+[ext_resource type="PackedScene" uid="uid://b2pbfdtn606b1" path="res://Scenes/SteeringBehaviors/SeparationSteeringBehavior.tscn" id="4_qtq5f"]
+[ext_resource type="PackedScene" uid="uid://b2cchvb3gddvj" path="res://Scenes/SteeringBehaviors/CohesionSteeringBehavior.tscn" id="5_58060"]
+[ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="6_5erb6"]
+[ext_resource type="PackedScene" uid="uid://b6jxcemj6xp7r" path="res://Scenes/SteeringBehaviors/WanderSteeringBehavior.tscn" id="7_1khcx"]
+
+[sub_resource type="Resource" id="Resource_7iali"]
+resource_local_to_scene = true
+script = ExtResource("3_w0m13")
+SteeringBehavior = NodePath("SeparationSteeringBehavior")
+Weight = 20.0
+DebugColor = Color(0, 0, 1, 1)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Resource" id="Resource_w0m13"]
+resource_local_to_scene = true
+script = ExtResource("3_w0m13")
+SteeringBehavior = NodePath("CohesionSteeringBehavior")
+Weight = 5.0
+DebugColor = Color(1, 0, 0, 1)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Resource" id="Resource_qtq5f"]
+resource_local_to_scene = true
+script = ExtResource("3_w0m13")
+SteeringBehavior = NodePath("SeekSteeringBehavior")
+Weight = 2.0
+DebugColor = Color(1, 0.439216, 0, 1)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Resource" id="Resource_58060"]
+resource_local_to_scene = true
+script = ExtResource("3_w0m13")
+SteeringBehavior = NodePath("WanderSteeringBehavior")
+Weight = 1.0
+DebugColor = Color(0, 1, 0, 1)
+metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[node name="WeightBlendedBoidMovingAgent" instance=ExtResource("1_j8np4")]
+
+[node name="WeightBlendedSteeringBehavior" parent="." index="2" instance=ExtResource("2_7iali")]
+WeightedBehaviors = Array[ExtResource("3_w0m13")]([SubResource("Resource_7iali"), SubResource("Resource_w0m13"), SubResource("Resource_qtq5f"), SubResource("Resource_58060")])
+
+[node name="SeekSteeringBehavior" parent="WeightBlendedSteeringBehavior" index="0" instance=ExtResource("6_5erb6")]
+ShowGizmos = true
+
+[node name="WanderSteeringBehavior" parent="WeightBlendedSteeringBehavior" index="1" instance=ExtResource("7_1khcx")]
+ArrivalDistance = 10.0
+WanderRadius = 300.0
+WanderDistance = 600.0
+WanderJitter = 400.0
+WanderRecalculationTime = 1.0
+
+[node name="SeparationSteeringBehavior" parent="WeightBlendedSteeringBehavior" index="2" instance=ExtResource("4_qtq5f")]
+VelocityMarkerVisible = true
+MarkerColor = Color(0, 0.984314, 0, 1)
+
+[node name="CohesionSteeringBehavior" parent="WeightBlendedSteeringBehavior" index="3" instance=ExtResource("5_58060")]
+PositionGizmoVisible = true
+PositionGizmoColor = Color(1, 0, 0, 1)

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://p1fj4pljujk6"]
+
+[ext_resource type="Script" uid="uid://chmaansqvd7ga" path="res://Scripts/Groups/FormationObstacleManager.cs" id="1_ycu1l"]
+
+[node name="FormationObstacleManager" type="Node2D"]
+script = ExtResource("1_ycu1l")
+ObstaclesLayers = 8
+DetectionCooldown = 1.0

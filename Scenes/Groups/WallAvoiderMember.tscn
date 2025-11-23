@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://bvdgev76ibiy3"]
+
+[ext_resource type="PackedScene" uid="uid://mxho5r22apy1" path="res://Scenes/SteeringBehaviors/MovingAgent.tscn" id="1_wu8so"]
+[ext_resource type="PackedScene" uid="uid://ctpd66e545h3v" path="res://Scenes/SteeringBehaviors/WallAvoiderSteeringBehavior.tscn" id="2_1fquf"]
+[ext_resource type="PackedScene" uid="uid://canr4k1kbhog0" path="res://Scenes/SteeringBehaviors/PassiveWallAvoiderSteeringBehavior.tscn" id="3_muixr"]
+[ext_resource type="PackedScene" uid="uid://kphwl01n3lyj" path="res://Scenes/Sensors/WhiskersSensor.tscn" id="4_1djey"]
+[ext_resource type="Script" uid="uid://d1u7qmneniqg0" path="res://addons/InteractiveRanges/SectorRange/SectorRange.cs" id="5_x6jxa"]
+
+[node name="WallAvoiderMember" instance=ExtResource("1_wu8so")]
+collision_mask = 10
+MaximumSpeed = 200.0
+
+[node name="ActiveWallAvoiderSteeringBehavior" parent="." index="2" instance=ExtResource("2_1fquf")]
+GizmosColor = Color(1, 0.501961, 0, 1)
+
+[node name="PassiveWallAvoiderSteeringBehavior" parent="ActiveWallAvoiderSteeringBehavior" index="1" instance=ExtResource("3_muixr")]
+ShowGizmos = true
+GizmosColor = Color(1, 0, 0, 1)
+
+[node name="WhiskersSensor" parent="ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior" index="0" instance=ExtResource("4_1djey")]
+SensorResolution = 2
+
+[node name="SectorRange" type="Node2D" parent="ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor" index="0"]
+script = ExtResource("5_x6jxa")
+SemiConeDegrees = 90.0
+Range = 300.0
+metadata/_custom_type_script = "uid://d1u7qmneniqg0"

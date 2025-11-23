@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dg5jntlmhib8s"]
+
+[ext_resource type="Script" uid="uid://dwfu6wo554jie" path="res://Scripts/SteeringBehaviors/PassiveAgentAvoiderSteeringBehavior.cs" id="1_q1ala"]
+
+[node name="PassiveAgentAvoiderSteeringBehavior" type="Node2D"]
+script = ExtResource("1_q1ala")
+ShowGizmos = true
+GizmosColor = Color(1, 0, 0, 1)

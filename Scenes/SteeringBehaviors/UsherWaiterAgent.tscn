@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://d5ex3ftg2bsd"]
+
+[ext_resource type="PackedScene" uid="uid://dwhjud2sqtjqh" path="res://Scenes/SteeringBehaviors/UsherAgent.tscn" id="1_vswxt"]
+[ext_resource type="Script" uid="uid://cmu8ovhs6kaqc" path="res://Scripts/SteeringBehaviors/UsherWaiterAgent.cs" id="2_ptcaa"]
+
+[node name="UsherWaiterAgent" instance=ExtResource("1_vswxt")]
+script = ExtResource("2_ptcaa")
+MaximumLaggingBehindDistance = 500
