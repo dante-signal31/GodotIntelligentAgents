@@ -2,8 +2,11 @@ using Godot;
 
 namespace GodotGameAIbyExample.Scripts.Groups;
 
+/// <summary>
+/// This is an editor tool to place member visually. It is not instanced at runtime.
+/// </summary>
 [Tool]
-public partial class FormationPatternPosition : Node2D
+public partial class GroupMemberPosition : Node2D
 {
     [Signal] public delegate void PositionChangedEventHandler(
         int index, 

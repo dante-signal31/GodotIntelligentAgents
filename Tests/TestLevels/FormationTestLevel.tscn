@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://4h3ubldn68qj"]
+[gd_scene load_steps=18 format=3 uid="uid://4h3ubldn68qj"]
 
 [ext_resource type="PackedScene" uid="uid://bqiois541s161" path="res://Levels/BigObstacleCourtyard.tscn" id="1_o46ag"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="2_dhgyl"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://b8ettivyhu5tv" path="res://Scenes/SteeringBehaviors/UsherHingeAgent.tscn" id="10_dhgyl"]
 [ext_resource type="PackedScene" uid="uid://dibmh52j5pc6t" path="res://Scenes/SteeringBehaviors/UsherWaiterFormationAgent.tscn" id="14_8csmf"]
 [ext_resource type="PackedScene" uid="uid://p1fj4pljujk6" path="res://Scenes/Groups/FormationObstacleManager.tscn" id="15_rin61"]
+[ext_resource type="Script" uid="uid://b31cjkyfc6swq" path="res://Scripts/Groups/GroupMemberPosition.cs" id="16_hubku"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o46ag"]
 size = Vector2(900, 300)
@@ -183,6 +184,65 @@ _memberScene = ExtResource("2_dhgyl")
 
 [node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation" instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
+
+[node name="GroupPosition0" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(0, -400)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition1" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(0, -200)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition2" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition3" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(0, 200)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition4" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(0, 400)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition5" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(-200, -400)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition6" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(-200, -200)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition7" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(-200, 0)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition8" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(-200, 200)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition9" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(-200, 400)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition10" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(-400, -400)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition11" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(-400, -200)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition12" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(-400, 0)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition13" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(-400, 200)
+script = ExtResource("16_hubku")
+
+[node name="GroupPosition14" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
+position = Vector2(-400, 400)
+script = ExtResource("16_hubku")
 
 [node name="RightHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 400)

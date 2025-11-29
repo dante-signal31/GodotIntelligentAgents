@@ -29,7 +29,7 @@ public partial class FormationTacticalMovementManager: Node2D, IGizmos
     [Export] private Node2D _iTargeterBehavior;
     [Export] private Node2D _iFormationMembers;
     [Export] private Node2D _iFormationUshers;
-    [Export] private FormationPattern _formationPattern;
+    [Export] private GroupPattern _groupPattern;
     
     [ExportCategory("DEBUG:")]
     [Export] public bool ShowGizmos { get; set; }
@@ -257,10 +257,10 @@ public partial class FormationTacticalMovementManager: Node2D, IGizmos
     
     public override void _Draw()
     {
-        if (_formationPattern == null) return;
+        if (_groupPattern == null) return;
         
         // Draw range to find hiding positions for every 
-        foreach (Vector2 usherLocalPosition in _formationPattern.Positions.Offsets)
+        foreach (Vector2 usherLocalPosition in _groupPattern.Positions.Offsets)
         {
             DrawCircle(
                 usherLocalPosition,

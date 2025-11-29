@@ -7,13 +7,13 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 namespace GodotGameAIbyExample.Scripts.Groups;
 
 /// <summary>
-/// The class is used to define and manage defines the positions of the formation members
-/// in relation with formation origin. 
+/// The class is used to define and manage defines the positions of the group members
+/// in relation with group origin. 
 /// </summary>
 [Tool]
-public partial class FormationPattern : Node2D, IGizmos
+public partial class GroupPattern : Node2D, IGizmos
 {
-    [ExportCategory("CONFIGURATION:")]
+    [ExportCategory("GROUP PATTERN CONFIGURATION:")]
     [Export] public OffsetList Positions { get; set; }
 
     [ExportCategory("DEBUG:")] 
@@ -22,16 +22,20 @@ public partial class FormationPattern : Node2D, IGizmos
     [Export] public Color GizmosColor { get; set; } = Colors.GreenYellow;
     
     private int _originGizmoRadius = 10;
-    private int _positionGizmoRadius = 50;
-    private Vector2 _gizmoTextOffset = new(10, 10);
+    protected int PositionGizmoRadius = 50;
+    protected Vector2 GizmoTextOffset = new(10, 10);
     private int _previousPositionsSize;
     private bool _recreatingPositionsNodes;
     private Array<Vector2> _previousPositions = new();
-    private List<FormationPatternPosition> _positionNodes = new();
-
+    
+    /// <summary>
+    /// List of position nodes associated with this group.
+    /// </summary>
+    private readonly List<GroupMemberPosition> _positionNodes = new();
+    
     public override void _Ready()
     {
-        // Start on a blank canvas, or new position nodes will be created with those
+        // Start on a blank canvas. New position nodes will be created with those
         // stored inside the scene when this was closed.
         RemoveOldPositionsNodes();
     }
@@ -86,7 +90,7 @@ public partial class FormationPattern : Node2D, IGizmos
     }
 
     /// <summary>
-    /// User should not create or remove FormationPatternPositions nodes manually. So,
+    /// User should not create or remove GroupMemberPositions nodes manually. So,
     /// this method validates the hierarchy of position nodes associated with the
     /// formation pattern. If the number of position nodes does not match the number of
     /// offsets, the related nodes are recreated to ensure consistency.
@@ -95,8 +99,8 @@ public partial class FormationPattern : Node2D, IGizmos
     {
         if (Positions == null || !Engine.IsEditorHint()) return;
         
-        List<FormationPatternPosition> currentNodePositions = 
-            this.FindChildren<FormationPatternPosition>();
+        List<GroupMemberPosition> currentNodePositions = 
+            this.FindChildren<GroupMemberPosition>();
         if ((currentNodePositions == null ||
             currentNodePositions.Count != Positions.Offsets.Count) && 
             !_recreatingPositionsNodes)
@@ -116,32 +120,33 @@ public partial class FormationPattern : Node2D, IGizmos
         _previousPositions.Clear();
         for (int i=0; i < Positions.Offsets.Count; i++)
         {
-            FormationPatternPosition formationPosition = new();
-            formationPosition.Init(i);
-            formationPosition.Name = $"FormationPosition{i}";
-            AddChild(formationPosition);
-            formationPosition.SetOwner(this);
-            formationPosition.Position = Positions.Offsets[i];
-            formationPosition.Connect(
-                FormationPatternPosition.SignalName.PositionChanged, 
+            GroupMemberPosition memberPosition = new();
+            memberPosition.Init(i);
+            memberPosition.Name = $"GroupPosition{i}";
+            AddChild(memberPosition);
+            memberPosition.SetOwner(GetTree().EditedSceneRoot);
+            memberPosition.Position = Positions.Offsets[i];
+            SetEditableInstance(memberPosition, true);
+            memberPosition.Connect(
+                GroupMemberPosition.SignalName.PositionChanged, 
                 new Callable(this, MethodName._OnPositionChanged));
-            _positionNodes.Add(formationPosition);
+            _positionNodes.Add(memberPosition);
             _previousPositions.Add(Positions.Offsets[i]);
         }
     }
 
     /// <summary>
-    /// Removes all existing position nodes of type `FormationPatternPosition` that are
-    /// children of the current `FormationPattern` node.
+    /// Removes all existing position nodes of type `GroupMemberPosition` that are
+    /// children of the current `GroupPattern` node.
     /// </summary>
     private void RemoveOldPositionsNodes()
     {
-        List<FormationPatternPosition> oldPositions = 
-            this.FindChildren<FormationPatternPosition>();
+        List<GroupMemberPosition> oldPositions = 
+            this.FindChildren<GroupMemberPosition>();
         
         if (oldPositions == null) return;
         
-        foreach (FormationPatternPosition oldPosition in oldPositions)
+        foreach (GroupMemberPosition oldPosition in oldPositions)
         {
             RemoveChild(oldPosition);
             oldPosition.QueueFree();
@@ -177,8 +182,8 @@ public partial class FormationPattern : Node2D, IGizmos
         }
         
         // Otherwise, just update the positions.
-        List<FormationPatternPosition> currentPositions = 
-            this.FindChildren<FormationPatternPosition>();
+        List<GroupMemberPosition> currentPositions = 
+            this.FindChildren<GroupMemberPosition>();
         
         if (currentPositions == null || Positions == null) return;
         
@@ -189,7 +194,7 @@ public partial class FormationPattern : Node2D, IGizmos
     }
 
     /// <summary>
-    /// Recreates the hierarchy of position nodes associated with the formation
+    /// Recreates the hierarchy of position nodes associated with the group
     /// pattern.
     /// </summary>
     private void RecreatePositionNodes()
@@ -210,20 +215,20 @@ public partial class FormationPattern : Node2D, IGizmos
     {
         if (!ShowGizmos) return;
         
-        // Mark Formation Pattern origin.
+        // Mark the group pattern origin.
         DrawCircle(Vector2.Zero, _originGizmoRadius, GizmosColor, filled: true);
         
         if (Positions == null) return;
         
-        // Draw formation pattern positions.
+        // Draw group pattern positions.
         for (int i=0; i < Positions.Offsets.Count; i++)
         {
-            Vector2 gizmoBorder = new Vector2(_positionGizmoRadius, _positionGizmoRadius);
-            Vector2 textPosition = Positions.Offsets[i] - gizmoBorder - _gizmoTextOffset;
+            Vector2 gizmoBorder = new Vector2(PositionGizmoRadius, PositionGizmoRadius);
+            Vector2 textPosition = Positions.Offsets[i] - gizmoBorder - GizmoTextOffset;
             DrawString(ThemeDB.FallbackFont, textPosition, $"{i}");
             DrawCircle(
                 Positions.Offsets[i], 
-                _positionGizmoRadius, 
+                PositionGizmoRadius, 
                 GizmosColor, 
                 filled: false);
         }

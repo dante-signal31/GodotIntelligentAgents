@@ -26,16 +26,16 @@ public partial class FixedFormation : Node2D, IFormation
     
     public List<Node2D> Members { get; } = new();
 
-    public List<Vector2> MemberPositions => new(FormationPattern.Positions.Offsets);
+    public List<Vector2> MemberPositions => new(GroupPattern.Positions.Offsets);
 
-    private FormationPattern _formationPattern;
+    private GroupPattern _groupPattern;
 
-    public FormationPattern FormationPattern
+    public GroupPattern GroupPattern
     {
-        get => _formationPattern;
+        get => _groupPattern;
         private set
         {
-            _formationPattern = value;
+            _groupPattern = value;
             if (value == null) return;
             var args = new FormationDimensionsChangedArgs(
                 value.Positions.Offsets.ToArray(),
@@ -49,7 +49,7 @@ public partial class FixedFormation : Node2D, IFormation
     {
         if (Engine.IsEditorHint()) return;
         
-        FormationPattern = this.FindChild<FormationPattern>();
+        GroupPattern = this.FindChild<GroupPattern>();
         
         if (!CanProcess()) return;
         GenerateMembers();
@@ -57,7 +57,7 @@ public partial class FixedFormation : Node2D, IFormation
 
     private void GenerateMembers()
     {
-        foreach (Vector2 positionOffset in FormationPattern.Positions.Offsets)
+        foreach (Vector2 positionOffset in GroupPattern.Positions.Offsets)
         {
             Node2D member = _memberScene.Instantiate<Node2D>();
             member.Position = positionOffset;
@@ -86,11 +86,11 @@ public partial class FixedFormation : Node2D, IFormation
 
     public override string[] _GetConfigurationWarnings()
     {
-        FormationPattern formationPattern = this.FindChild<FormationPattern>();
+        GroupPattern groupPattern = this.FindChild<GroupPattern>();
         
         List<string> warnings = new();
         
-        if (formationPattern == null)
+        if (groupPattern == null)
         {
             warnings.Add("This node needs a child node of type " +
                          "FormationPattern to work properly.");  
