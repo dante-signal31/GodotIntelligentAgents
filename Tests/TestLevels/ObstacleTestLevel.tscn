@@ -104,48 +104,51 @@ metadata/_custom_type_script = "uid://c1hmtt20hub48"
 [node name="Target" parent="." instance=ExtResource("4_sfy1w")]
 position = Vector2(1622, 505)
 
-[node name="Path" parent="." instance=ExtResource("3_vx4id")]
+[node name="TestPath" parent="." instance=ExtResource("3_vx4id")]
+visible = false
 Positions = SubResource("Resource_mk2fd")
 
-[node name="GroupPosition0" type="Node2D" parent="Path"]
+[node name="GroupPosition0" type="Node2D" parent="TestPath"]
 position = Vector2(256, 264)
 script = ExtResource("5_ni8xx")
 
-[node name="GroupPosition1" type="Node2D" parent="Path"]
+[node name="GroupPosition1" type="Node2D" parent="TestPath"]
 position = Vector2(256, 768)
 script = ExtResource("5_ni8xx")
 
-[node name="GroupPosition2" type="Node2D" parent="Path"]
+[node name="GroupPosition2" type="Node2D" parent="TestPath"]
 position = Vector2(640, 768)
 script = ExtResource("5_ni8xx")
 
-[node name="GroupPosition3" type="Node2D" parent="Path"]
+[node name="GroupPosition3" type="Node2D" parent="TestPath"]
 position = Vector2(640, 344)
 script = ExtResource("5_ni8xx")
 
-[node name="GroupPosition4" type="Node2D" parent="Path"]
+[node name="GroupPosition4" type="Node2D" parent="TestPath"]
 position = Vector2(1152, 344)
 script = ExtResource("5_ni8xx")
 
-[node name="GroupPosition5" type="Node2D" parent="Path"]
+[node name="GroupPosition5" type="Node2D" parent="TestPath"]
 position = Vector2(1152, 896)
 script = ExtResource("5_ni8xx")
 
-[node name="GroupPosition6" type="Node2D" parent="Path"]
+[node name="GroupPosition6" type="Node2D" parent="TestPath"]
 position = Vector2(1622, 896)
 script = ExtResource("5_ni8xx")
 
-[node name="GroupPosition7" type="Node2D" parent="Path"]
+[node name="GroupPosition7" type="Node2D" parent="TestPath"]
 position = Vector2(1624, 272)
 script = ExtResource("5_ni8xx")
 
 [node name="Agents" type="Node" parent="."]
 
 [node name="PathFollowingMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
+process_mode = 4
+visible = false
 position = Vector2(176, 176)
 
 [node name="PathFollowingSteeringBehavior" parent="Agents/PathFollowingMovingAgent" node_paths=PackedStringArray("FollowPath") instance=ExtResource("6_xwcat")]
-FollowPath = NodePath("../../../Path")
+FollowPath = NodePath("../../../TestPath")
 
 [node name="HideMovingAgent" parent="Agents" instance=ExtResource("2_hjfxj")]
 process_mode = 4
@@ -380,7 +383,10 @@ position = Vector2(1622, 503)
 [node name="Position6" type="Marker2D" parent="Positions"]
 position = Vector2(320, 321)
 
+[node name="Position7" type="Marker2D" parent="Positions"]
+position = Vector2(176, 176)
+
 [node name="Marker2D" type="Marker2D" parent="Positions"]
 position = Vector2(1130, 586)
 
-[editable path="Path"]
+[editable path="TestPath"]

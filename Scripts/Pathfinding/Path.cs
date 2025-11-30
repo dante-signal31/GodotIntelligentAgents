@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using GodotGameAIbyExample.Scripts.Groups;
 
 
@@ -14,7 +15,12 @@ public partial class Path: GroupPattern
 {
     [ExportCategory("PATH CONFIGURATION:")]
     [Export] public bool Loop { get; set; } = true;
-        
+
+    /// <summary>
+    /// Target positions of the path.
+    /// </summary>
+    public Array<Vector2> TargetPositions => Positions.Offsets;
+    
     /// <summary>
     /// How many positions this path has.
     /// </summary>

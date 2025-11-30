@@ -13,15 +13,15 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 public partial class PathFollowingSteeringBehavior: Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")] 
-    private Path _foollowPath;
+    private Path _followPath;
 
     [Export]
     public Path FollowPath
     {
-        get => _foollowPath;
+        get => _followPath;
         set
         {
-            _foollowPath = value;
+            _followPath = value;
             _pathStarted = false;
         }
     }
