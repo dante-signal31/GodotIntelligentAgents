@@ -11,7 +11,7 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 public partial class GraphNode: Resource
 {
     [Export] public Vector2 Position;
-    [Export] public Dictionary<Orientation, Edge> Edges = new();
+    [Export] public Dictionary<Orientation, GraphConnection> Connections = new();
     
     public void AddEdge(
         GraphNode endNode, 
@@ -19,10 +19,11 @@ public partial class GraphNode: Resource
         Orientation orientation, 
         bool bidirectional = true)
     {
-        Edge edge = new();
-        edge.EndNode = endNode;
-        edge.Cost = cost;
-        Edges[orientation] = edge;
+        GraphConnection graphConnection = new();
+        graphConnection.StartNode = this;
+        graphConnection.EndNode = endNode;
+        graphConnection.Cost = cost;
+        Connections[orientation] = graphConnection;
 
         if (!bidirectional) return;
 
@@ -34,16 +35,16 @@ public partial class GraphNode: Resource
             // bidirectional argument must be false in this call to avoid infinite
             // recursion.
             case Orientation.North: 
-                edge.EndNode.AddEdge(this, cost, Orientation.South, false); 
+                graphConnection.EndNode.AddEdge(this, cost, Orientation.South, false); 
                 break;
             case Orientation.East:
-                edge.EndNode.AddEdge(this, cost, Orientation.West, false); 
+                graphConnection.EndNode.AddEdge(this, cost, Orientation.West, false); 
                 break;
             case Orientation.South:
-                edge.EndNode.AddEdge(this, cost, Orientation.North, false);
+                graphConnection.EndNode.AddEdge(this, cost, Orientation.North, false);
                 break;
             case Orientation.West:
-                edge.EndNode.AddEdge(this, cost, Orientation.East, false);
+                graphConnection.EndNode.AddEdge(this, cost, Orientation.East, false);
                 break;
         }
     }

@@ -3,8 +3,9 @@ using Godot;
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
 [Tool]
-public partial class Edge: Resource
+public partial class GraphConnection: Resource
 {
     [Export] public float Cost;
+    [Export] public GraphNode StartNode;
     [Export] public GraphNode EndNode;
 }

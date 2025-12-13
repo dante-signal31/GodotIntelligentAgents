@@ -45,6 +45,8 @@ public partial class PathFollowingSteeringBehavior: Node2D, ISteeringBehavior
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
+        if (FollowPath == null) return SteeringOutput.Zero;
+        
         if (!_pathStarted)
         {
             _target.GlobalPosition = FollowPath.CurrentTargetPosition;

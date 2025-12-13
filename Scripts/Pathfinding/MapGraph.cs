@@ -34,9 +34,16 @@ public partial class MapGraph: Node2D
     private Vector2 NodeGlobalPosition(Vector2I nodeArrayPosition) => 
         nodeArrayPosition * CellSize + CellSize / 2;
 
-    private Vector2I NodeArrayPosition(Vector2 nodeGlobalPosition) =>
-        (Vector2I) ((nodeGlobalPosition - CellSize / 2) / CellSize);
+    private Vector2I GlobalToArrayPosition(Vector2 globalPosition)
+    {
+        return (Vector2I) (globalPosition / CellSize);
+    } 
     
+    public GraphNode GetNodeAtPosition(Vector2 globalPosition)
+    {
+        return GraphResource.Nodes[GlobalToArrayPosition(globalPosition)];
+    }
+
     private CleanAreaChecker _cleanAreaChecker;
     
     private Vector2I GetNeighborRelativeArrayPosition(Orientation orientation)
@@ -98,7 +105,7 @@ public partial class MapGraph: Node2D
     public override void _EnterTree()
     {
         _cleanAreaChecker = new CleanAreaChecker(
-            Mathf.Min(CellSize.X, CellSize.Y)/2, 
+            (Mathf.Min(CellSize.X, CellSize.Y)/2)-10f, 
             ObstaclesLayers, 
             this);
     }    
@@ -147,7 +154,7 @@ public partial class MapGraph: Node2D
             DrawCircle(cellPosition, 10, NodeColor);
             foreach (Orientation orientation in Enum.GetValues<Orientation>())
             {
-                if (node.Edges.ContainsKey(orientation))
+                if (node.Connections.ContainsKey(orientation))
                 {
                     Vector2 otherNodeRelativePosition = 
                         GetNeighborRelativeArrayPosition(orientation);
