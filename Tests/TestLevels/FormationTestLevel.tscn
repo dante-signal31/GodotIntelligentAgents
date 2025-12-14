@@ -1,7 +1,7 @@
 [gd_scene load_steps=18 format=3 uid="uid://4h3ubldn68qj"]
 
 [ext_resource type="PackedScene" uid="uid://bqiois541s161" path="res://Levels/BigObstacleCourtyard.tscn" id="1_o46ag"]
-[ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="2_dhgyl"]
+[ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Tools/Target.tscn" id="2_dhgyl"]
 [ext_resource type="PackedScene" uid="uid://ob6715i2iini" path="res://Scenes/SteeringBehaviors/UsherFormationAgent.tscn" id="3_o46ag"]
 [ext_resource type="Script" uid="uid://dx0qtd4s5ksnv" path="res://Scripts/Groups/FormationShapeManager.cs" id="4_emhl0"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="4_o46ag"]

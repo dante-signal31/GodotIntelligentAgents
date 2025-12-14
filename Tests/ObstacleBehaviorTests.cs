@@ -39,7 +39,7 @@ public class ObstacleBehaviorTests
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
         Scripts.SteeringBehaviors.MovingAgent hideAgent = 
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("HideMovingAgent");
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Marker2D position2 = 
@@ -133,7 +133,7 @@ public class ObstacleBehaviorTests
         // Get references to agent and target.
         Scripts.SteeringBehaviors.MovingAgent wallAvoiderAgent = 
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WallAvoiderMovingAgent");
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position2");
         Marker2D position5 = 
@@ -180,7 +180,7 @@ public class ObstacleBehaviorTests
         // Get references to agent and target.
         Scripts.SteeringBehaviors.MovingAgent wallAvoiderAgent = 
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WallAvoiderMovingAgent");
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position2");
         Marker2D position5 = 
@@ -229,7 +229,7 @@ public class ObstacleBehaviorTests
         // Get references to agent and target.
         Scripts.SteeringBehaviors.MovingAgent smoothedWallAvoiderAgent = 
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SmoothedWallAvoiderMovingAgent");
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Marker2D position5 = 
@@ -283,7 +283,7 @@ public class ObstacleBehaviorTests
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
         Scripts.SteeringBehaviors.MovingAgent hideAgent = 
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("WeightBlendedHideWallAvoiderMovingAgent");
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Marker2D position2 = 
@@ -392,7 +392,7 @@ public class ObstacleBehaviorTests
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
         Scripts.SteeringBehaviors.MovingAgent hideAgent = 
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("PriorityWeightBlendedHideWallAvoiderMovingAgent");
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Marker2D position2 = 
@@ -501,7 +501,7 @@ public class ObstacleBehaviorTests
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
         Scripts.SteeringBehaviors.MovingAgent hideAgent = 
             (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("PriorityDitheringBlendedHideWallAvoiderMovingAgent");
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Marker2D position2 = 

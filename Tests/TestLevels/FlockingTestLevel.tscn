@@ -1,6 +1,6 @@
 [gd_scene load_steps=24 format=3 uid="uid://duhhqkywjgwyc"]
 
-[ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="1_nrpbl"]
+[ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Tools/Target.tscn" id="1_nrpbl"]
 [ext_resource type="PackedScene" uid="uid://uoeqihrae8u6" path="res://Levels/BigClearCourtyard.tscn" id="2_s4j2x"]
 [ext_resource type="PackedScene" uid="uid://mxho5r22apy1" path="res://Scenes/SteeringBehaviors/MovingAgent.tscn" id="3_40o8h"]
 [ext_resource type="Script" uid="uid://3o8nj5mnvovw" path="res://Scripts/SteeringBehaviors/WeightedBehavior.cs" id="5_vbjfa"]

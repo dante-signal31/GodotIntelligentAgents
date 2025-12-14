@@ -41,18 +41,6 @@ public class CleanAreaChecker : IDisposable
         }
     }
     
-    // private Vector2 _position;
-    //
-    // public Vector2 Position
-    // {
-    //     get => _position;
-    //     set
-    //     {
-    //         _position = value;
-    //         _cleanAreaChecker.Position = value;
-    //     }
-    // }
-    
     private ShapeCast2D _cleanAreaChecker = new();
 
     public CleanAreaChecker(
@@ -95,7 +83,7 @@ public class CleanAreaChecker : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    protected void Dispose(bool disposing)
     {
         if (_disposed) return;
 

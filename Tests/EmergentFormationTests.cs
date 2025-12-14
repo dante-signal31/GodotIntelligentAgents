@@ -58,7 +58,7 @@ public class EmergentFormationTests
         wingmanList.Add(wingmanMovingAgent4);
         wingmanList.Add(wingmanMovingAgent5);
 
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Marker2D position2 = 

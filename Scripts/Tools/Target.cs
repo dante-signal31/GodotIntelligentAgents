@@ -1,5 +1,18 @@
 using Godot;
 
+namespace GodotGameAIbyExample.Scripts.Tools;
+
+/// <summary>
+/// The Target class represents a 2D marker in the Godot game engine, providing
+/// functionality for handling user input and notifying changes to its position
+/// through signals.
+/// </summary>
+/// <remarks>
+/// This class derives from Marker2D and is intended to be used as a selectable and 
+/// movable target point in a 2D game scene. It emits a signal whenever its position
+/// is changed.
+/// </remarks>
+[Tool]
 public partial class Target : Marker2D
 {
     [Signal] public delegate void PositionChangedEventHandler(Vector2 newPosition);

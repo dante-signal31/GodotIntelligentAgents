@@ -7,6 +7,12 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
 /// <summary>
 /// Spatial graph implementation using a quad grid.
+/// <remarks>
+/// Ideally, a graph does not need to have any spatial structure, but if you are
+/// going to use the graph for pathfinding purposes, it is recommended to use a spatial
+/// structure to improve performance. Otherwise, you will be forced to iterate over all
+/// nodes in the graph every time you want to find the nearest node to a given position.
+/// </remarks>
 /// </summary>
 [Tool]
 public partial class MapGraph: Node2D
@@ -18,10 +24,13 @@ public partial class MapGraph: Node2D
     
     [Export(PropertyHint.Layers2DPhysics)] public uint ObstaclesLayers { get; set; } = 1;
 
+    /// <summary>
+    /// MapGraph serialized backend.
+    /// </summary>
     [Export] public MapGraphResource GraphResource = new();
     
     [ExportToolButton("GenerateGraph")]
-    public Callable GenerateGraphButton => Callable.From(GenerateGraph);
+    private Callable GenerateGraphButton => Callable.From(GenerateGraph);
     
     [ExportCategory("DEBUG:")]
     [Export] public bool ShowGizmos { get; set; }
@@ -44,8 +53,21 @@ public partial class MapGraph: Node2D
         return GraphResource.Nodes[GlobalToArrayPosition(globalPosition)];
     }
 
+    /// <summary>
+    /// Just a shortcut to the graph nodes dictionary inside GraphResource.
+    /// </summary>
+    public Godot.Collections.Dictionary<Vector2I, GraphNode> Nodes => GraphResource.Nodes;
+
     private CleanAreaChecker _cleanAreaChecker;
-    
+
+    /// <summary>
+    /// Returns the relative array position of a neighboring node based on the specified
+    /// orientation.
+    /// <param name="orientation">The orientation indicating the direction of the neighbor
+    /// (North, East, South, or West).</param>
+    /// <return>The relative array position as a Vector2I representing the change in
+    /// coordinates for the specified orientation.</return>
+    /// </summary>
     private Vector2I GetNeighborRelativeArrayPosition(Orientation orientation)
     {
         Vector2 relativePosition = Vector2.Zero;
@@ -55,18 +77,22 @@ public partial class MapGraph: Node2D
                 relativePosition = Vector2.Up;
                 break;
             case Orientation.East:
-                relativePosition = Vector2.Right;
+                relativePosition = Vector2.Left;
                 break;
             case Orientation.South:
                 relativePosition = Vector2.Down;
                 break;
             case Orientation.West:
-                relativePosition = Vector2.Left;
+                relativePosition = Vector2.Right;
                 break;
         }
         return (Vector2I) relativePosition;
     }
 
+    /// <summary>
+    /// Generates the graph representation based on the current map configuration and
+    /// obstacle data. 
+    /// </summary>
     private void GenerateGraph()
     {
         GraphResource.Nodes.Clear();
@@ -76,6 +102,7 @@ public partial class MapGraph: Node2D
             {
                 Vector2I nodeArrayPosition = new(x, y);
                 Vector2 nodeGlobalPosition = NodeGlobalPosition(nodeArrayPosition);
+                
                 // If there is any obstacle at that position, we don't create any node.
                 if (!_cleanAreaChecker.IsCleanArea(nodeGlobalPosition))
                     continue;
@@ -83,20 +110,49 @@ public partial class MapGraph: Node2D
                 // If the position is clean, create a node.
                 GraphNode node = new();
                 node.Position = nodeGlobalPosition;
+                
+                // Populate new node's connections.
                 foreach (Orientation orientation in Enum.GetValues<Orientation>())
                 {
                     // If the newly created node is adjacent to an existing node, we
-                    // create an edge between them.
+                    // create a connection between them.
                     Vector2I neighborArrayPosition =
                         GetNeighborRelativeArrayPosition(orientation) + 
                         nodeArrayPosition;
                     if (!GraphResource.Nodes.ContainsKey(neighborArrayPosition)) continue;
-                    node.AddEdge(
-                        GraphResource.Nodes[neighborArrayPosition], 
+                    // Direct connection between this node and the neighbor.
+                    node.AddConnection(
+                        nodeArrayPosition,
+                        neighborArrayPosition, 
                         1, 
                         orientation);
+                    // Conversely, as our connections are bidirectional, we must set up
+                    // also the reciprocal connection from the neighbor to this node. 
+                    GraphNode neighborNode = GraphResource.Nodes[neighborArrayPosition];
+                    Orientation reciprocalOrientation = Orientation.North;
+                    switch (orientation)
+                    {
+                        case Orientation.North: 
+                            reciprocalOrientation = Orientation.South; 
+                            break;
+                        case Orientation.East:
+                            reciprocalOrientation = Orientation.West; 
+                            break;
+                        case Orientation.South:
+                            reciprocalOrientation = Orientation.North;
+                            break;
+                        case Orientation.West:
+                            reciprocalOrientation = Orientation.East;
+                            break;
+                    }
+                    neighborNode.AddConnection(
+                        neighborArrayPosition, 
+                        nodeArrayPosition, 
+                        1, 
+                        reciprocalOrientation);
                 }
-                // Once the node is created and configures, we add it to the graph.
+                
+                // Once the node is created and configured, we add it to the graph.
                 GraphResource.Nodes.Add(nodeArrayPosition, node);
             }
         }
@@ -127,8 +183,7 @@ public partial class MapGraph: Node2D
     
     public override void _Draw()
     {
-        if (!ShowGizmos ||
-            !Engine.IsEditorHint()) return;
+        if (!ShowGizmos) return;
         
         Vector2 cellSize = CellSize;
 

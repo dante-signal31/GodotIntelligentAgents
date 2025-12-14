@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://drq0xfneg0o1y" path="res://Scenes/Groups/SmoothedWallAvoiderMember.tscn" id="1_2lpnm"]
 [ext_resource type="PackedScene" uid="uid://b06efvdbmwab5" path="res://Levels/CoverCourtyard.tscn" id="1_f8huc"]
-[ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="3_gy3gv"]
+[ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Tools/Target.tscn" id="3_gy3gv"]
 [ext_resource type="PackedScene" uid="uid://dow36pxrn048q" path="res://Scenes/Groups/FormationTacticalMovementManager.tscn" id="5_f8huc"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="6_oa0dw"]
 [ext_resource type="PackedScene" uid="uid://bjl27ameio1m3" path="res://Scenes/Tools/HidingPointsDetector.tscn" id="6_w67l4"]

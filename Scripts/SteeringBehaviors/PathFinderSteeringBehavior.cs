@@ -5,10 +5,14 @@ using GodotGameAIbyExample.Scripts.Pathfinding;
 
 namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
+/// <summary>
+/// Represents a steering behavior responsible for integrating pathfinding logic.
+/// </summary>
+[Tool]
 public partial class PathFinderSteeringBehavior: Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")]
-    [Export] public Target PathTarget { get; set; }
+    [Export] public Tools.Target PathTarget { get; set; }
     [Export] public MapGraph Graph { get; set; }
     
     private PathFollowingSteeringBehavior _pathFollowingSteeringBehavior;
@@ -18,14 +22,15 @@ public partial class PathFinderSteeringBehavior: Node2D, ISteeringBehavior
     {
         _pathFollowingSteeringBehavior = this.FindChild<PathFollowingSteeringBehavior>();
         _pathFinder = this.FindChild<IPathFinder>();
+        _pathFinder.Graph = Graph;
         PathTarget.Connect(
-            Target.SignalName.PositionChanged,
+            Tools.Target.SignalName.PositionChanged,
             new Callable(this, MethodName.OnPathTargetPositionChanged));
     }
 
     private void OnPathTargetPositionChanged(Vector2 newTargetPosition)
     {
-        Path newPath = _pathFinder.FindPath(Graph, newTargetPosition);
+        Path newPath = _pathFinder.FindPath(newTargetPosition);
         _pathFollowingSteeringBehavior.FollowPath = newPath;
     }
     

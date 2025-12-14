@@ -56,12 +56,18 @@ public partial class Path: GroupPattern
         }
         return Positions.Offsets[CurrentTargetPositionIndex];
     }
+
+    public Path()
+    {
+        Positions ??= new OffsetList();
+    }
     
     public override void _Ready()
     {
         base._Ready();
         PositionGizmoRadius = 10;
         GizmoTextOffset = new(10, 10);
+        Positions ??= new OffsetList();
     }
 
     public override void _Draw()

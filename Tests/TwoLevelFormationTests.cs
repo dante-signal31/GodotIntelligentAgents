@@ -42,7 +42,7 @@ public class TwoLevelFormationTests
         
         // TwoLevelFormation twoLevelFormation = (TwoLevelFormation) _sceneRunner.FindChild("TwoLevelFormation");
 
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Marker2D position2 = 
@@ -156,7 +156,7 @@ public class TwoLevelFormationTests
         UsherWaiterFormationAgent formationAgent = 
             (UsherWaiterFormationAgent) _sceneRunner.FindChild("UsherWaiterObstacleManagedTwoLevelFormationAgent");
 
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Marker2D position2 = 
@@ -268,7 +268,7 @@ public class TwoLevelFormationTests
         UsherWaiterFormationAgent formationAgent = 
             (UsherWaiterFormationAgent) _sceneRunner.FindChild("UsherWaiterObstacleManagedTwoLevelFormationAgent");
 
-        Target target = (Target) _sceneRunner.FindChild("Target");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
         Marker2D position4 = 

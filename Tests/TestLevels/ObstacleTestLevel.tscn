@@ -1,12 +1,11 @@
-[gd_scene load_steps=37 format=3 uid="uid://4b6wocu0t7d1"]
+[gd_scene load_steps=36 format=3 uid="uid://4b6wocu0t7d1"]
 
 [ext_resource type="PackedScene" uid="uid://bw5k043fvq00g" path="res://Levels/ObstacleCourtyard.tscn" id="1_n20uv"]
 [ext_resource type="PackedScene" uid="uid://mxho5r22apy1" path="res://Scenes/SteeringBehaviors/MovingAgent.tscn" id="2_hjfxj"]
 [ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="3_kftuo"]
 [ext_resource type="PackedScene" uid="uid://bcvoakuumbm7u" path="res://Scenes/Pathfinding/Path.tscn" id="3_vx4id"]
 [ext_resource type="Script" uid="uid://d1ouy1q86lot" path="res://Scripts/Groups/OffsetList.cs" id="4_6salh"]
-[ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Target.tscn" id="4_sfy1w"]
-[ext_resource type="Script" uid="uid://b31cjkyfc6swq" path="res://Scripts/Groups/GroupMemberPosition.cs" id="5_ni8xx"]
+[ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Tools/Target.tscn" id="4_sfy1w"]
 [ext_resource type="PackedScene" uid="uid://d0te180fjegr" path="res://Scenes/SteeringBehaviors/HideSteeringBehavior.tscn" id="5_tck3o"]
 [ext_resource type="PackedScene" uid="uid://ctpd66e545h3v" path="res://Scenes/SteeringBehaviors/WallAvoiderSteeringBehavior.tscn" id="6_3e5d2"]
 [ext_resource type="PackedScene" uid="uid://gl8ea432pxyw" path="res://Scenes/SteeringBehaviors/PathFollowingSteeringBehavior.tscn" id="6_xwcat"]
@@ -107,38 +106,6 @@ position = Vector2(1622, 505)
 [node name="TestPath" parent="." instance=ExtResource("3_vx4id")]
 visible = false
 Positions = SubResource("Resource_mk2fd")
-
-[node name="GroupPosition0" type="Node2D" parent="TestPath"]
-position = Vector2(256, 264)
-script = ExtResource("5_ni8xx")
-
-[node name="GroupPosition1" type="Node2D" parent="TestPath"]
-position = Vector2(256, 768)
-script = ExtResource("5_ni8xx")
-
-[node name="GroupPosition2" type="Node2D" parent="TestPath"]
-position = Vector2(640, 768)
-script = ExtResource("5_ni8xx")
-
-[node name="GroupPosition3" type="Node2D" parent="TestPath"]
-position = Vector2(640, 344)
-script = ExtResource("5_ni8xx")
-
-[node name="GroupPosition4" type="Node2D" parent="TestPath"]
-position = Vector2(1152, 344)
-script = ExtResource("5_ni8xx")
-
-[node name="GroupPosition5" type="Node2D" parent="TestPath"]
-position = Vector2(1152, 896)
-script = ExtResource("5_ni8xx")
-
-[node name="GroupPosition6" type="Node2D" parent="TestPath"]
-position = Vector2(1622, 896)
-script = ExtResource("5_ni8xx")
-
-[node name="GroupPosition7" type="Node2D" parent="TestPath"]
-position = Vector2(1624, 272)
-script = ExtResource("5_ni8xx")
 
 [node name="Agents" type="Node" parent="."]
 
