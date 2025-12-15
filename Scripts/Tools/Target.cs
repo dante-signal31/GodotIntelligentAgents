@@ -36,10 +36,17 @@ public partial class Target : Marker2D
         if (@event.IsActionPressed(PointSelectedAction))
         {
             Vector2 newPosition = GetGlobalMousePosition();
-            if (_currentPosition != newPosition) 
-                EmitSignal(SignalName.PositionChanged, newPosition);
             GlobalPosition = newPosition;
             GetViewport().SetInputAsHandled();
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        if (_currentPosition != GlobalPosition)
+        {
+            EmitSignal(SignalName.PositionChanged, GlobalPosition);
+            _currentPosition = GlobalPosition;
         }
     }
 }

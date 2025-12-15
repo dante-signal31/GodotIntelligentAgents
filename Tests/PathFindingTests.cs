@@ -4,15 +4,16 @@ using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.Pathfinding;
 using GodotGameAIbyExample.Scripts.SteeringBehaviors;
+using GodotGameAIbyExample.Scripts.Tools;
 using static GdUnit4.Assertions;
 
 namespace GodotGameAIbyExample.Tests;
 
 [TestSuite, RequireGodotRuntime]
-public class PathFollowingTests
+public class PathFindingTests
 {
     private const string TestScenePath = "res://Tests/TestLevels/" +
-                                         "ObstacleTestLevel.tscn";
+                                         "PathFindingTestLevel.tscn";
 
     private ISceneRunner _sceneRunner;
     
@@ -41,20 +42,20 @@ public class PathFollowingTests
         Path pathToFollow = 
             (Path) _sceneRunner.FindChild("TestPath");
         
-        Marker2D position7 = 
-            (Marker2D) _sceneRunner.FindChild("Position7");
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position1");
         
         // Get references to behaviors.
         PathFollowingSteeringBehavior pathFollowingSteeringBehavior = 
             pathFollowingAgent.FindChild<PathFollowingSteeringBehavior>();
         
         // Set up elements before the test.
-        pathFollowingAgent.GlobalPosition = position7.GlobalPosition;
+        pathFollowingAgent.GlobalPosition = position1.GlobalPosition;
         pathFollowingAgent.MaximumSpeed = 400.0f;
         pathFollowingAgent.StopSpeed = 1f;
         pathFollowingAgent.MaximumRotationalDegSpeed = 1080f;
         pathFollowingAgent.StopRotationDegThreshold = 1f;
-        pathFollowingAgent.AgentColor = new Color(1, 0, 0);
+        pathFollowingAgent.AgentColor = new Color(0, 1, 0);
         pathFollowingSteeringBehavior.FollowPath= pathToFollow;
         pathToFollow.Loop = false;
         pathFollowingAgent.Visible = true;
@@ -99,20 +100,20 @@ public class PathFollowingTests
         Path pathToFollow = 
             (Path) _sceneRunner.FindChild("TestPath");
         
-        Marker2D position7 = 
-            (Marker2D) _sceneRunner.FindChild("Position7");
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position1");
         
         // Get references to behaviors.
         PathFollowingSteeringBehavior pathFollowingSteeringBehavior = 
             pathFollowingAgent.FindChild<PathFollowingSteeringBehavior>();
         
         // Set up elements before the test.
-        pathFollowingAgent.GlobalPosition = position7.GlobalPosition;
+        pathFollowingAgent.GlobalPosition = position1.GlobalPosition;
         pathFollowingAgent.MaximumSpeed = 400.0f;
         pathFollowingAgent.StopSpeed = 1f;
         pathFollowingAgent.MaximumRotationalDegSpeed = 1080f;
         pathFollowingAgent.StopRotationDegThreshold = 1f;
-        pathFollowingAgent.AgentColor = new Color(1, 0, 0);
+        pathFollowingAgent.AgentColor = new Color(0, 1, 0);
         pathFollowingSteeringBehavior.FollowPath= pathToFollow;
         pathToFollow.Loop = true;
         pathToFollow.Visible = true;
@@ -121,7 +122,7 @@ public class PathFollowingTests
         
         // Start test.
         
-        // Assert that the path following agent reach twice the firs target position
+        // Assert that the path following agent reach twice the first target position
         // in the path.
         uint maximumWaitTime = 10000;
         uint waitStep = 1;
@@ -157,5 +158,64 @@ public class PathFollowingTests
         pathToFollow.Visible = false;
         pathFollowingAgent.Visible = false;
         pathFollowingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
+    
+    /// <summary>
+    /// Test the path following behavior.
+    /// </summary>
+    [TestCase]
+    public async Task DijkstraPathFindingBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent dijkstraPathfindingAgent = 
+            (MovingAgent) _sceneRunner.FindChild("DijkstraPathFinderMovingAgent");
+        
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position1");
+        Marker2D position2 = 
+            (Marker2D) _sceneRunner.FindChild("Position2");
+        Marker2D position3 = 
+            (Marker2D) _sceneRunner.FindChild("Position3");
+        
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        
+        Path pathToFollow = 
+            (Path) _sceneRunner.FindChild("TestPath");
+        
+        // Get references to behaviors.
+        PathFinderSteeringBehavior pathFinderSteeringBehavior = 
+            dijkstraPathfindingAgent.FindChild<PathFinderSteeringBehavior>();
+        
+        // Set up elements before the test.
+        pathToFollow.Visible = false;
+        dijkstraPathfindingAgent.GlobalPosition = position1.GlobalPosition;
+        dijkstraPathfindingAgent.MaximumSpeed = 400.0f;
+        dijkstraPathfindingAgent.StopSpeed = 1f;
+        dijkstraPathfindingAgent.MaximumRotationalDegSpeed = 1080f;
+        dijkstraPathfindingAgent.StopRotationDegThreshold = 1f;
+        dijkstraPathfindingAgent.AgentColor = new Color(0, 1, 0);
+        pathFinderSteeringBehavior.PathTarget = target;
+        dijkstraPathfindingAgent.Visible = true;
+        dijkstraPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Assert that the pathfinder agent can reach the first target.
+        target.GlobalPosition = position2.GlobalPosition;
+        await _sceneRunner.AwaitMillis(7000);
+        AssertThat(
+            dijkstraPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
+            ).IsTrue();
+        
+        // Assert that the pathfinder agent can reach the second target.
+        target.GlobalPosition = position3.GlobalPosition;
+        await _sceneRunner.AwaitMillis(6000);
+        AssertThat(
+            dijkstraPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
+        ).IsTrue();
+        
+        // Cleanup.
+        dijkstraPathfindingAgent.Visible = false;
+        dijkstraPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
 }
