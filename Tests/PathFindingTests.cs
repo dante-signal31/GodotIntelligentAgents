@@ -161,7 +161,7 @@ public class PathFindingTests
     }
     
     /// <summary>
-    /// Test the path following behavior.
+    /// Test the Dijkstra pathfinder behavior.
     /// </summary>
     [TestCase]
     public async Task DijkstraPathFindingBehaviorTest()

@@ -50,6 +50,8 @@ public partial class MapGraph: Node2D
     
     public GraphNode GetNodeAtPosition(Vector2 globalPosition)
     {
+        Vector2I arrayPosition = GlobalToArrayPosition(globalPosition);
+        if (!GraphResource.Nodes.ContainsKey(arrayPosition)) return null;
         return GraphResource.Nodes[GlobalToArrayPosition(globalPosition)];
     }
 
