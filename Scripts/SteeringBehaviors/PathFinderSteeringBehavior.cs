@@ -32,6 +32,7 @@ public partial class PathFinderSteeringBehavior : Node2D, ISteeringBehavior
 
     private void OnPathTargetPositionChanged(Vector2 newTargetPosition)
     {
+        if (Engine.IsEditorHint()) return;
         Path newPath = _pathFinder.FindPath(newTargetPosition);
         _pathFollowingSteeringBehavior.FollowPath = newPath;
     }
@@ -55,7 +56,7 @@ public partial class PathFinderSteeringBehavior : Node2D, ISteeringBehavior
         _pathFinder = this.FindChild<IPathFinder>();
         if (_pathFinder == null)
         {
-            warnings.Add("This node needs a child of type IPathFinder to work.");
+            warnings.Add("This node needs a child of type PathFinder to work.");
         }
         
         return warnings.ToArray();
