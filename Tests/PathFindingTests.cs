@@ -218,4 +218,63 @@ public class PathFindingTests
         dijkstraPathfindingAgent.Visible = false;
         dijkstraPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
+    
+    /// <summary>
+    /// Test the AStar pathfinder behavior.
+    /// </summary>
+    [TestCase]
+    public async Task AStarPathFindingBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent aStarPathfindingAgent = 
+            (MovingAgent) _sceneRunner.FindChild("AStarPathFinderMovingAgent");
+        
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position1");
+        Marker2D position2 = 
+            (Marker2D) _sceneRunner.FindChild("Position2");
+        Marker2D position3 = 
+            (Marker2D) _sceneRunner.FindChild("Position3");
+        
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        
+        Path pathToFollow = 
+            (Path) _sceneRunner.FindChild("TestPath");
+        
+        // Get references to behaviors.
+        PathFinderSteeringBehavior pathFinderSteeringBehavior = 
+            aStarPathfindingAgent.FindChild<PathFinderSteeringBehavior>();
+        
+        // Set up elements before the test.
+        pathToFollow.Visible = false;
+        aStarPathfindingAgent.GlobalPosition = position1.GlobalPosition;
+        aStarPathfindingAgent.MaximumSpeed = 400.0f;
+        aStarPathfindingAgent.StopSpeed = 1f;
+        aStarPathfindingAgent.MaximumRotationalDegSpeed = 1080f;
+        aStarPathfindingAgent.StopRotationDegThreshold = 1f;
+        aStarPathfindingAgent.AgentColor = new Color(0, 1, 0);
+        pathFinderSteeringBehavior.PathTarget = target;
+        aStarPathfindingAgent.Visible = true;
+        aStarPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Assert that the pathfinder agent can reach the first target.
+        target.GlobalPosition = position2.GlobalPosition;
+        await _sceneRunner.AwaitMillis(7000);
+        AssertThat(
+            aStarPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
+            ).IsTrue();
+        
+        // Assert that the pathfinder agent can reach the second target.
+        target.GlobalPosition = position3.GlobalPosition;
+        await _sceneRunner.AwaitMillis(6000);
+        AssertThat(
+            aStarPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
+        ).IsTrue();
+        
+        // Cleanup.
+        aStarPathfindingAgent.Visible = false;
+        aStarPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
 }
