@@ -36,27 +36,11 @@ public partial class AStarPathFinder: PathFinder<AStarNodeRecord>, IPathFinder
         if (Engine.IsEditorHint()) return;
         _heuristic = this.FindChild<IAStarHeuristic>();
     }
-
-    // /// <summary>
-    // /// Heuristic to get an estimated cost to get to the target from a given position.
-    // /// </summary>
-    // /// <param name="startPosition">Start position.</param>
-    // /// <param name="targetPosition">Current position to get to.</param>
-    // /// <returns>An estimated cost.</returns>
-    // private float EstimateCostToTarget(Vector2 startPosition, Vector2 targetPosition)
-    // {
-    //     // TODO: Extract heuristics to their own external nodes.
-    //     // We could use DistanceTo() but DistanceSquaredTo() is way faster.
-    //     // Actually we don't need an accurate distance, but just a magnitude to compare
-    //     // estimated costs from other nodes.
-    //     //return GlobalPosition.DistanceSquaredTo(targetPosition);
-    //     return startPosition.DistanceTo(targetPosition);
-    // }
     
     public override Path FindPath(Vector2 targetPosition)
     {
-        // Nodes not fully explored yet, ordered by the cost to get them from the
-        // start node.
+        // Nodes not fully explored yet, ordered by the estimated cost to get the target
+        // through them.
         AStarPrioritizedNodeSet openSet = new ();
         // Nodes already fully explored. We use a dictionary to keep track of the
         // information gathered from each node, including the connection to get there,
