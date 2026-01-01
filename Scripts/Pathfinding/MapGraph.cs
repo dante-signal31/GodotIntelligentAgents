@@ -38,7 +38,7 @@ public partial class MapGraph: Node2D
     [Export] public int NodeRadius { get; set; } = 10;
     [Export] public Color NodeColor { get; set; } = Colors.Orange;
     
-    private Vector2 CellSize => MapSize / (Vector2) CellResolution;
+    public Vector2 CellSize => MapSize / (Vector2) CellResolution;
     
     private Vector2 NodeGlobalPosition(Vector2I nodeArrayPosition) => 
         nodeArrayPosition * CellSize + CellSize / 2;
@@ -163,7 +163,7 @@ public partial class MapGraph: Node2D
     public override void _EnterTree()
     {
         _cleanAreaChecker = new CleanAreaChecker(
-            (Mathf.Min(CellSize.X, CellSize.Y)/2)-10f, 
+            (Mathf.Min(CellSize.X, CellSize.Y)/2)-5f, 
             ObstaclesLayers, 
             this);
     }    

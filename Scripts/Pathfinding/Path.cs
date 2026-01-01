@@ -36,6 +36,11 @@ public partial class Path: GroupPattern
     /// </summary>
     public Vector2 CurrentTargetPosition => Positions.Offsets[CurrentTargetPositionIndex];
 
+    public void LoadPathData(Array<Vector2> positions)
+    {
+        Positions.Offsets = positions;    
+    }
+    
     /// <summary>
     /// <p>Get the next position target in Path.</p>
     /// </summary>
@@ -96,6 +101,4 @@ public partial class Path: GroupPattern
             previousPosition = Positions.Offsets[i];
         }
     }
-
-
 }

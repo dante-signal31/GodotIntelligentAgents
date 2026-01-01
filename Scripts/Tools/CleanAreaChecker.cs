@@ -55,7 +55,7 @@ public class CleanAreaChecker : IDisposable
         _cleanAreaChecker.TargetPosition = Vector2.Zero;
         _cleanAreaChecker.ExcludeParent = excludeParent;
         _cleanAreaChecker.Enabled = true;
-        parent.AddChild(_cleanAreaChecker);
+        parent.GetTree().Root.CallDeferred(Node.MethodName.AddChild,_cleanAreaChecker);
     }
 
     /// <summary>
@@ -70,9 +70,37 @@ public class CleanAreaChecker : IDisposable
     public bool IsCleanArea(Vector2 position)
     {
         _cleanAreaChecker.GlobalPosition = position;
+        // Force Godot to update the transform of the ShapeCast2D in the physics engine.
+        _cleanAreaChecker.ForceUpdateTransform(); 
         // This call is rather expensive. Try to use the least possible.
         _cleanAreaChecker.ForceShapecastUpdate();
         return (!_cleanAreaChecker.IsColliding());
+    }
+
+    /// <summary>
+    /// Determines whether a straight path between two points is clear of any collisions
+    /// with objects in the specified detection layers.
+    /// </summary>
+    /// <param name="start">The starting global position of the path to check.</param>
+    /// <param name="end">The ending global position of the path to check.</param>
+    /// <returns>
+    /// True if the path between the specified start and end positions is clear (not
+    /// colliding with any objects in the detection layers), otherwise false.
+    /// </returns>
+    public bool IsCleanPath(Vector2 start, Vector2 end)
+    {
+        _cleanAreaChecker.GlobalPosition = start;
+        // Force Godot to update the transform of the ShapeCast2D in the physics engine.
+        _cleanAreaChecker.ForceUpdateTransform(); 
+        
+        _cleanAreaChecker.TargetPosition = end - start;
+        
+        // This call is rather expensive. Try to use the least possible.
+        _cleanAreaChecker.ForceShapecastUpdate();
+        bool isClean = !_cleanAreaChecker.IsColliding();
+        
+        _cleanAreaChecker.TargetPosition = Vector2.Zero;
+        return (isClean);
     }
     
     private bool _disposed;

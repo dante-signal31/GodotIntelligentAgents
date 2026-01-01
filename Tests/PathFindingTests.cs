@@ -277,4 +277,64 @@ public class PathFindingTests
         aStarPathfindingAgent.Visible = false;
         aStarPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
+    
+    
+    /// <summary>
+    /// Test the Smoothed AStar pathfinder behavior.
+    /// </summary>
+    [TestCase]
+    public async Task SmoothedAStarPathFindingBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent smoothedAStarPathfindingAgent = 
+            (MovingAgent) _sceneRunner.FindChild("SmoothedAStarPathFinderMovingAgent");
+        
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position1");
+        Marker2D position2 = 
+            (Marker2D) _sceneRunner.FindChild("Position2");
+        Marker2D position3 = 
+            (Marker2D) _sceneRunner.FindChild("Position3");
+        
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        
+        Path pathToFollow = 
+            (Path) _sceneRunner.FindChild("TestPath");
+        
+        // Get references to behaviors.
+        PathFinderSteeringBehavior pathFinderSteeringBehavior = 
+            smoothedAStarPathfindingAgent.FindChild<PathFinderSteeringBehavior>();
+        
+        // Set up elements before the test.
+        pathToFollow.Visible = false;
+        smoothedAStarPathfindingAgent.GlobalPosition = position1.GlobalPosition;
+        smoothedAStarPathfindingAgent.MaximumSpeed = 400.0f;
+        smoothedAStarPathfindingAgent.StopSpeed = 1f;
+        smoothedAStarPathfindingAgent.MaximumRotationalDegSpeed = 1080f;
+        smoothedAStarPathfindingAgent.StopRotationDegThreshold = 1f;
+        smoothedAStarPathfindingAgent.AgentColor = new Color(0, 1, 0);
+        pathFinderSteeringBehavior.PathTarget = target;
+        smoothedAStarPathfindingAgent.Visible = true;
+        smoothedAStarPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Assert that the pathfinder agent can reach the first target.
+        target.GlobalPosition = position2.GlobalPosition;
+        await _sceneRunner.AwaitMillis(7000);
+        AssertThat(
+            smoothedAStarPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
+            ).IsTrue();
+        
+        // Assert that the pathfinder agent can reach the second target.
+        target.GlobalPosition = position3.GlobalPosition;
+        await _sceneRunner.AwaitMillis(6000);
+        AssertThat(
+            smoothedAStarPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
+        ).IsTrue();
+        
+        // Cleanup.
+        smoothedAStarPathfindingAgent.Visible = false;
+        smoothedAStarPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
 }
