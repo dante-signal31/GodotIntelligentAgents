@@ -8,6 +8,7 @@ using GodotGameAIbyExample.Scripts.Tools;
 using static GdUnit4.Assertions;
 
 namespace GodotGameAIbyExample.Tests;
+using Tools;
 
 [TestSuite, RequireGodotRuntime]
 public class PathFindingTests
@@ -304,6 +305,7 @@ public class PathFindingTests
         // Get references to behaviors.
         PathFinderSteeringBehavior pathFinderSteeringBehavior = 
             smoothedAStarPathfindingAgent.FindChild<PathFinderSteeringBehavior>();
+        PathSmoother pathSmoother = smoothedAStarPathfindingAgent.FindChild<PathSmoother>(recursive:true);
         
         // Set up elements before the test.
         pathToFollow.Visible = false;
@@ -321,10 +323,14 @@ public class PathFindingTests
         
         // Assert that the pathfinder agent can reach the first target.
         target.GlobalPosition = position2.GlobalPosition;
-        await _sceneRunner.AwaitMillis(7000);
+        await _sceneRunner.AwaitMillis(6000);
         AssertThat(
             smoothedAStarPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
             ).IsTrue();
+        // Assert that the smoothed test is shorter than the former one.
+        Path rawPath = AccessPrivateHelper.GetPrivateField<Path>(pathSmoother, "_rawPath");
+        Path smoothedPath = AccessPrivateHelper.GetPrivateField<Path>(pathSmoother, "_smoothedPath");
+        AssertThat(rawPath.TargetPositions.Count > smoothedPath.TargetPositions.Count).IsTrue();
         
         // Assert that the pathfinder agent can reach the second target.
         target.GlobalPosition = position3.GlobalPosition;
@@ -332,6 +338,10 @@ public class PathFindingTests
         AssertThat(
             smoothedAStarPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
         ).IsTrue();
+        // Assert that the smoothed test is shorter than the former one.
+        rawPath = AccessPrivateHelper.GetPrivateField<Path>(pathSmoother, "_rawPath");
+        smoothedPath = AccessPrivateHelper.GetPrivateField<Path>(pathSmoother, "_smoothedPath");
+        AssertThat(rawPath.TargetPositions.Count > smoothedPath.TargetPositions.Count).IsTrue();
         
         // Cleanup.
         smoothedAStarPathfindingAgent.Visible = false;

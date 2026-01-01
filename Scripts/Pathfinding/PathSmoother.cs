@@ -39,6 +39,7 @@ public partial class PathSmoother: Node2D, IPathFinder
     private IPathFinder _smoothedPathFinder;
     private CleanAreaChecker _cleanAreaChecker;
     private Path _smoothedPath;
+    private Path _rawPath;
     
     public override void _Ready()
     {
@@ -61,10 +62,10 @@ public partial class PathSmoother: Node2D, IPathFinder
     
     public Path FindPath(Vector2 targetPosition)
     {
-        Path rawPath = _smoothedPathFinder.FindPath(targetPosition);
-        if (rawPath == null) return null;
+        _rawPath = _smoothedPathFinder.FindPath(targetPosition);
+        if (_rawPath == null) return null;
         CleanPreviousSmoothedPath();
-        _smoothedPath = SmoothPath(rawPath);
+        _smoothedPath = SmoothPath(_rawPath);
         ShowSmoothedPath();
         return _smoothedPath;
     }
