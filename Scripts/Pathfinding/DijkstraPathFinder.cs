@@ -11,13 +11,6 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 [Tool]
 public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
 {
-    private static readonly NodeRecord NodeRecordNull = new NodeRecord
-    {
-        Node = null,
-        Connection = null,
-        CostSoFar = 0
-    };
-    
     protected class DijkstraPrioritizedNodeSet: PrioritizedNodeSet
     {
         public static DijkstraPrioritizedNodeSet operator +(
@@ -63,7 +56,7 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
         };
 
         // Loop until we reach the target node or no more nodes are available to explore.
-        NodeRecord current = NodeRecordNull;
+        NodeRecord current = NodeRecord.NodeRecordNull;
         while (openSet.Count > 0)
         {
             // Explore prioritizing the node with the lowest cost to be reached.
@@ -123,7 +116,7 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
         
         // If we get here and the current record does not point to the targetNode, then
         // we've fully explored the graph without finding a valid path to get the target.
-        if (current.Node != targetNode) return null;
+        if (current?.Node == null || current.Node != targetNode) return null;
         
         // As we've got the target node, analyze the closedDict to follow back connections
         // from the target node to start node to build the path.

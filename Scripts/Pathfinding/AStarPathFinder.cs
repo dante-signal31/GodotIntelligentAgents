@@ -14,14 +14,6 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 [Tool]
 public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
 {
-    private static readonly AStarNodeRecord NodeRecordNull = new AStarNodeRecord
-    {
-        Node = null,
-        Connection = null,
-        CostSoFar = 0,
-        TotalEstimatedCostToTarget = float.MaxValue
-    };
-    
     protected class AStarPrioritizedNodeSet: PrioritizedNodeSet
     {
         public static AStarPrioritizedNodeSet operator +(
@@ -68,7 +60,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
         };
         
         // Loop until we reach the target node or no more nodes are available to explore.
-        AStarNodeRecord current = NodeRecordNull;
+        AStarNodeRecord current = AStarNodeRecord.AStarNodeRecordNull;
         while (openSet.Count > 0)
         {
             // Explore prioritizing the node with the lowest total estimated cost to get
@@ -173,7 +165,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
 
         // If we get here and the current record does not point to the targetNode, then
         // we've fully explored the graph without finding a valid path to get the target.
-        if (current.Node != targetNode) return null;
+        if (current?.Node == null || current.Node != targetNode) return null;
     
         // As we've got the target node, analyze the closedDict to follow back connections
         // from the target node to start node to build the path.

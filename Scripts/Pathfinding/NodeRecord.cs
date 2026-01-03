@@ -9,4 +9,11 @@ public class NodeRecord
     public GraphNode Node;
     public GraphConnection Connection;
     public float CostSoFar;
+    
+    public static readonly NodeRecord NodeRecordNull = new() 
+    {
+        Node = null,
+        Connection = null,
+        CostSoFar = 0
+    };
 }
