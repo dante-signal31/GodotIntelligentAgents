@@ -13,7 +13,7 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 /// </remarks> 
 /// </summary>
 [Tool]
-public abstract partial class HeuristicPathFinder<T>: PathFinder<T>, IPathFinder 
+public abstract partial class HeuristicPathFinder<T>: PathFinder<T>
     where T: NodeRecord, new()
 {
     /// <summary>
@@ -25,7 +25,7 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>, IPathFinder
     /// traversing a graph. It provides functionality to add and remove nodes, check for
     /// node existence, and retrieve the node with the lowest cost value.
     /// </remarks>
-    protected abstract class PrioritizedNodeSet
+    protected abstract class PrioritizedNodeSet: INodeCollection<T>
     {
         // Needed to keep ordered by cost the NodeRecords of the node pending to be
         // explored.
@@ -36,16 +36,28 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>, IPathFinder
         
         public int Count => NodeRecordDict.Count;
         public bool Contains(GraphNode node) => NodeRecordDict.ContainsKey(node);
+
+        public abstract void Add(T record);
         
-        
-        public static PrioritizedNodeSet operator -(
-            PrioritizedNodeSet set, 
-            T record)
+        public void Remove(T record)
         {
-            set.NodeRecordDict.Remove(record.Node);
-            return set;
+            NodeRecordDict.Remove(record.Node);
         }
-        
+
+        /// <summary>
+        /// Indexer providing access to a node's corresponding record in the prioritized
+        /// node set.
+        /// </summary>
+        /// <param name="node">The graph node for which the corresponding record is
+        /// requested or set.</param>
+        /// <returns>
+        /// The <typeparamref name="T"/> instance associated with the specified graph
+        /// node.
+        /// </returns>
+        /// <exception cref="KeyNotFoundException">
+        /// Thrown when attempting to retrieve a record for a node that does not exist
+        /// in the collection.
+        /// </exception>
         public T this[GraphNode node]
         {
             get => NodeRecordDict[node];
@@ -60,7 +72,7 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>, IPathFinder
         /// The node record with the lowest cost value or a null if there are
         /// no valid records available in the set.
         /// </returns>
-        public T ExtractLowestCostNodeRecord()
+        public T Get()
         {
             bool validNodeRecordFound = false;
             T recoveredNodeRecord = new();

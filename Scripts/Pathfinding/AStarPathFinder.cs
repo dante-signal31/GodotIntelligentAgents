@@ -14,15 +14,17 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 [Tool]
 public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
 {
+    /// <summary>
+    /// Represents a prioritized set of nodes for the A* pathfinding algorithm.
+    /// This class manages open nodes, ordering them based on their total estimated cost
+    /// to reach the target, enabling efficient retrieval of the next node to explore.
+    /// </summary>
     protected class AStarPrioritizedNodeSet: PrioritizedNodeSet
     {
-        public static AStarPrioritizedNodeSet operator +(
-            AStarPrioritizedNodeSet set, 
-            AStarNodeRecord record)
+        public override void Add(AStarNodeRecord record)
         {
-            set.PriorityQueue.Enqueue(record, record.TotalEstimatedCostToTarget);
-            set.NodeRecordDict[record.Node] = record;
-            return set;
+            PriorityQueue.Enqueue(record, record.TotalEstimatedCostToTarget);
+            NodeRecordDict[record.Node] = record;
         }
     }
 
@@ -50,7 +52,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
         GraphNode targetNode = Graph.GetNodeAtPosition(targetPosition);
         
         // You get to the start node from nowhere (null) and at no cost (0).
-        openSet += new AStarNodeRecord{
+        AStarNodeRecord starNodeRecord = new (){
             Node = CurrentStartNode,
             Connection = null,
             CostSoFar = 0,
@@ -58,6 +60,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                 CurrentStartNode.Position,
                 targetPosition)
         };
+        openSet.Add(starNodeRecord); 
         
         // Loop until we reach the target node or no more nodes are available to explore.
         AStarNodeRecord current = AStarNodeRecord.AStarNodeRecordNull;
@@ -65,7 +68,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
         {
             // Explore prioritizing the node with the lowest total estimated cost to get
             // the target.
-            current = openSet.ExtractLowestCostNodeRecord();
+            current = openSet.Get();
 
             if (current == null) break;
 
@@ -114,7 +117,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                         estimatedCostToTarget + endNodeCost;
 
                     // Add the node to the openSet to assess it fully again.
-                    openSet += endNodeRecord;
+                    openSet.Add(endNodeRecord);
                 }
                 // OK, we've just found a node that is still being assessed in the open
                 // list.
@@ -154,7 +157,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                                 endNode.Position, 
                                 targetPosition)
                     };
-                    openSet += endNodeRecord;
+                    openSet.Add(endNodeRecord);
                 }
             }
 

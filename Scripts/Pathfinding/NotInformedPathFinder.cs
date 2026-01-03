@@ -3,45 +3,27 @@ using Godot;
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
 /// <summary>
-/// Implements a pathfinding algorithm based on Dijkstra's algorithm to find the shortest
-/// path between nodes in a graph. It calculates the least-cost path from a starting
-/// position to a target position by exploring nodes systematically based on their cost
-/// to be reached from the starting position.
+/// Represents a base implementation for pathfinding algorithms
+/// that do not rely on heuristic information to guide the search.
 /// </summary>
-[Tool]
-public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
+public abstract partial class NotInformedPathFinder: PathFinder<NodeRecord>
 {
     /// <summary>
-    /// A specialized collection of node records used in the Dijkstra pathfinding
-    /// algorithm. This collection manages nodes to be explored in priority order
-    /// based on their accumulated path cost, ensuring that the lowest-cost nodes
-    /// are processed first.
+    /// Finds and returns a path to the specified target position.
+    /// Depending on the implementation, this uses a specific node collection
+    /// type to determine the sequence of nodes to explore during pathfinding.
     /// </summary>
-    protected class DijkstraPrioritizedNodeSet: PrioritizedNodeSet
+    /// <typeparam name="TN">The type of node collection to use for pathfinding.
+    /// Must implement INodeCollection.</typeparam>
+    /// <param name="targetPosition">The target position to find a path to.</param>
+    /// <returns>A Path object representing the found path from the start position
+    /// to the target position, or null if no valid path exists.</returns>
+    protected Path FindPath<TN>(Vector2 targetPosition) 
+        where TN: INodeCollection<NodeRecord>, new()
     {
-        public override void Add(NodeRecord record)
-        {
-            PriorityQueue.Enqueue(record, record.CostSoFar);
-            NodeRecordDict[record.Node] = record;
-        }
-    }
-
-    /// <summary>
-    /// Finds a path from the current position to the specified target position
-    /// within the provided graph using Dijkstra's algorithm.
-    /// </summary>
-    /// <param name="targetPosition">
-    /// The target position on the map to which the path is to be found.
-    /// </param>
-    /// <returns>
-    /// A path object representing the sequence of nodes from the start position
-    /// to the target position. Returns null if no valid path exists to the target.
-    /// </returns>
-    public override Path FindPath(Vector2 targetPosition)
-    {
-        // Nodes not fully explored yet, ordered by the cost to get them from the
-        // start node.
-        DijkstraPrioritizedNodeSet openSet = new ();
+        // Nodes not fully explored yet, ordered as they were found.
+        TN openQueue = new();
+        
         // Nodes already fully explored. We use a dictionary to keep track of the
         // information gathered from each node, including the connection to get there,
         // while exploring the graph.
@@ -52,20 +34,20 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
         GraphNode targetNode = Graph.GetNodeAtPosition(targetPosition);
         
         // You get to the start node from nowhere (null) and at no cost (0).
-        NodeRecord startRecord = new NodeRecord
+        var startRecord = new NodeRecord
         {
-            Node = CurrentStartNode, 
-            Connection = null, 
-            CostSoFar = 0
+            Node = CurrentStartNode,
+            Connection = null,
+            CostSoFar = 0,
         };
-        openSet.Add(startRecord);
-
+        openQueue.Add(startRecord);
+        
         // Loop until we reach the target node or no more nodes are available to explore.
         NodeRecord current = NodeRecord.NodeRecordNull;
-        while (openSet.Count > 0)
+        while (openQueue.Count > 0)
         {
-            // Explore prioritizing the node with the lowest cost to be reached.
-            current = openSet.Get();
+            // Explore the pending node that was first discovered.
+            current = openQueue.Get();
             if (current == null) break;
 
             // If we reached the end node, then our exploration is complete.
@@ -87,9 +69,9 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
                 float endNodeCost = current.CostSoFar + graphConnection.Cost;
 
                 NodeRecord endNodeRecord;
-                if (openSet.Contains(endNode))
+                if (openQueue.Contains(endNode))
                 {
-                    endNodeRecord = openSet[endNode];
+                    endNodeRecord = openQueue[endNode];
                     // If the end node is already in the open set, but with a lower cost,
                     // it means that we are NOT found a better path to get to it. So skip
                     // it.
@@ -110,7 +92,7 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
                         Connection = graphConnection,
                         CostSoFar = endNodeCost,
                     };
-                    openSet.Add(endNodeRecord);
+                    openQueue.Add(endNodeRecord);
                 }
             }
             
@@ -121,7 +103,8 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
         
         // If we get here and the current record does not point to the targetNode, then
         // we've fully explored the graph without finding a valid path to get the target.
-        if (current?.Node == null || current.Node != targetNode) return null;
+        if (current?.Node == null || current.Node != targetNode) 
+            return null;
         
         // As we've got the target node, analyze the closedDict to follow back connections
         // from the target node to start node to build the path.
