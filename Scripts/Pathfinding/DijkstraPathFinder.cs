@@ -5,10 +5,11 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 /// <summary>
 /// Implements a pathfinding algorithm based on Dijkstra's algorithm to find the shortest
 /// path between nodes in a graph. It calculates the least-cost path from a starting
-/// position to a target position by exploring nodes systematically based on their cost.
+/// position to a target position by exploring nodes systematically based on their cost
+/// to be reached from the starting position.
 /// </summary>
 [Tool]
-public partial class DijkstraPathFinder: PathFinder<NodeRecord>, IPathFinder
+public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
 {
     private static readonly NodeRecord NodeRecordNull = new NodeRecord
     {

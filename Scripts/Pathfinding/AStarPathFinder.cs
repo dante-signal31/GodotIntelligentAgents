@@ -5,8 +5,14 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
+/// <summary>
+/// Implements the A* (A-Star) pathfinding algorithm, which is used to calculate
+/// the shortest path between a start and target position in a graph. It calculates the
+/// least-cost path from a starting position to a target position by exploring nodes
+/// systematically based on their estimated cost to get the goal from them.
+/// </summary>
 [Tool]
-public partial class AStarPathFinder: PathFinder<AStarNodeRecord>, IPathFinder
+public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
 {
     private static readonly AStarNodeRecord NodeRecordNull = new AStarNodeRecord
     {

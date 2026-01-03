@@ -3,8 +3,18 @@ using Godot;
 
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
+/// <summary>
+/// Classes implementing inheriting this class are responsible for navigating a graph
+/// structure to find a path to a target position.
+/// <remarks>
+/// The heuristic pathfinders are informed searchers that use heuristics to
+/// estimate which graph branches are more promising to get the goal so they can be
+/// explored first.
+/// </remarks> 
+/// </summary>
 [Tool]
-public abstract partial class PathFinder<T>: Node2D where T: NodeRecord, new()
+public abstract partial class HeuristicPathFinder<T>: Node2D, IPathFinder 
+    where T: NodeRecord, new()
 {
     /// <summary>
     /// A collection of node records with priority-based access for use in pathfinding
