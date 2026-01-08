@@ -10,6 +10,11 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 [Tool]
 public partial class MeshNavigationAgent2D: NavigationAgent2D, INavigationAgent
 {
+    /// <summary>
+    /// Event raised when the navigation map is ready to be queried.
+    /// </summary>
+    [Signal] public delegate void MeshNavigationReadyEventHandler();
+    
     // Do not query when the map has never synchronized and is empty.
     public bool IsReady => (NavigationServer2D.MapGetIterationId(GetNavigationMap()) > 0);
 
@@ -24,6 +29,25 @@ public partial class MeshNavigationAgent2D: NavigationAgent2D, INavigationAgent
                 return PathToTarget.Last();
             }
             return Vector2.Zero;
+        }
+    }
+
+    private bool _waitingForReady;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _waitingForReady = !IsReady;
+    }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        if (_waitingForReady)
+        {
+            if (!IsReady) return;
+            EmitSignal(SignalName.MeshNavigationReady);
+            _waitingForReady = false;
         }
     }
 }

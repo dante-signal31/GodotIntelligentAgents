@@ -13,8 +13,24 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 [Tool]
 public partial class Path: GroupPattern
 {
+    [Signal] public delegate void PathUpdatedEventHandler();
+
     [ExportCategory("PATH CONFIGURATION:")]
-    [Export] public bool Loop { get; set; } = true;
+    private bool _loop;
+    /// <summary>
+    /// Indicates whether the path should loop back to the beginning once the end is
+    /// reached.
+    /// </summary>
+    [Export] public bool Loop
+    {
+        get => _loop;
+        set
+        {
+            if (_loop == value) return;
+            _loop = value;
+            EmitSignal(SignalName.PathUpdated);
+        }
+    }
 
     /// <summary>
     /// Target positions of the path.
@@ -38,7 +54,10 @@ public partial class Path: GroupPattern
 
     public void LoadPathData(Array<Vector2> positions)
     {
-        Positions.Offsets = positions;    
+        Positions.Offsets = positions;
+        // New path, then reset index.
+        CurrentTargetPositionIndex = 0;
+        EmitSignal(SignalName.PathUpdated);
     }
     
     /// <summary>
@@ -62,9 +81,23 @@ public partial class Path: GroupPattern
         return Positions.Offsets[CurrentTargetPositionIndex];
     }
 
+
+    /// <summary>
+    /// Empty path constructor.
+    /// </summary>
     public Path()
     {
         Positions ??= new OffsetList();
+    }
+
+    /// <summary>
+    /// Constructor for a path with a predefined set of positions.
+    /// </summary>
+    /// <param name="pathPositions">Initial path positions.</param>
+    public Path(Vector2[] pathPositions) : this()
+    {
+        Array<Vector2> positions = new(pathPositions);
+        LoadPathData(positions);
     }
     
     public override void _Ready()
