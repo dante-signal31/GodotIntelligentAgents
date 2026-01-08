@@ -8,7 +8,7 @@ namespace GodotGameAIbyExample.Scripts.Groups;
 
 /// <summary>
 /// The class is used to define and manage defines the positions of the group members
-/// in relation with group origin. 
+/// in relation to the group origin. 
 /// </summary>
 [Tool]
 public partial class GroupPattern : Node2D, IGizmos

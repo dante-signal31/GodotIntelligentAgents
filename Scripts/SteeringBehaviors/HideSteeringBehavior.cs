@@ -103,7 +103,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     /// <summary>
     /// Minimum time in seconds between hiding point path recalculations.
     /// </summary>
-    [Export] private float pathRecalculationTime = 0.5f;
+    [Export] private float _pathRecalculationTime = 0.5f;
 
     [ExportCategory("DEBUG:")]
     /// <summary>
@@ -152,7 +152,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     {
         if (_nextMovementTarget == null) _nextMovementTarget = new Node2D();
         HidingPoint = GlobalPosition;
-        _pathRecalculationTimer = new System.Timers.Timer(pathRecalculationTime * 1000);
+        _pathRecalculationTimer = new System.Timers.Timer(_pathRecalculationTime * 1000);
         _pathRecalculationTimer.AutoReset = false;
         _pathRecalculationTimer.Elapsed += OnRecalculationPathTimerTimeout;
     }
@@ -176,9 +176,9 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
 
     public override void _Ready()
     {
-        Node2D _currentRoot = GetTree().Root.FindChild<Node2D>();
-        if (_currentRoot == null) return;
-        _currentLevel = _currentRoot.FindChild<Courtyard>();
+        Node2D currentRoot = GetTree().Root.FindChild<Node2D>();
+        if (currentRoot == null) return;
+        _currentLevel = currentRoot.FindChild<Courtyard>();
         // Next guard is needed to not receiving warnings when this node is opened in its
         // own scene.
         if (_currentLevel == null) return;

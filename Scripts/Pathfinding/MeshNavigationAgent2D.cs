@@ -3,7 +3,7 @@ using Godot;
 
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
-// It must be marked as Tool to be found with my custom extension
+// It must be marked as a Tool to be found with my custom extension
 // method FindChild<T>(). Otherwise, FindChild casting to INavigationAgent will fail. It
 // seems and old Godot C# problem:
 // https://github.com/godotengine/godot/issues/36395
