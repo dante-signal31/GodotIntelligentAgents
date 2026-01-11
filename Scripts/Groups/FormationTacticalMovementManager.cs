@@ -152,7 +152,7 @@ public partial class FormationTacticalMovementManager: Node2D, IGizmos
         _formationUshers = (IFormation) _iFormationUshers;
         Node2D _currentRoot = GetTree().Root.FindChild<Node2D>();
         if (_currentRoot == null) return;
-        Courtyard _currentLevel = _currentRoot.FindChild<Courtyard>();
+        Levels.Courtyard _currentLevel = _currentRoot.FindChild<Levels.Courtyard>();
         _hidingPointsDetector = this.FindChild<HidingPointsDetector>();
         _hidingPointsDetector.Threat = _targeter.Target;
         _hidingPointsDetector.ObstaclesPositions = _currentLevel.ObstaclePositions;

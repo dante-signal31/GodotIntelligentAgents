@@ -135,7 +135,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     private HidingPointsDetector _hidingPointsDetector;
     private INavigationAgent _navigationAgent2D;
     private SeekSteeringBehavior _seekSteeringBehavior;
-    private Courtyard _currentLevel;
+    private GodotGameAIbyExample.Scripts.Levels.Courtyard _currentLevel;
     private RayCast2D _rayCast2D;
     private Vector2 _previousThreatPosition = Vector2.Zero;
     
@@ -178,7 +178,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     {
         Node2D currentRoot = GetTree().Root.FindChild<Node2D>();
         if (currentRoot == null) return;
-        _currentLevel = currentRoot.FindChild<Courtyard>();
+        _currentLevel = currentRoot.FindChild<GodotGameAIbyExample.Scripts.Levels.Courtyard>();
         // Next guard is needed to not receiving warnings when this node is opened in its
         // own scene.
         if (_currentLevel == null) return;

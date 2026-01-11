@@ -55,7 +55,7 @@ public class CleanAreaChecker : IDisposable
         _cleanAreaChecker.TargetPosition = Vector2.Zero;
         _cleanAreaChecker.ExcludeParent = excludeParent;
         _cleanAreaChecker.Enabled = true;
-        parent.GetTree().Root.CallDeferred(Node.MethodName.AddChild,_cleanAreaChecker);
+        parent.AddChild(_cleanAreaChecker);
     }
 
     /// <summary>
@@ -74,7 +74,8 @@ public class CleanAreaChecker : IDisposable
         _cleanAreaChecker.ForceUpdateTransform(); 
         // This call is rather expensive. Try to use the least possible.
         _cleanAreaChecker.ForceShapecastUpdate();
-        return (!_cleanAreaChecker.IsColliding());
+        bool isClean = !_cleanAreaChecker.IsColliding();
+        return (isClean);
     }
 
     /// <summary>
@@ -97,9 +98,8 @@ public class CleanAreaChecker : IDisposable
         
         // This call is rather expensive. Try to use the least possible.
         _cleanAreaChecker.ForceShapecastUpdate();
-        bool isClean = !_cleanAreaChecker.IsColliding();
-        
         _cleanAreaChecker.TargetPosition = Vector2.Zero;
+        bool isClean = !_cleanAreaChecker.IsColliding();
         return (isClean);
     }
     

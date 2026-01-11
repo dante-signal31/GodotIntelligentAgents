@@ -51,7 +51,7 @@ public partial class PathSmoother: Node2D, IPathFinder
         _cleanAreaChecker = new CleanAreaChecker(
             (Mathf.Min(Graph.CellSize.X, Graph.CellSize.Y)/2), 
             Graph.ObstaclesLayers, 
-            this);
+            Graph);
     }    
     
     public override void _ExitTree()

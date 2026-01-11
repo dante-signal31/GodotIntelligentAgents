@@ -23,6 +23,9 @@ public partial class MapGraph: Node2D
     [Export] public Vector2I CellResolution { get; set; }= new(18, 10);
     
     [Export(PropertyHint.Layers2DPhysics)] public uint ObstaclesLayers { get; set; } = 1;
+    
+    [ExportCategory("WIRING:")]
+    [Export] private TileMapLayer _walkableTilemapLayer;
 
     /// <summary>
     /// MapGraph serialized backend.
@@ -113,6 +116,12 @@ public partial class MapGraph: Node2D
                 GraphNode node = new();
                 node.Position = nodeGlobalPosition;
                 
+                float nodeCost = GetPositionCost(nodeGlobalPosition);
+                // Node cost is the cost to go through the node. So, its connection cost
+                // is the half of the node cost. One half to enter the node and the other
+                // half to exit it.
+                float connectionCost = nodeCost / 2;
+                
                 // Populate new node's connections.
                 foreach (Orientation orientation in Enum.GetValues<Orientation>())
                 {
@@ -122,11 +131,16 @@ public partial class MapGraph: Node2D
                         GetNeighborRelativeArrayPosition(orientation) + 
                         nodeArrayPosition;
                     if (!GraphResource.Nodes.ContainsKey(neighborArrayPosition)) continue;
+                    // Get the cost to enter the neighbor node.
+                    Vector2 neighborGlobalPosition = 
+                        NodeGlobalPosition(neighborArrayPosition);
+                    float neighbourCost = GetPositionCost(neighborGlobalPosition);
+                    float neighborConnectionCost = neighbourCost / 2;
                     // Direct connection between this node and the neighbor.
                     node.AddConnection(
                         nodeArrayPosition,
                         neighborArrayPosition, 
-                        1, 
+                        connectionCost + neighborConnectionCost, 
                         orientation);
                     // Conversely, as our connections are bidirectional, we must set up
                     // also the reciprocal connection from the neighbor to this node. 
@@ -150,7 +164,7 @@ public partial class MapGraph: Node2D
                     neighborNode.AddConnection(
                         neighborArrayPosition, 
                         nodeArrayPosition, 
-                        1, 
+                        connectionCost + neighborConnectionCost, 
                         reciprocalOrientation);
                 }
                 
@@ -159,7 +173,24 @@ public partial class MapGraph: Node2D
             }
         }
     }
-    
+
+    /// <summary>
+    /// Calculates the movement cost associated with a specific global position on the
+    /// map. This cost represents the effort required to traverse the tile at the given
+    /// position.
+    /// </summary>
+    /// <param name="neighborGlobalPosition">The global position of the tile
+    /// to be evaluated.</param>
+    /// <return>The movement cost as a float, derived from the custom data associated
+    /// with the tile.</return>
+    private float GetPositionCost(Vector2 neighborGlobalPosition)
+    {
+        Vector2I tileArrayPosition = _walkableTilemapLayer.LocalToMap(
+            _walkableTilemapLayer.ToLocal(neighborGlobalPosition));
+        TileData tileData = _walkableTilemapLayer.GetCellTileData(tileArrayPosition);
+        return (float) tileData.GetCustomData("Cost");
+    }
+
     public override void _EnterTree()
     {
         _cleanAreaChecker = new CleanAreaChecker(
@@ -221,6 +252,11 @@ public partial class MapGraph: Node2D
                         cellPosition, 
                         otherNodePosition, 
                         NodeColor);
+                    DrawString(
+                        ThemeDB.FallbackFont, 
+                        cellPosition + (otherNodePosition - cellPosition) / 2, 
+                        node.Connections[orientation].Cost.ToString("G"), 
+                        modulate: NodeColor);
                 }
             }
         }

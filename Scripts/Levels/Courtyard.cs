@@ -1,8 +1,9 @@
 using Godot;
-using System;
-using System.Collections.Generic;
 using Godot.Collections;
 
+namespace GodotGameAIbyExample.Scripts.Levels;
+
+[Tool]
 public partial class Courtyard : Node2D
 {
     private const string ObstacleKey = "Obstacle";
