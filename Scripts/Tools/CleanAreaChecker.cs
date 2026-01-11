@@ -91,15 +91,16 @@ public class CleanAreaChecker : IDisposable
     public bool IsCleanPath(Vector2 start, Vector2 end)
     {
         _cleanAreaChecker.GlobalPosition = start;
+        _cleanAreaChecker.TargetPosition = end - start;
+        
         // Force Godot to update the transform of the ShapeCast2D in the physics engine.
         _cleanAreaChecker.ForceUpdateTransform(); 
         
-        _cleanAreaChecker.TargetPosition = end - start;
-        
         // This call is rather expensive. Try to use the least possible.
         _cleanAreaChecker.ForceShapecastUpdate();
-        _cleanAreaChecker.TargetPosition = Vector2.Zero;
+        
         bool isClean = !_cleanAreaChecker.IsColliding();
+        _cleanAreaChecker.TargetPosition = Vector2.Zero;
         return (isClean);
     }
     

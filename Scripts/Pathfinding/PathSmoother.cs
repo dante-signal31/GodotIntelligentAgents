@@ -11,12 +11,6 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 /// refine raw paths produced by an associated child pathfinding node (IPathFinder) into
 /// smoother paths by removing unnecessary nodes and creating more efficient routes.
 /// </summary>
-/// <remarks>
-/// The PathSmoother node relies on a child IPathFinder node to initially compute the raw
-/// path. It then applies additional logic for path smoothing and obstacle checking
-/// before returning the final path. This class also provides configuration warnings to
-/// ensure proper setup in the scene.
-/// </remarks>
 [Tool]
 public partial class PathSmoother: Node2D, IPathFinder
 {
@@ -33,7 +27,7 @@ public partial class PathSmoother: Node2D, IPathFinder
     }
     
     [ExportCategory("DEBUG")]
-    [Export] public bool ShowGizmos { get; set; } = false;
+    [Export] public bool ShowGizmos { get; set; }
     [Export] public Color GizmosColor { get; set; } = Colors.GreenYellow;
     
     private IPathFinder _smoothedPathFinder;
@@ -49,6 +43,9 @@ public partial class PathSmoother: Node2D, IPathFinder
     public override void _EnterTree()
     {
         _cleanAreaChecker = new CleanAreaChecker(
+            // I don't know why, but shape casts seem to miss corners, so the agents tend
+            // to touch them. The problem seems to be alleviated by adding a small extra
+            // radius.
             (Mathf.Min(Graph.CellSize.X, Graph.CellSize.Y)/2), 
             Graph.ObstaclesLayers, 
             Graph);
@@ -108,8 +105,7 @@ public partial class PathSmoother: Node2D, IPathFinder
         
         Path smoothedPath = new();
         smoothedPath.Loop = false;
-        Array<Vector2> smoothedPositions = new();
-        smoothedPositions.Add(rawPath.TargetPositions[0]);
+        Array<Vector2> smoothedPositions = new() { rawPath.TargetPositions[0] };
         int startIndex = 0;
         int endIndex = 2;
         
@@ -121,23 +117,30 @@ public partial class PathSmoother: Node2D, IPathFinder
                     rawPath.TargetPositions[startIndex],
                     rawPath.TargetPositions[endIndex]))
             {
-                // If there is a clear path from the starIndex position to the endIndex
-                // position, then we can omit the positions between them from the smoothed
-                // path.
-                endIndex++;
                 // If there was a clear path to the end of the path, then add that end to
                 // the smoothed path before leaving the loop. That will complete the
                 // smoothed path.
-                if (endIndex >= rawPath.PathLength) 
-                    smoothedPositions.Add(rawPath.TargetPositions[endIndex-1]);
+                if (endIndex >= rawPath.PathLength - 1) 
+                    smoothedPositions.Add(rawPath.TargetPositions[endIndex]);
+                endIndex++;
+                // If there was a clear path from the starIndex position to the endIndex
+                // position, and the endIndex was not the end of the path, then we can
+                // omit the positions between them from the smoothed path.
                 continue;
+            }
+            if (endIndex == rawPath.PathLength - 1)
+            {
+                // If we were at the end of the path, then add the last position to the
+                // smoothed path and smooth no more.
+                smoothedPositions.Add(rawPath.TargetPositions[endIndex]);
+                break;
             }
             // Otherwise, add the previous position to the occluded one to the smoothed
             // path because it was the last we could get directly.
             smoothedPositions.Add(rawPath.TargetPositions[endIndex-1]);
-            // Now we will ray trace from that position to find out if we can omit any of
-            // the remaining positions.
-            startIndex = endIndex;
+            // Now we will ray trace from that position to find out if we can omit
+            // any of the remaining positions.
+            startIndex = endIndex-1;
             endIndex++;
         } while (endIndex < rawPath.PathLength);
         

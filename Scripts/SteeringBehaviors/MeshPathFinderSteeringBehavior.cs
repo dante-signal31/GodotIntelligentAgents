@@ -46,6 +46,7 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
         private set
         {
             _currentPath = value;
+            if (_pathFollowingSteeringBehavior == null) return;
             _pathFollowingSteeringBehavior.FollowPath = value;
         }
     }
@@ -65,6 +66,7 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
             new Callable(this, MethodName.OnPathUpdated));
         
         // Show path gizmo if we are debugging.
+        if (CurrentPath == null) CurrentPath = new Path();
         CurrentPath.Name = $"{Name} - Path";
         CurrentPath.ShowGizmos = ShowGizmos;
         CurrentPath.GizmosColor = GizmosColor;
