@@ -23,8 +23,32 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
     {
         public override void Add(AStarNodeRecord record)
         {
-            PriorityQueue.Enqueue(record, record.TotalEstimatedCostToTarget);
-            NodeRecordDict[record.Node] = record;
+            if (Contains(record.Node))
+            {
+                RefreshNode(record);
+            }
+            else
+            {
+                PriorityQueue.Enqueue(record, record.TotalEstimatedCostToTarget);
+                NodeRecordDict[record.Node] = record;
+            }
+        }
+
+        public override void RefreshNode(AStarNodeRecord nodeRecord)
+        {
+            // Rebuild the PriorityQueue.
+            var tempSet = new HashSet<AStarNodeRecord> { nodeRecord };
+            while (PriorityQueue.Count > 0)
+            {
+                var item = PriorityQueue.Dequeue();
+                if (item.Node == nodeRecord.Node) continue;
+                tempSet.Add(item);
+            }
+            PriorityQueue.Clear();
+            foreach (AStarNodeRecord record in tempSet)
+            {
+                PriorityQueue.Enqueue(record, record.TotalEstimatedCostToTarget);
+            }
         }
     }
 
@@ -56,6 +80,19 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
             Node = CurrentStartNode,
             Connection = null,
             CostSoFar = 0,
+            // For A* to guarantee the shortest path, the heuristic must never
+            // overestimate the actual cost (it must be "admissible"). E.g., the heuristic
+            // to the target should not be higher than the actual cost to get there.
+            //
+            // For instance, If you are using Euclidean Distance as a heuristic while your
+            // connection costs (graphConnection.Cost) are significantly lower (e.g.,
+            // smaller than the pixel distance), the heuristic becomes too "aggressive."
+            // Consequence: The algorithm relies so heavily on the direct distance to
+            // the target (h) that it ignores terrain costs (g), because the h-value
+            // outweighs the accumulated cost.
+            //
+            // Solution: Ensure graph connection costs are on the same scale as the
+            // used heuristic (Euclidean distance in the example).
             TotalEstimatedCostToTarget = _heuristic.EstimateCostToTarget(
                 CurrentStartNode.Position,
                 targetPosition)
@@ -115,6 +152,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                     endNodeRecord.CostSoFar = endNodeCost;
                     endNodeRecord.TotalEstimatedCostToTarget =
                         estimatedCostToTarget + endNodeCost;
+                    endNodeRecord.Connection = graphConnection;
 
                     // Add the node to the openSet to assess it fully again.
                     openSet.Add(endNodeRecord);
@@ -141,6 +179,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                         endNodeCost;
                     endNodeRecord.CostSoFar = endNodeCost;
                     endNodeRecord.Connection = graphConnection;
+                    openSet.RefreshNode(endNodeRecord);
                 }
                 else
                 {
@@ -153,7 +192,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                         Connection = graphConnection,
                         CostSoFar = endNodeCost,
                         TotalEstimatedCostToTarget =
-                            _heuristic.EstimateCostToTarget(
+                            endNodeCost + _heuristic.EstimateCostToTarget(
                                 endNode.Position, 
                                 targetPosition)
                     };

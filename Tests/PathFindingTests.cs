@@ -262,14 +262,14 @@ public class PathFindingTests
         
         // Assert that the pathfinder agent can reach the first target.
         target.GlobalPosition = position2.GlobalPosition;
-        await _sceneRunner.AwaitMillis(7000);
+        await _sceneRunner.AwaitMillis(9000);
         AssertThat(
             aStarPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
             ).IsTrue();
         
         // Assert that the pathfinder agent can reach the second target.
         target.GlobalPosition = position3.GlobalPosition;
-        await _sceneRunner.AwaitMillis(6000);
+        await _sceneRunner.AwaitMillis(8000);
         AssertThat(
             aStarPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
         ).IsTrue();

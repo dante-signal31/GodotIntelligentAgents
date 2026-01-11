@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
@@ -21,8 +22,32 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
     {
         public override void Add(NodeRecord record)
         {
-            PriorityQueue.Enqueue(record, record.CostSoFar);
-            NodeRecordDict[record.Node] = record;
+            if (Contains(record.Node))
+            {
+                RefreshNode(record);
+            }
+            else
+            {
+                PriorityQueue.Enqueue(record, record.CostSoFar);
+                NodeRecordDict[record.Node] = record;
+            }
+        }
+        
+        public override void RefreshNode(NodeRecord nodeRecord)
+        {
+            // Rebuild the PriorityQueue.
+            var tempSet = new HashSet<NodeRecord> { nodeRecord };
+            while (PriorityQueue.Count > 0)
+            {
+                var item = PriorityQueue.Dequeue();
+                if (item.Node == nodeRecord.Node) continue;
+                tempSet.Add(item);
+            }
+            PriorityQueue.Clear();
+            foreach (NodeRecord record in tempSet)
+            {
+                PriorityQueue.Enqueue(record, record.CostSoFar);
+            }
         }
     }
 
@@ -98,6 +123,7 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
                     // to get there with that lower cost.
                     endNodeRecord.CostSoFar = endNodeCost;
                     endNodeRecord.Connection = graphConnection;
+                    openSet.RefreshNode(endNodeRecord);
                 }
                 else
                 {

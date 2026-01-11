@@ -100,5 +100,13 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>
             if (!validNodeRecordFound) return null;
             return recoveredNodeRecord;
         }
+
+        /// <summary>
+        /// <p> Regenerate queue order.</p>
+        /// <remarks> Queue reorders when you include a new element, but not when you
+        /// update an existing one priority. So, use this method whenever you change
+        /// any of the existing record priorities. </remarks>
+        /// </summary>
+        public abstract void RefreshNode(T record);
     }
 }
