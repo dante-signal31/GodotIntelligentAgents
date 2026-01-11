@@ -52,8 +52,6 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
     
     private PathFollowingSteeringBehavior _pathFollowingSteeringBehavior;
     private MeshNavigationAgent2D _meshNavigationPathFinder;
-    private bool _showGizmos;
-    private Color _gizmosColor;
 
     public override void _Ready()
     {
