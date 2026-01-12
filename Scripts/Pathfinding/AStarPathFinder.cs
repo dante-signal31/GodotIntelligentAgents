@@ -18,13 +18,13 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
     /// This class manages open nodes, ordering them based on their total estimated cost
     /// to reach the target, enabling efficient retrieval of the next node to explore.
     /// </summary>
-    protected class AStarPrioritizedNodeSet: PrioritizedNodeSet
+    protected class AStarPrioritizedNodeRecordSet: PrioritizedNodeRecordSet
     {
         public override void Add(AStarNodeRecord record)
         {
             if (Contains(record.Node))
             {
-                RefreshNode(record);
+                RefreshRecord(record);
             }
             else
             {
@@ -33,7 +33,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
             }
         }
 
-        public override void RefreshNode(AStarNodeRecord nodeRecord)
+        public override void RefreshRecord(AStarNodeRecord nodeRecord)
         {
             // Rebuild the PriorityQueue.
             var tempSet = new HashSet<AStarNodeRecord> { nodeRecord };
@@ -64,7 +64,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
     {
         // Nodes not fully explored yet, ordered by the estimated cost to get the target
         // through them.
-        AStarPrioritizedNodeSet openSet = new ();
+        AStarPrioritizedNodeRecordSet openRecordSet = new ();
         // Nodes already fully explored. We use a dictionary to keep track of the
         // information gathered from each node, including the connection to get there,
         // while exploring the graph.
@@ -96,15 +96,15 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                 CurrentStartNode.Position,
                 targetPosition)
         };
-        openSet.Add(starNodeRecord); 
+        openRecordSet.Add(starNodeRecord); 
         
         // Loop until we reach the target node or no more nodes are available to explore.
         AStarNodeRecord current = AStarNodeRecord.AStarNodeRecordNull;
-        while (openSet.Count > 0)
+        while (openRecordSet.Count > 0)
         {
             // Explore prioritizing the node with the lowest total estimated cost to get
             // the target.
-            current = openSet.Get();
+            current = openRecordSet.Get();
 
             if (current == null) break;
 
@@ -154,13 +154,13 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                     endNodeRecord.Connection = graphConnection;
 
                     // Add the node to the openSet to assess it fully again.
-                    openSet.Add(endNodeRecord);
+                    openRecordSet.Add(endNodeRecord);
                 }
                 // OK, we've just found a node that is still being assessed in the open
                 // list.
-                else if (openSet.Contains(endNode))
+                else if (openRecordSet.Contains(endNode))
                 {
-                    endNodeRecord = openSet[endNode];
+                    endNodeRecord = openRecordSet[endNode];
                     // If the end node is already in the open set, but with a lower cost,
                     // it means that we are NOT found a better path to get to it. So skip
                     // it.
@@ -178,7 +178,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                         endNodeCost;
                     endNodeRecord.CostSoFar = endNodeCost;
                     endNodeRecord.Connection = graphConnection;
-                    openSet.RefreshNode(endNodeRecord);
+                    openRecordSet.RefreshRecord(endNodeRecord);
                 }
                 else
                 {
@@ -195,7 +195,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                                 endNode.Position, 
                                 targetPosition)
                     };
-                    openSet.Add(endNodeRecord);
+                    openRecordSet.Add(endNodeRecord);
                 }
             }
 
