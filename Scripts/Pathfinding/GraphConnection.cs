@@ -15,8 +15,8 @@ public partial class GraphConnection: Resource
     // serialization algorithms don't like cyclic graphs. My graph implemented cycles:
     // MapGraphResource -> GraphNode A -> GraphConnection -> EndNode (GraphNode B) ->
     // Connections -> ... -> Return to GraphNode A. So I had to break cycles. That's why
-    // now I used Vector2I keys to serialize GraphConnections and not direct references
+    // now I use uint ids to serialize GraphConnections and not direct references
     // instead.
-    [Export] public Vector2I StartNodeKey;
-    [Export] public Vector2I EndNodeKey;
+    [Export] public uint StartNodeId;
+    [Export] public uint EndNodeId;
 }

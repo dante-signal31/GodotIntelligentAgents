@@ -19,10 +19,10 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
         
         // Needed to keep track of the nodes still pending to be explored and to quickly
         // get their respective records.
-        private readonly Dictionary<GraphNode, NodeRecord> _nodeRecordDict = new ();
+        private readonly Dictionary<PositionNode, NodeRecord> _nodeRecordDict = new ();
         
         public int Count => _nodeRecordDict.Count;
-        public bool Contains(GraphNode node) => _nodeRecordDict.ContainsKey(node);
+        public bool Contains(PositionNode node) => _nodeRecordDict.ContainsKey(node);
         
         public void Add(NodeRecord record)
         {
@@ -54,7 +54,7 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
             _nodeRecordDict.Remove(record.Node);
         }
         
-        public NodeRecord this[GraphNode node]
+        public NodeRecord this[PositionNode node]
         {
             get => _nodeRecordDict[node];
             set => _nodeRecordDict[node] = value;

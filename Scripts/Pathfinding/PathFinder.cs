@@ -23,18 +23,18 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
     /// <summary>
     /// Agent starting node.
     /// </summary>
-    protected GraphNode CurrentStartNode;
+    protected PositionNode CurrentStartNode;
     
     /// <summary>
     /// Dictionary containing nodes and their corresponding recorded data after the
     /// exploration process.
     /// </summary>
-    protected Dictionary<GraphNode, T> ClosedDict;
+    protected Dictionary<PositionNode, T> ClosedDict;
     
     /// <summary>
     /// The currently found path across the graph to the target node.
     /// </summary>
-    protected Path FoundPath;
+    private Path _foundPath;
     
     public override void _Ready()
     {
@@ -58,9 +58,6 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
     /// Constructs a path from the start node to the target node by traversing
     /// the closed dictionary in reverse and building a sequence of connections.
     /// </summary>
-    /// <param name="graph">
-    /// The graph containing the nodes and connections used for pathfinding.
-    /// </param>
     /// <param name="closedDict">
     /// A dictionary containing nodes and their corresponding recorded data,
     /// used to trace the path from the target node to the start node.
@@ -76,10 +73,9 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
     /// from the start node to the target node.
     /// </returns>
     protected Path BuildPath(
-        MapGraph graph,
-        Dictionary<GraphNode, T> closedDict,
-        GraphNode startNode,
-        GraphNode targetNode)
+        Dictionary<PositionNode, T> closedDict,
+        PositionNode startNode,
+        PositionNode targetNode)
     {
         List<GraphConnection> path = new();
         T pointer = closedDict[targetNode];
@@ -88,7 +84,7 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
         while (pointer.Node != startNode)
         {
             path.Add(pointer.Connection);
-            GraphNode endA = graph.Nodes[pointer.Connection.StartNodeKey];
+            PositionNode endA = Graph.GetNodeById(pointer.Connection.StartNodeId);
             pointer = closedDict[endA];
         }
 
@@ -98,16 +94,16 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
         
         // Now that the Connection list is in correct order, we can build the Path
         // following Connections and taking note of their EndNode positions.
-        FoundPath = new Path();
-        FoundPath.Loop = false;
-        FoundPath.ShowGizmos = ShowGizmos;
+        _foundPath = new Path();
+        _foundPath.Loop = false;
+        _foundPath.ShowGizmos = ShowGizmos;
         foreach (GraphConnection connection in path)
         {
-            GraphNode endB = graph.Nodes[connection.EndNodeKey];
-            FoundPath.TargetPositions.Add(endB.Position);
+            PositionNode endB = Graph.GetNodeById(connection.EndNodeId);
+            _foundPath.TargetPositions.Add(endB.Position);
         }
         
-        return FoundPath;
+        return _foundPath;
     }
     
     public override void _Process(double delta)
@@ -125,7 +121,7 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
         if (!ShowGizmos) return;
 
         // Draw explored nodes.
-        foreach (GraphNode exploredNode in ClosedDict.Keys)  
+        foreach (PositionNode exploredNode in ClosedDict.Keys)  
         {
             DrawCircle(
                 ToLocal(exploredNode.Position), 
@@ -156,8 +152,8 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
             }
             else
             {
-                Vector2I fromNodeKey = ClosedDict[exploredNode].Connection.StartNodeKey;
-                GraphNode fromNode = Graph.Nodes[fromNodeKey];
+                PositionNode fromNode = 
+                    Graph.GetNodeById(ClosedDict[exploredNode].Connection.StartNodeId);
                 Vector2 relativePosition = exploredNode.Position - fromNode.Position;
                 // Connection orientation from the receiving node (the explored node)
                 // perspective.
@@ -186,10 +182,10 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
             }
         }
         
-        if (FoundPath == null) return;
+        if (_foundPath == null) return;
         
         // Draw found path.
-        foreach (Vector2 position in FoundPath.TargetPositions)
+        foreach (Vector2 position in _foundPath.TargetPositions)
         {
             DrawCircle(
                 ToLocal(position), 

@@ -43,6 +43,11 @@ public partial class MapGraph: Node2D
     
     public Vector2 CellSize => MapSize / (Vector2) CellResolution;
     
+    /// <summary>
+    /// Just a shortcut to the graph nodes dictionary inside GraphResource.
+    /// </summary>
+    public Godot.Collections.Dictionary<Vector2I, PositionNode> Nodes => GraphResource.Nodes;
+    
     private Vector2 NodeGlobalPosition(Vector2I nodeArrayPosition) => 
         nodeArrayPosition * CellSize + CellSize / 2;
 
@@ -51,17 +56,17 @@ public partial class MapGraph: Node2D
         return (Vector2I) (globalPosition / CellSize);
     } 
     
-    public GraphNode GetNodeAtPosition(Vector2 globalPosition)
+    public PositionNode GetNodeAtPosition(Vector2 globalPosition)
     {
         Vector2I arrayPosition = GlobalToArrayPosition(globalPosition);
         if (!GraphResource.Nodes.ContainsKey(arrayPosition)) return null;
         return GraphResource.Nodes[GlobalToArrayPosition(globalPosition)];
     }
-
-    /// <summary>
-    /// Just a shortcut to the graph nodes dictionary inside GraphResource.
-    /// </summary>
-    public Godot.Collections.Dictionary<Vector2I, GraphNode> Nodes => GraphResource.Nodes;
+    
+    private Vector2I GetArrayPositionById(uint nodeId) => GraphResource.NodeArrayPositionsById[nodeId];
+    
+    public PositionNode GetNodeById(uint nodeId) => 
+        GraphResource.Nodes[GetArrayPositionById(nodeId)];
 
     private CleanAreaChecker _cleanAreaChecker;
 
@@ -100,7 +105,7 @@ public partial class MapGraph: Node2D
     /// </summary>
     private void GenerateGraph()
     {
-        GraphResource.Nodes.Clear();
+        ClearGraph();
         for (int x = 0; x < CellResolution.X; x++)
         {
             for (int y = 0; y < CellResolution.Y; y++)
@@ -113,7 +118,7 @@ public partial class MapGraph: Node2D
                     continue;
                 
                 // If the position is clean, create a node.
-                GraphNode node = new();
+                PositionNode node = new();
                 node.Position = nodeGlobalPosition;
                 
                 float nodeCost = GetPositionCost(nodeGlobalPosition);
@@ -137,14 +142,13 @@ public partial class MapGraph: Node2D
                     float neighbourCost = GetPositionCost(neighborGlobalPosition);
                     float neighborConnectionCost = neighbourCost / 2;
                     // Direct connection between this node and the neighbor.
+                    PositionNode neighborNode = GraphResource.Nodes[neighborArrayPosition];
                     node.AddConnection(
-                        nodeArrayPosition,
-                        neighborArrayPosition, 
+                        neighborNode.Id, 
                         connectionCost + neighborConnectionCost, 
                         orientation);
                     // Conversely, as our connections are bidirectional, we must set up
                     // also the reciprocal connection from the neighbor to this node. 
-                    GraphNode neighborNode = GraphResource.Nodes[neighborArrayPosition];
                     Orientation reciprocalOrientation = Orientation.North;
                     switch (orientation)
                     {
@@ -162,16 +166,27 @@ public partial class MapGraph: Node2D
                             break;
                     }
                     neighborNode.AddConnection(
-                        neighborArrayPosition, 
-                        nodeArrayPosition, 
+                        node.Id, 
                         connectionCost + neighborConnectionCost, 
                         reciprocalOrientation);
                 }
                 
                 // Once the node is created and configured, we add it to the graph.
-                GraphResource.Nodes.Add(nodeArrayPosition, node);
+                AddNodeToGraph(nodeArrayPosition, node);
             }
         }
+    }
+
+    private void ClearGraph()
+    {
+        GraphResource.Nodes.Clear();
+        GraphResource.NodeArrayPositionsById.Clear();
+    }
+
+    private void AddNodeToGraph(Vector2I nodeArrayPosition, PositionNode node)
+    {
+        GraphResource.Nodes.Add(nodeArrayPosition, node);
+        GraphResource.NodeArrayPositionsById.Add(node.Id, nodeArrayPosition);
     }
 
     /// <summary>
@@ -235,10 +250,10 @@ public partial class MapGraph: Node2D
         if (GraphResource.Nodes.Count == 0) return;
         
         // Draw nodes and their edges.
-        foreach (KeyValuePair<Vector2I, GraphNode> nodeEntry in GraphResource.Nodes)
+        foreach (KeyValuePair<Vector2I, PositionNode> nodeEntry in GraphResource.Nodes)
         {
             Vector2 cellPosition = NodeGlobalPosition(nodeEntry.Key);
-            GraphNode node = nodeEntry.Value;
+            PositionNode node = nodeEntry.Value;
             DrawCircle(cellPosition, 10, NodeColor);
             foreach (Orientation orientation in Enum.GetValues<Orientation>())
             {

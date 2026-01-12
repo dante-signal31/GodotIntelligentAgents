@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using Godot;
-using Godot.Collections;
 
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
@@ -10,18 +10,36 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 [Tool]
 public partial class GraphNode: Resource
 {
-    [Export] public Vector2 Position;
-    [Export] public Dictionary<Orientation, GraphConnection> Connections = new();
-    
+    private static readonly HashSet<uint> AssignedIds = new();
+    private static readonly Random Random = new();
+
+    public uint Id { get; private set; } = GenerateUniqueId();
+
+    // TODO: Generalize orientation.
+    [Export] public Godot.Collections.Dictionary<Orientation, GraphConnection> Connections = new();
+
+    private static uint GenerateUniqueId()
+    {
+        uint newId;
+        byte[] buffer = new byte[4];
+        do
+        {
+            Random.NextBytes(buffer);
+            newId = BitConverter.ToUInt32(buffer, 0);
+        } while (AssignedIds.Contains(newId));
+
+        AssignedIds.Add(newId);
+        return newId;
+    }
+
     public void AddConnection(
-        Vector2I thisNodeKey,
-        Vector2I endNodeKey, 
+        uint endNodeId, 
         float cost, 
         Orientation orientation)
     {
         GraphConnection graphConnection = new();
-        graphConnection.StartNodeKey = thisNodeKey;
-        graphConnection.EndNodeKey = endNodeKey;
+        graphConnection.StartNodeId = Id;
+        graphConnection.EndNodeId = endNodeId;
         graphConnection.Cost = cost;
         Connections[orientation] = graphConnection;
     }

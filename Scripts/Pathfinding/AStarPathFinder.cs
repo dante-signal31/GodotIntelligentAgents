@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
-using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
@@ -73,7 +72,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
         
         // Get graph nodes associated with the start and target positions. 
         CurrentStartNode = Graph.GetNodeAtPosition(GlobalPosition);
-        GraphNode targetNode = Graph.GetNodeAtPosition(targetPosition);
+        PositionNode targetNode = Graph.GetNodeAtPosition(targetPosition);
         
         // You get to the start node from nowhere (null) and at no cost (0).
         AStarNodeRecord starNodeRecord = new (){
@@ -121,7 +120,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
             foreach (GraphConnection graphConnection in current.Node.Connections.Values)
             {
                 // Where does that connection lead us?
-                GraphNode endNode = Graph.Nodes[graphConnection.EndNodeKey];
+                PositionNode endNode = Graph.GetNodeById(graphConnection.EndNodeId);
                 // Calculate the cost to reach the end node from the current node.
                 float endNodeCost = current.CostSoFar + graphConnection.Cost;
 
@@ -211,7 +210,7 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
     
         // As we've got the target node, analyze the closedDict to follow back connections
         // from the target node to start node to build the path.
-        Path foundPath = BuildPath(Graph, ClosedDict, CurrentStartNode, targetNode);
+        Path foundPath = BuildPath(ClosedDict, CurrentStartNode, targetNode);
         return foundPath;
     }
     
