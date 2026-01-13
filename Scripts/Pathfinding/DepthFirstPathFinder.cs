@@ -21,6 +21,13 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
         private readonly Dictionary<PositionNode, NodeRecord> _nodeRecordDict = new ();
         
         public int Count => _nodeRecordDict.Count;
+        
+        public void Clear()
+        {
+            _stack.Clear();
+            _nodeRecordDict.Clear();
+        }
+        
         public bool Contains(PositionNode node) => _nodeRecordDict.ContainsKey(node);
         
         public void Add(NodeRecord record)

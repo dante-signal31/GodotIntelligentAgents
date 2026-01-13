@@ -22,36 +22,15 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
     {
         public override void Add(AStarNodeRecord record)
         {
-            if (Contains(record.Node))
-            {
-                RefreshRecord(record);
-            }
-            else
-            {
-                PriorityQueue.Enqueue(record, record.TotalEstimatedCostToTarget);
-                NodeRecordDict[record.Node] = record;
-            }
+            PriorityQueue.Enqueue(record, record.TotalEstimatedCostToTarget);
+            NodeRecordDict[record.Node] = record;
         }
 
-        public override void RefreshRecord(AStarNodeRecord nodeRecord)
-        {
-            // Rebuild the PriorityQueue.
-            var tempSet = new HashSet<AStarNodeRecord> { nodeRecord };
-            while (PriorityQueue.Count > 0)
-            {
-                var item = PriorityQueue.Dequeue();
-                if (item.Node == nodeRecord.Node) continue;
-                tempSet.Add(item);
-            }
-            PriorityQueue.Clear();
-            foreach (AStarNodeRecord record in tempSet)
-            {
-                PriorityQueue.Enqueue(record, record.TotalEstimatedCostToTarget);
-            }
-        }
+        public override void RefreshRecord(AStarNodeRecord nodeRecord) { }
     }
 
     private IAStarHeuristic _heuristic;
+    private readonly AStarPrioritizedNodeRecordSet _openRecordSet = new ();
 
     public override void _Ready()
     {
@@ -64,7 +43,8 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
     {
         // Nodes not fully explored yet, ordered by the estimated cost to get the target
         // through them.
-        AStarPrioritizedNodeRecordSet openRecordSet = new ();
+        _openRecordSet.Clear();
+        
         // Nodes already fully explored. We use a dictionary to keep track of the
         // information gathered from each node, including the connection to get there,
         // while exploring the graph.
@@ -96,17 +76,24 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                 CurrentStartNode.Position,
                 targetPosition)
         };
-        openRecordSet.Add(starNodeRecord); 
+        _openRecordSet.Add(starNodeRecord); 
         
         // Loop until we reach the target node or no more nodes are available to explore.
         AStarNodeRecord current = AStarNodeRecord.AStarNodeRecordNull;
-        while (openRecordSet.Count > 0)
+        while (_openRecordSet.Count > 0)
         {
             // Explore prioritizing the node with the lowest total estimated cost to get
             // the target.
-            current = openRecordSet.Get();
+            current = _openRecordSet.Get();
 
             if (current == null) break;
+            
+            // If the current record is already in the ClosedDict, but in the ClosedDict
+            // it is with a lower cost, it means that the recovered current record it's a
+            // duplicated record left behind by the "lazy removal" node record set. So we
+            // discard it and recover the next record from _openRecordSet.
+            if (ClosedDict.ContainsKey(current.Node) && 
+                current.CostSoFar >= ClosedDict[current.Node].CostSoFar) continue;
 
             // If we reached the end node, then our exploration is complete.
             if (current.Node == targetNode)
@@ -125,17 +112,11 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                 float endNodeCost = current.CostSoFar + graphConnection.Cost;
 
                 AStarNodeRecord endNodeRecord;
-                // In Dijkstra If that connection leaded to a node fully explored, we
-                // skipped it because no better path could be found to any closed node.
-                // Whereas in A* you can have closed a node under a wrong estimation.
-                // That's why, in A*, you must check if you've just found a better path to
-                // an already closed node.
-                if (ClosedDict.ContainsKey(endNode))
+                // Did we reach an already discovered node but through a better path?
+                if (ClosedDict.TryGetValue(endNode, out endNodeRecord))
                 {
-                    endNodeRecord = ClosedDict[endNode];
-
                     // No better path to this node, so skip it.
-                    if (endNodeRecord.CostSoFar <= endNodeCost) continue;
+                    if (endNodeCost >= endNodeRecord.CostSoFar) continue;
 
                     // Otherwise, we must asses this node again to check if it's more 
                     // promising than the previous time. So, we must remove it from 
@@ -152,19 +133,18 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                     endNodeRecord.TotalEstimatedCostToTarget =
                         estimatedCostToTarget + endNodeCost;
                     endNodeRecord.Connection = graphConnection;
-
-                    // Add the node to the openSet to assess it fully again.
-                    openRecordSet.Add(endNodeRecord);
                 }
                 // OK, we've just found a node that is still being assessed in the open
                 // list.
-                else if (openRecordSet.Contains(endNode))
+                else if (_openRecordSet.Contains(endNode))
                 {
-                    endNodeRecord = openRecordSet[endNode];
+                    endNodeRecord = _openRecordSet[endNode];
+                    
                     // If the end node is already in the open set, but with a lower cost,
-                    // it means that we are NOT found a better path to get to it. So skip
+                    // it means that we have NOT found a better path to get to it. So skip
                     // it.
-                    if (endNodeRecord.CostSoFar <= endNodeCost) continue;
+                    if (endNodeCost >= endNodeRecord.CostSoFar) continue;
+                    
                     // Otherwise, update the record with the lower cost and the connection
                     // to get there with that lower cost.
                     //
@@ -178,7 +158,6 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                         endNodeCost;
                     endNodeRecord.CostSoFar = endNodeCost;
                     endNodeRecord.Connection = graphConnection;
-                    openRecordSet.RefreshRecord(endNodeRecord);
                 }
                 else
                 {
@@ -195,8 +174,19 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
                                 endNode.Position, 
                                 targetPosition)
                     };
-                    openRecordSet.Add(endNodeRecord);
                 }
+                // Add the node to the openSet to assess it fully again.
+                //
+                // If the record already existed in the open set, this new addition
+                // will create a duplicate in the PriorityQueue, but as its cost is
+                // lower than the old record, this new record will be located before 
+                // in the queue. When the old record is finally recovered, its cost
+                // will be higher than the one stored in ClosedDict, so it will be
+                // discarded. This is a way to "lazily remove" records from the queue
+                // with higher costs and avoid the performance penalty of actually
+                // removing the old record from the queue (only possible rebuilding
+                // the entire queue without the old record) to add the new record.
+                _openRecordSet.Add(endNodeRecord);
             }
 
             // As we've finished looking at the connections of the current node, mark it

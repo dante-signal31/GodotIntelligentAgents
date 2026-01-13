@@ -22,35 +22,16 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
     {
         public override void Add(NodeRecord record)
         {
-            if (Contains(record.Node))
-            {
-                RefreshRecord(record);
-            }
-            else
-            {
-                PriorityQueue.Enqueue(record, record.CostSoFar);
-                NodeRecordDict[record.Node] = record;
-            }
+            PriorityQueue.Enqueue(record, record.CostSoFar);
+            NodeRecordDict[record.Node] = record;
         }
         
-        public override void RefreshRecord(NodeRecord nodeRecord)
-        {
-            // Rebuild the PriorityQueue.
-            var tempSet = new HashSet<NodeRecord> { nodeRecord };
-            while (PriorityQueue.Count > 0)
-            {
-                var item = PriorityQueue.Dequeue();
-                if (item.Node == nodeRecord.Node) continue;
-                tempSet.Add(item);
-            }
-            PriorityQueue.Clear();
-            foreach (NodeRecord record in tempSet)
-            {
-                PriorityQueue.Enqueue(record, record.CostSoFar);
-            }
-        }
+        // Actually not needed in Dijkstra.
+        public override void RefreshRecord(NodeRecord nodeRecord) { }
     }
-
+    
+    private readonly DijkstraPrioritizedNodeRecordSet _openRecordSet = new ();
+    
     /// <summary>
     /// Finds a path from the current position to the specified target position
     /// within the provided graph using Dijkstra's algorithm.
@@ -66,7 +47,8 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
     {
         // Nodes not fully explored yet, ordered by the cost to get them from the
         // start node.
-        DijkstraPrioritizedNodeRecordSet openRecordSet = new ();
+        _openRecordSet.Clear();
+        
         // Nodes already fully explored. We use a dictionary to keep track of the
         // information gathered from each node, including the connection to get there,
         // while exploring the graph.
@@ -83,15 +65,22 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
             Connection = null, 
             CostSoFar = 0
         };
-        openRecordSet.Add(startRecord);
+        _openRecordSet.Add(startRecord);
 
         // Loop until we reach the target node or no more nodes are available to explore.
         NodeRecord current = NodeRecord.NodeRecordNull;
-        while (openRecordSet.Count > 0)
+        while (_openRecordSet.Count > 0)
         {
             // Explore prioritizing the node with the lowest cost to be reached.
-            current = openRecordSet.Get();
+            current = _openRecordSet.Get();
             if (current == null) break;
+            
+            // If the current record is already in the ClosedDict, but in the ClosedDict
+            // it is with a lower cost, it means that the recovered current record it's a
+            // duplicated record left behind by the "lazy removal" node record set. So we
+            // discard it and recover the next record from _openRecordSet.
+            if (ClosedDict.ContainsKey(current.Node) && 
+                current.CostSoFar >= ClosedDict[current.Node].CostSoFar) continue;
 
             // If we reached the end node, then our exploration is complete.
             if (current.Node == targetNode)
@@ -106,15 +95,19 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
             {
                 // Where does that connection lead us?
                 PositionNode endNode = Graph.GetNodeById(graphConnection.EndNodeId);
-                // If that connection leads to a node fully explored, skip it.
-                if (ClosedDict.ContainsKey(endNode)) continue;
                 // Calculate the cost to reach the end node from the current node.
                 float endNodeCost = current.CostSoFar + graphConnection.Cost;
-
+                
+                // If that connection leads to a node fully explored at a lower cost,
+                // skip it because we are not going to improve the path already discovered
+                // to get that node.
+                if (ClosedDict.ContainsKey(endNode) && 
+                    ClosedDict[endNode].CostSoFar <= endNodeCost) continue;
+                
                 NodeRecord endNodeRecord;
-                if (openRecordSet.Contains(endNode))
+                if (_openRecordSet.Contains(endNode))
                 {
-                    endNodeRecord = openRecordSet[endNode];
+                    endNodeRecord = _openRecordSet[endNode];
                     // If the end node is already in the open set, but with a lower cost,
                     // it means that we are NOT found a better path to get to it. So skip
                     // it.
@@ -123,7 +116,6 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
                     // to get there with that lower cost.
                     endNodeRecord.CostSoFar = endNodeCost;
                     endNodeRecord.Connection = graphConnection;
-                    openRecordSet.RefreshRecord(endNodeRecord);
                 }
                 else
                 {
@@ -136,8 +128,19 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
                         Connection = graphConnection,
                         CostSoFar = endNodeCost,
                     };
-                    openRecordSet.Add(endNodeRecord);
                 }
+                // Add the node to the openSet to assess it fully again.
+                //
+                // If the record already existed in the open set, this new addition
+                // will create a duplicate in the PriorityQueue, but as its cost is
+                // lower than the old record, this new record will be located before 
+                // in the queue. When the old record is finally recovered, its cost
+                // will be higher than the one stored in ClosedDict, so it will be
+                // discarded. This is a way to "lazily remove" records from the queue
+                // with higher costs and avoid the performance penalty of actually
+                // removing the old record from the queue (only possible rebuilding
+                // the entire queue without the old record) to add the new record.
+                _openRecordSet.Add(endNodeRecord);
             }
             
             // As we've finished looking at the connections of the current node, mark it

@@ -35,7 +35,15 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>
         protected readonly Dictionary<PositionNode, T> NodeRecordDict = new ();
         
         public int Count => NodeRecordDict.Count;
+        
+        public void Clear()
+        {
+            PriorityQueue.Clear();
+            NodeRecordDict.Clear();
+        }
+        
         public bool Contains(PositionNode node) => NodeRecordDict.ContainsKey(node);
+        
 
         public abstract void Add(T record);
         
@@ -74,31 +82,27 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>
         /// </returns>
         public T Get()
         {
-            bool validNodeRecordFound = false;
-            T recoveredNodeRecord = new();
-            
-            do
+            while (PriorityQueue.Count > 0)
             {
-                if (PriorityQueue.Count == 0) break;
-                recoveredNodeRecord = PriorityQueue.Dequeue();
+                 T recoveredNodeRecord = PriorityQueue.Dequeue();
                 // Note: .NET's PriorityQueue doesn't support efficient removal by value.
-                // We only remove it from the dictionary when operator -= is used. So,
-                // when dequeuing, we must check if the node still exists in
+                // So we do "lazy removal". That means that we can have duplicates in the 
+                // queue. So, we use _nodeRecordDict to find valid queue records.
+                // When dequeuing, we must check if the node still exists in
                 // _nodeRecordDict before processing. If it doesn't, it means that we
-                // have just dequeued a node that was actually removed from the set, so
-                // we skip it and dequeue the next element.
-                if (NodeRecordDict.ContainsKey(recoveredNodeRecord.Node))
+                // have just dequeued a node that was actually lazily removed from the
+                // set, so we skip it and dequeue the next element.
+                if (NodeRecordDict.TryGetValue(
+                        recoveredNodeRecord.Node, out var current) &&
+                    current == recoveredNodeRecord)
                 {
-                    validNodeRecordFound = true;
                     // Dequeue actually removes the extracted element from the queue, so
                     // we must remove it from the internal dictionary to keep coherence.
                     NodeRecordDict.Remove(recoveredNodeRecord.Node);
+                    return recoveredNodeRecord;
                 }
-                    
-            } while (!validNodeRecordFound);
-
-            if (!validNodeRecordFound) return null;
-            return recoveredNodeRecord;
+            }
+            return null;
         }
 
         /// <summary>

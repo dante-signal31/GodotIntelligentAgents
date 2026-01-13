@@ -12,6 +12,11 @@ public interface INodeRecordCollection<T>
     /// Retrieves a node record from the collection.
     /// </summary>
     public T Get();
+
+    /// <summary>
+    /// Clears the collection contents.
+    /// </summary>
+    public void Clear();
     
     /// <summary>
     /// Removes a node record from the collection.
