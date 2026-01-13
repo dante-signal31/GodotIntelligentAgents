@@ -10,7 +10,7 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 [Tool]
 public partial class BreathFirstPathFinder: NotInformedPathFinder
 {
-    private class NodeQueue: INodeCollection<NodeRecord>
+    private class NodeRecordQueue: INodeRecordCollection<NodeRecord>
     {
         // Needed to keep ordered the NodeRecords pending to be explored. The order is
         // first-found-first-to-be-explored.
@@ -52,7 +52,10 @@ public partial class BreathFirstPathFinder: NotInformedPathFinder
         {
             _nodeRecordDict.Remove(record.Node);
         }
-        
+
+        // Not used in BFS.
+        public void RefreshRecord(NodeRecord record) { }
+
         public NodeRecord this[PositionNode node]
         {
             get => _nodeRecordDict[node];
@@ -91,6 +94,9 @@ public partial class BreathFirstPathFinder: NotInformedPathFinder
     
     public override Path FindPath(Vector2 targetPosition)
     {
-        return FindPath<NodeQueue>(targetPosition);
+        // Actually, a Breath-First pathfinder only guarantees to find the shortest path
+        // if every connection has the same cost. With scenes with variable costs, the
+        // algorithm will ignore that some connections are cheaper than others.
+        return FindPath<NodeRecordQueue>(targetPosition);
     }
 }

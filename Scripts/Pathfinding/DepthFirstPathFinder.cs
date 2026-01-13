@@ -11,7 +11,7 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 [Tool]
 public partial class DepthFirstPathFinder: NotInformedPathFinder
 {
-    private class NodeStack: INodeCollection<NodeRecord>
+    private class NodeRecordStack: INodeRecordCollection<NodeRecord>
     {
         // Needed to keep ordered the NodeRecords pending to be explored. The order is
         // last-found-first-to-be-explored.
@@ -53,7 +53,10 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
         {
             _nodeRecordDict.Remove(record.Node);
         }
-        
+
+        // Not used in DFS.
+        public void RefreshRecord(NodeRecord record) { }
+
         public NodeRecord this[PositionNode node]
         {
             get => _nodeRecordDict[node];
@@ -92,6 +95,8 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
     
     public override Path FindPath(Vector2 targetPosition)
     {
-        return FindPath<NodeStack>(targetPosition);
+        // Depth-first search does NOT guarantee to find the shortest path. Actually, when
+        // it finds a path, it's likely to be suboptimal.
+        return FindPath<NodeRecordStack>(targetPosition);
     }
 }

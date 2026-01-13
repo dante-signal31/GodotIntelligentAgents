@@ -19,7 +19,7 @@ public abstract partial class NotInformedPathFinder: PathFinder<NodeRecord>
     /// <returns>A Path object representing the found path from the start position
     /// to the target position, or null if no valid path exists.</returns>
     protected Path FindPath<TN>(Vector2 targetPosition) 
-        where TN: INodeCollection<NodeRecord>, new()
+        where TN: INodeRecordCollection<NodeRecord>, new()
     {
         // Nodes not fully explored yet, ordered as they were found.
         TN openQueue = new();
@@ -67,33 +67,18 @@ public abstract partial class NotInformedPathFinder: PathFinder<NodeRecord>
                 if (ClosedDict.ContainsKey(endNode)) continue;
                 // Calculate the cost to reach the end node from the current node.
                 float endNodeCost = current.CostSoFar + graphConnection.Cost;
-
-                NodeRecord endNodeRecord;
-                if (openQueue.Contains(endNode))
+                
+                if (openQueue.Contains(endNode)) continue;
+                // If the open set does not contain that node, it means we have
+                // discovered a new node. So include it in the open set to explore it 
+                // further later.
+                NodeRecord endNodeRecord = new() 
                 {
-                    endNodeRecord = openQueue[endNode];
-                    // If the end node is already in the open set, but with a lower cost,
-                    // it means that we are NOT found a better path to get to it. So skip
-                    // it.
-                    if (endNodeRecord.CostSoFar <= endNodeCost) continue;
-                    // Otherwise, update the record with the lower cost and the connection
-                    // to get there with that lower cost.
-                    endNodeRecord.CostSoFar = endNodeCost;
-                    endNodeRecord.Connection = graphConnection;
-                }
-                else
-                {
-                    // If the open set does not contain that node, it means we have
-                    // discovered a new node. So include it in the open set to explore it 
-                    // further later.
-                    endNodeRecord = new NodeRecord
-                    {
-                        Node = endNode,
-                        Connection = graphConnection,
-                        CostSoFar = endNodeCost,
-                    };
-                    openQueue.Add(endNodeRecord);
-                }
+                    Node = endNode,
+                    Connection = graphConnection,
+                    CostSoFar = endNodeCost,
+                };
+                openQueue.Add(endNodeRecord);
             }
             
             // As we've finished looking at the connections of the current node, mark it
