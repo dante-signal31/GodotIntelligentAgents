@@ -26,23 +26,9 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
         
         public void Add(NodeRecord record)
         {
-            // I cannot use Contains() property because that only checks the dict and I 
-            // need to find inconsistencies in the queue.
-            bool nodeAlreadyInQueue =
-                _stack.Any(queuedRecord => queuedRecord.Node == record.Node);
-            
-            // If the queue contains the node already, and it is active (so it is present
-            // at the dict), then do nothing.
-            if (nodeAlreadyInQueue && _nodeRecordDict.ContainsKey(record.Node)) 
-                return;
-            
-            // If the node is not present in the dictionary, then we are reentering a 
-            // previously removed node, so we must include it in the dict again.
-            if (nodeAlreadyInQueue && !_nodeRecordDict.ContainsKey(record.Node))
-            {
-                _nodeRecordDict[record.Node] = record;
-                return;
-            }
+            // If the stack contains the node already (so it is present at the dict),
+            // then do nothing.
+            if (_nodeRecordDict.ContainsKey(record.Node)) return;
             
             // Standard case.
             _stack.Push(record);
@@ -52,6 +38,24 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
         public void Remove(NodeRecord record)
         {
             _nodeRecordDict.Remove(record.Node);
+            
+            
+            // Rebuild the stack without the removed record
+            var tempStack = new Stack<NodeRecord>();
+            while (_stack.Count > 0)
+            {
+                var currentRecord = _stack.Pop();
+                if (currentRecord.Node != record.Node)
+                {
+                    tempStack.Push(currentRecord);
+                }
+            }
+
+            // Replace the old queue with the rebuilt one
+            while (tempStack.Count > 0)
+            {
+                _stack.Push(tempStack.Pop());
+            }
         }
 
         // Not used in DFS.
@@ -65,30 +69,9 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
         
         public NodeRecord Get()
         {
-            bool validNodeRecordFound = false;
-            NodeRecord recoveredNodeRecord = new();
-            
-            do
-            {
-                if (_stack.Count == 0) break;
-                recoveredNodeRecord = _stack.Pop();
-                // Note: .NET's Queue doesn't support efficient removal by value.
-                // We only remove it from the dictionary when Remove method() is used. So,
-                // when dequeuing, we must check if the node still exists in
-                // _nodeRecordDict before processing. If it doesn't, it means that we
-                // have just dequeued a node that was actually removed from the set, so
-                // we skip it and dequeue the next element.
-                if (_nodeRecordDict.ContainsKey(recoveredNodeRecord.Node))
-                {
-                    validNodeRecordFound = true;
-                    // Dequeue actually removes the extracted element from the queue, so
-                    // we must remove it from the internal dictionary to keep coherence.
-                    _nodeRecordDict.Remove(recoveredNodeRecord.Node);
-                }
-                    
-            } while (!validNodeRecordFound);
-
-            if (!validNodeRecordFound) return null;
+            if (_stack.Count == 0) return null;
+            NodeRecord recoveredNodeRecord = _stack.Pop();
+            _nodeRecordDict.Remove(recoveredNodeRecord.Node);
             return recoveredNodeRecord;
         }
     }

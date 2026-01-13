@@ -456,7 +456,7 @@ public class PathFindingTests
         
         // I don't know why the agent get stuck in the middle of the second path. Only happens
         // in this test. Tested manually works right. So, I'm disabling this second past test.
-        // // Assert that the pathfinder agent can reach the second target.
+        // Assert that the pathfinder agent can reach the second target.
         // target.GlobalPosition = position3.GlobalPosition;
         // await _sceneRunner.AwaitMillis(11000);
         // AssertThat(
