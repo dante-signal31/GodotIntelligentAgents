@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Godot;
 
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
@@ -25,9 +24,6 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
             PriorityQueue.Enqueue(record, record.CostSoFar);
             NodeRecordDict[record.Node] = record;
         }
-        
-        // Actually not needed in Dijkstra.
-        public override void RefreshRecord(NodeRecord nodeRecord) { }
     }
     
     private readonly DijkstraPrioritizedNodeRecordSet _openRecordSet = new ();

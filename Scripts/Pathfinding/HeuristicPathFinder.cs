@@ -46,11 +46,6 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>
         
 
         public abstract void Add(T record);
-        
-        public void Remove(T record)
-        {
-            NodeRecordDict.Remove(record.Node);
-        }
 
         /// <summary>
         /// Indexer providing access to a node's corresponding record in the prioritized
@@ -104,13 +99,5 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>
             }
             return null;
         }
-
-        /// <summary>
-        /// <p> Regenerate queue order.</p>
-        /// <remarks> Queue reorders when you include a new element, but not when you
-        /// update an existing one priority. So, use this method whenever you change
-        /// any of the existing record priorities. </remarks>
-        /// </summary>
-        public abstract void RefreshRecord(T record);
     }
 }

@@ -25,8 +25,6 @@ public partial class AStarPathFinder: HeuristicPathFinder<AStarNodeRecord>
             PriorityQueue.Enqueue(record, record.TotalEstimatedCostToTarget);
             NodeRecordDict[record.Node] = record;
         }
-
-        public override void RefreshRecord(AStarNodeRecord nodeRecord) { }
     }
 
     private IAStarHeuristic _heuristic;

@@ -19,18 +19,6 @@ public interface INodeRecordCollection<T>
     public void Clear();
     
     /// <summary>
-    /// Removes a node record from the collection.
-    /// </summary>
-    /// <param name="record">The node record to remove from the collection.</param>
-    public void Remove(T record);
-
-    /// <summary>
-    /// Updates the node record value in the collection.
-    /// </summary>
-    /// <param name="record">The node record to be updated.</param>
-    public void RefreshRecord(T record);
-    
-    /// <summary>
     /// Gets or sets the <see cref="NodeRecord"/> corresponding to the
     /// specified <see cref="PositionNode"/>.
     /// </summary>

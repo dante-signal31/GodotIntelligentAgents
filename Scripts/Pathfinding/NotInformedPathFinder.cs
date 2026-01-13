@@ -6,8 +6,11 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 /// Represents a base implementation for pathfinding algorithms
 /// that do not rely on heuristic information to guide the search.
 /// </summary>
-public abstract partial class NotInformedPathFinder: PathFinder<NodeRecord>
+public abstract partial class NotInformedPathFinder<TN>: 
+    PathFinder<NodeRecord> where TN: INodeRecordCollection<NodeRecord>, new()
 {
+    private readonly TN _openQueue = new();
+    
     /// <summary>
     /// Finds and returns a path to the specified target position.
     /// Depending on the implementation, this uses a specific node collection
@@ -18,11 +21,10 @@ public abstract partial class NotInformedPathFinder: PathFinder<NodeRecord>
     /// <param name="targetPosition">The target position to find a path to.</param>
     /// <returns>A Path object representing the found path from the start position
     /// to the target position, or null if no valid path exists.</returns>
-    protected Path FindPath<TN>(Vector2 targetPosition) 
-        where TN: INodeRecordCollection<NodeRecord>, new()
+    public override Path FindPath(Vector2 targetPosition) 
     {
         // Nodes not fully explored yet, ordered as they were found.
-        TN openQueue = new();
+        _openQueue.Clear();
         
         // Nodes already fully explored. We use a dictionary to keep track of the
         // information gathered from each node, including the connection to get there,
@@ -40,14 +42,14 @@ public abstract partial class NotInformedPathFinder: PathFinder<NodeRecord>
             Connection = null,
             CostSoFar = 0,
         };
-        openQueue.Add(startRecord);
+        _openQueue.Add(startRecord);
         
         // Loop until we reach the target node or no more nodes are available to explore.
         NodeRecord current = NodeRecord.NodeRecordNull;
-        while (openQueue.Count > 0)
+        while (_openQueue.Count > 0)
         {
             // Explore the pending node that was first discovered.
-            current = openQueue.Get();
+            current = _openQueue.Get();
             if (current == null) break;
 
             // If we reached the end node, then our exploration is complete.
@@ -77,7 +79,7 @@ public abstract partial class NotInformedPathFinder: PathFinder<NodeRecord>
                     Connection = graphConnection,
                     CostSoFar = endNodeCost,
                 };
-                openQueue.Add(endNodeRecord);
+                _openQueue.Add(endNodeRecord);
             }
             
             // As we've finished looking at the connections of the current node, mark it
