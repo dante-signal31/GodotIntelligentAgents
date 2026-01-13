@@ -17,8 +17,7 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
         // last-found-first-to-be-explored.
         private readonly Stack<NodeRecord> _stack = new ();
         
-        // Needed to keep track of the nodes still pending to be explored and to quickly
-        // get their respective records.
+        // Needed to keep track of the nodes already discovered.
         private readonly Dictionary<PositionNode, NodeRecord> _nodeRecordDict = new ();
         
         public int Count => _nodeRecordDict.Count;
@@ -26,8 +25,8 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
         
         public void Add(NodeRecord record)
         {
-            // If the stack contains the node already (so it is present at the dict),
-            // then do nothing.
+            // If the node was already discovered before, then do nothing. If you stack
+            // the discovered nodes again, you would end up with loops.
             if (_nodeRecordDict.ContainsKey(record.Node)) return;
             
             // Standard case.
@@ -35,28 +34,8 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
             _nodeRecordDict[record.Node] = record;
         }
         
-        public void Remove(NodeRecord record)
-        {
-            _nodeRecordDict.Remove(record.Node);
-            
-            
-            // Rebuild the stack without the removed record
-            var tempStack = new Stack<NodeRecord>();
-            while (_stack.Count > 0)
-            {
-                var currentRecord = _stack.Pop();
-                if (currentRecord.Node != record.Node)
-                {
-                    tempStack.Push(currentRecord);
-                }
-            }
-
-            // Replace the old queue with the rebuilt one
-            while (tempStack.Count > 0)
-            {
-                _stack.Push(tempStack.Pop());
-            }
-        }
+        // Not used in DFS.
+        public void Remove(NodeRecord record) { }
 
         // Not used in DFS.
         public void RefreshRecord(NodeRecord record) { }
@@ -71,7 +50,6 @@ public partial class DepthFirstPathFinder: NotInformedPathFinder
         {
             if (_stack.Count == 0) return null;
             NodeRecord recoveredNodeRecord = _stack.Pop();
-            _nodeRecordDict.Remove(recoveredNodeRecord.Node);
             return recoveredNodeRecord;
         }
     }
