@@ -63,15 +63,14 @@ public abstract partial class NotInformedPathFinder: PathFinder<NodeRecord>
             {
                 // Where does that connection lead us?
                 PositionNode endNode = Graph.GetNodeById(graphConnection.EndNodeId);
-                // If that connection leads to a node fully explored, skip it.
+                // If that connection leads to an already explored node, skip it.
                 if (ClosedDict.ContainsKey(endNode)) continue;
-                // Calculate the cost to reach the end node from the current node.
-                float endNodeCost = current.CostSoFar + graphConnection.Cost;
                 
-                if (openQueue.Contains(endNode)) continue;
-                // If the open set does not contain that node, it means we have
-                // discovered a new node. So include it in the open set to explore it 
-                // further later.
+                // Otherwise, calculate the cost to reach the end node from the current
+                // node.
+                float endNodeCost = current.CostSoFar + 1;
+                // Include the discovered node in the open set to explore it further
+                // later.
                 NodeRecord endNodeRecord = new() 
                 {
                     Node = endNode,
