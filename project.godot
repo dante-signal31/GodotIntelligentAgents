@@ -49,3 +49,7 @@ PointSelected={
 2d_physics/layer_3="Ground"
 2d_physics/layer_4="Obstacles"
 2d_physics/layer_5="Ushers"
+2d_physics/layer_6="NavGround"
+2d_physics/layer_7="NavGrass"
+2d_physics/layer_8="NavSand"
+2d_physics/layer_9="NavWater"

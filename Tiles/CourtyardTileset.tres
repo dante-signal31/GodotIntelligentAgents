@@ -1,6 +1,12 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://lwrjedftv6bk"]
+[gd_resource type="TileSet" load_steps=4 format=3 uid="uid://lwrjedftv6bk"]
 
 [ext_resource type="Texture2D" uid="uid://dehu5md1gaaes" path="res://Sprites/Atlas/SquareTilesAtlas.png" id="1_b4l4g"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_i14mo"]
+vertices = PackedVector2Array(53.5, 54, -53.5, 54, -53.5, -54, 53.5, -54)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-53.5, -54, 53.5, -54, 53.5, 54, -53.5, 54)])
+agent_radius = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_de2y5"]
 resource_name = "SceneTiles"
@@ -15,18 +21,23 @@ texture_region_size = Vector2i(107, 108)
 1:0/0/custom_data_0 = true
 1:0/0/custom_data_1 = 9999999.0
 2:0/0 = 0
+2:0/0/physics_layer_3/polygon_0/points = PackedVector2Array(-53.5, -54, 53.5, -54, 53.5, 54, -53.5, 54)
+2:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_i14mo")
 2:0/0/custom_data_1 = 100.0
-0:0/0 = 0
-0:0/0/custom_data_1 = 8000.0
 0:2/0 = 0
+0:2/0/physics_layer_4/polygon_0/points = PackedVector2Array(-53.5, -54, 53.5, -54, 53.5, 54, -53.5, 54)
 0:2/0/custom_data_1 = 200.0
 1:2/0 = 0
+1:2/0/physics_layer_5/polygon_0/points = PackedVector2Array(-53.5, -54, 53.5, -54, 53.5, 54, -53.5, 54)
 1:2/0/custom_data_1 = 400.0
 2:2/0 = 0
 2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-45, -46, 44, -45, 45, 44, -45, 45)
 2:2/0/physics_layer_2/polygon_0/points = PackedVector2Array(-45, -45, 43, -44, 43, 45, -45, 46)
 2:2/0/custom_data_0 = true
 2:2/0/custom_data_1 = 9999999.0
+0:0/0 = 0
+0:0/0/physics_layer_6/polygon_0/points = PackedVector2Array(-53.5, -54, 53.5, -54, 53.5, 54, -53.5, 54)
+0:0/0/custom_data_1 = 8000.0
 
 [resource]
 tile_size = Vector2i(107, 108)
@@ -36,6 +47,14 @@ physics_layer_1/collision_layer = 4
 physics_layer_1/collision_mask = 0
 physics_layer_2/collision_layer = 8
 physics_layer_2/collision_mask = 0
+physics_layer_3/collision_layer = 32
+physics_layer_3/collision_mask = 0
+physics_layer_4/collision_layer = 64
+physics_layer_4/collision_mask = 0
+physics_layer_5/collision_layer = 128
+physics_layer_5/collision_mask = 0
+physics_layer_6/collision_layer = 256
+physics_layer_6/collision_mask = 0
 navigation_layer_0/layers = 1
 custom_data_layer_0/name = "Obstacle"
 custom_data_layer_0/type = 1
