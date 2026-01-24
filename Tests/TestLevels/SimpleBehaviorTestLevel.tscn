@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://b62033ep2w41i"]
+[gd_scene load_steps=628 format=3 uid="uid://b62033ep2w41i"]
 
 [ext_resource type="PackedScene" uid="uid://dqt1t3nk4wc4b" path="res://Levels/ClearCourtyard.tscn" id="1_oy3cc"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Tools/Target.tscn" id="3_hsc70"]
@@ -23,12 +23,4324 @@
 [ext_resource type="PackedScene" uid="uid://be350relk3jqo" path="res://Scenes/Sensors/ConeSensor.tscn" id="21_qd6kt"]
 [ext_resource type="PackedScene" uid="uid://de8c34qfrri5a" path="res://Scenes/SteeringBehaviors/ActiveAgentAvoiderSteeringBehavior.tscn" id="23_ujip5"]
 [ext_resource type="PackedScene" uid="uid://dg5jntlmhib8s" path="res://Scenes/SteeringBehaviors/PassiveAgentAvoiderSteeringBehavior.tscn" id="24_cmigx"]
+[ext_resource type="PackedScene" uid="uid://dbthitkduyw3f" path="res://Scenes/Pathfinding/MapGraph.tscn" id="25_kafq8"]
+[ext_resource type="Script" uid="uid://cfjtg6alup4pb" path="res://Scripts/Pathfinding/GraphConnection.cs" id="26_3uomi"]
+[ext_resource type="Script" uid="uid://cnkybifuo2peh" path="res://Scripts/Pathfinding/PositionNode.cs" id="26_upwh5"]
+[ext_resource type="Script" uid="uid://cwp4kfh18w44v" path="res://Scripts/Pathfinding/MapGraphResource.cs" id="27_02q8g"]
+[ext_resource type="PackedScene" uid="uid://dpiwor20rseg1" path="res://Scenes/Pathfinding/MapGraphRegions.tscn" id="28_ifpi0"]
+[ext_resource type="Script" uid="uid://e6exqkqmubxx" path="res://Scripts/Pathfinding/RegionSeed.cs" id="29_kafq8"]
+
+[sub_resource type="Curve" id="Curve_gj4u3"]
+_data = [Vector2(0, 1), 0.0, -0.128196, 0, 0, Vector2(1, 0), -2.07517, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_itbgl"]
+_data = [Vector2(0, 0.30129), 0.0, 2.08494, 0, 0, Vector2(1, 0.996007), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Resource" id="Resource_kafq8"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2207950237
+EndNodeId = 690605731
+
+[sub_resource type="Resource" id="Resource_upwh5"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2207950237
+EndNodeId = 587229385
+
+[sub_resource type="Resource" id="Resource_02q8g"]
+script = ExtResource("26_upwh5")
+Position = Vector2(160, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+2: SubResource("Resource_kafq8"),
+3: SubResource("Resource_upwh5")
+})
+
+[sub_resource type="Resource" id="Resource_ifpi0"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 690605731
+EndNodeId = 2207950237
+
+[sub_resource type="Resource" id="Resource_3sykx"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 690605731
+EndNodeId = 1757581110
+
+[sub_resource type="Resource" id="Resource_3010k"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 690605731
+EndNodeId = 2140796240
+
+[sub_resource type="Resource" id="Resource_ieua8"]
+script = ExtResource("26_upwh5")
+Position = Vector2(160, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_ifpi0"),
+2: SubResource("Resource_3sykx"),
+3: SubResource("Resource_3010k")
+})
+
+[sub_resource type="Resource" id="Resource_35h8u"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1757581110
+EndNodeId = 690605731
+
+[sub_resource type="Resource" id="Resource_ip106"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1757581110
+EndNodeId = 1652215365
+
+[sub_resource type="Resource" id="Resource_qxue7"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1757581110
+EndNodeId = 1322128620
+
+[sub_resource type="Resource" id="Resource_3ruup"]
+script = ExtResource("26_upwh5")
+Position = Vector2(160, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_35h8u"),
+2: SubResource("Resource_ip106"),
+3: SubResource("Resource_qxue7")
+})
+
+[sub_resource type="Resource" id="Resource_pc8n4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1652215365
+EndNodeId = 1757581110
+
+[sub_resource type="Resource" id="Resource_rlejg"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1652215365
+EndNodeId = 1880919716
+
+[sub_resource type="Resource" id="Resource_ba46e"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1652215365
+EndNodeId = 4075884071
+
+[sub_resource type="Resource" id="Resource_wgcds"]
+script = ExtResource("26_upwh5")
+Position = Vector2(160, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_pc8n4"),
+2: SubResource("Resource_rlejg"),
+3: SubResource("Resource_ba46e")
+})
+
+[sub_resource type="Resource" id="Resource_nwlyv"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1880919716
+EndNodeId = 1652215365
+
+[sub_resource type="Resource" id="Resource_1ekqx"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1880919716
+EndNodeId = 1673543977
+
+[sub_resource type="Resource" id="Resource_d1gax"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1880919716
+EndNodeId = 1385139628
+
+[sub_resource type="Resource" id="Resource_wp3ee"]
+script = ExtResource("26_upwh5")
+Position = Vector2(160, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_nwlyv"),
+2: SubResource("Resource_1ekqx"),
+3: SubResource("Resource_d1gax")
+})
+
+[sub_resource type="Resource" id="Resource_0m4nf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1673543977
+EndNodeId = 1880919716
+
+[sub_resource type="Resource" id="Resource_hamsn"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1673543977
+EndNodeId = 3185542715
+
+[sub_resource type="Resource" id="Resource_sqftb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1673543977
+EndNodeId = 1476837419
+
+[sub_resource type="Resource" id="Resource_y6snw"]
+script = ExtResource("26_upwh5")
+Position = Vector2(160, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_0m4nf"),
+2: SubResource("Resource_hamsn"),
+3: SubResource("Resource_sqftb")
+})
+
+[sub_resource type="Resource" id="Resource_hpepf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3185542715
+EndNodeId = 1673543977
+
+[sub_resource type="Resource" id="Resource_0w1ua"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3185542715
+EndNodeId = 2894973584
+
+[sub_resource type="Resource" id="Resource_nml63"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3185542715
+EndNodeId = 3951783358
+
+[sub_resource type="Resource" id="Resource_xbypa"]
+script = ExtResource("26_upwh5")
+Position = Vector2(160, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_hpepf"),
+2: SubResource("Resource_0w1ua"),
+3: SubResource("Resource_nml63")
+})
+
+[sub_resource type="Resource" id="Resource_35tsu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2894973584
+EndNodeId = 3185542715
+
+[sub_resource type="Resource" id="Resource_kxkqt"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2894973584
+EndNodeId = 618969240
+
+[sub_resource type="Resource" id="Resource_u2moi"]
+script = ExtResource("26_upwh5")
+Position = Vector2(160, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_35tsu"),
+3: SubResource("Resource_kxkqt")
+})
+
+[sub_resource type="Resource" id="Resource_1u6eu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 587229385
+EndNodeId = 2207950237
+
+[sub_resource type="Resource" id="Resource_77rdc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 587229385
+EndNodeId = 2140796240
+
+[sub_resource type="Resource" id="Resource_0n1ad"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 587229385
+EndNodeId = 1702101261
+
+[sub_resource type="Resource" id="Resource_i5sue"]
+script = ExtResource("26_upwh5")
+Position = Vector2(266.66666, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_1u6eu"),
+2: SubResource("Resource_77rdc"),
+3: SubResource("Resource_0n1ad")
+})
+
+[sub_resource type="Resource" id="Resource_db5cy"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2140796240
+EndNodeId = 587229385
+
+[sub_resource type="Resource" id="Resource_je42d"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2140796240
+EndNodeId = 690605731
+
+[sub_resource type="Resource" id="Resource_7xc40"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2140796240
+EndNodeId = 1322128620
+
+[sub_resource type="Resource" id="Resource_5xy28"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2140796240
+EndNodeId = 2621162660
+
+[sub_resource type="Resource" id="Resource_21r04"]
+script = ExtResource("26_upwh5")
+Position = Vector2(266.66666, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_db5cy"),
+1: SubResource("Resource_je42d"),
+2: SubResource("Resource_7xc40"),
+3: SubResource("Resource_5xy28")
+})
+
+[sub_resource type="Resource" id="Resource_11jup"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1322128620
+EndNodeId = 2140796240
+
+[sub_resource type="Resource" id="Resource_0rr1g"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1322128620
+EndNodeId = 1757581110
+
+[sub_resource type="Resource" id="Resource_x8edq"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1322128620
+EndNodeId = 4075884071
+
+[sub_resource type="Resource" id="Resource_ke1gs"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1322128620
+EndNodeId = 1363296226
+
+[sub_resource type="Resource" id="Resource_8lm6b"]
+script = ExtResource("26_upwh5")
+Position = Vector2(266.66666, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_11jup"),
+1: SubResource("Resource_0rr1g"),
+2: SubResource("Resource_x8edq"),
+3: SubResource("Resource_ke1gs")
+})
+
+[sub_resource type="Resource" id="Resource_gj7w2"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4075884071
+EndNodeId = 1322128620
+
+[sub_resource type="Resource" id="Resource_gwvvu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4075884071
+EndNodeId = 1652215365
+
+[sub_resource type="Resource" id="Resource_caxdq"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4075884071
+EndNodeId = 1385139628
+
+[sub_resource type="Resource" id="Resource_jlaq1"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4075884071
+EndNodeId = 314505823
+
+[sub_resource type="Resource" id="Resource_uasq2"]
+script = ExtResource("26_upwh5")
+Position = Vector2(266.66666, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_gj7w2"),
+1: SubResource("Resource_gwvvu"),
+2: SubResource("Resource_caxdq"),
+3: SubResource("Resource_jlaq1")
+})
+
+[sub_resource type="Resource" id="Resource_osjmb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1385139628
+EndNodeId = 4075884071
+
+[sub_resource type="Resource" id="Resource_bhkxk"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1385139628
+EndNodeId = 1880919716
+
+[sub_resource type="Resource" id="Resource_6ppfu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1385139628
+EndNodeId = 1476837419
+
+[sub_resource type="Resource" id="Resource_i4yly"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1385139628
+EndNodeId = 3070315124
+
+[sub_resource type="Resource" id="Resource_b4atj"]
+script = ExtResource("26_upwh5")
+Position = Vector2(266.66666, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_osjmb"),
+1: SubResource("Resource_bhkxk"),
+2: SubResource("Resource_6ppfu"),
+3: SubResource("Resource_i4yly")
+})
+
+[sub_resource type="Resource" id="Resource_8utb3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1476837419
+EndNodeId = 1385139628
+
+[sub_resource type="Resource" id="Resource_iaiov"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1476837419
+EndNodeId = 1673543977
+
+[sub_resource type="Resource" id="Resource_dfktc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1476837419
+EndNodeId = 3951783358
+
+[sub_resource type="Resource" id="Resource_7bh4p"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1476837419
+EndNodeId = 3546865390
+
+[sub_resource type="Resource" id="Resource_4go4u"]
+script = ExtResource("26_upwh5")
+Position = Vector2(266.66666, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_8utb3"),
+1: SubResource("Resource_iaiov"),
+2: SubResource("Resource_dfktc"),
+3: SubResource("Resource_7bh4p")
+})
+
+[sub_resource type="Resource" id="Resource_18poo"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3951783358
+EndNodeId = 1476837419
+
+[sub_resource type="Resource" id="Resource_rkwek"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3951783358
+EndNodeId = 3185542715
+
+[sub_resource type="Resource" id="Resource_74bom"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3951783358
+EndNodeId = 618969240
+
+[sub_resource type="Resource" id="Resource_m0yad"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3951783358
+EndNodeId = 3179222347
+
+[sub_resource type="Resource" id="Resource_bvudl"]
+script = ExtResource("26_upwh5")
+Position = Vector2(266.66666, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_18poo"),
+1: SubResource("Resource_rkwek"),
+2: SubResource("Resource_74bom"),
+3: SubResource("Resource_m0yad")
+})
+
+[sub_resource type="Resource" id="Resource_th3g2"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 618969240
+EndNodeId = 3951783358
+
+[sub_resource type="Resource" id="Resource_3xe4c"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 618969240
+EndNodeId = 2894973584
+
+[sub_resource type="Resource" id="Resource_o2pgy"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 618969240
+EndNodeId = 538312819
+
+[sub_resource type="Resource" id="Resource_ayhu3"]
+script = ExtResource("26_upwh5")
+Position = Vector2(266.66666, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_th3g2"),
+1: SubResource("Resource_3xe4c"),
+3: SubResource("Resource_o2pgy")
+})
+
+[sub_resource type="Resource" id="Resource_vguqj"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1702101261
+EndNodeId = 587229385
+
+[sub_resource type="Resource" id="Resource_jrwbe"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1702101261
+EndNodeId = 2621162660
+
+[sub_resource type="Resource" id="Resource_vfdx0"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1702101261
+EndNodeId = 1985601716
+
+[sub_resource type="Resource" id="Resource_ft42y"]
+script = ExtResource("26_upwh5")
+Position = Vector2(373.33334, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_vguqj"),
+2: SubResource("Resource_jrwbe"),
+3: SubResource("Resource_vfdx0")
+})
+
+[sub_resource type="Resource" id="Resource_c1ifj"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2621162660
+EndNodeId = 1702101261
+
+[sub_resource type="Resource" id="Resource_sb7wv"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2621162660
+EndNodeId = 2140796240
+
+[sub_resource type="Resource" id="Resource_o6mlw"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2621162660
+EndNodeId = 1363296226
+
+[sub_resource type="Resource" id="Resource_r3v1i"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2621162660
+EndNodeId = 576251987
+
+[sub_resource type="Resource" id="Resource_hv03r"]
+script = ExtResource("26_upwh5")
+Position = Vector2(373.33334, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_c1ifj"),
+1: SubResource("Resource_sb7wv"),
+2: SubResource("Resource_o6mlw"),
+3: SubResource("Resource_r3v1i")
+})
+
+[sub_resource type="Resource" id="Resource_2s32f"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1363296226
+EndNodeId = 2621162660
+
+[sub_resource type="Resource" id="Resource_o0kkt"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1363296226
+EndNodeId = 1322128620
+
+[sub_resource type="Resource" id="Resource_8b7rl"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1363296226
+EndNodeId = 314505823
+
+[sub_resource type="Resource" id="Resource_lh4it"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1363296226
+EndNodeId = 137956446
+
+[sub_resource type="Resource" id="Resource_2l8o6"]
+script = ExtResource("26_upwh5")
+Position = Vector2(373.33334, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_2s32f"),
+1: SubResource("Resource_o0kkt"),
+2: SubResource("Resource_8b7rl"),
+3: SubResource("Resource_lh4it")
+})
+
+[sub_resource type="Resource" id="Resource_tmcd1"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 314505823
+EndNodeId = 1363296226
+
+[sub_resource type="Resource" id="Resource_tiy35"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 314505823
+EndNodeId = 4075884071
+
+[sub_resource type="Resource" id="Resource_03r31"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 314505823
+EndNodeId = 3070315124
+
+[sub_resource type="Resource" id="Resource_7yyqx"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 314505823
+EndNodeId = 2903524150
+
+[sub_resource type="Resource" id="Resource_r8chm"]
+script = ExtResource("26_upwh5")
+Position = Vector2(373.33334, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_tmcd1"),
+1: SubResource("Resource_tiy35"),
+2: SubResource("Resource_03r31"),
+3: SubResource("Resource_7yyqx")
+})
+
+[sub_resource type="Resource" id="Resource_7y6n4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3070315124
+EndNodeId = 314505823
+
+[sub_resource type="Resource" id="Resource_iinlk"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3070315124
+EndNodeId = 1385139628
+
+[sub_resource type="Resource" id="Resource_wakw8"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3070315124
+EndNodeId = 3546865390
+
+[sub_resource type="Resource" id="Resource_dtxpv"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3070315124
+EndNodeId = 1087257080
+
+[sub_resource type="Resource" id="Resource_buut8"]
+script = ExtResource("26_upwh5")
+Position = Vector2(373.33334, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_7y6n4"),
+1: SubResource("Resource_iinlk"),
+2: SubResource("Resource_wakw8"),
+3: SubResource("Resource_dtxpv")
+})
+
+[sub_resource type="Resource" id="Resource_iftf8"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3546865390
+EndNodeId = 3070315124
+
+[sub_resource type="Resource" id="Resource_w2d8d"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3546865390
+EndNodeId = 1476837419
+
+[sub_resource type="Resource" id="Resource_n14ch"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3546865390
+EndNodeId = 3179222347
+
+[sub_resource type="Resource" id="Resource_i5sn3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3546865390
+EndNodeId = 3141346100
+
+[sub_resource type="Resource" id="Resource_eusfh"]
+script = ExtResource("26_upwh5")
+Position = Vector2(373.33334, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_iftf8"),
+1: SubResource("Resource_w2d8d"),
+2: SubResource("Resource_n14ch"),
+3: SubResource("Resource_i5sn3")
+})
+
+[sub_resource type="Resource" id="Resource_rjxr8"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3179222347
+EndNodeId = 3546865390
+
+[sub_resource type="Resource" id="Resource_k0go8"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3179222347
+EndNodeId = 3951783358
+
+[sub_resource type="Resource" id="Resource_oix2j"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3179222347
+EndNodeId = 538312819
+
+[sub_resource type="Resource" id="Resource_7sp85"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3179222347
+EndNodeId = 1957607189
+
+[sub_resource type="Resource" id="Resource_umrb7"]
+script = ExtResource("26_upwh5")
+Position = Vector2(373.33334, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_rjxr8"),
+1: SubResource("Resource_k0go8"),
+2: SubResource("Resource_oix2j"),
+3: SubResource("Resource_7sp85")
+})
+
+[sub_resource type="Resource" id="Resource_mcgmg"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 538312819
+EndNodeId = 3179222347
+
+[sub_resource type="Resource" id="Resource_2smlr"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 538312819
+EndNodeId = 618969240
+
+[sub_resource type="Resource" id="Resource_bco6d"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 538312819
+EndNodeId = 3917676233
+
+[sub_resource type="Resource" id="Resource_f2soa"]
+script = ExtResource("26_upwh5")
+Position = Vector2(373.33334, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_mcgmg"),
+1: SubResource("Resource_2smlr"),
+3: SubResource("Resource_bco6d")
+})
+
+[sub_resource type="Resource" id="Resource_tyr47"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1985601716
+EndNodeId = 1702101261
+
+[sub_resource type="Resource" id="Resource_ah7t4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1985601716
+EndNodeId = 576251987
+
+[sub_resource type="Resource" id="Resource_2lyrk"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1985601716
+EndNodeId = 2821326193
+
+[sub_resource type="Resource" id="Resource_oy6oo"]
+script = ExtResource("26_upwh5")
+Position = Vector2(480, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_tyr47"),
+2: SubResource("Resource_ah7t4"),
+3: SubResource("Resource_2lyrk")
+})
+
+[sub_resource type="Resource" id="Resource_ofnw3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 576251987
+EndNodeId = 1985601716
+
+[sub_resource type="Resource" id="Resource_fytt2"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 576251987
+EndNodeId = 2621162660
+
+[sub_resource type="Resource" id="Resource_jcnkd"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 576251987
+EndNodeId = 137956446
+
+[sub_resource type="Resource" id="Resource_m0yhn"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 576251987
+EndNodeId = 158516693
+
+[sub_resource type="Resource" id="Resource_52lg0"]
+script = ExtResource("26_upwh5")
+Position = Vector2(480, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_ofnw3"),
+1: SubResource("Resource_fytt2"),
+2: SubResource("Resource_jcnkd"),
+3: SubResource("Resource_m0yhn")
+})
+
+[sub_resource type="Resource" id="Resource_elfqp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 137956446
+EndNodeId = 576251987
+
+[sub_resource type="Resource" id="Resource_ovjte"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 137956446
+EndNodeId = 1363296226
+
+[sub_resource type="Resource" id="Resource_vi5vw"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 137956446
+EndNodeId = 2903524150
+
+[sub_resource type="Resource" id="Resource_mkpnx"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 137956446
+EndNodeId = 2976580316
+
+[sub_resource type="Resource" id="Resource_h6036"]
+script = ExtResource("26_upwh5")
+Position = Vector2(480, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_elfqp"),
+1: SubResource("Resource_ovjte"),
+2: SubResource("Resource_vi5vw"),
+3: SubResource("Resource_mkpnx")
+})
+
+[sub_resource type="Resource" id="Resource_3natk"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2903524150
+EndNodeId = 137956446
+
+[sub_resource type="Resource" id="Resource_21h5h"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2903524150
+EndNodeId = 314505823
+
+[sub_resource type="Resource" id="Resource_h1kxt"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2903524150
+EndNodeId = 1087257080
+
+[sub_resource type="Resource" id="Resource_y76st"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2903524150
+EndNodeId = 1372250051
+
+[sub_resource type="Resource" id="Resource_fyj12"]
+script = ExtResource("26_upwh5")
+Position = Vector2(480, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_3natk"),
+1: SubResource("Resource_21h5h"),
+2: SubResource("Resource_h1kxt"),
+3: SubResource("Resource_y76st")
+})
+
+[sub_resource type="Resource" id="Resource_miop7"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1087257080
+EndNodeId = 2903524150
+
+[sub_resource type="Resource" id="Resource_p07c3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1087257080
+EndNodeId = 3070315124
+
+[sub_resource type="Resource" id="Resource_gsvnr"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1087257080
+EndNodeId = 3141346100
+
+[sub_resource type="Resource" id="Resource_0lgtc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1087257080
+EndNodeId = 3986820350
+
+[sub_resource type="Resource" id="Resource_86gds"]
+script = ExtResource("26_upwh5")
+Position = Vector2(480, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_miop7"),
+1: SubResource("Resource_p07c3"),
+2: SubResource("Resource_gsvnr"),
+3: SubResource("Resource_0lgtc")
+})
+
+[sub_resource type="Resource" id="Resource_wbblm"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3141346100
+EndNodeId = 1087257080
+
+[sub_resource type="Resource" id="Resource_wj3ah"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3141346100
+EndNodeId = 3546865390
+
+[sub_resource type="Resource" id="Resource_xhds3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3141346100
+EndNodeId = 1957607189
+
+[sub_resource type="Resource" id="Resource_qak4k"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3141346100
+EndNodeId = 623035221
+
+[sub_resource type="Resource" id="Resource_ojlgv"]
+script = ExtResource("26_upwh5")
+Position = Vector2(480, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_wbblm"),
+1: SubResource("Resource_wj3ah"),
+2: SubResource("Resource_xhds3"),
+3: SubResource("Resource_qak4k")
+})
+
+[sub_resource type="Resource" id="Resource_c8o0a"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1957607189
+EndNodeId = 3141346100
+
+[sub_resource type="Resource" id="Resource_xc5nv"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1957607189
+EndNodeId = 3179222347
+
+[sub_resource type="Resource" id="Resource_8tb8g"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1957607189
+EndNodeId = 3917676233
+
+[sub_resource type="Resource" id="Resource_gy476"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1957607189
+EndNodeId = 188338329
+
+[sub_resource type="Resource" id="Resource_ubp4y"]
+script = ExtResource("26_upwh5")
+Position = Vector2(480, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_c8o0a"),
+1: SubResource("Resource_xc5nv"),
+2: SubResource("Resource_8tb8g"),
+3: SubResource("Resource_gy476")
+})
+
+[sub_resource type="Resource" id="Resource_sm0l6"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3917676233
+EndNodeId = 1957607189
+
+[sub_resource type="Resource" id="Resource_la2ma"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3917676233
+EndNodeId = 538312819
+
+[sub_resource type="Resource" id="Resource_k8dmc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3917676233
+EndNodeId = 2096203139
+
+[sub_resource type="Resource" id="Resource_2yp1s"]
+script = ExtResource("26_upwh5")
+Position = Vector2(480, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_sm0l6"),
+1: SubResource("Resource_la2ma"),
+3: SubResource("Resource_k8dmc")
+})
+
+[sub_resource type="Resource" id="Resource_0yvvy"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2821326193
+EndNodeId = 1985601716
+
+[sub_resource type="Resource" id="Resource_gcx3u"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2821326193
+EndNodeId = 158516693
+
+[sub_resource type="Resource" id="Resource_gu7h7"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2821326193
+EndNodeId = 2856999500
+
+[sub_resource type="Resource" id="Resource_285if"]
+script = ExtResource("26_upwh5")
+Position = Vector2(586.6666, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_0yvvy"),
+2: SubResource("Resource_gcx3u"),
+3: SubResource("Resource_gu7h7")
+})
+
+[sub_resource type="Resource" id="Resource_uvkpj"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 158516693
+EndNodeId = 2821326193
+
+[sub_resource type="Resource" id="Resource_jr4vl"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 158516693
+EndNodeId = 576251987
+
+[sub_resource type="Resource" id="Resource_b4t5h"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 158516693
+EndNodeId = 2976580316
+
+[sub_resource type="Resource" id="Resource_2n1io"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 158516693
+EndNodeId = 473062378
+
+[sub_resource type="Resource" id="Resource_fi0ci"]
+script = ExtResource("26_upwh5")
+Position = Vector2(586.6666, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_uvkpj"),
+1: SubResource("Resource_jr4vl"),
+2: SubResource("Resource_b4t5h"),
+3: SubResource("Resource_2n1io")
+})
+
+[sub_resource type="Resource" id="Resource_hnc6u"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2976580316
+EndNodeId = 158516693
+
+[sub_resource type="Resource" id="Resource_ivvy1"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2976580316
+EndNodeId = 137956446
+
+[sub_resource type="Resource" id="Resource_qu7k5"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2976580316
+EndNodeId = 1372250051
+
+[sub_resource type="Resource" id="Resource_pv0s6"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2976580316
+EndNodeId = 4189632768
+
+[sub_resource type="Resource" id="Resource_q71ba"]
+script = ExtResource("26_upwh5")
+Position = Vector2(586.6666, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_hnc6u"),
+1: SubResource("Resource_ivvy1"),
+2: SubResource("Resource_qu7k5"),
+3: SubResource("Resource_pv0s6")
+})
+
+[sub_resource type="Resource" id="Resource_mdnap"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1372250051
+EndNodeId = 2976580316
+
+[sub_resource type="Resource" id="Resource_5w2rm"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1372250051
+EndNodeId = 2903524150
+
+[sub_resource type="Resource" id="Resource_yukgc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1372250051
+EndNodeId = 3986820350
+
+[sub_resource type="Resource" id="Resource_gfi1s"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1372250051
+EndNodeId = 2800208519
+
+[sub_resource type="Resource" id="Resource_btwkr"]
+script = ExtResource("26_upwh5")
+Position = Vector2(586.6666, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_mdnap"),
+1: SubResource("Resource_5w2rm"),
+2: SubResource("Resource_yukgc"),
+3: SubResource("Resource_gfi1s")
+})
+
+[sub_resource type="Resource" id="Resource_6o4ce"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3986820350
+EndNodeId = 1372250051
+
+[sub_resource type="Resource" id="Resource_m01p3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3986820350
+EndNodeId = 1087257080
+
+[sub_resource type="Resource" id="Resource_1d46k"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3986820350
+EndNodeId = 623035221
+
+[sub_resource type="Resource" id="Resource_tjksn"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3986820350
+EndNodeId = 4224510560
+
+[sub_resource type="Resource" id="Resource_monv7"]
+script = ExtResource("26_upwh5")
+Position = Vector2(586.6666, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_6o4ce"),
+1: SubResource("Resource_m01p3"),
+2: SubResource("Resource_1d46k"),
+3: SubResource("Resource_tjksn")
+})
+
+[sub_resource type="Resource" id="Resource_v2teu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 623035221
+EndNodeId = 3986820350
+
+[sub_resource type="Resource" id="Resource_7ha4w"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 623035221
+EndNodeId = 3141346100
+
+[sub_resource type="Resource" id="Resource_87igj"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 623035221
+EndNodeId = 188338329
+
+[sub_resource type="Resource" id="Resource_ygi6i"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 623035221
+EndNodeId = 3571029944
+
+[sub_resource type="Resource" id="Resource_72sky"]
+script = ExtResource("26_upwh5")
+Position = Vector2(586.6666, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_v2teu"),
+1: SubResource("Resource_7ha4w"),
+2: SubResource("Resource_87igj"),
+3: SubResource("Resource_ygi6i")
+})
+
+[sub_resource type="Resource" id="Resource_aob1k"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 188338329
+EndNodeId = 623035221
+
+[sub_resource type="Resource" id="Resource_0d1xp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 188338329
+EndNodeId = 1957607189
+
+[sub_resource type="Resource" id="Resource_ubr8u"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 188338329
+EndNodeId = 2096203139
+
+[sub_resource type="Resource" id="Resource_k05yc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 188338329
+EndNodeId = 1725698741
+
+[sub_resource type="Resource" id="Resource_r3n2d"]
+script = ExtResource("26_upwh5")
+Position = Vector2(586.6666, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_aob1k"),
+1: SubResource("Resource_0d1xp"),
+2: SubResource("Resource_ubr8u"),
+3: SubResource("Resource_k05yc")
+})
+
+[sub_resource type="Resource" id="Resource_7ykwm"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2096203139
+EndNodeId = 188338329
+
+[sub_resource type="Resource" id="Resource_juxy1"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2096203139
+EndNodeId = 3917676233
+
+[sub_resource type="Resource" id="Resource_q2vin"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2096203139
+EndNodeId = 673917109
+
+[sub_resource type="Resource" id="Resource_qbbqn"]
+script = ExtResource("26_upwh5")
+Position = Vector2(586.6666, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_7ykwm"),
+1: SubResource("Resource_juxy1"),
+3: SubResource("Resource_q2vin")
+})
+
+[sub_resource type="Resource" id="Resource_ky87f"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2856999500
+EndNodeId = 2821326193
+
+[sub_resource type="Resource" id="Resource_c5s4i"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2856999500
+EndNodeId = 473062378
+
+[sub_resource type="Resource" id="Resource_bwfc4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2856999500
+EndNodeId = 3406325759
+
+[sub_resource type="Resource" id="Resource_jnaq8"]
+script = ExtResource("26_upwh5")
+Position = Vector2(693.3333, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_ky87f"),
+2: SubResource("Resource_c5s4i"),
+3: SubResource("Resource_bwfc4")
+})
+
+[sub_resource type="Resource" id="Resource_hrpif"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 473062378
+EndNodeId = 2856999500
+
+[sub_resource type="Resource" id="Resource_8urql"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 473062378
+EndNodeId = 158516693
+
+[sub_resource type="Resource" id="Resource_db07v"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 473062378
+EndNodeId = 4189632768
+
+[sub_resource type="Resource" id="Resource_bxl46"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 473062378
+EndNodeId = 787165510
+
+[sub_resource type="Resource" id="Resource_eqndt"]
+script = ExtResource("26_upwh5")
+Position = Vector2(693.3333, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_hrpif"),
+1: SubResource("Resource_8urql"),
+2: SubResource("Resource_db07v"),
+3: SubResource("Resource_bxl46")
+})
+
+[sub_resource type="Resource" id="Resource_ctkwt"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4189632768
+EndNodeId = 473062378
+
+[sub_resource type="Resource" id="Resource_itm2c"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4189632768
+EndNodeId = 2976580316
+
+[sub_resource type="Resource" id="Resource_2piuq"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4189632768
+EndNodeId = 2800208519
+
+[sub_resource type="Resource" id="Resource_5vukm"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4189632768
+EndNodeId = 3167711529
+
+[sub_resource type="Resource" id="Resource_8xiqr"]
+script = ExtResource("26_upwh5")
+Position = Vector2(693.3333, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_ctkwt"),
+1: SubResource("Resource_itm2c"),
+2: SubResource("Resource_2piuq"),
+3: SubResource("Resource_5vukm")
+})
+
+[sub_resource type="Resource" id="Resource_cgo70"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2800208519
+EndNodeId = 4189632768
+
+[sub_resource type="Resource" id="Resource_hs4od"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2800208519
+EndNodeId = 1372250051
+
+[sub_resource type="Resource" id="Resource_ihl2i"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2800208519
+EndNodeId = 4224510560
+
+[sub_resource type="Resource" id="Resource_8iipb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2800208519
+EndNodeId = 3052373917
+
+[sub_resource type="Resource" id="Resource_kwhfm"]
+script = ExtResource("26_upwh5")
+Position = Vector2(693.3333, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_cgo70"),
+1: SubResource("Resource_hs4od"),
+2: SubResource("Resource_ihl2i"),
+3: SubResource("Resource_8iipb")
+})
+
+[sub_resource type="Resource" id="Resource_4uu68"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4224510560
+EndNodeId = 2800208519
+
+[sub_resource type="Resource" id="Resource_8w40x"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4224510560
+EndNodeId = 3986820350
+
+[sub_resource type="Resource" id="Resource_vmo1o"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4224510560
+EndNodeId = 3571029944
+
+[sub_resource type="Resource" id="Resource_kh3vf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4224510560
+EndNodeId = 1131048532
+
+[sub_resource type="Resource" id="Resource_h0eg1"]
+script = ExtResource("26_upwh5")
+Position = Vector2(693.3333, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_4uu68"),
+1: SubResource("Resource_8w40x"),
+2: SubResource("Resource_vmo1o"),
+3: SubResource("Resource_kh3vf")
+})
+
+[sub_resource type="Resource" id="Resource_ecwb4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3571029944
+EndNodeId = 4224510560
+
+[sub_resource type="Resource" id="Resource_823g5"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3571029944
+EndNodeId = 623035221
+
+[sub_resource type="Resource" id="Resource_mxf6c"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3571029944
+EndNodeId = 1725698741
+
+[sub_resource type="Resource" id="Resource_rxe48"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3571029944
+EndNodeId = 580668289
+
+[sub_resource type="Resource" id="Resource_20yd8"]
+script = ExtResource("26_upwh5")
+Position = Vector2(693.3333, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_ecwb4"),
+1: SubResource("Resource_823g5"),
+2: SubResource("Resource_mxf6c"),
+3: SubResource("Resource_rxe48")
+})
+
+[sub_resource type="Resource" id="Resource_bbvlb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1725698741
+EndNodeId = 3571029944
+
+[sub_resource type="Resource" id="Resource_o6ike"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1725698741
+EndNodeId = 188338329
+
+[sub_resource type="Resource" id="Resource_6obo0"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1725698741
+EndNodeId = 673917109
+
+[sub_resource type="Resource" id="Resource_wiyxv"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1725698741
+EndNodeId = 2774610658
+
+[sub_resource type="Resource" id="Resource_i18xo"]
+script = ExtResource("26_upwh5")
+Position = Vector2(693.3333, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_bbvlb"),
+1: SubResource("Resource_o6ike"),
+2: SubResource("Resource_6obo0"),
+3: SubResource("Resource_wiyxv")
+})
+
+[sub_resource type="Resource" id="Resource_e4npb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 673917109
+EndNodeId = 1725698741
+
+[sub_resource type="Resource" id="Resource_toi3c"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 673917109
+EndNodeId = 2096203139
+
+[sub_resource type="Resource" id="Resource_bs75i"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 673917109
+EndNodeId = 2203955601
+
+[sub_resource type="Resource" id="Resource_ts6ck"]
+script = ExtResource("26_upwh5")
+Position = Vector2(693.3333, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_e4npb"),
+1: SubResource("Resource_toi3c"),
+3: SubResource("Resource_bs75i")
+})
+
+[sub_resource type="Resource" id="Resource_oajj7"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3406325759
+EndNodeId = 2856999500
+
+[sub_resource type="Resource" id="Resource_pvy1f"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3406325759
+EndNodeId = 787165510
+
+[sub_resource type="Resource" id="Resource_ja2r3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3406325759
+EndNodeId = 1539317846
+
+[sub_resource type="Resource" id="Resource_1ijpt"]
+script = ExtResource("26_upwh5")
+Position = Vector2(799.99994, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_oajj7"),
+2: SubResource("Resource_pvy1f"),
+3: SubResource("Resource_ja2r3")
+})
+
+[sub_resource type="Resource" id="Resource_atnnv"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 787165510
+EndNodeId = 3406325759
+
+[sub_resource type="Resource" id="Resource_sg4ml"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 787165510
+EndNodeId = 473062378
+
+[sub_resource type="Resource" id="Resource_ovtqe"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 787165510
+EndNodeId = 3167711529
+
+[sub_resource type="Resource" id="Resource_mx2gp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 787165510
+EndNodeId = 1607571829
+
+[sub_resource type="Resource" id="Resource_kfsuo"]
+script = ExtResource("26_upwh5")
+Position = Vector2(799.99994, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_atnnv"),
+1: SubResource("Resource_sg4ml"),
+2: SubResource("Resource_ovtqe"),
+3: SubResource("Resource_mx2gp")
+})
+
+[sub_resource type="Resource" id="Resource_3e0tc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3167711529
+EndNodeId = 787165510
+
+[sub_resource type="Resource" id="Resource_yfuog"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3167711529
+EndNodeId = 4189632768
+
+[sub_resource type="Resource" id="Resource_v7mln"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3167711529
+EndNodeId = 3052373917
+
+[sub_resource type="Resource" id="Resource_hftok"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3167711529
+EndNodeId = 1874880289
+
+[sub_resource type="Resource" id="Resource_68lx1"]
+script = ExtResource("26_upwh5")
+Position = Vector2(799.99994, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_3e0tc"),
+1: SubResource("Resource_yfuog"),
+2: SubResource("Resource_v7mln"),
+3: SubResource("Resource_hftok")
+})
+
+[sub_resource type="Resource" id="Resource_yk6ie"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3052373917
+EndNodeId = 3167711529
+
+[sub_resource type="Resource" id="Resource_0jcel"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3052373917
+EndNodeId = 2800208519
+
+[sub_resource type="Resource" id="Resource_3h5bq"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3052373917
+EndNodeId = 1131048532
+
+[sub_resource type="Resource" id="Resource_4fkij"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3052373917
+EndNodeId = 276486012
+
+[sub_resource type="Resource" id="Resource_agtt3"]
+script = ExtResource("26_upwh5")
+Position = Vector2(799.99994, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_yk6ie"),
+1: SubResource("Resource_0jcel"),
+2: SubResource("Resource_3h5bq"),
+3: SubResource("Resource_4fkij")
+})
+
+[sub_resource type="Resource" id="Resource_kvmur"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1131048532
+EndNodeId = 3052373917
+
+[sub_resource type="Resource" id="Resource_kmwml"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1131048532
+EndNodeId = 4224510560
+
+[sub_resource type="Resource" id="Resource_3n2d7"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1131048532
+EndNodeId = 580668289
+
+[sub_resource type="Resource" id="Resource_vsnd0"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1131048532
+EndNodeId = 3480264995
+
+[sub_resource type="Resource" id="Resource_w3thw"]
+script = ExtResource("26_upwh5")
+Position = Vector2(799.99994, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_kvmur"),
+1: SubResource("Resource_kmwml"),
+2: SubResource("Resource_3n2d7"),
+3: SubResource("Resource_vsnd0")
+})
+
+[sub_resource type="Resource" id="Resource_wjrd1"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 580668289
+EndNodeId = 1131048532
+
+[sub_resource type="Resource" id="Resource_on1nm"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 580668289
+EndNodeId = 3571029944
+
+[sub_resource type="Resource" id="Resource_io2dc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 580668289
+EndNodeId = 2774610658
+
+[sub_resource type="Resource" id="Resource_trgld"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 580668289
+EndNodeId = 903255604
+
+[sub_resource type="Resource" id="Resource_201ke"]
+script = ExtResource("26_upwh5")
+Position = Vector2(799.99994, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_wjrd1"),
+1: SubResource("Resource_on1nm"),
+2: SubResource("Resource_io2dc"),
+3: SubResource("Resource_trgld")
+})
+
+[sub_resource type="Resource" id="Resource_37mn0"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2774610658
+EndNodeId = 580668289
+
+[sub_resource type="Resource" id="Resource_egmr5"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2774610658
+EndNodeId = 1725698741
+
+[sub_resource type="Resource" id="Resource_ap3hm"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2774610658
+EndNodeId = 2203955601
+
+[sub_resource type="Resource" id="Resource_iqbph"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2774610658
+EndNodeId = 2716519403
+
+[sub_resource type="Resource" id="Resource_5ddsi"]
+script = ExtResource("26_upwh5")
+Position = Vector2(799.99994, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_37mn0"),
+1: SubResource("Resource_egmr5"),
+2: SubResource("Resource_ap3hm"),
+3: SubResource("Resource_iqbph")
+})
+
+[sub_resource type="Resource" id="Resource_rfp6p"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2203955601
+EndNodeId = 2774610658
+
+[sub_resource type="Resource" id="Resource_sytwb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2203955601
+EndNodeId = 673917109
+
+[sub_resource type="Resource" id="Resource_51s2n"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2203955601
+EndNodeId = 1943244468
+
+[sub_resource type="Resource" id="Resource_ji0hd"]
+script = ExtResource("26_upwh5")
+Position = Vector2(799.99994, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_rfp6p"),
+1: SubResource("Resource_sytwb"),
+3: SubResource("Resource_51s2n")
+})
+
+[sub_resource type="Resource" id="Resource_e770s"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1539317846
+EndNodeId = 3406325759
+
+[sub_resource type="Resource" id="Resource_yrbvo"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1539317846
+EndNodeId = 1607571829
+
+[sub_resource type="Resource" id="Resource_3e41r"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1539317846
+EndNodeId = 1011683135
+
+[sub_resource type="Resource" id="Resource_msk75"]
+script = ExtResource("26_upwh5")
+Position = Vector2(906.6666, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_e770s"),
+2: SubResource("Resource_yrbvo"),
+3: SubResource("Resource_3e41r")
+})
+
+[sub_resource type="Resource" id="Resource_4ts7v"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1607571829
+EndNodeId = 1539317846
+
+[sub_resource type="Resource" id="Resource_iwe6b"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1607571829
+EndNodeId = 787165510
+
+[sub_resource type="Resource" id="Resource_sy5xx"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1607571829
+EndNodeId = 1874880289
+
+[sub_resource type="Resource" id="Resource_2nog7"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1607571829
+EndNodeId = 132222632
+
+[sub_resource type="Resource" id="Resource_ev36a"]
+script = ExtResource("26_upwh5")
+Position = Vector2(906.6666, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_4ts7v"),
+1: SubResource("Resource_iwe6b"),
+2: SubResource("Resource_sy5xx"),
+3: SubResource("Resource_2nog7")
+})
+
+[sub_resource type="Resource" id="Resource_s3ih0"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1874880289
+EndNodeId = 1607571829
+
+[sub_resource type="Resource" id="Resource_sghng"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1874880289
+EndNodeId = 3167711529
+
+[sub_resource type="Resource" id="Resource_77qlu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1874880289
+EndNodeId = 276486012
+
+[sub_resource type="Resource" id="Resource_pt0dg"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1874880289
+EndNodeId = 3578295115
+
+[sub_resource type="Resource" id="Resource_e5jv2"]
+script = ExtResource("26_upwh5")
+Position = Vector2(906.6666, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_s3ih0"),
+1: SubResource("Resource_sghng"),
+2: SubResource("Resource_77qlu"),
+3: SubResource("Resource_pt0dg")
+})
+
+[sub_resource type="Resource" id="Resource_umvrk"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 276486012
+EndNodeId = 1874880289
+
+[sub_resource type="Resource" id="Resource_e624o"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 276486012
+EndNodeId = 3052373917
+
+[sub_resource type="Resource" id="Resource_perf0"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 276486012
+EndNodeId = 3480264995
+
+[sub_resource type="Resource" id="Resource_nhoq3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 276486012
+EndNodeId = 3224041353
+
+[sub_resource type="Resource" id="Resource_okxuw"]
+script = ExtResource("26_upwh5")
+Position = Vector2(906.6666, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_umvrk"),
+1: SubResource("Resource_e624o"),
+2: SubResource("Resource_perf0"),
+3: SubResource("Resource_nhoq3")
+})
+
+[sub_resource type="Resource" id="Resource_wnv8d"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3480264995
+EndNodeId = 276486012
+
+[sub_resource type="Resource" id="Resource_1ai1u"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3480264995
+EndNodeId = 1131048532
+
+[sub_resource type="Resource" id="Resource_04l50"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3480264995
+EndNodeId = 903255604
+
+[sub_resource type="Resource" id="Resource_dq5d5"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3480264995
+EndNodeId = 4290731556
+
+[sub_resource type="Resource" id="Resource_6gh2i"]
+script = ExtResource("26_upwh5")
+Position = Vector2(906.6666, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_wnv8d"),
+1: SubResource("Resource_1ai1u"),
+2: SubResource("Resource_04l50"),
+3: SubResource("Resource_dq5d5")
+})
+
+[sub_resource type="Resource" id="Resource_1yhkr"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 903255604
+EndNodeId = 3480264995
+
+[sub_resource type="Resource" id="Resource_jkjiy"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 903255604
+EndNodeId = 580668289
+
+[sub_resource type="Resource" id="Resource_74w7x"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 903255604
+EndNodeId = 2716519403
+
+[sub_resource type="Resource" id="Resource_x71gp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 903255604
+EndNodeId = 4116231532
+
+[sub_resource type="Resource" id="Resource_klctq"]
+script = ExtResource("26_upwh5")
+Position = Vector2(906.6666, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_1yhkr"),
+1: SubResource("Resource_jkjiy"),
+2: SubResource("Resource_74w7x"),
+3: SubResource("Resource_x71gp")
+})
+
+[sub_resource type="Resource" id="Resource_23my5"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2716519403
+EndNodeId = 903255604
+
+[sub_resource type="Resource" id="Resource_0caau"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2716519403
+EndNodeId = 2774610658
+
+[sub_resource type="Resource" id="Resource_dr70m"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2716519403
+EndNodeId = 1943244468
+
+[sub_resource type="Resource" id="Resource_62ffr"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2716519403
+EndNodeId = 3750472173
+
+[sub_resource type="Resource" id="Resource_n1un5"]
+script = ExtResource("26_upwh5")
+Position = Vector2(906.6666, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_23my5"),
+1: SubResource("Resource_0caau"),
+2: SubResource("Resource_dr70m"),
+3: SubResource("Resource_62ffr")
+})
+
+[sub_resource type="Resource" id="Resource_ypk1v"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1943244468
+EndNodeId = 2716519403
+
+[sub_resource type="Resource" id="Resource_3mnbf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1943244468
+EndNodeId = 2203955601
+
+[sub_resource type="Resource" id="Resource_hsnev"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1943244468
+EndNodeId = 2944113053
+
+[sub_resource type="Resource" id="Resource_u7jlm"]
+script = ExtResource("26_upwh5")
+Position = Vector2(906.6666, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_ypk1v"),
+1: SubResource("Resource_3mnbf"),
+3: SubResource("Resource_hsnev")
+})
+
+[sub_resource type="Resource" id="Resource_ft5r1"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1011683135
+EndNodeId = 1539317846
+
+[sub_resource type="Resource" id="Resource_6htxx"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1011683135
+EndNodeId = 132222632
+
+[sub_resource type="Resource" id="Resource_iybtd"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1011683135
+EndNodeId = 2562714912
+
+[sub_resource type="Resource" id="Resource_aee5q"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1013.3333, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_ft5r1"),
+2: SubResource("Resource_6htxx"),
+3: SubResource("Resource_iybtd")
+})
+
+[sub_resource type="Resource" id="Resource_blcwo"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 132222632
+EndNodeId = 1011683135
+
+[sub_resource type="Resource" id="Resource_ya42e"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 132222632
+EndNodeId = 1607571829
+
+[sub_resource type="Resource" id="Resource_f7fl6"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 132222632
+EndNodeId = 3578295115
+
+[sub_resource type="Resource" id="Resource_b2eoa"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 132222632
+EndNodeId = 3658140930
+
+[sub_resource type="Resource" id="Resource_mhgeg"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1013.3333, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_blcwo"),
+1: SubResource("Resource_ya42e"),
+2: SubResource("Resource_f7fl6"),
+3: SubResource("Resource_b2eoa")
+})
+
+[sub_resource type="Resource" id="Resource_kwchq"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3578295115
+EndNodeId = 132222632
+
+[sub_resource type="Resource" id="Resource_e0nyt"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3578295115
+EndNodeId = 1874880289
+
+[sub_resource type="Resource" id="Resource_e1ls3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3578295115
+EndNodeId = 3224041353
+
+[sub_resource type="Resource" id="Resource_0h72w"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3578295115
+EndNodeId = 4193538581
+
+[sub_resource type="Resource" id="Resource_t2jwl"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1013.3333, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_kwchq"),
+1: SubResource("Resource_e0nyt"),
+2: SubResource("Resource_e1ls3"),
+3: SubResource("Resource_0h72w")
+})
+
+[sub_resource type="Resource" id="Resource_o8lqe"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3224041353
+EndNodeId = 3578295115
+
+[sub_resource type="Resource" id="Resource_7fw1j"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3224041353
+EndNodeId = 276486012
+
+[sub_resource type="Resource" id="Resource_e02sr"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3224041353
+EndNodeId = 4290731556
+
+[sub_resource type="Resource" id="Resource_x1tai"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3224041353
+EndNodeId = 1421201728
+
+[sub_resource type="Resource" id="Resource_vwc12"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1013.3333, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_o8lqe"),
+1: SubResource("Resource_7fw1j"),
+2: SubResource("Resource_e02sr"),
+3: SubResource("Resource_x1tai")
+})
+
+[sub_resource type="Resource" id="Resource_4qrb4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4290731556
+EndNodeId = 3224041353
+
+[sub_resource type="Resource" id="Resource_rb5u7"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4290731556
+EndNodeId = 3480264995
+
+[sub_resource type="Resource" id="Resource_7acp3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4290731556
+EndNodeId = 4116231532
+
+[sub_resource type="Resource" id="Resource_nlswp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4290731556
+EndNodeId = 3622497050
+
+[sub_resource type="Resource" id="Resource_brvvt"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1013.3333, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_4qrb4"),
+1: SubResource("Resource_rb5u7"),
+2: SubResource("Resource_7acp3"),
+3: SubResource("Resource_nlswp")
+})
+
+[sub_resource type="Resource" id="Resource_3t02r"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4116231532
+EndNodeId = 4290731556
+
+[sub_resource type="Resource" id="Resource_q8fy6"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4116231532
+EndNodeId = 903255604
+
+[sub_resource type="Resource" id="Resource_nxcu4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4116231532
+EndNodeId = 3750472173
+
+[sub_resource type="Resource" id="Resource_vvc5m"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4116231532
+EndNodeId = 397604375
+
+[sub_resource type="Resource" id="Resource_j1dv6"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1013.3333, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_3t02r"),
+1: SubResource("Resource_q8fy6"),
+2: SubResource("Resource_nxcu4"),
+3: SubResource("Resource_vvc5m")
+})
+
+[sub_resource type="Resource" id="Resource_vgekr"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3750472173
+EndNodeId = 4116231532
+
+[sub_resource type="Resource" id="Resource_gf5bp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3750472173
+EndNodeId = 2716519403
+
+[sub_resource type="Resource" id="Resource_ds2nc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3750472173
+EndNodeId = 2944113053
+
+[sub_resource type="Resource" id="Resource_gulbu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3750472173
+EndNodeId = 1786937642
+
+[sub_resource type="Resource" id="Resource_ns4vm"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1013.3333, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_vgekr"),
+1: SubResource("Resource_gf5bp"),
+2: SubResource("Resource_ds2nc"),
+3: SubResource("Resource_gulbu")
+})
+
+[sub_resource type="Resource" id="Resource_b7o77"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2944113053
+EndNodeId = 3750472173
+
+[sub_resource type="Resource" id="Resource_kbbuw"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2944113053
+EndNodeId = 1943244468
+
+[sub_resource type="Resource" id="Resource_xh6b6"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2944113053
+EndNodeId = 1567958697
+
+[sub_resource type="Resource" id="Resource_l2lci"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1013.3333, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_b7o77"),
+1: SubResource("Resource_kbbuw"),
+3: SubResource("Resource_xh6b6")
+})
+
+[sub_resource type="Resource" id="Resource_vansf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2562714912
+EndNodeId = 1011683135
+
+[sub_resource type="Resource" id="Resource_7kpl4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2562714912
+EndNodeId = 3658140930
+
+[sub_resource type="Resource" id="Resource_kmiwg"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2562714912
+EndNodeId = 1053755321
+
+[sub_resource type="Resource" id="Resource_4k0go"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1120, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_vansf"),
+2: SubResource("Resource_7kpl4"),
+3: SubResource("Resource_kmiwg")
+})
+
+[sub_resource type="Resource" id="Resource_bqbqw"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3658140930
+EndNodeId = 2562714912
+
+[sub_resource type="Resource" id="Resource_u3fbl"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3658140930
+EndNodeId = 132222632
+
+[sub_resource type="Resource" id="Resource_7eq8g"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3658140930
+EndNodeId = 4193538581
+
+[sub_resource type="Resource" id="Resource_mmefo"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3658140930
+EndNodeId = 4249986722
+
+[sub_resource type="Resource" id="Resource_3kdcf"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1120, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_bqbqw"),
+1: SubResource("Resource_u3fbl"),
+2: SubResource("Resource_7eq8g"),
+3: SubResource("Resource_mmefo")
+})
+
+[sub_resource type="Resource" id="Resource_tsfwk"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4193538581
+EndNodeId = 3658140930
+
+[sub_resource type="Resource" id="Resource_dcfvn"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4193538581
+EndNodeId = 3578295115
+
+[sub_resource type="Resource" id="Resource_r24bc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4193538581
+EndNodeId = 1421201728
+
+[sub_resource type="Resource" id="Resource_016rm"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4193538581
+EndNodeId = 3592972258
+
+[sub_resource type="Resource" id="Resource_v4ms6"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1120, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_tsfwk"),
+1: SubResource("Resource_dcfvn"),
+2: SubResource("Resource_r24bc"),
+3: SubResource("Resource_016rm")
+})
+
+[sub_resource type="Resource" id="Resource_rw4vs"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1421201728
+EndNodeId = 4193538581
+
+[sub_resource type="Resource" id="Resource_wgccf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1421201728
+EndNodeId = 3224041353
+
+[sub_resource type="Resource" id="Resource_hcoh2"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1421201728
+EndNodeId = 3622497050
+
+[sub_resource type="Resource" id="Resource_puf2o"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1421201728
+EndNodeId = 3833515857
+
+[sub_resource type="Resource" id="Resource_hudcl"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1120, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_rw4vs"),
+1: SubResource("Resource_wgccf"),
+2: SubResource("Resource_hcoh2"),
+3: SubResource("Resource_puf2o")
+})
+
+[sub_resource type="Resource" id="Resource_hkh7m"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3622497050
+EndNodeId = 1421201728
+
+[sub_resource type="Resource" id="Resource_jg67d"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3622497050
+EndNodeId = 4290731556
+
+[sub_resource type="Resource" id="Resource_682hf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3622497050
+EndNodeId = 397604375
+
+[sub_resource type="Resource" id="Resource_g5ogp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3622497050
+EndNodeId = 3970372383
+
+[sub_resource type="Resource" id="Resource_xgh5w"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1120, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_hkh7m"),
+1: SubResource("Resource_jg67d"),
+2: SubResource("Resource_682hf"),
+3: SubResource("Resource_g5ogp")
+})
+
+[sub_resource type="Resource" id="Resource_p143p"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 397604375
+EndNodeId = 3622497050
+
+[sub_resource type="Resource" id="Resource_tc1qr"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 397604375
+EndNodeId = 4116231532
+
+[sub_resource type="Resource" id="Resource_c75s8"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 397604375
+EndNodeId = 1786937642
+
+[sub_resource type="Resource" id="Resource_df6qx"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 397604375
+EndNodeId = 3891441788
+
+[sub_resource type="Resource" id="Resource_o1ug7"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1120, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_p143p"),
+1: SubResource("Resource_tc1qr"),
+2: SubResource("Resource_c75s8"),
+3: SubResource("Resource_df6qx")
+})
+
+[sub_resource type="Resource" id="Resource_do8lh"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1786937642
+EndNodeId = 397604375
+
+[sub_resource type="Resource" id="Resource_h5xxq"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1786937642
+EndNodeId = 3750472173
+
+[sub_resource type="Resource" id="Resource_ss3eh"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1786937642
+EndNodeId = 1567958697
+
+[sub_resource type="Resource" id="Resource_b4d63"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1786937642
+EndNodeId = 767910455
+
+[sub_resource type="Resource" id="Resource_0v1lw"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1120, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_do8lh"),
+1: SubResource("Resource_h5xxq"),
+2: SubResource("Resource_ss3eh"),
+3: SubResource("Resource_b4d63")
+})
+
+[sub_resource type="Resource" id="Resource_xf4bt"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1567958697
+EndNodeId = 1786937642
+
+[sub_resource type="Resource" id="Resource_ct0fd"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1567958697
+EndNodeId = 2944113053
+
+[sub_resource type="Resource" id="Resource_dp72w"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1567958697
+EndNodeId = 3927619517
+
+[sub_resource type="Resource" id="Resource_k2ras"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1120, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_xf4bt"),
+1: SubResource("Resource_ct0fd"),
+3: SubResource("Resource_dp72w")
+})
+
+[sub_resource type="Resource" id="Resource_qt7k8"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1053755321
+EndNodeId = 2562714912
+
+[sub_resource type="Resource" id="Resource_pmfdu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1053755321
+EndNodeId = 4249986722
+
+[sub_resource type="Resource" id="Resource_ta38r"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1053755321
+EndNodeId = 1296962805
+
+[sub_resource type="Resource" id="Resource_swd8j"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1226.6666, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_qt7k8"),
+2: SubResource("Resource_pmfdu"),
+3: SubResource("Resource_ta38r")
+})
+
+[sub_resource type="Resource" id="Resource_yco3s"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4249986722
+EndNodeId = 1053755321
+
+[sub_resource type="Resource" id="Resource_luvjb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4249986722
+EndNodeId = 3658140930
+
+[sub_resource type="Resource" id="Resource_qno8t"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4249986722
+EndNodeId = 3592972258
+
+[sub_resource type="Resource" id="Resource_cjtva"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4249986722
+EndNodeId = 2915682415
+
+[sub_resource type="Resource" id="Resource_feib6"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1226.6666, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_yco3s"),
+1: SubResource("Resource_luvjb"),
+2: SubResource("Resource_qno8t"),
+3: SubResource("Resource_cjtva")
+})
+
+[sub_resource type="Resource" id="Resource_qrxdv"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3592972258
+EndNodeId = 4249986722
+
+[sub_resource type="Resource" id="Resource_101is"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3592972258
+EndNodeId = 4193538581
+
+[sub_resource type="Resource" id="Resource_qu8qf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3592972258
+EndNodeId = 3833515857
+
+[sub_resource type="Resource" id="Resource_jsivk"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3592972258
+EndNodeId = 1734308472
+
+[sub_resource type="Resource" id="Resource_lgjwo"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1226.6666, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_qrxdv"),
+1: SubResource("Resource_101is"),
+2: SubResource("Resource_qu8qf"),
+3: SubResource("Resource_jsivk")
+})
+
+[sub_resource type="Resource" id="Resource_kvmdl"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3833515857
+EndNodeId = 3592972258
+
+[sub_resource type="Resource" id="Resource_qr4gf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3833515857
+EndNodeId = 1421201728
+
+[sub_resource type="Resource" id="Resource_rb31t"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3833515857
+EndNodeId = 3970372383
+
+[sub_resource type="Resource" id="Resource_lww8c"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3833515857
+EndNodeId = 1720571741
+
+[sub_resource type="Resource" id="Resource_ypamh"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1226.6666, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_kvmdl"),
+1: SubResource("Resource_qr4gf"),
+2: SubResource("Resource_rb31t"),
+3: SubResource("Resource_lww8c")
+})
+
+[sub_resource type="Resource" id="Resource_dxkhp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3970372383
+EndNodeId = 3833515857
+
+[sub_resource type="Resource" id="Resource_cn8cf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3970372383
+EndNodeId = 3622497050
+
+[sub_resource type="Resource" id="Resource_s84a4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3970372383
+EndNodeId = 3891441788
+
+[sub_resource type="Resource" id="Resource_cwx8g"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3970372383
+EndNodeId = 3590525670
+
+[sub_resource type="Resource" id="Resource_2nyu8"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1226.6666, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_dxkhp"),
+1: SubResource("Resource_cn8cf"),
+2: SubResource("Resource_s84a4"),
+3: SubResource("Resource_cwx8g")
+})
+
+[sub_resource type="Resource" id="Resource_ufgxa"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3891441788
+EndNodeId = 3970372383
+
+[sub_resource type="Resource" id="Resource_r3pr4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3891441788
+EndNodeId = 397604375
+
+[sub_resource type="Resource" id="Resource_wphwf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3891441788
+EndNodeId = 767910455
+
+[sub_resource type="Resource" id="Resource_3o1hu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3891441788
+EndNodeId = 2718339985
+
+[sub_resource type="Resource" id="Resource_vghc5"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1226.6666, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_ufgxa"),
+1: SubResource("Resource_r3pr4"),
+2: SubResource("Resource_wphwf"),
+3: SubResource("Resource_3o1hu")
+})
+
+[sub_resource type="Resource" id="Resource_ctm3g"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 767910455
+EndNodeId = 3891441788
+
+[sub_resource type="Resource" id="Resource_a73ot"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 767910455
+EndNodeId = 1786937642
+
+[sub_resource type="Resource" id="Resource_qun7c"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 767910455
+EndNodeId = 3927619517
+
+[sub_resource type="Resource" id="Resource_6v1pt"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 767910455
+EndNodeId = 215840845
+
+[sub_resource type="Resource" id="Resource_hhplf"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1226.6666, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_ctm3g"),
+1: SubResource("Resource_a73ot"),
+2: SubResource("Resource_qun7c"),
+3: SubResource("Resource_6v1pt")
+})
+
+[sub_resource type="Resource" id="Resource_5khcc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3927619517
+EndNodeId = 767910455
+
+[sub_resource type="Resource" id="Resource_o0vsc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3927619517
+EndNodeId = 1567958697
+
+[sub_resource type="Resource" id="Resource_oyafs"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3927619517
+EndNodeId = 2692565060
+
+[sub_resource type="Resource" id="Resource_47www"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1226.6666, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_5khcc"),
+1: SubResource("Resource_o0vsc"),
+3: SubResource("Resource_oyafs")
+})
+
+[sub_resource type="Resource" id="Resource_e1bn7"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1296962805
+EndNodeId = 1053755321
+
+[sub_resource type="Resource" id="Resource_dlmdp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1296962805
+EndNodeId = 2915682415
+
+[sub_resource type="Resource" id="Resource_l6wt2"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1296962805
+EndNodeId = 3225046576
+
+[sub_resource type="Resource" id="Resource_78j3g"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1333.3334, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_e1bn7"),
+2: SubResource("Resource_dlmdp"),
+3: SubResource("Resource_l6wt2")
+})
+
+[sub_resource type="Resource" id="Resource_8slyy"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2915682415
+EndNodeId = 1296962805
+
+[sub_resource type="Resource" id="Resource_11kse"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2915682415
+EndNodeId = 4249986722
+
+[sub_resource type="Resource" id="Resource_dwb3v"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2915682415
+EndNodeId = 1734308472
+
+[sub_resource type="Resource" id="Resource_pw37w"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2915682415
+EndNodeId = 2488880103
+
+[sub_resource type="Resource" id="Resource_6x50p"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1333.3334, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_8slyy"),
+1: SubResource("Resource_11kse"),
+2: SubResource("Resource_dwb3v"),
+3: SubResource("Resource_pw37w")
+})
+
+[sub_resource type="Resource" id="Resource_s6qvu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1734308472
+EndNodeId = 2915682415
+
+[sub_resource type="Resource" id="Resource_qqtd4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1734308472
+EndNodeId = 3592972258
+
+[sub_resource type="Resource" id="Resource_e8hcd"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1734308472
+EndNodeId = 1720571741
+
+[sub_resource type="Resource" id="Resource_g50wr"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1734308472
+EndNodeId = 3501798265
+
+[sub_resource type="Resource" id="Resource_lkupx"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1333.3334, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_s6qvu"),
+1: SubResource("Resource_qqtd4"),
+2: SubResource("Resource_e8hcd"),
+3: SubResource("Resource_g50wr")
+})
+
+[sub_resource type="Resource" id="Resource_v4v2c"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1720571741
+EndNodeId = 1734308472
+
+[sub_resource type="Resource" id="Resource_5ltda"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1720571741
+EndNodeId = 3833515857
+
+[sub_resource type="Resource" id="Resource_w6npc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1720571741
+EndNodeId = 3590525670
+
+[sub_resource type="Resource" id="Resource_skwx3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1720571741
+EndNodeId = 2505563520
+
+[sub_resource type="Resource" id="Resource_2i7p1"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1333.3334, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_v4v2c"),
+1: SubResource("Resource_5ltda"),
+2: SubResource("Resource_w6npc"),
+3: SubResource("Resource_skwx3")
+})
+
+[sub_resource type="Resource" id="Resource_bnjvu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3590525670
+EndNodeId = 1720571741
+
+[sub_resource type="Resource" id="Resource_crgqt"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3590525670
+EndNodeId = 3970372383
+
+[sub_resource type="Resource" id="Resource_sh5fp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3590525670
+EndNodeId = 2718339985
+
+[sub_resource type="Resource" id="Resource_2uj2e"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3590525670
+EndNodeId = 2255309975
+
+[sub_resource type="Resource" id="Resource_fv85b"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1333.3334, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_bnjvu"),
+1: SubResource("Resource_crgqt"),
+2: SubResource("Resource_sh5fp"),
+3: SubResource("Resource_2uj2e")
+})
+
+[sub_resource type="Resource" id="Resource_87nvm"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2718339985
+EndNodeId = 3590525670
+
+[sub_resource type="Resource" id="Resource_sqrxv"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2718339985
+EndNodeId = 3891441788
+
+[sub_resource type="Resource" id="Resource_ps0hc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2718339985
+EndNodeId = 215840845
+
+[sub_resource type="Resource" id="Resource_tnlmc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2718339985
+EndNodeId = 2253939077
+
+[sub_resource type="Resource" id="Resource_hf60g"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1333.3334, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_87nvm"),
+1: SubResource("Resource_sqrxv"),
+2: SubResource("Resource_ps0hc"),
+3: SubResource("Resource_tnlmc")
+})
+
+[sub_resource type="Resource" id="Resource_gewfg"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 215840845
+EndNodeId = 2718339985
+
+[sub_resource type="Resource" id="Resource_sjt76"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 215840845
+EndNodeId = 767910455
+
+[sub_resource type="Resource" id="Resource_xa86j"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 215840845
+EndNodeId = 2692565060
+
+[sub_resource type="Resource" id="Resource_wjbo6"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 215840845
+EndNodeId = 3546857046
+
+[sub_resource type="Resource" id="Resource_ukekl"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1333.3334, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_gewfg"),
+1: SubResource("Resource_sjt76"),
+2: SubResource("Resource_xa86j"),
+3: SubResource("Resource_wjbo6")
+})
+
+[sub_resource type="Resource" id="Resource_6gjog"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2692565060
+EndNodeId = 215840845
+
+[sub_resource type="Resource" id="Resource_ynjyq"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2692565060
+EndNodeId = 3927619517
+
+[sub_resource type="Resource" id="Resource_6hsew"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2692565060
+EndNodeId = 3014793419
+
+[sub_resource type="Resource" id="Resource_2ui4j"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1333.3334, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_6gjog"),
+1: SubResource("Resource_ynjyq"),
+3: SubResource("Resource_6hsew")
+})
+
+[sub_resource type="Resource" id="Resource_f72yc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3225046576
+EndNodeId = 1296962805
+
+[sub_resource type="Resource" id="Resource_a04hj"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3225046576
+EndNodeId = 2488880103
+
+[sub_resource type="Resource" id="Resource_6728g"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3225046576
+EndNodeId = 3144643638
+
+[sub_resource type="Resource" id="Resource_vo0mh"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1440, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_f72yc"),
+2: SubResource("Resource_a04hj"),
+3: SubResource("Resource_6728g")
+})
+
+[sub_resource type="Resource" id="Resource_3fn3s"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2488880103
+EndNodeId = 3225046576
+
+[sub_resource type="Resource" id="Resource_ua6yv"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2488880103
+EndNodeId = 2915682415
+
+[sub_resource type="Resource" id="Resource_7ouum"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2488880103
+EndNodeId = 3501798265
+
+[sub_resource type="Resource" id="Resource_1y64f"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2488880103
+EndNodeId = 3451679991
+
+[sub_resource type="Resource" id="Resource_pa567"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1440, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_3fn3s"),
+1: SubResource("Resource_ua6yv"),
+2: SubResource("Resource_7ouum"),
+3: SubResource("Resource_1y64f")
+})
+
+[sub_resource type="Resource" id="Resource_feurb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3501798265
+EndNodeId = 2488880103
+
+[sub_resource type="Resource" id="Resource_mq67p"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3501798265
+EndNodeId = 1734308472
+
+[sub_resource type="Resource" id="Resource_k3kad"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3501798265
+EndNodeId = 2505563520
+
+[sub_resource type="Resource" id="Resource_x71vw"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3501798265
+EndNodeId = 3064352331
+
+[sub_resource type="Resource" id="Resource_rrp2q"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1440, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_feurb"),
+1: SubResource("Resource_mq67p"),
+2: SubResource("Resource_k3kad"),
+3: SubResource("Resource_x71vw")
+})
+
+[sub_resource type="Resource" id="Resource_4ytfp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2505563520
+EndNodeId = 3501798265
+
+[sub_resource type="Resource" id="Resource_74ptc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2505563520
+EndNodeId = 1720571741
+
+[sub_resource type="Resource" id="Resource_jmpkn"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2505563520
+EndNodeId = 2255309975
+
+[sub_resource type="Resource" id="Resource_obtjc"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2505563520
+EndNodeId = 3501171182
+
+[sub_resource type="Resource" id="Resource_6vlod"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1440, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_4ytfp"),
+1: SubResource("Resource_74ptc"),
+2: SubResource("Resource_jmpkn"),
+3: SubResource("Resource_obtjc")
+})
+
+[sub_resource type="Resource" id="Resource_qfafd"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2255309975
+EndNodeId = 2505563520
+
+[sub_resource type="Resource" id="Resource_4nkys"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2255309975
+EndNodeId = 3590525670
+
+[sub_resource type="Resource" id="Resource_gkv70"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2255309975
+EndNodeId = 2253939077
+
+[sub_resource type="Resource" id="Resource_rapg6"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2255309975
+EndNodeId = 312747878
+
+[sub_resource type="Resource" id="Resource_dxudr"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1440, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_qfafd"),
+1: SubResource("Resource_4nkys"),
+2: SubResource("Resource_gkv70"),
+3: SubResource("Resource_rapg6")
+})
+
+[sub_resource type="Resource" id="Resource_e2con"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2253939077
+EndNodeId = 2255309975
+
+[sub_resource type="Resource" id="Resource_dkbuf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2253939077
+EndNodeId = 2718339985
+
+[sub_resource type="Resource" id="Resource_c8fbb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2253939077
+EndNodeId = 3546857046
+
+[sub_resource type="Resource" id="Resource_dcspb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2253939077
+EndNodeId = 1127813287
+
+[sub_resource type="Resource" id="Resource_adye2"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1440, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_e2con"),
+1: SubResource("Resource_dkbuf"),
+2: SubResource("Resource_c8fbb"),
+3: SubResource("Resource_dcspb")
+})
+
+[sub_resource type="Resource" id="Resource_5ltjw"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3546857046
+EndNodeId = 2253939077
+
+[sub_resource type="Resource" id="Resource_x0e7p"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3546857046
+EndNodeId = 215840845
+
+[sub_resource type="Resource" id="Resource_vyuj5"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3546857046
+EndNodeId = 3014793419
+
+[sub_resource type="Resource" id="Resource_q2rhy"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3546857046
+EndNodeId = 2267206583
+
+[sub_resource type="Resource" id="Resource_bwlnl"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1440, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_5ltjw"),
+1: SubResource("Resource_x0e7p"),
+2: SubResource("Resource_vyuj5"),
+3: SubResource("Resource_q2rhy")
+})
+
+[sub_resource type="Resource" id="Resource_mylcn"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3014793419
+EndNodeId = 3546857046
+
+[sub_resource type="Resource" id="Resource_v2ky6"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3014793419
+EndNodeId = 2692565060
+
+[sub_resource type="Resource" id="Resource_f7urn"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3014793419
+EndNodeId = 3351970116
+
+[sub_resource type="Resource" id="Resource_utubh"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1440, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_mylcn"),
+1: SubResource("Resource_v2ky6"),
+3: SubResource("Resource_f7urn")
+})
+
+[sub_resource type="Resource" id="Resource_bc2qx"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3144643638
+EndNodeId = 3225046576
+
+[sub_resource type="Resource" id="Resource_q5x5l"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3144643638
+EndNodeId = 3451679991
+
+[sub_resource type="Resource" id="Resource_lqcfw"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3144643638
+EndNodeId = 891343325
+
+[sub_resource type="Resource" id="Resource_dd1cb"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1546.6666, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_bc2qx"),
+2: SubResource("Resource_q5x5l"),
+3: SubResource("Resource_lqcfw")
+})
+
+[sub_resource type="Resource" id="Resource_wrloa"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3451679991
+EndNodeId = 3144643638
+
+[sub_resource type="Resource" id="Resource_1ju6m"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3451679991
+EndNodeId = 2488880103
+
+[sub_resource type="Resource" id="Resource_lsfrg"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3451679991
+EndNodeId = 3064352331
+
+[sub_resource type="Resource" id="Resource_yjcat"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3451679991
+EndNodeId = 248221351
+
+[sub_resource type="Resource" id="Resource_r7ilu"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1546.6666, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_wrloa"),
+1: SubResource("Resource_1ju6m"),
+2: SubResource("Resource_lsfrg"),
+3: SubResource("Resource_yjcat")
+})
+
+[sub_resource type="Resource" id="Resource_kh6of"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3064352331
+EndNodeId = 3451679991
+
+[sub_resource type="Resource" id="Resource_m030y"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3064352331
+EndNodeId = 3501798265
+
+[sub_resource type="Resource" id="Resource_b20kd"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3064352331
+EndNodeId = 3501171182
+
+[sub_resource type="Resource" id="Resource_vwxk3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3064352331
+EndNodeId = 3556159717
+
+[sub_resource type="Resource" id="Resource_aaerh"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1546.6666, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_kh6of"),
+1: SubResource("Resource_m030y"),
+2: SubResource("Resource_b20kd"),
+3: SubResource("Resource_vwxk3")
+})
+
+[sub_resource type="Resource" id="Resource_40l56"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3501171182
+EndNodeId = 3064352331
+
+[sub_resource type="Resource" id="Resource_cgt4v"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3501171182
+EndNodeId = 2505563520
+
+[sub_resource type="Resource" id="Resource_6nuyr"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3501171182
+EndNodeId = 312747878
+
+[sub_resource type="Resource" id="Resource_uitrg"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3501171182
+EndNodeId = 1415066755
+
+[sub_resource type="Resource" id="Resource_lnmau"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1546.6666, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_40l56"),
+1: SubResource("Resource_cgt4v"),
+2: SubResource("Resource_6nuyr"),
+3: SubResource("Resource_uitrg")
+})
+
+[sub_resource type="Resource" id="Resource_5864l"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 312747878
+EndNodeId = 3501171182
+
+[sub_resource type="Resource" id="Resource_q6j26"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 312747878
+EndNodeId = 2255309975
+
+[sub_resource type="Resource" id="Resource_1lkmb"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 312747878
+EndNodeId = 1127813287
+
+[sub_resource type="Resource" id="Resource_h4f6t"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 312747878
+EndNodeId = 1710195876
+
+[sub_resource type="Resource" id="Resource_jushs"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1546.6666, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_5864l"),
+1: SubResource("Resource_q6j26"),
+2: SubResource("Resource_1lkmb"),
+3: SubResource("Resource_h4f6t")
+})
+
+[sub_resource type="Resource" id="Resource_vcd4m"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1127813287
+EndNodeId = 312747878
+
+[sub_resource type="Resource" id="Resource_egvqj"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1127813287
+EndNodeId = 2253939077
+
+[sub_resource type="Resource" id="Resource_cg5i1"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1127813287
+EndNodeId = 2267206583
+
+[sub_resource type="Resource" id="Resource_sob33"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1127813287
+EndNodeId = 3669591770
+
+[sub_resource type="Resource" id="Resource_228g4"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1546.6666, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_vcd4m"),
+1: SubResource("Resource_egvqj"),
+2: SubResource("Resource_cg5i1"),
+3: SubResource("Resource_sob33")
+})
+
+[sub_resource type="Resource" id="Resource_dqhmf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2267206583
+EndNodeId = 1127813287
+
+[sub_resource type="Resource" id="Resource_yiwhg"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2267206583
+EndNodeId = 3546857046
+
+[sub_resource type="Resource" id="Resource_5gib4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2267206583
+EndNodeId = 3351970116
+
+[sub_resource type="Resource" id="Resource_gdrmn"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2267206583
+EndNodeId = 470345367
+
+[sub_resource type="Resource" id="Resource_hbync"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1546.6666, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_dqhmf"),
+1: SubResource("Resource_yiwhg"),
+2: SubResource("Resource_5gib4"),
+3: SubResource("Resource_gdrmn")
+})
+
+[sub_resource type="Resource" id="Resource_22av8"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3351970116
+EndNodeId = 2267206583
+
+[sub_resource type="Resource" id="Resource_fcq47"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3351970116
+EndNodeId = 3014793419
+
+[sub_resource type="Resource" id="Resource_j17yx"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3351970116
+EndNodeId = 2316434095
+
+[sub_resource type="Resource" id="Resource_1h5kb"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1546.6666, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_22av8"),
+1: SubResource("Resource_fcq47"),
+3: SubResource("Resource_j17yx")
+})
+
+[sub_resource type="Resource" id="Resource_welqj"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 891343325
+EndNodeId = 3144643638
+
+[sub_resource type="Resource" id="Resource_hc25s"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 891343325
+EndNodeId = 248221351
+
+[sub_resource type="Resource" id="Resource_aa7s4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 891343325
+EndNodeId = 657726249
+
+[sub_resource type="Resource" id="Resource_qvpkb"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1653.3334, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_welqj"),
+2: SubResource("Resource_hc25s"),
+3: SubResource("Resource_aa7s4")
+})
+
+[sub_resource type="Resource" id="Resource_vl2p1"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 248221351
+EndNodeId = 891343325
+
+[sub_resource type="Resource" id="Resource_h83nf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 248221351
+EndNodeId = 3451679991
+
+[sub_resource type="Resource" id="Resource_j6gaw"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 248221351
+EndNodeId = 3556159717
+
+[sub_resource type="Resource" id="Resource_878v3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 248221351
+EndNodeId = 3284559150
+
+[sub_resource type="Resource" id="Resource_vvfh8"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1653.3334, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_vl2p1"),
+1: SubResource("Resource_h83nf"),
+2: SubResource("Resource_j6gaw"),
+3: SubResource("Resource_878v3")
+})
+
+[sub_resource type="Resource" id="Resource_0w2vo"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3556159717
+EndNodeId = 248221351
+
+[sub_resource type="Resource" id="Resource_h31qt"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3556159717
+EndNodeId = 3064352331
+
+[sub_resource type="Resource" id="Resource_2mo5v"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3556159717
+EndNodeId = 1415066755
+
+[sub_resource type="Resource" id="Resource_c32qk"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3556159717
+EndNodeId = 3469624302
+
+[sub_resource type="Resource" id="Resource_wqebn"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1653.3334, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_0w2vo"),
+1: SubResource("Resource_h31qt"),
+2: SubResource("Resource_2mo5v"),
+3: SubResource("Resource_c32qk")
+})
+
+[sub_resource type="Resource" id="Resource_useu7"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1415066755
+EndNodeId = 3556159717
+
+[sub_resource type="Resource" id="Resource_xd1w0"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1415066755
+EndNodeId = 3501171182
+
+[sub_resource type="Resource" id="Resource_e75xu"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1415066755
+EndNodeId = 1710195876
+
+[sub_resource type="Resource" id="Resource_32l5f"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1415066755
+EndNodeId = 2868253948
+
+[sub_resource type="Resource" id="Resource_ob73r"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1653.3334, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_useu7"),
+1: SubResource("Resource_xd1w0"),
+2: SubResource("Resource_e75xu"),
+3: SubResource("Resource_32l5f")
+})
+
+[sub_resource type="Resource" id="Resource_q6upa"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1710195876
+EndNodeId = 1415066755
+
+[sub_resource type="Resource" id="Resource_gd5cs"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1710195876
+EndNodeId = 312747878
+
+[sub_resource type="Resource" id="Resource_m57ng"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1710195876
+EndNodeId = 3669591770
+
+[sub_resource type="Resource" id="Resource_r53y4"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 1710195876
+EndNodeId = 4039262758
+
+[sub_resource type="Resource" id="Resource_qgyay"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1653.3334, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_q6upa"),
+1: SubResource("Resource_gd5cs"),
+2: SubResource("Resource_m57ng"),
+3: SubResource("Resource_r53y4")
+})
+
+[sub_resource type="Resource" id="Resource_p8mto"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3669591770
+EndNodeId = 1710195876
+
+[sub_resource type="Resource" id="Resource_rxait"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3669591770
+EndNodeId = 1127813287
+
+[sub_resource type="Resource" id="Resource_ru53s"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3669591770
+EndNodeId = 470345367
+
+[sub_resource type="Resource" id="Resource_rq5cv"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3669591770
+EndNodeId = 4155391245
+
+[sub_resource type="Resource" id="Resource_7wf4c"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1653.3334, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_p8mto"),
+1: SubResource("Resource_rxait"),
+2: SubResource("Resource_ru53s"),
+3: SubResource("Resource_rq5cv")
+})
+
+[sub_resource type="Resource" id="Resource_n1ytp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 470345367
+EndNodeId = 3669591770
+
+[sub_resource type="Resource" id="Resource_2qvfj"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 470345367
+EndNodeId = 2267206583
+
+[sub_resource type="Resource" id="Resource_cgirk"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 470345367
+EndNodeId = 2316434095
+
+[sub_resource type="Resource" id="Resource_lytav"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 470345367
+EndNodeId = 2832518980
+
+[sub_resource type="Resource" id="Resource_sfeg4"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1653.3334, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_n1ytp"),
+1: SubResource("Resource_2qvfj"),
+2: SubResource("Resource_cgirk"),
+3: SubResource("Resource_lytav")
+})
+
+[sub_resource type="Resource" id="Resource_7dbw8"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2316434095
+EndNodeId = 470345367
+
+[sub_resource type="Resource" id="Resource_qhpvo"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2316434095
+EndNodeId = 3351970116
+
+[sub_resource type="Resource" id="Resource_tveb2"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2316434095
+EndNodeId = 37573274
+
+[sub_resource type="Resource" id="Resource_16u6n"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1653.3334, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_7dbw8"),
+1: SubResource("Resource_qhpvo"),
+3: SubResource("Resource_tveb2")
+})
+
+[sub_resource type="Resource" id="Resource_lrkq1"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 657726249
+EndNodeId = 891343325
+
+[sub_resource type="Resource" id="Resource_ugfvj"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 657726249
+EndNodeId = 3284559150
+
+[sub_resource type="Resource" id="Resource_50ina"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1760, 162)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+1: SubResource("Resource_lrkq1"),
+2: SubResource("Resource_ugfvj")
+})
+
+[sub_resource type="Resource" id="Resource_w2yxe"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3284559150
+EndNodeId = 657726249
+
+[sub_resource type="Resource" id="Resource_h86j5"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3284559150
+EndNodeId = 248221351
+
+[sub_resource type="Resource" id="Resource_yo64v"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3284559150
+EndNodeId = 3469624302
+
+[sub_resource type="Resource" id="Resource_riju8"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1760, 270)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_w2yxe"),
+1: SubResource("Resource_h86j5"),
+2: SubResource("Resource_yo64v")
+})
+
+[sub_resource type="Resource" id="Resource_lfamq"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3469624302
+EndNodeId = 3284559150
+
+[sub_resource type="Resource" id="Resource_j37tt"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3469624302
+EndNodeId = 3556159717
+
+[sub_resource type="Resource" id="Resource_nntju"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 3469624302
+EndNodeId = 2868253948
+
+[sub_resource type="Resource" id="Resource_m3kra"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1760, 378)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_lfamq"),
+1: SubResource("Resource_j37tt"),
+2: SubResource("Resource_nntju")
+})
+
+[sub_resource type="Resource" id="Resource_jpfmi"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2868253948
+EndNodeId = 3469624302
+
+[sub_resource type="Resource" id="Resource_4yxlp"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2868253948
+EndNodeId = 1415066755
+
+[sub_resource type="Resource" id="Resource_88jyx"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2868253948
+EndNodeId = 4039262758
+
+[sub_resource type="Resource" id="Resource_aqu0x"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1760, 486)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_jpfmi"),
+1: SubResource("Resource_4yxlp"),
+2: SubResource("Resource_88jyx")
+})
+
+[sub_resource type="Resource" id="Resource_yagqw"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4039262758
+EndNodeId = 2868253948
+
+[sub_resource type="Resource" id="Resource_pwjgf"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4039262758
+EndNodeId = 1710195876
+
+[sub_resource type="Resource" id="Resource_2iyhy"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4039262758
+EndNodeId = 4155391245
+
+[sub_resource type="Resource" id="Resource_81w1s"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1760, 594)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_yagqw"),
+1: SubResource("Resource_pwjgf"),
+2: SubResource("Resource_2iyhy")
+})
+
+[sub_resource type="Resource" id="Resource_4gw80"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4155391245
+EndNodeId = 4039262758
+
+[sub_resource type="Resource" id="Resource_ybil3"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4155391245
+EndNodeId = 3669591770
+
+[sub_resource type="Resource" id="Resource_rjnue"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 4155391245
+EndNodeId = 2832518980
+
+[sub_resource type="Resource" id="Resource_63oho"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1760, 702)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_4gw80"),
+1: SubResource("Resource_ybil3"),
+2: SubResource("Resource_rjnue")
+})
+
+[sub_resource type="Resource" id="Resource_4ys42"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2832518980
+EndNodeId = 4155391245
+
+[sub_resource type="Resource" id="Resource_tuq7q"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2832518980
+EndNodeId = 470345367
+
+[sub_resource type="Resource" id="Resource_ahy6i"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 2832518980
+EndNodeId = 37573274
+
+[sub_resource type="Resource" id="Resource_cgrn7"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1760, 810)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_4ys42"),
+1: SubResource("Resource_tuq7q"),
+2: SubResource("Resource_ahy6i")
+})
+
+[sub_resource type="Resource" id="Resource_kxor7"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 37573274
+EndNodeId = 2832518980
+
+[sub_resource type="Resource" id="Resource_0einj"]
+script = ExtResource("26_3uomi")
+Cost = 100.0
+StartNodeId = 37573274
+EndNodeId = 2316434095
+
+[sub_resource type="Resource" id="Resource_j8hur"]
+script = ExtResource("26_upwh5")
+Position = Vector2(1760, 918)
+Connections = Dictionary[int, ExtResource("26_3uomi")]({
+0: SubResource("Resource_kxor7"),
+1: SubResource("Resource_0einj")
+})
+
+[sub_resource type="Resource" id="Resource_6el8a"]
+script = ExtResource("27_02q8g")
+Nodes = Dictionary[Vector2i, ExtResource("26_upwh5")]({
+Vector2i(1, 1): SubResource("Resource_02q8g"),
+Vector2i(1, 2): SubResource("Resource_ieua8"),
+Vector2i(1, 3): SubResource("Resource_3ruup"),
+Vector2i(1, 4): SubResource("Resource_wgcds"),
+Vector2i(1, 5): SubResource("Resource_wp3ee"),
+Vector2i(1, 6): SubResource("Resource_y6snw"),
+Vector2i(1, 7): SubResource("Resource_xbypa"),
+Vector2i(1, 8): SubResource("Resource_u2moi"),
+Vector2i(2, 1): SubResource("Resource_i5sue"),
+Vector2i(2, 2): SubResource("Resource_21r04"),
+Vector2i(2, 3): SubResource("Resource_8lm6b"),
+Vector2i(2, 4): SubResource("Resource_uasq2"),
+Vector2i(2, 5): SubResource("Resource_b4atj"),
+Vector2i(2, 6): SubResource("Resource_4go4u"),
+Vector2i(2, 7): SubResource("Resource_bvudl"),
+Vector2i(2, 8): SubResource("Resource_ayhu3"),
+Vector2i(3, 1): SubResource("Resource_ft42y"),
+Vector2i(3, 2): SubResource("Resource_hv03r"),
+Vector2i(3, 3): SubResource("Resource_2l8o6"),
+Vector2i(3, 4): SubResource("Resource_r8chm"),
+Vector2i(3, 5): SubResource("Resource_buut8"),
+Vector2i(3, 6): SubResource("Resource_eusfh"),
+Vector2i(3, 7): SubResource("Resource_umrb7"),
+Vector2i(3, 8): SubResource("Resource_f2soa"),
+Vector2i(4, 1): SubResource("Resource_oy6oo"),
+Vector2i(4, 2): SubResource("Resource_52lg0"),
+Vector2i(4, 3): SubResource("Resource_h6036"),
+Vector2i(4, 4): SubResource("Resource_fyj12"),
+Vector2i(4, 5): SubResource("Resource_86gds"),
+Vector2i(4, 6): SubResource("Resource_ojlgv"),
+Vector2i(4, 7): SubResource("Resource_ubp4y"),
+Vector2i(4, 8): SubResource("Resource_2yp1s"),
+Vector2i(5, 1): SubResource("Resource_285if"),
+Vector2i(5, 2): SubResource("Resource_fi0ci"),
+Vector2i(5, 3): SubResource("Resource_q71ba"),
+Vector2i(5, 4): SubResource("Resource_btwkr"),
+Vector2i(5, 5): SubResource("Resource_monv7"),
+Vector2i(5, 6): SubResource("Resource_72sky"),
+Vector2i(5, 7): SubResource("Resource_r3n2d"),
+Vector2i(5, 8): SubResource("Resource_qbbqn"),
+Vector2i(6, 1): SubResource("Resource_jnaq8"),
+Vector2i(6, 2): SubResource("Resource_eqndt"),
+Vector2i(6, 3): SubResource("Resource_8xiqr"),
+Vector2i(6, 4): SubResource("Resource_kwhfm"),
+Vector2i(6, 5): SubResource("Resource_h0eg1"),
+Vector2i(6, 6): SubResource("Resource_20yd8"),
+Vector2i(6, 7): SubResource("Resource_i18xo"),
+Vector2i(6, 8): SubResource("Resource_ts6ck"),
+Vector2i(7, 1): SubResource("Resource_1ijpt"),
+Vector2i(7, 2): SubResource("Resource_kfsuo"),
+Vector2i(7, 3): SubResource("Resource_68lx1"),
+Vector2i(7, 4): SubResource("Resource_agtt3"),
+Vector2i(7, 5): SubResource("Resource_w3thw"),
+Vector2i(7, 6): SubResource("Resource_201ke"),
+Vector2i(7, 7): SubResource("Resource_5ddsi"),
+Vector2i(7, 8): SubResource("Resource_ji0hd"),
+Vector2i(8, 1): SubResource("Resource_msk75"),
+Vector2i(8, 2): SubResource("Resource_ev36a"),
+Vector2i(8, 3): SubResource("Resource_e5jv2"),
+Vector2i(8, 4): SubResource("Resource_okxuw"),
+Vector2i(8, 5): SubResource("Resource_6gh2i"),
+Vector2i(8, 6): SubResource("Resource_klctq"),
+Vector2i(8, 7): SubResource("Resource_n1un5"),
+Vector2i(8, 8): SubResource("Resource_u7jlm"),
+Vector2i(9, 1): SubResource("Resource_aee5q"),
+Vector2i(9, 2): SubResource("Resource_mhgeg"),
+Vector2i(9, 3): SubResource("Resource_t2jwl"),
+Vector2i(9, 4): SubResource("Resource_vwc12"),
+Vector2i(9, 5): SubResource("Resource_brvvt"),
+Vector2i(9, 6): SubResource("Resource_j1dv6"),
+Vector2i(9, 7): SubResource("Resource_ns4vm"),
+Vector2i(9, 8): SubResource("Resource_l2lci"),
+Vector2i(10, 1): SubResource("Resource_4k0go"),
+Vector2i(10, 2): SubResource("Resource_3kdcf"),
+Vector2i(10, 3): SubResource("Resource_v4ms6"),
+Vector2i(10, 4): SubResource("Resource_hudcl"),
+Vector2i(10, 5): SubResource("Resource_xgh5w"),
+Vector2i(10, 6): SubResource("Resource_o1ug7"),
+Vector2i(10, 7): SubResource("Resource_0v1lw"),
+Vector2i(10, 8): SubResource("Resource_k2ras"),
+Vector2i(11, 1): SubResource("Resource_swd8j"),
+Vector2i(11, 2): SubResource("Resource_feib6"),
+Vector2i(11, 3): SubResource("Resource_lgjwo"),
+Vector2i(11, 4): SubResource("Resource_ypamh"),
+Vector2i(11, 5): SubResource("Resource_2nyu8"),
+Vector2i(11, 6): SubResource("Resource_vghc5"),
+Vector2i(11, 7): SubResource("Resource_hhplf"),
+Vector2i(11, 8): SubResource("Resource_47www"),
+Vector2i(12, 1): SubResource("Resource_78j3g"),
+Vector2i(12, 2): SubResource("Resource_6x50p"),
+Vector2i(12, 3): SubResource("Resource_lkupx"),
+Vector2i(12, 4): SubResource("Resource_2i7p1"),
+Vector2i(12, 5): SubResource("Resource_fv85b"),
+Vector2i(12, 6): SubResource("Resource_hf60g"),
+Vector2i(12, 7): SubResource("Resource_ukekl"),
+Vector2i(12, 8): SubResource("Resource_2ui4j"),
+Vector2i(13, 1): SubResource("Resource_vo0mh"),
+Vector2i(13, 2): SubResource("Resource_pa567"),
+Vector2i(13, 3): SubResource("Resource_rrp2q"),
+Vector2i(13, 4): SubResource("Resource_6vlod"),
+Vector2i(13, 5): SubResource("Resource_dxudr"),
+Vector2i(13, 6): SubResource("Resource_adye2"),
+Vector2i(13, 7): SubResource("Resource_bwlnl"),
+Vector2i(13, 8): SubResource("Resource_utubh"),
+Vector2i(14, 1): SubResource("Resource_dd1cb"),
+Vector2i(14, 2): SubResource("Resource_r7ilu"),
+Vector2i(14, 3): SubResource("Resource_aaerh"),
+Vector2i(14, 4): SubResource("Resource_lnmau"),
+Vector2i(14, 5): SubResource("Resource_jushs"),
+Vector2i(14, 6): SubResource("Resource_228g4"),
+Vector2i(14, 7): SubResource("Resource_hbync"),
+Vector2i(14, 8): SubResource("Resource_1h5kb"),
+Vector2i(15, 1): SubResource("Resource_qvpkb"),
+Vector2i(15, 2): SubResource("Resource_vvfh8"),
+Vector2i(15, 3): SubResource("Resource_wqebn"),
+Vector2i(15, 4): SubResource("Resource_ob73r"),
+Vector2i(15, 5): SubResource("Resource_qgyay"),
+Vector2i(15, 6): SubResource("Resource_7wf4c"),
+Vector2i(15, 7): SubResource("Resource_sfeg4"),
+Vector2i(15, 8): SubResource("Resource_16u6n"),
+Vector2i(16, 1): SubResource("Resource_50ina"),
+Vector2i(16, 2): SubResource("Resource_riju8"),
+Vector2i(16, 3): SubResource("Resource_m3kra"),
+Vector2i(16, 4): SubResource("Resource_aqu0x"),
+Vector2i(16, 5): SubResource("Resource_81w1s"),
+Vector2i(16, 6): SubResource("Resource_63oho"),
+Vector2i(16, 7): SubResource("Resource_cgrn7"),
+Vector2i(16, 8): SubResource("Resource_j8hur")
+})
+NodeArrayPositionsById = Dictionary[int, Vector2i]({
+37573274: Vector2i(16, 8),
+132222632: Vector2i(9, 2),
+137956446: Vector2i(4, 3),
+158516693: Vector2i(5, 2),
+188338329: Vector2i(5, 7),
+215840845: Vector2i(12, 7),
+248221351: Vector2i(15, 2),
+276486012: Vector2i(8, 4),
+312747878: Vector2i(14, 5),
+314505823: Vector2i(3, 4),
+397604375: Vector2i(10, 6),
+470345367: Vector2i(15, 7),
+473062378: Vector2i(6, 2),
+538312819: Vector2i(3, 8),
+576251987: Vector2i(4, 2),
+580668289: Vector2i(7, 6),
+587229385: Vector2i(2, 1),
+618969240: Vector2i(2, 8),
+623035221: Vector2i(5, 6),
+657726249: Vector2i(16, 1),
+673917109: Vector2i(6, 8),
+690605731: Vector2i(1, 2),
+767910455: Vector2i(11, 7),
+787165510: Vector2i(7, 2),
+891343325: Vector2i(15, 1),
+903255604: Vector2i(8, 6),
+1011683135: Vector2i(9, 1),
+1053755321: Vector2i(11, 1),
+1087257080: Vector2i(4, 5),
+1127813287: Vector2i(14, 6),
+1131048532: Vector2i(7, 5),
+1296962805: Vector2i(12, 1),
+1322128620: Vector2i(2, 3),
+1363296226: Vector2i(3, 3),
+1372250051: Vector2i(5, 4),
+1385139628: Vector2i(2, 5),
+1415066755: Vector2i(15, 4),
+1421201728: Vector2i(10, 4),
+1476837419: Vector2i(2, 6),
+1539317846: Vector2i(8, 1),
+1567958697: Vector2i(10, 8),
+1607571829: Vector2i(8, 2),
+1652215365: Vector2i(1, 4),
+1673543977: Vector2i(1, 6),
+1702101261: Vector2i(3, 1),
+1710195876: Vector2i(15, 5),
+1720571741: Vector2i(12, 4),
+1725698741: Vector2i(6, 7),
+1734308472: Vector2i(12, 3),
+1757581110: Vector2i(1, 3),
+1786937642: Vector2i(10, 7),
+1874880289: Vector2i(8, 3),
+1880919716: Vector2i(1, 5),
+1943244468: Vector2i(8, 8),
+1957607189: Vector2i(4, 7),
+1985601716: Vector2i(4, 1),
+2096203139: Vector2i(5, 8),
+2140796240: Vector2i(2, 2),
+2203955601: Vector2i(7, 8),
+2207950237: Vector2i(1, 1),
+2253939077: Vector2i(13, 6),
+2255309975: Vector2i(13, 5),
+2267206583: Vector2i(14, 7),
+2316434095: Vector2i(15, 8),
+2488880103: Vector2i(13, 2),
+2505563520: Vector2i(13, 4),
+2562714912: Vector2i(10, 1),
+2621162660: Vector2i(3, 2),
+2692565060: Vector2i(12, 8),
+2716519403: Vector2i(8, 7),
+2718339985: Vector2i(12, 6),
+2774610658: Vector2i(7, 7),
+2800208519: Vector2i(6, 4),
+2821326193: Vector2i(5, 1),
+2832518980: Vector2i(16, 7),
+2856999500: Vector2i(6, 1),
+2868253948: Vector2i(16, 4),
+2894973584: Vector2i(1, 8),
+2903524150: Vector2i(4, 4),
+2915682415: Vector2i(12, 2),
+2944113053: Vector2i(9, 8),
+2976580316: Vector2i(5, 3),
+3014793419: Vector2i(13, 8),
+3052373917: Vector2i(7, 4),
+3064352331: Vector2i(14, 3),
+3070315124: Vector2i(3, 5),
+3141346100: Vector2i(4, 6),
+3144643638: Vector2i(14, 1),
+3167711529: Vector2i(7, 3),
+3179222347: Vector2i(3, 7),
+3185542715: Vector2i(1, 7),
+3224041353: Vector2i(9, 4),
+3225046576: Vector2i(13, 1),
+3284559150: Vector2i(16, 2),
+3351970116: Vector2i(14, 8),
+3406325759: Vector2i(7, 1),
+3451679991: Vector2i(14, 2),
+3469624302: Vector2i(16, 3),
+3480264995: Vector2i(8, 5),
+3501171182: Vector2i(14, 4),
+3501798265: Vector2i(13, 3),
+3546857046: Vector2i(13, 7),
+3546865390: Vector2i(3, 6),
+3556159717: Vector2i(15, 3),
+3571029944: Vector2i(6, 6),
+3578295115: Vector2i(9, 3),
+3590525670: Vector2i(12, 5),
+3592972258: Vector2i(11, 3),
+3622497050: Vector2i(10, 5),
+3658140930: Vector2i(10, 2),
+3669591770: Vector2i(15, 6),
+3750472173: Vector2i(9, 7),
+3833515857: Vector2i(11, 4),
+3891441788: Vector2i(11, 6),
+3917676233: Vector2i(4, 8),
+3927619517: Vector2i(11, 8),
+3951783358: Vector2i(2, 7),
+3970372383: Vector2i(11, 5),
+3986820350: Vector2i(5, 5),
+4039262758: Vector2i(16, 5),
+4075884071: Vector2i(2, 4),
+4116231532: Vector2i(9, 6),
+4155391245: Vector2i(16, 6),
+4189632768: Vector2i(6, 3),
+4193538581: Vector2i(10, 3),
+4224510560: Vector2i(6, 5),
+4249986722: Vector2i(11, 2),
+4290731556: Vector2i(9, 5)
+})
+
+[sub_resource type="Resource" id="Resource_37pt5"]
+script = ExtResource("29_kafq8")
+Position = Vector2(150, 150)
+GizmoColor = Color(0, 0, 1, 1)
+metadata/_custom_type_script = "uid://e6exqkqmubxx"
+
+[sub_resource type="Resource" id="Resource_0k7el"]
+script = ExtResource("29_kafq8")
+Position = Vector2(1768, 920)
+GizmoColor = Color(1, 0, 0, 1)
+metadata/_custom_type_script = "uid://e6exqkqmubxx"
+
+[sub_resource type="Resource" id="Resource_af56a"]
+script = ExtResource("29_kafq8")
+Position = Vector2(904, 493)
+GizmoColor = Color(1, 1, 0, 1)
+metadata/_custom_type_script = "uid://e6exqkqmubxx"
 
 [node name="SimpleBehaviorTestLevel" type="Node2D"]
 
 [node name="ClearCourtyard" parent="." instance=ExtResource("1_oy3cc")]
 
 [node name="Target" parent="." instance=ExtResource("3_hsc70")]
+modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
 top_level = true
 z_index = 1000
 position = Vector2(362, 821)
@@ -71,6 +4383,9 @@ position = Vector2(467, 506)
 
 [node name="Position12" type="Marker2D" parent="Positions"]
 position = Vector2(1486, 506)
+
+[node name="Marker2D" type="Marker2D" parent="Positions"]
+position = Vector2(904, 493)
 
 [node name="Agents" type="Node" parent="."]
 
@@ -196,7 +4511,7 @@ MaximumDeceleration = 300.0
 AutoSmoothSamples = 0
 
 [node name="SeparationSteeringBehavior" parent="Agents/SeparationMovingAgent" node_paths=PackedStringArray("Threats") instance=ExtResource("14_t8tiy")]
-Threats = [NodePath("../../ArriveMovingAgentLA"), NodePath("../../VelocityMatchingMovingAgent")]
+Threats = [null, null]
 SeparationThreshold = 400.0
 DecayCoefficient = 20.0
 VelocityMarkerVisible = true
@@ -211,9 +4526,11 @@ MaximumRotationalDegSpeed = 180.0
 AutoSmoothSamples = 0
 
 [node name="GroupAlignSteeringBehavior" parent="Agents/GroupAlignMovingAgent" node_paths=PackedStringArray("Targets") instance=ExtResource("15_cm7y6")]
-Targets = [NodePath("../../ArriveMovingAgentLA"), NodePath("../../SeekMovingAgent")]
+Targets = [null, null]
 DecelerationRadius = 5.0
+DecelerationCurve = SubResource("Curve_gj4u3")
 AccelerationRadius = 5.0
+AccelerationCurve = SubResource("Curve_itbgl")
 OrientationGizmosVisible = true
 
 [node name="CohesionMovingAgent" parent="Agents" instance=ExtResource("4_d5nib")]
@@ -224,7 +4541,7 @@ MaximumSpeed = 600.0
 AutoSmoothSamples = 0
 
 [node name="CohesionSteeringBehavior" parent="Agents/CohesionMovingAgent" node_paths=PackedStringArray("Targets") instance=ExtResource("16_4hd86")]
-Targets = [NodePath("../../SeekMovingAgent"), NodePath("../../ArriveMovingAgentLA"), NodePath("../../VelocityMatchingMovingAgent")]
+Targets = [null, null, null]
 ArrivalDistance = 5.0
 PositionGizmoVisible = true
 PositionGizmoColor = Color(1, 0, 0, 1)
@@ -286,3 +4603,15 @@ SemiConeDegrees = 90.0
 Resolution = 12
 Range = 200.0
 metadata/_custom_type_script = "uid://x00e0v0m34tl"
+
+[node name="MapGraph" parent="." node_paths=PackedStringArray("_walkableTilemapLayer") instance=ExtResource("25_kafq8")]
+ObstaclesLayers = 10
+_walkableTilemapLayer = NodePath("../ClearCourtyard/GroundTileMapLayer")
+GraphResource = SubResource("Resource_6el8a")
+
+[node name="MapGraphRegions" parent="." node_paths=PackedStringArray("_mapGraph") instance=ExtResource("28_ifpi0")]
+Seeds = Array[ExtResource("29_kafq8")]([SubResource("Resource_37pt5"), SubResource("Resource_0k7el"), SubResource("Resource_af56a")])
+_mapGraph = NodePath("../MapGraph")
+ShowGizmos = true
+
+[editable path="ClearCourtyard"]

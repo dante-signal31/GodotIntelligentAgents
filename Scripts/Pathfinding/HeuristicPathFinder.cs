@@ -25,7 +25,7 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>
     /// traversing a graph. It provides functionality to add and remove nodes, check for
     /// node existence, and retrieve the node with the lowest cost value.
     /// </remarks>
-    protected abstract class PrioritizedNodeRecordSet: INodeRecordCollection<T>
+    public abstract class PrioritizedNodeRecordSet: INodeRecordCollection<T>
     {
         // Needed to keep ordered by cost the NodeRecords of the node pending to be
         // explored.

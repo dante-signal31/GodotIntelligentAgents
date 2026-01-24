@@ -32,7 +32,7 @@ public partial class MapGraph: Node2D
     /// </summary>
     [Export] public MapGraphResource GraphResource = new();
     
-    [ExportToolButton("GenerateGraph")]
+    [ExportToolButton("Bake Graph")]
     private Callable GenerateGraphButton => Callable.From(GenerateGraph);
     
     [ExportCategory("DEBUG:")]
