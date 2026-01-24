@@ -43,9 +43,6 @@ public partial class PathSmoother: Node2D, IPathFinder
     public override void _EnterTree()
     {
         _cleanAreaChecker = new CleanAreaChecker(
-            // I don't know why, but shape casts seem to miss corners, so the agents tend
-            // to touch them. The problem seems to be alleviated by adding a small extra
-            // radius.
             (Mathf.Min(Graph.CellSize.X, Graph.CellSize.Y)/2), 
             Graph.ObstaclesLayers, 
             Graph);
