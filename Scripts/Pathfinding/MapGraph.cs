@@ -46,7 +46,8 @@ public partial class MapGraph: Node2D
     /// <summary>
     /// Just a shortcut to the graph nodes dictionary inside GraphResource.
     /// </summary>
-    public Godot.Collections.Dictionary<Vector2I, PositionNode> ArrayPositionsToNodes => GraphResource.ArrayPositionsToNodes;
+    public Godot.Collections.Dictionary<Vector2I, PositionNode> ArrayPositionsToNodes => 
+        GraphResource.ArrayPositionsToNodes;
     
     private Vector2 NodeGlobalPosition(Vector2I nodeArrayPosition) => 
         nodeArrayPosition * CellSize + CellSize / 2;
