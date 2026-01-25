@@ -60,8 +60,42 @@ public partial class MapGraph: Node2D
     public PositionNode GetNodeAtPosition(Vector2 globalPosition)
     {
         Vector2I arrayPosition = GlobalToArrayPosition(globalPosition);
+        return GetNodeAtArrayPosition(arrayPosition);
+    }
+
+    public PositionNode GetNodeAtNearestPosition(Vector2 globalPosition)
+    {
+        Vector2I arrayPosition = GlobalToArrayPosition(globalPosition);
+        PositionNode nearestNode = GetNodeAtArrayPosition(arrayPosition);
+        if (nearestNode == null)
+        {
+            Vector2I nearestKey = FindNearestArrayPosition(arrayPosition);
+            nearestNode = GetNodeAtArrayPosition(nearestKey);
+        }
+        return nearestNode;
+    }
+
+    private Vector2I FindNearestArrayPosition(Vector2I targetPosition)
+    {
+        Vector2I nearestPosition = Vector2I.Zero;
+        float minDistance = float.MaxValue;
+
+        foreach (Vector2I key in GraphResource.ArrayPositionsToNodes.Keys)
+        {
+            float distance = targetPosition.DistanceSquaredTo(key);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestPosition = key;
+            }
+        }
+        return nearestPosition;
+    }
+
+    public PositionNode GetNodeAtArrayPosition(Vector2I arrayPosition)
+    {
         if (!GraphResource.ArrayPositionsToNodes.ContainsKey(arrayPosition)) return null;
-        return GraphResource.ArrayPositionsToNodes[GlobalToArrayPosition(globalPosition)];
+        return GraphResource.ArrayPositionsToNodes[arrayPosition];
     }
     
     private Vector2I GetArrayPositionById(uint nodeId) => GraphResource.NodeIdsToArrayPositions[nodeId];

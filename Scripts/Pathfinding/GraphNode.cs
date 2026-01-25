@@ -13,7 +13,7 @@ public partial class GraphNode: Resource
     private static readonly HashSet<uint> AssignedIds = new();
     private static readonly Random Random = new();
 
-    public uint Id { get; private set; } = GenerateUniqueId();
+    [Export] public uint Id { get; private set; } = GenerateUniqueId();
 
     // TODO: Generalize orientation.
     [Export] public Godot.Collections.Dictionary<Orientation, GraphConnection> Connections = new();

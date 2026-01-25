@@ -41,7 +41,7 @@ public partial class MapGraphRegions: Node2D
     /// <summary>
     /// MapGraph this component is going to divide into regions.
     /// </summary>
-    [Export] private MapGraph _mapGraph;
+    [Export] public MapGraph MapGraph { get; private set; }
     
     /// <summary>
     /// MapGraphRegions serialized backend.
@@ -65,12 +65,6 @@ public partial class MapGraphRegions: Node2D
     /// </summary>
     private readonly System.Collections.Generic.Dictionary<uint, float> _regionsInfluence 
         = new();
-    
-    /// <summary>
-    /// A dictionary that maps nodes to their corresponding region records.
-    /// </summary>
-    private readonly System.Collections.Generic.Dictionary<PositionNode, RegionNodeRecord> 
-        _exploredNodes = new();
 
     /// <summary>
     /// Colors to show the regions in debugging mode.
@@ -78,24 +72,32 @@ public partial class MapGraphRegions: Node2D
     private readonly System.Collections.Generic.Dictionary<uint, Color> _regionColors 
         = new();
 
-    public override void _Ready()
+    /// <summary>
+    /// IDs of regions present in the map graph.
+    /// </summary>
+    public HashSet<uint> Regions { get; } = new();
+    
+    /// <summary>
+    /// IDs of nodes present in each region.
+    /// </summary>
+    public readonly System.Collections.Generic.Dictionary<uint, HashSet<uint>> NodesByRegion 
+        = new();
+
+    public uint GetRegionByPosition(Vector2 position)
     {
-        foreach (KeyValuePair<uint, uint> regionNode in 
-                 _graphRegionsResource.NodesIdToRegionsId)
-        {
-            PositionNode node = _mapGraph.GetNodeById(regionNode.Key);
-            RegionNodeRecord record = new()
-            {
-                Node = node, 
-                RegionId = regionNode.Value
-            };
-            _exploredNodes[node] = record;
-        }
+        uint nearestNodeId = MapGraph.GetNodeAtPosition(position).Id;
+        return _graphRegionsResource.NodesIdToRegionsId[nearestNodeId];
     }
 
+    /// <summary>
+    /// Generates and assigns regions within the map graph. Each region is defined by its
+    /// influence and cost parameters.
+    /// </summary>
     public void GenerateRegions()
     {
         InitCollections();
+        System.Collections.Generic.Dictionary<PositionNode, RegionNodeRecord>
+            exploredNodes = new();
         while (_nodeRegionsOpenSet.Count > 0)
         {
             RegionNodeRecord current = _nodeRegionsOpenSet.Get();
@@ -109,10 +111,10 @@ public partial class MapGraphRegions: Node2D
                     DefaultCost / _regionsInfluence[current.RegionId]);
                 
                 // Where does that connection lead us?
-                PositionNode endNode = _mapGraph.GetNodeById(graphConnection.EndNodeId);
+                PositionNode endNode = MapGraph.GetNodeById(graphConnection.EndNodeId);
 
                 // Was that node already explored?
-                if (_exploredNodes.TryGetValue(
+                if (exploredNodes.TryGetValue(
                         endNode, 
                         out RegionNodeRecord endNodeRecord))
                 {
@@ -136,34 +138,75 @@ public partial class MapGraphRegions: Node2D
                         RegionId = current.RegionId
                     };
                     _nodeRegionsOpenSet.Add(newRecord);
-                    _exploredNodes[endNode] = newRecord;
+                    exploredNodes[endNode] = newRecord;
                 }
             }
         }
-        UpdateRegionsResource();
+        UpdateRegionsResource(exploredNodes);
+        UpdateRegionsArray();
+        UpdateNodesByRegion();
     }
 
-    private void UpdateRegionsResource()
+    /// <summary>
+    /// Updates the mapping of nodes to their respective region IDs in the graph regions
+    /// resource. This way, the generated regions are kept serialized across executions.
+    /// </summary>
+    private void UpdateRegionsResource(
+        System.Collections.Generic.Dictionary<PositionNode, RegionNodeRecord> 
+            exploredNodes)
     {
         _graphRegionsResource.NodesIdToRegionsId.Clear();
         foreach (KeyValuePair<PositionNode, RegionNodeRecord> exploredNode in
-                 _exploredNodes)
+                 exploredNodes)
         {
             _graphRegionsResource.NodesIdToRegionsId[exploredNode.Key.Id] =
                 exploredNode.Value.RegionId;
         }
     }
 
+    /// <summary>
+    /// Updates the set of region IDs by synchronizing the current collection of regions
+    /// with the mappings stored in the associated MapGraphRegionsResource object.
+    /// This ensures that the Regions property reflects the latest region assignments.
+    /// </summary>
+    private void UpdateRegionsArray()
+    {
+        Regions.Clear();
+        Regions.UnionWith(_graphRegionsResource.NodesIdToRegionsId.Values);
+    }
+
+    /// <summary>
+    /// Updates the mapping between region IDs and the sets of node IDs that belong to
+    /// those regions.
+    /// </summary>
+    private void UpdateNodesByRegion()
+    {
+        foreach (uint regionId in Regions)
+        {
+            HashSet<uint> nodesInRegion = new();
+            foreach (KeyValuePair<uint, uint> NodeIdTopRegionId in 
+                     _graphRegionsResource.NodesIdToRegionsId)
+            {
+                if (NodeIdTopRegionId.Value == regionId) 
+                    nodesInRegion.Add(NodeIdTopRegionId.Key);
+            }
+            NodesByRegion[regionId] = nodesInRegion;
+        }
+    }
+
+    /// <summary>
+    /// Initializes and clears the collections used for region generation in the map
+    /// graph.
+    /// </summary>
     private void InitCollections()
     {
         _nodeRegionsOpenSet.Clear();
         _regionsInfluence.Clear();
-        _exploredNodes.Clear();
         for (uint i = 0; i < Seeds.Count; i++)
         {
             RegionSeed regionSeed = Seeds[(int)i];
             _regionsInfluence[i] = regionSeed.Influence;
-            PositionNode seedNode = _mapGraph.GetNodeAtPosition(regionSeed.Position);
+            PositionNode seedNode = MapGraph.GetNodeAtPosition(regionSeed.Position);
             RegionNodeRecord nodeRecord = new RegionNodeRecord()
             {
                 Node = seedNode,
@@ -210,12 +253,12 @@ public partial class MapGraphRegions: Node2D
     {
         float currentAlpha = ShowGizmos? GizmoAlpha : 0;
         
-        Vector2 cellSize = _mapGraph.CellSize;
+        Vector2 cellSize = MapGraph.CellSize;
 
         foreach (KeyValuePair<uint, uint> nodeIdToRegionId in 
                  _graphRegionsResource.NodesIdToRegionsId)
         {
-            PositionNode node = _mapGraph.GetNodeById(nodeIdToRegionId.Key);
+            PositionNode node = MapGraph.GetNodeById(nodeIdToRegionId.Key);
             Vector2 position = node.Position;
             uint regionId = nodeIdToRegionId.Value;
             Color regionColor = _regionColors[regionId];
