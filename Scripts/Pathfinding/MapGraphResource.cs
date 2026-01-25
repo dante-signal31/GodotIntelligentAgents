@@ -18,9 +18,9 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 [GlobalClass]
 public partial class MapGraphResource: Resource
 { 
-    [Export] public Dictionary<Vector2I, PositionNode> Nodes = new();
+    [Export] public Dictionary<Vector2I, PositionNode> ArrayPositionsToNodes = new();
     // Nodes store GraphNodes indexed by their array position in the spatial grid.
     // We need something to map node ids to array positions. That's what this
     // dictionary does.
-    [Export] public Dictionary<uint, Vector2I> NodeArrayPositionsById = new();
+    [Export] public Dictionary<uint, Vector2I> NodeIdsToArrayPositions = new();
 }

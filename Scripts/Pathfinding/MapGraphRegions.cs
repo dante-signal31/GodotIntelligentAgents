@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
 
@@ -29,7 +30,6 @@ public partial class MapGraphRegions: Node2D
     /// Take connection cost into account when calculating the regions.
     /// </summary>
     [Export] public bool CostAware;
-
     [Export] public float DefaultCost = 100;
     
     /// <summary>
@@ -38,6 +38,9 @@ public partial class MapGraphRegions: Node2D
     [Export] public Array<RegionSeed> Seeds = new();
     
     [ExportCategory("WIRING:")]
+    /// <summary>
+    /// MapGraph this component is going to divide into regions.
+    /// </summary>
     [Export] private MapGraph _mapGraph;
     
     /// <summary>
@@ -49,13 +52,12 @@ public partial class MapGraphRegions: Node2D
     private Callable GenerateRegionsButton => Callable.From(GenerateRegions);
     
     [ExportCategory("DEBUG:")] 
-    
     [Export] public bool ShowGizmos;
-
+    [Export] public Color GizmosColor = Colors.GhostWhite;
+    [Export] private float _seedRadius = 10;
     [Export(PropertyHint.Range, "0.0,1.0,0.1")] public float GizmoAlpha = 0.5f;
     
     private uint _seedsCount;
-    
     private readonly NodeRegionsRecordSet _nodeRegionsOpenSet = new();
 
     /// <summary>
@@ -75,7 +77,22 @@ public partial class MapGraphRegions: Node2D
     /// </summary>
     private readonly System.Collections.Generic.Dictionary<uint, Color> _regionColors 
         = new();
-    
+
+    public override void _Ready()
+    {
+        foreach (KeyValuePair<uint, uint> regionNode in 
+                 _graphRegionsResource.NodesIdToRegionsId)
+        {
+            PositionNode node = _mapGraph.GetNodeById(regionNode.Key);
+            RegionNodeRecord record = new()
+            {
+                Node = node, 
+                RegionId = regionNode.Value
+            };
+            _exploredNodes[node] = record;
+        }
+    }
+
     public void GenerateRegions()
     {
         InitCollections();
@@ -123,6 +140,18 @@ public partial class MapGraphRegions: Node2D
                 }
             }
         }
+        UpdateRegionsResource();
+    }
+
+    private void UpdateRegionsResource()
+    {
+        _graphRegionsResource.NodesIdToRegionsId.Clear();
+        foreach (KeyValuePair<PositionNode, RegionNodeRecord> exploredNode in
+                 _exploredNodes)
+        {
+            _graphRegionsResource.NodesIdToRegionsId[exploredNode.Key.Id] =
+                exploredNode.Value.RegionId;
+        }
     }
 
     private void InitCollections()
@@ -145,7 +174,11 @@ public partial class MapGraphRegions: Node2D
             _nodeRegionsOpenSet.Add(nodeRecord);
         }
     }
-    
+
+    /// <summary>
+    /// Updates the colors of the defined regions in the map based on the
+    /// <see cref="RegionSeed.GizmoColor"/> property of each seed.
+    /// </summary>
     private void UpdateRegionsColors()
     {
         _regionColors.Clear();
@@ -179,29 +212,22 @@ public partial class MapGraphRegions: Node2D
         
         Vector2 cellSize = _mapGraph.CellSize;
 
-        foreach (RegionNodeRecord regionNodeRecord in _exploredNodes.Values)
+        foreach (KeyValuePair<uint, uint> nodeIdToRegionId in 
+                 _graphRegionsResource.NodesIdToRegionsId)
         {
-            Vector2 position = regionNodeRecord.Node.Position;
-            uint regionId = regionNodeRecord.RegionId;
+            PositionNode node = _mapGraph.GetNodeById(nodeIdToRegionId.Key);
+            Vector2 position = node.Position;
+            uint regionId = nodeIdToRegionId.Value;
             Color regionColor = _regionColors[regionId];
             regionColor.A = currentAlpha;
             Vector2 halfSize = cellSize / 2;
             Rect2 rect = new Rect2(position - halfSize, cellSize);
             DrawRect(rect, regionColor, filled: true);
         }
-    }
-    
-    private void ClearRegionsGizmos()
-    {
-        Vector2 cellSize = _mapGraph.CellSize;
 
-        foreach (RegionNodeRecord regionNodeRecord in _exploredNodes.Values)
+        foreach (RegionSeed seed in Seeds)
         {
-            Vector2 position = regionNodeRecord.Node.Position;
-            Color regionColor = Colors.Transparent;
-            Vector2 halfSize = cellSize / 2;
-            Rect2 rect = new Rect2(position - halfSize, cellSize);
-            DrawRect(rect, regionColor, filled: true);
+            DrawCircle(seed.Position, _seedRadius, GizmosColor);
         }
     }
 }
