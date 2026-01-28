@@ -14,9 +14,9 @@ public partial class GraphNode: Resource
     private static readonly Random Random = new();
 
     [Export] public uint Id { get; private set; } = GenerateUniqueId();
-
-    // TODO: Generalize orientation.
-    [Export] public Godot.Collections.Dictionary<Orientation, GraphConnection> Connections = new();
+    
+    [Export] public Godot.Collections.Dictionary<uint, GraphConnection> Connections = 
+        new();
 
     private static uint GenerateUniqueId()
     {
@@ -35,7 +35,7 @@ public partial class GraphNode: Resource
     public void AddConnection(
         uint endNodeId, 
         float cost, 
-        Orientation orientation)
+        uint orientation)
     {
         GraphConnection graphConnection = new();
         graphConnection.StartNodeId = Id;

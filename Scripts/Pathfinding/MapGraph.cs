@@ -292,7 +292,7 @@ public partial class MapGraph: Node2D
             DrawCircle(cellPosition, 10, NodeColor);
             foreach (Orientation orientation in Enum.GetValues<Orientation>())
             {
-                if (node.Connections.ContainsKey(orientation))
+                if (node.HasConnection(orientation))
                 {
                     Vector2 otherNodeRelativePosition = 
                         GetNeighborRelativeArrayPosition(orientation);
@@ -305,7 +305,7 @@ public partial class MapGraph: Node2D
                     DrawString(
                         ThemeDB.FallbackFont, 
                         cellPosition + (otherNodePosition - cellPosition) / 2, 
-                        node.Connections[orientation].Cost.ToString("G"), 
+                        node.GetConnection(orientation).Cost.ToString("G"), 
                         modulate: NodeColor);
                 }
             }
