@@ -88,6 +88,14 @@ public partial class MapGraphRegions: Node2D
         uint nearestNodeId = MapGraph.GetNodeAtPosition(position).Id;
         return _graphRegionsResource.NodesIdToRegionsId[nearestNodeId];
     }
+    
+    public uint GetRegionByNodeId(uint nodeId) => 
+        _graphRegionsResource.NodesIdToRegionsId[nodeId];
+
+    public Vector2 GetRegionCenter(uint regionId)
+    {
+        return Seeds[(int)regionId].Position;
+    }
 
     /// <summary>
     /// Generates and assigns regions within the map graph. Each region is defined by its

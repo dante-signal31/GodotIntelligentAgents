@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
@@ -17,7 +18,17 @@ public partial class PositionNode: GraphNode
 
     public GraphConnection GetConnection(Orientation orientation)
     {
-        return Connections[(uint)orientation];
+        return HasConnection(orientation) ? Connections[(uint)orientation]: null;
+    }
+
+    public Dictionary<Orientation, GraphConnection> GetConnections()
+    {
+        Dictionary<Orientation, GraphConnection> currentConnections = new();
+        foreach (KeyValuePair<uint, GraphConnection> connection in Connections)
+        {
+            currentConnections[(Orientation)connection.Key] = connection.Value;
+        }
+        return currentConnections;
     }
     
     public void AddConnection(

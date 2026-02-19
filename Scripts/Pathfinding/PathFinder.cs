@@ -29,7 +29,7 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
     /// Dictionary containing nodes and their corresponding recorded data after the
     /// exploration process.
     /// </summary>
-    protected Dictionary<PositionNode, T> ClosedDict;
+    public Dictionary<PositionNode, T> ClosedDict;
     
     /// <summary>
     /// The currently found path across the graph to the target node.
@@ -72,7 +72,7 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
     /// A Path object representing the ordered sequence of positions
     /// from the start node to the target node.
     /// </returns>
-    protected Path BuildPath(
+    public Path BuildPath(
         Dictionary<PositionNode, T> closedDict,
         PositionNode startNode,
         PositionNode targetNode)

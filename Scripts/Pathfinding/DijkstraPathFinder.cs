@@ -27,6 +27,9 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
     }
     
     private readonly DijkstraPrioritizedNodeRecordSet _openRecordSet = new ();
+    public NodeRecord CurrentNodeRecord = NodeRecord.NodeRecordNull;
+
+    public delegate bool EndCondition();
     
     /// <summary>
     /// Finds a path from the current position to the specified target position
@@ -41,6 +44,33 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
     /// </returns>
     public override Path FindPath(Vector2 targetPosition)
     {
+        // Get graph nodes associated with the start and target positions. 
+        CurrentStartNode = Graph.GetNodeAtPosition(GlobalPosition);
+        PositionNode targetNode = Graph.GetNodeAtPosition(targetPosition);
+        
+        CalculateCosts(CurrentStartNode, () => CurrentNodeRecord.Node == targetNode);
+
+        // If we get here, and the current record does not point to the targetNode, then
+        // we've fully explored the graph without finding a valid path to get the target.
+        if (CurrentNodeRecord?.Node == null || 
+            CurrentNodeRecord.Node != targetNode) return null;
+        
+        // As we've got the target node, analyze the closedDict to follow back connections
+        // from the target node to start node to build the path.
+        Path foundPath = BuildPath(ClosedDict, CurrentStartNode, targetNode);
+        return foundPath;
+    }
+
+    /// <summary>
+    /// <p>Traverse the graph from startNode until endCondition is met.</p>
+    /// <p>When traversing ends, ClosedDict will contain the costs calculated to get every
+    /// found node from startNode.</p>
+    /// </summary>
+    /// <param name="startNode">The node from where start the traversing.</param>
+    /// <param name="endCondition">A function that when evaluates to true makes
+    /// traversing end.</param>
+    public void CalculateCosts(PositionNode startNode, EndCondition endCondition)
+    {
         // Nodes not fully explored yet, ordered by the cost to get them from the
         // start node.
         _openRecordSet.Clear();
@@ -50,49 +80,46 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
         // while exploring the graph.
         ClosedDict.Clear();
         
-        // Get graph nodes associated with the start and target positions. 
-        CurrentStartNode = Graph.GetNodeAtPosition(GlobalPosition);
-        PositionNode targetNode = Graph.GetNodeAtPosition(targetPosition);
-        
         // You get to the start node from nowhere (null) and at no cost (0).
         NodeRecord startRecord = new NodeRecord
         {
-            Node = CurrentStartNode, 
+            Node = startNode, 
             Connection = null, 
             CostSoFar = 0
         };
         _openRecordSet.Add(startRecord);
 
         // Loop until we reach the target node or no more nodes are available to explore.
-        NodeRecord current = NodeRecord.NodeRecordNull;
         while (_openRecordSet.Count > 0)
         {
             // Explore prioritizing the node with the lowest cost to be reached.
-            current = _openRecordSet.Get();
-            if (current == null) break;
+            CurrentNodeRecord = _openRecordSet.Get();
+            if (CurrentNodeRecord == null) break;
             
             // If the current record is already in the ClosedDict, but in the ClosedDict
             // it is with a lower cost, it means that the recovered current record it's a
             // duplicated record left behind by the "lazy removal" node record set. So we
             // discard it and recover the next record from _openRecordSet.
-            if (ClosedDict.ContainsKey(current.Node) && 
-                current.CostSoFar >= ClosedDict[current.Node].CostSoFar) continue;
+            if (ClosedDict.ContainsKey(CurrentNodeRecord.Node) && 
+                CurrentNodeRecord.CostSoFar >= 
+                ClosedDict[CurrentNodeRecord.Node].CostSoFar) continue;
 
-            // If we reached the end node, then our exploration is complete.
-            if (current.Node == targetNode)
+            // If we comply with end condition, then our exploration is complete.
+            if (endCondition())
             {
-                ClosedDict[current.Node] = current;
+                ClosedDict[CurrentNodeRecord.Node] = CurrentNodeRecord;
                 break;
             }
 
             // Get all the connections of the current node and take note of the nodes
             // those connections lead to into the openSet to explore those nodes later.
-            foreach (GraphConnection graphConnection in current.Node.Connections.Values)
+            foreach (GraphConnection graphConnection in 
+                     CurrentNodeRecord.Node.Connections.Values)
             {
                 // Where does that connection lead us?
                 PositionNode endNode = Graph.GetNodeById(graphConnection.EndNodeId);
                 // Calculate the cost to reach the end node from the current node.
-                float endNodeCost = current.CostSoFar + graphConnection.Cost;
+                float endNodeCost = CurrentNodeRecord.CostSoFar + graphConnection.Cost;
                 
                 // If that connection leads to a node fully explored at a lower cost,
                 // skip it because we are not going to improve the path already discovered
@@ -141,16 +168,7 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
             
             // As we've finished looking at the connections of the current node, mark it
             // as fully explored, including it in the closed list.
-            ClosedDict[current.Node] = current;
+            ClosedDict[CurrentNodeRecord.Node] = CurrentNodeRecord;
         }
-        
-        // If we get here and the current record does not point to the targetNode, then
-        // we've fully explored the graph without finding a valid path to get the target.
-        if (current?.Node == null || current.Node != targetNode) return null;
-        
-        // As we've got the target node, analyze the closedDict to follow back connections
-        // from the target node to start node to build the path.
-        Path foundPath = BuildPath(ClosedDict, CurrentStartNode, targetNode);
-        return foundPath;
     }
 }
