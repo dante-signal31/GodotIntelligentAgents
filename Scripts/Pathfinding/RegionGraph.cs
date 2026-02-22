@@ -7,7 +7,7 @@ using GodotGameAIbyExample.Scripts.Extensions;
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
 [Tool]
-public partial class RegionGraph: Node
+public partial class RegionGraph: Node2D
 {
     [ExportCategory("WIRING:")]
     /// <summary>
@@ -22,6 +22,13 @@ public partial class RegionGraph: Node
     /// MapGraphRegions serialized backend.
     /// </summary>
     [Export] private RegionGraphResource _regionGraphResource = new();
+    
+    [ExportCategory("DEBUG:")]
+    [Export] public bool ShowGizmos { get; set; }
+    [Export] public Color GridColor { get; set; } = Colors.Yellow;
+    [Export] public int NodeRadius { get; set; } = 10;
+    [Export] public Color NodeColor { get; set; } = Colors.Orange;
+    [Export] public Vector2 GizmoTextOffset { get; set; }= new(10, 10);
 
     /// <summary>
     /// Heuristic cost to traverse a region.
@@ -34,6 +41,7 @@ public partial class RegionGraph: Node
     public override void _Ready()
     {
         _dijkstraPathFinder = this.FindChild<DijkstraPathFinder>();
+        _dijkstraPathFinder.Graph = _graphRegions.MapGraph;
     }
 
     private void GenerateRegionGraph()
@@ -59,6 +67,8 @@ public partial class RegionGraph: Node
             RegionGraphResource.InterRegionPath interRegionPath = fromNodeToRegionPath.Value;
             uint crossedRegionId =
                 _graphRegions.GetRegionByNodeId(nodeToRegion.FromNodeId);
+            if (!regionIdToGlobalCostAndPathCount.ContainsKey(crossedRegionId))
+                regionIdToGlobalCostAndPathCount[crossedRegionId] = (0, 0);
             (float totalCost, uint pathCrossingAmount) =
                 regionIdToGlobalCostAndPathCount[crossedRegionId];
             totalCost += interRegionPath.Cost;
@@ -100,6 +110,7 @@ public partial class RegionGraph: Node
         // Region traversal cost is a heuristic that estimates the cost to completely
         // go through a region. So, the connection between two regions is estimated by
         // added the half of the region traversal cost of its region ends.
+        _regionGraphResource.FromNodeToRegionPaths.Clear();
         foreach (KeyValuePair<uint, RegionNode> regionIdToRegionNode in 
                  _regionGraphResource.RegionIdToRegionNode)
         {
@@ -148,7 +159,6 @@ public partial class RegionGraph: Node
                     
                     // Select the best paths to every neighbor region from the current
                     // boundary node.
-                    _regionGraphResource.FromNodeToRegionPaths.Clear();
                     foreach (uint neighborRegionId in neighborRegionIds)
                     {
                         // Get nodes from the neighbor that are boundary to the current
@@ -248,11 +258,54 @@ public partial class RegionGraph: Node
                     // boundary nodes.
                     if (otherNodeRegionId != regionId)
                     {
+                        if (!regionNode.BoundaryNodes.ContainsKey(otherNodeRegionId))
+                            regionNode.BoundaryNodes[otherNodeRegionId] = new();
                         regionNode.BoundaryNodes[otherNodeRegionId].Add(nodeId);
                     }
                 }
             }
             _regionGraphResource.RegionIdToRegionNode[regionId] = regionNode;
+        }
+    }
+    
+    public override void _Process(double delta)
+    {
+        DrawGizmos();
+    }
+
+    private void DrawGizmos()
+    {
+        QueueRedraw();
+    }
+    
+    public override void _Draw()
+    {
+        if (!ShowGizmos) return;
+
+        // Draw region center positions.
+        foreach (KeyValuePair<uint, RegionNode> regionIdToRegionNode in 
+                 _regionGraphResource.RegionIdToRegionNode)
+        {
+            RegionNode regionNode = regionIdToRegionNode.Value;
+            DrawCircle(regionNode.Position, NodeRadius, NodeColor);
+            
+            // Draw connections between regions.
+            foreach (KeyValuePair<uint, GraphConnection> regionNodeConnection in 
+                     regionNode.Connections)
+            {
+                GraphConnection connection = regionNodeConnection.Value;
+                RegionNode endRegionNode = 
+                    _regionGraphResource.RegionIdToRegionNode[connection.EndNodeId];
+                DrawLine(regionNode.Position, endRegionNode.Position, GridColor);
+                // Draw connection cost.
+                DrawString(
+                    ThemeDB.FallbackFont, 
+                    ToLocal(regionNode.Position + 
+                            (endRegionNode.Position - regionNode.Position) / 2 + 
+                    GizmoTextOffset), 
+                    connection.Cost.ToString("G"), 
+                    modulate: NodeColor);
+            }
         }
     }
     

@@ -97,6 +97,12 @@ public partial class MapGraphRegions: Node2D
         return Seeds[(int)regionId].Position;
     }
 
+    public override void _Ready()
+    {
+        UpdateRegionsArray();
+        UpdateNodesByRegion();
+    }
+
     /// <summary>
     /// Generates and assigns regions within the map graph. Each region is defined by its
     /// influence and cost parameters.
