@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
-using GodotGameAIbyExample.Scripts.Extensions;
 
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
@@ -30,10 +29,13 @@ public partial class MapGraphRegionsSmoother: Node
     /// </summary>
     [Export] public uint RelaxationIterations { get; set; } = 3;
     
+    [ExportCategory("CONFIGURATION:")]
+    [Export] public MapGraphRegions MapGraphRegions;
+    
     [ExportToolButton("Smooth Regions")]
     private Callable SmoothRegionsButton => Callable.From(SmoothRegions);
 
-    private MapGraphRegions _mapGraphRegions;
+    
 
     /// <summary>
     /// Smooths regions in the map graph using iterative relaxation. Optionally,
@@ -49,15 +51,12 @@ public partial class MapGraphRegionsSmoother: Node
     /// - The method depends on the MapGraphRegions object to handle the actual
     /// region generation based on the provided seeds.
     /// </remarks>
-    /// <exception cref="NullReferenceException">
-    /// Thrown if _mapGraphRegions is not initialized before invoking this method.
-    /// </exception>
     private void SmoothRegions()
     {
-        if (RandomSeeds) _mapGraphRegions.Seeds = GenerateRandomSeeds();
+        if (RandomSeeds) MapGraphRegions.Seeds = GenerateRandomSeeds();
         for (int i = 0; i < RelaxationIterations; i++)
         {
-            _mapGraphRegions.GenerateRegions();
+            MapGraphRegions.GenerateRegions();
             if (i < RelaxationIterations - 1) RelocateSeeds();
         }
     }
@@ -67,21 +66,17 @@ public partial class MapGraphRegionsSmoother: Node
     /// regions by calculating the average position of nodes in each region and snapping
     /// the seed to the nearest node to that position.
     /// </summary>
-    /// <exception cref="NullReferenceException">
-    /// Thrown if the _mapGraphRegions or its dependent collections, such as
-    /// NodesByRegion, are not properly initialized before invoking this method.
-    /// </exception>
     private void RelocateSeeds()
     {
-        foreach (RegionSeed seed in _mapGraphRegions.Seeds)
+        foreach (RegionSeed seed in MapGraphRegions.Seeds)
         {
-            uint regionId = _mapGraphRegions.GetRegionByPosition(seed.Position);
-            HashSet<uint> nodesInRegion = _mapGraphRegions.NodesByRegion[regionId];
+            uint regionId = MapGraphRegions.GetRegionByPosition(seed.Position);
+            HashSet<uint> nodesInRegion = MapGraphRegions.NodesByRegion[regionId];
             Vector2 averagePosition = GetAveragePosition(nodesInRegion);
             // Average position can be inside an obstacle. So we must search for the
             // nearest node.
             PositionNode nearestNode = 
-                _mapGraphRegions.MapGraph.GetNodeAtNearestPosition(averagePosition);
+                MapGraphRegions.MapGraph.GetNodeAtNearestPosition(averagePosition);
             seed.Position = nearestNode.Position;
         }
     }
@@ -111,7 +106,7 @@ public partial class MapGraphRegionsSmoother: Node
         uint positionsCount = 0;
         foreach (uint nodeId in nodesInRegion)
         {
-            PositionNode node = _mapGraphRegions.MapGraph.GetNodeById(nodeId);
+            PositionNode node = MapGraphRegions.MapGraph.GetNodeById(nodeId);
             positionsSum += node.Position;
             positionsCount++;
         }
@@ -130,12 +125,12 @@ public partial class MapGraphRegionsSmoother: Node
     private Array<RegionSeed> GenerateRandomSeeds()
     {
         Array<RegionSeed> randomSeeds = new();
-        Color mapGraphRegionsGizmoColor = _mapGraphRegions.GizmosColor;
+        Color mapGraphRegionsGizmoColor = MapGraphRegions.GizmosColor;
         HashSet<Color> selectedColors = new() { mapGraphRegionsGizmoColor };
 
         // Get all valid array positions from the graph nodes
         List<Vector2I> allNodesArrayPositions = 
-            _mapGraphRegions.MapGraph.ArrayPositionsToNodes.Keys.ToList();
+            MapGraphRegions.MapGraph.ArrayPositionsToNodes.Keys.ToList();
 
         HashSet<int> alreadySelectedIndices = new();
         // Generate random seeds
@@ -152,7 +147,7 @@ public partial class MapGraphRegionsSmoother: Node
             alreadySelectedIndices.Add(randomIndex);
             Vector2I selectedArrayPosition = allNodesArrayPositions[randomIndex];
             PositionNode selectedNode = 
-                _mapGraphRegions.MapGraph.GetNodeAtArrayPosition(selectedArrayPosition);
+                MapGraphRegions.MapGraph.GetNodeAtArrayPosition(selectedArrayPosition);
             allNodesArrayPositions.RemoveAt(randomIndex);
 
             // Generate a random color that doesn't exist
@@ -178,23 +173,5 @@ public partial class MapGraphRegionsSmoother: Node
         }
 
         return randomSeeds;
-    }
-    
-    public override void _Ready()
-    {
-        _mapGraphRegions = this.FindChild<MapGraphRegions>();
-    }
-    
-    public override string[] _GetConfigurationWarnings()
-    {
-        List<string> warnings = new();
-        
-        _mapGraphRegions = this.FindChild<MapGraphRegions>();
-        if (_mapGraphRegions == null)
-        {
-            warnings.Add("This node needs a child of type _mapGraphRegions to work.");
-        }
-        
-        return warnings.ToArray();
     }
 }

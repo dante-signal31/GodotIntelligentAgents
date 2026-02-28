@@ -56,9 +56,13 @@ public partial class MapGraphRegions: Node2D
     [Export] public Color GizmosColor = Colors.GhostWhite;
     [Export] private float _seedRadius = 10;
     [Export(PropertyHint.Range, "0.0,1.0,0.1")] public float GizmoAlpha = 0.5f;
+    [Export] public uint FrameRedrawCounter { get; set; } = 20;
     
     private uint _seedsCount;
     private readonly NodeRegionsRecordSet _nodeRegionsOpenSet = new();
+    private uint _frameCounter;
+    private readonly System.Collections.Generic.Dictionary<PositionNode, RegionNodeRecord>
+        _exploredNodes = new();
 
     /// <summary>
     /// A dictionary that maps region IDs to their corresponding influence values.
@@ -110,8 +114,7 @@ public partial class MapGraphRegions: Node2D
     public void GenerateRegions()
     {
         InitCollections();
-        System.Collections.Generic.Dictionary<PositionNode, RegionNodeRecord>
-            exploredNodes = new();
+        
         while (_nodeRegionsOpenSet.Count > 0)
         {
             RegionNodeRecord current = _nodeRegionsOpenSet.Get();
@@ -126,9 +129,9 @@ public partial class MapGraphRegions: Node2D
                 
                 // Where does that connection lead us?
                 PositionNode endNode = MapGraph.GetNodeById(graphConnection.EndNodeId);
-
-                // Was that node already explored?
-                if (exploredNodes.TryGetValue(
+                
+                // Is that node already explored?
+                if (_exploredNodes.TryGetValue(
                         endNode, 
                         out RegionNodeRecord endNodeRecord))
                 {
@@ -152,11 +155,11 @@ public partial class MapGraphRegions: Node2D
                         RegionId = current.RegionId
                     };
                     _nodeRegionsOpenSet.Add(newRecord);
-                    exploredNodes[endNode] = newRecord;
+                    _exploredNodes[endNode] = newRecord;
                 }
             }
         }
-        UpdateRegionsResource(exploredNodes);
+        UpdateRegionsResource(_exploredNodes);
         UpdateRegionsArray();
         UpdateNodesByRegion();
     }
@@ -198,11 +201,11 @@ public partial class MapGraphRegions: Node2D
         foreach (uint regionId in Regions)
         {
             HashSet<uint> nodesInRegion = new();
-            foreach (KeyValuePair<uint, uint> NodeIdTopRegionId in 
+            foreach (KeyValuePair<uint, uint> nodeIdTopRegionId in 
                      _graphRegionsResource.NodesIdToRegionsId)
             {
-                if (NodeIdTopRegionId.Value == regionId) 
-                    nodesInRegion.Add(NodeIdTopRegionId.Key);
+                if (nodeIdTopRegionId.Value == regionId) 
+                    nodesInRegion.Add(nodeIdTopRegionId.Key);
             }
             NodesByRegion[regionId] = nodesInRegion;
         }
@@ -216,6 +219,7 @@ public partial class MapGraphRegions: Node2D
     {
         _nodeRegionsOpenSet.Clear();
         _regionsInfluence.Clear();
+        _exploredNodes.Clear();
         for (uint i = 0; i < Seeds.Count; i++)
         {
             RegionSeed regionSeed = Seeds[(int)i];
@@ -225,10 +229,12 @@ public partial class MapGraphRegions: Node2D
             {
                 Node = seedNode,
                 Connection = null,
-                CostSoFar = DefaultCost / regionSeed.Influence,
+                CostSoFar = 0,
                 RegionId = i
             };
             _nodeRegionsOpenSet.Add(nodeRecord);
+            // Take seed nodes as already explored.
+            _exploredNodes[seedNode] = nodeRecord;
         }
     }
 
@@ -260,11 +266,15 @@ public partial class MapGraphRegions: Node2D
 
     private void DrawGizmos()
     {
+        if ((++_frameCounter) < FrameRedrawCounter) return;
+        _frameCounter = 0;
         QueueRedraw();
     }
     
     public override void _Draw()
     {
+        if (!ShowGizmos) return;
+        
         float currentAlpha = ShowGizmos? GizmoAlpha : 0;
         
         Vector2 cellSize = MapGraph.CellSize;
