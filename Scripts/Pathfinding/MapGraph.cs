@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using GodotGameAIbyExample.Scripts.Tools;
 
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
@@ -40,6 +39,8 @@ public partial class MapGraph: Node2D
     [Export] public Color GridColor { get; set; } = Colors.Yellow;
     [Export] public int NodeRadius { get; set; } = 10;
     [Export] public Color NodeColor { get; set; } = Colors.Orange;
+
+    [Export] public uint FrameRedrawCounter { get; set; } = 20;
     
     public Vector2 CellSize => MapSize / (Vector2) CellResolution;
     
@@ -102,8 +103,9 @@ public partial class MapGraph: Node2D
     
     public PositionNode GetNodeById(uint nodeId) => 
         GraphResource.ArrayPositionsToNodes[GetArrayPositionById(nodeId)];
-
-    private CleanAreaChecker _cleanAreaChecker;
+    
+    private Timer _redrawTimer;
+    private uint _frameCounter;
 
     /// <summary>
     /// Returns the relative array position of a neighboring node based on the specified
@@ -134,6 +136,14 @@ public partial class MapGraph: Node2D
         return (Vector2I) relativePosition;
     }
 
+    private bool IsCleanArea(Vector2 position)
+    {
+        Vector2I tileArrayPosition = _walkableTilemapLayer.LocalToMap(
+            _walkableTilemapLayer.ToLocal(position));
+        TileData tileData = _walkableTilemapLayer.GetCellTileData(tileArrayPosition);
+        return !(bool) tileData.GetCustomData("Obstacle");
+    }
+
     /// <summary>
     /// Generates the graph representation based on the current map configuration and
     /// obstacle data. 
@@ -149,7 +159,7 @@ public partial class MapGraph: Node2D
                 Vector2 nodeGlobalPosition = NodeGlobalPosition(nodeArrayPosition);
                 
                 // If there is any obstacle at that position, we don't create any node.
-                if (!_cleanAreaChecker.IsCleanArea(nodeGlobalPosition))
+                if (!IsCleanArea(nodeGlobalPosition))
                     continue;
                 
                 // If the position is clean, create a node.
@@ -240,27 +250,16 @@ public partial class MapGraph: Node2D
         TileData tileData = _walkableTilemapLayer.GetCellTileData(tileArrayPosition);
         return (float) tileData.GetCustomData("Cost");
     }
-
-    public override void _EnterTree()
-    {
-        _cleanAreaChecker = new CleanAreaChecker(
-            (Mathf.Min(CellSize.X, CellSize.Y)/2)-5f, 
-            ObstaclesLayers, 
-            this);
-    }    
     
-    public override void _ExitTree()
-    {
-        _cleanAreaChecker.Dispose();
-    }
-
     public override void _Process(double delta)
     {
-        if (ShowGizmos) DrawGizmos();
+        DrawGizmos();
     }
-
+    
     private void DrawGizmos()
     {
+        if ((++_frameCounter) < FrameRedrawCounter) return;
+        _frameCounter = 0;
         QueueRedraw();
     }
     
