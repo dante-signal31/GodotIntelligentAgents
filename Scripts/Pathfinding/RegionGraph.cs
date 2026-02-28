@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Godot;
 using Godot.Collections;
 using GodotGameAIbyExample.Scripts.Extensions;
@@ -41,7 +42,7 @@ public partial class RegionGraph: Node2D
     public override void _Ready()
     {
         _dijkstraPathFinder = this.FindChild<DijkstraPathFinder>();
-        _dijkstraPathFinder.Graph = _graphRegions.MapGraph;
+        if (_graphRegions != null) _dijkstraPathFinder.Graph = _graphRegions.MapGraph;
     }
 
     private void GenerateRegionGraph()
@@ -131,72 +132,81 @@ public partial class RegionGraph: Node2D
                 // region towards the nearest boundary node of every neighbor region.
                 foreach (uint boundaryNodeId in boundaryNodesTowardsNeighborRegion)
                 {
-                    // Start node.
-                    PositionNode boundaryNode = 
-                        _graphRegions.MapGraph.GetNodeById(boundaryNodeId);
-                    
-                    // Gather possible targets. They are the boundary nodes in
-                    // the neighbor regions.
-                    _targetNodes.Clear();
-                    foreach (uint neighborRegionId in neighborRegionIds)
+                    try
                     {
-                        // Get nodes from the neighbor region that are boundary to
-                        // the current region.
-                        Array<uint> neighborBoundaryNodesIds = _regionGraphResource
-                            .RegionIdToRegionNode[neighborRegionId]
-                            .BoundaryNodes[regionId];
-                        foreach (uint neighborBoundaryNodeId in neighborBoundaryNodesIds)
-                        {
-                            PositionNode neighborBoundaryNode =
-                                _graphRegions.MapGraph.GetNodeById(
-                                    neighborBoundaryNodeId);
-                            _targetNodes.Add(neighborBoundaryNode);
-                        }
-                    }
-
-                    // Map from the boundary node to every target node.
-                    _dijkstraPathFinder.CalculateCosts(boundaryNode, EndCondition);
-                    
-                    // Select the best paths to every neighbor region from the current
-                    // boundary node.
-                    foreach (uint neighborRegionId in neighborRegionIds)
-                    {
-                        // Get nodes from the neighbor that are boundary to the current
-                        // region.
-                        Array<uint> neighborBoundaryNodesIds = _regionGraphResource
-                            .RegionIdToRegionNode[neighborRegionId]
-                            .BoundaryNodes[regionId];
+                        // Start node.
+                        PositionNode boundaryNode =
+                            _graphRegions.MapGraph.GetNodeById(boundaryNodeId);
                         
-                        RegionGraphResource.FromNodeToRegionPathsKey nodeToRegion = new()
+                        // Gather possible targets. They are the boundary nodes in
+                        // the neighbor regions.
+                        _targetNodes.Clear();
+                        foreach (uint neighborRegionId in neighborRegionIds)
                         {
-                            FromNodeId = boundaryNodeId,
-                            ToRegionId = neighborRegionId
-                        };
-                        
-                        // For every neighbor region, we keep only the path to its
-                        // boundary node which is nearest to the current boundary node
-                        // we are using as the starting node.
-                        foreach (uint targetNodeId in neighborBoundaryNodesIds)
-                        {
-                            PositionNode targetNode =
-                                _graphRegions.MapGraph.GetNodeById(targetNodeId);
-                            if (!_regionGraphResource.FromNodeToRegionPaths.ContainsKey(
-                                    nodeToRegion) ||
-                                _regionGraphResource.FromNodeToRegionPaths[nodeToRegion]
-                                    .Cost > _dijkstraPathFinder.ClosedDict[targetNode]
-                                    .CostSoFar)
+                            // Get nodes from the neighbor region that are boundary to
+                            // the current region.
+                            Array<uint> neighborBoundaryNodesIds = _regionGraphResource
+                                .RegionIdToRegionNode[neighborRegionId]
+                                .BoundaryNodes[regionId];
+                            foreach (uint neighborBoundaryNodeId in neighborBoundaryNodesIds)
                             {
-                                _regionGraphResource.FromNodeToRegionPaths[nodeToRegion] =
-                                    new RegionGraphResource.InterRegionPath()
-                                    {
-                                        Cost = _dijkstraPathFinder.ClosedDict[targetNode]
-                                            .CostSoFar,
-                                        PathPositions = _dijkstraPathFinder
-                                            .BuildPath(_dijkstraPathFinder.ClosedDict,
-                                                boundaryNode, targetNode).TargetPositions
-                                    };
+                                PositionNode neighborBoundaryNode =
+                                    _graphRegions.MapGraph.GetNodeById(
+                                        neighborBoundaryNodeId);
+                                _targetNodes.Add(neighborBoundaryNode);
                             }
                         }
+
+                        // Map from the boundary node to every target node.
+                        _dijkstraPathFinder.CalculateCosts(boundaryNode, EndCondition);
+                        
+                        // Select the best paths to every neighbor region from the current
+                        // boundary node.
+                        foreach (uint neighborRegionId in neighborRegionIds)
+                        {
+                            // Get nodes from the neighbor that are boundary to the current
+                            // region.
+                            Array<uint> neighborBoundaryNodesIds = _regionGraphResource
+                                .RegionIdToRegionNode[neighborRegionId]
+                                .BoundaryNodes[regionId];
+                            
+                            RegionGraphResource.FromNodeToRegionPathsKey nodeToRegion = new()
+                            {
+                                FromNodeId = boundaryNodeId,
+                                ToRegionId = neighborRegionId
+                            };
+                            
+                            // For every neighbor region, we keep only the path to its
+                            // boundary node which is nearest to the current boundary node
+                            // we are using as the starting node.
+                            foreach (uint targetNodeId in neighborBoundaryNodesIds)
+                            {
+                                PositionNode targetNode =
+                                    _graphRegions.MapGraph.GetNodeById(targetNodeId);
+                                if (!_regionGraphResource.FromNodeToRegionPaths.ContainsKey(
+                                        nodeToRegion) ||
+                                    _regionGraphResource.FromNodeToRegionPaths[nodeToRegion]
+                                        .Cost > _dijkstraPathFinder.ClosedDict[targetNode]
+                                        .CostSoFar)
+                                {
+                                    _regionGraphResource.FromNodeToRegionPaths[nodeToRegion] =
+                                        new RegionGraphResource.InterRegionPath()
+                                        {
+                                            Cost = _dijkstraPathFinder.ClosedDict[targetNode]
+                                                .CostSoFar,
+                                            PathPositions = _dijkstraPathFinder
+                                                .BuildPath(_dijkstraPathFinder.ClosedDict,
+                                                    boundaryNode, targetNode).TargetPositions
+                                        };
+                                }
+                            }
+                        }
+                    }
+                    catch (KeyNotFoundException e)
+                    {
+                        Console.Error.WriteLine($"Boundary node not found " +
+                                                $"({boundaryNodeId}) when calculating " +
+                                                $"paths for region {regionId}.");
                     }
                 }
             }
@@ -231,6 +241,8 @@ public partial class RegionGraph: Node2D
 
     private void GenerateRegionNodes()
     {
+        _regionGraphResource.RegionIdToRegionNode.Clear();
+        
         // Traverse every region to generate their region nodes.
         foreach (KeyValuePair<uint, HashSet<uint>> regionIdToNodesIdsByRegion in 
                  _graphRegions.NodesByRegion)
@@ -264,6 +276,7 @@ public partial class RegionGraph: Node2D
                     }
                 }
             }
+            
             _regionGraphResource.RegionIdToRegionNode[regionId] = regionNode;
         }
     }
