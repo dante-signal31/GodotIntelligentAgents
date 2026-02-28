@@ -103,6 +103,7 @@ public partial class MapGraphRegions: Node2D
 
     public override void _Ready()
     {
+        UpdateRegionsColors();
         UpdateRegionsArray();
         UpdateNodesByRegion();
     }
