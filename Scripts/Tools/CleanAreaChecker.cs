@@ -76,6 +76,24 @@ public class CleanAreaChecker : IDisposable
         _cleanAreaChecker.ForceShapecastUpdate();
         bool isClean = !_cleanAreaChecker.IsColliding();
         return (isClean);
+        
+        // // En editor, y en general para queries puntuales, suele ser más fiable consultar el space state directamente.
+        // var world2D = _cleanAreaChecker.GetWorld2D();
+        // if (world2D == null)
+        //     return true; // Si no hay mundo aún, no podemos detectar nada.
+        //
+        // var spaceState = world2D.DirectSpaceState;
+        //
+        // var query = new PhysicsShapeQueryParameters2D
+        // {
+        //     Shape = _cleanAreaChecker.Shape,
+        //     Transform = new Transform2D(0.0f, position),
+        //     CollisionMask = DetectionLayers,
+        //     CollideWithBodies = true,
+        // };
+        //
+        // var hits = spaceState.IntersectShape(query, maxResults: 1);
+        // return hits.Count == 0;
     }
 
     /// <summary>

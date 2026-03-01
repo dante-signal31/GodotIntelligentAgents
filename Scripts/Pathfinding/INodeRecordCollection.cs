@@ -26,7 +26,7 @@ public interface INodeRecordCollection<T>
     /// associated <see cref="NodeRecord"/>.</param>
     /// <returns>The <see cref="NodeRecord"/> associated with the
     /// specified <see cref="PositionNode"/>.</returns>
-    public T this[PositionNode node] { get; set; }
+    public T this[IPositionNode node] { get; set; }
         
     /// <summary>
     /// Determines whether the collection contains corresponding node record to
@@ -36,7 +36,7 @@ public interface INodeRecordCollection<T>
     /// collection.</param>
     /// <returns>True if the node record is found in the collection; otherwise, ç
     /// false.</returns>
-    public bool Contains(PositionNode node);
+    public bool Contains(IPositionNode node);
 
     /// <summary>
     /// Gets the number of elements currently contained in the collection.

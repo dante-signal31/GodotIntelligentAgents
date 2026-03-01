@@ -15,7 +15,7 @@ public class NodeRecordQueue: INodeRecordCollection<NodeRecord>
     private readonly Queue<NodeRecord> _queue = new();
 
     // Needed to keep track of the nodes already discovered.
-    private readonly Dictionary<PositionNode, NodeRecord> _nodeRecordDict = new();
+    private readonly Dictionary<IPositionNode, NodeRecord> _nodeRecordDict = new();
 
     public int Count => _nodeRecordDict.Count;
 
@@ -25,7 +25,7 @@ public class NodeRecordQueue: INodeRecordCollection<NodeRecord>
         _nodeRecordDict.Clear();
     }
 
-    public bool Contains(PositionNode node) => _nodeRecordDict.ContainsKey(node);
+    public bool Contains(IPositionNode node) => _nodeRecordDict.ContainsKey(node);
 
     public void Add(NodeRecord record)
     {
@@ -38,7 +38,7 @@ public class NodeRecordQueue: INodeRecordCollection<NodeRecord>
         _nodeRecordDict[record.Node] = record;
     }
 
-    public NodeRecord this[PositionNode node]
+    public NodeRecord this[IPositionNode node]
     {
         get => _nodeRecordDict[node];
         set => _nodeRecordDict[node] = value;

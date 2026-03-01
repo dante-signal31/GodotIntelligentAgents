@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Godot;
 using Godot.Collections;
 using GodotGameAIbyExample.Scripts.Extensions;
@@ -8,13 +7,13 @@ using GodotGameAIbyExample.Scripts.Extensions;
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
 [Tool]
-public partial class RegionGraph: Node2D
+public partial class RegionGraph: Node2D, IPositionGraph
 {
     [ExportCategory("WIRING:")]
     /// <summary>
     /// MapGraphRegions this component is going to abstract into a graph.
     /// </summary>
-    [Export] private MapGraphRegions _graphRegions;
+    [Export] public MapGraphRegions GraphRegions;
     
     [ExportToolButton("Bake RegionGraph")]
     private Callable GenerateRegionGraphButton => Callable.From(GenerateRegionGraph);
@@ -39,10 +38,40 @@ public partial class RegionGraph: Node2D
 
     private DijkstraPathFinder _dijkstraPathFinder;
 
+    public uint GetRegionIdByPosition(Vector2 position)
+    {
+        IPositionNode positionNode = GraphRegions.MapGraph.GetNodeAtPosition(position);
+        return GraphRegions.GetRegionByNodeId(positionNode.Id);   
+    }
+
+    public RegionNode GetRegionNodeById(uint regionId)
+    {
+        return _regionGraphResource.RegionIdToRegionNode[regionId];
+    }
+
+    /// <summary>
+    /// Returns the shortest path from a given node to a region.
+    /// </summary>
+    /// <param name="startNode">Starting node.</param>
+    /// <param name="regionId">Target region.</param>
+    /// <returns>A path to get the nearest node of the target region.</returns>
+    public Path GetShortestPathToRegion(PositionNode startNode, uint regionId)
+    {
+        long nodeToRegion = RegionGraphResource.GetFromNodeToRegionKey(
+            startNode.Id, 
+            regionId);
+        InterRegionPath interRegionPath =
+            _regionGraphResource.FromNodeToRegionPaths[nodeToRegion];
+        Array<Vector2> pathPositions = interRegionPath.PathPositions;
+        Path returnedPath = new ();
+        returnedPath.LoadPathData(pathPositions);
+        return returnedPath;
+    }
+
     public override void _Ready()
     {
         _dijkstraPathFinder = this.FindChild<DijkstraPathFinder>();
-        if (_graphRegions != null) _dijkstraPathFinder.Graph = _graphRegions.MapGraph;
+        if (GraphRegions != null) _dijkstraPathFinder.Graph = GraphRegions.MapGraph;
     }
 
     private void GenerateRegionGraph()
@@ -60,14 +89,19 @@ public partial class RegionGraph: Node2D
             regionIdToGlobalCostAndPathCount = new();
         
         // Sum cost of every path crossing a region.
-        foreach (KeyValuePair<RegionGraphResource.FromNodeToRegionPathsKey, 
-                     RegionGraphResource.InterRegionPath> fromNodeToRegionPath 
+        foreach (KeyValuePair<
+                     long, 
+                     InterRegionPath> fromNodeToRegionPath 
                  in _regionGraphResource.FromNodeToRegionPaths)
         {
-            RegionGraphResource.FromNodeToRegionPathsKey nodeToRegion = fromNodeToRegionPath.Key;
-            RegionGraphResource.InterRegionPath interRegionPath = fromNodeToRegionPath.Value;
+            long nodeToRegionKey = fromNodeToRegionPath.Key;
+            RegionGraphResource.SplitKey(
+                nodeToRegionKey, 
+                out uint fromNodeId, 
+                out uint _);
+            InterRegionPath interRegionPath = fromNodeToRegionPath.Value;
             uint crossedRegionId =
-                _graphRegions.GetRegionByNodeId(nodeToRegion.FromNodeId);
+                GraphRegions.GetRegionByNodeId(fromNodeId);
             if (!regionIdToGlobalCostAndPathCount.ContainsKey(crossedRegionId))
                 regionIdToGlobalCostAndPathCount[crossedRegionId] = (0, 0);
             (float totalCost, uint pathCrossingAmount) =
@@ -91,12 +125,12 @@ public partial class RegionGraph: Node2D
     /// <summary>
     /// The nodes our dijkstra pathfinder must reach to end the needed calculation.
     /// </summary>
-    private HashSet<PositionNode> _targetNodes = new();
+    private HashSet<IPositionNode> _targetNodes = new();
 
     /// <summary>
     /// Ends Dijkstra calculation when every target node is reached.
     /// </summary>
-    /// <returns>Returns true only when every target node ahs been reached;
+    /// <returns>Returns true only when every target node has been reached;
     /// otherwise returns false.</returns>
     private bool EndCondition()
     {
@@ -135,8 +169,8 @@ public partial class RegionGraph: Node2D
                     try
                     {
                         // Start node.
-                        PositionNode boundaryNode =
-                            _graphRegions.MapGraph.GetNodeById(boundaryNodeId);
+                        PositionNode boundaryNode = (PositionNode) 
+                            GraphRegions.MapGraph.GetNodeById(boundaryNodeId);
                         
                         // Gather possible targets. They are the boundary nodes in
                         // the neighbor regions.
@@ -150,8 +184,8 @@ public partial class RegionGraph: Node2D
                                 .BoundaryNodes[regionId];
                             foreach (uint neighborBoundaryNodeId in neighborBoundaryNodesIds)
                             {
-                                PositionNode neighborBoundaryNode =
-                                    _graphRegions.MapGraph.GetNodeById(
+                                PositionNode neighborBoundaryNode = (PositionNode)
+                                    GraphRegions.MapGraph.GetNodeById(
                                         neighborBoundaryNodeId);
                                 _targetNodes.Add(neighborBoundaryNode);
                             }
@@ -170,27 +204,26 @@ public partial class RegionGraph: Node2D
                                 .RegionIdToRegionNode[neighborRegionId]
                                 .BoundaryNodes[regionId];
                             
-                            RegionGraphResource.FromNodeToRegionPathsKey nodeToRegion = new()
-                            {
-                                FromNodeId = boundaryNodeId,
-                                ToRegionId = neighborRegionId
-                            };
+                            long nodeToRegionKey = 
+                                RegionGraphResource.GetFromNodeToRegionKey(
+                                    boundaryNodeId, 
+                                    neighborRegionId);
                             
                             // For every neighbor region, we keep only the path to its
-                            // boundary node which is nearest to the current boundary node
-                            // we are using as the starting node.
+                            // boundary node, which is nearest to the current boundary
+                            // node we are using as the starting node.
                             foreach (uint targetNodeId in neighborBoundaryNodesIds)
                             {
-                                PositionNode targetNode =
-                                    _graphRegions.MapGraph.GetNodeById(targetNodeId);
+                                PositionNode targetNode = (PositionNode)
+                                    GraphRegions.MapGraph.GetNodeById(targetNodeId);
                                 if (!_regionGraphResource.FromNodeToRegionPaths.ContainsKey(
-                                        nodeToRegion) ||
-                                    _regionGraphResource.FromNodeToRegionPaths[nodeToRegion]
+                                        nodeToRegionKey) ||
+                                    _regionGraphResource.FromNodeToRegionPaths[nodeToRegionKey]
                                         .Cost > _dijkstraPathFinder.ClosedDict[targetNode]
                                         .CostSoFar)
                                 {
-                                    _regionGraphResource.FromNodeToRegionPaths[nodeToRegion] =
-                                        new RegionGraphResource.InterRegionPath()
+                                    _regionGraphResource.FromNodeToRegionPaths[nodeToRegionKey] =
+                                        new InterRegionPath()
                                         {
                                             Cost = _dijkstraPathFinder.ClosedDict[targetNode]
                                                 .CostSoFar,
@@ -242,30 +275,31 @@ public partial class RegionGraph: Node2D
     private void GenerateRegionNodes()
     {
         _regionGraphResource.RegionIdToRegionNode.Clear();
+        _regionGraphResource.PositionToRegionNode.Clear();
         
         // Traverse every region to generate their region nodes.
         foreach (KeyValuePair<uint, HashSet<uint>> regionIdToNodesIdsByRegion in 
-                 _graphRegions.NodesByRegion)
+                 GraphRegions.NodesByRegion)
         {
             uint regionId = regionIdToNodesIdsByRegion.Key;
             // Create a new region node to represent that region in the graph.
             RegionNode regionNode = new()
             {
-                RegionId = regionId,
-                Position = _graphRegions.GetRegionCenter(regionId),
+                Id = regionId,
+                Position = GraphRegions.GetRegionCenter(regionId),
             };
             // Traverse every node in the region.
             HashSet<uint> nodeIdsInRegion = regionIdToNodesIdsByRegion.Value;
             foreach (uint nodeId in nodeIdsInRegion)
             {
-                PositionNode node = _graphRegions.MapGraph.GetNodeById(nodeId);
+                PositionNode node = (PositionNode) GraphRegions.MapGraph.GetNodeById(nodeId);
                 // Check if the node has connections to other regions.
                 foreach (KeyValuePair<Orientation, GraphConnection> graphConnection in 
                          node.GetConnections())
                 {
                     GraphConnection connection = graphConnection.Value;
                     uint otherNodeRegionId = 
-                        _graphRegions.GetRegionByNodeId(connection.EndNodeId);
+                        GraphRegions.GetRegionByNodeId(connection.EndNodeId);
                     // If the node is connected to another region, add it to the region's
                     // boundary nodes.
                     if (otherNodeRegionId != regionId)
@@ -278,6 +312,7 @@ public partial class RegionGraph: Node2D
             }
             
             _regionGraphResource.RegionIdToRegionNode[regionId] = regionNode;
+            _regionGraphResource.PositionToRegionNode[regionNode.Position] = regionNode;
         }
     }
     
@@ -301,6 +336,13 @@ public partial class RegionGraph: Node2D
         {
             RegionNode regionNode = regionIdToRegionNode.Value;
             DrawCircle(regionNode.Position, NodeRadius, NodeColor);
+            // Draw region number on the region center.
+            DrawString(
+                ThemeDB.FallbackFont, 
+                ToLocal(regionNode.Position + 
+                        GizmoTextOffset), 
+                regionNode.Id.ToString(), 
+                modulate: GridColor);
             
             // Draw connections between regions.
             foreach (KeyValuePair<uint, GraphConnection> regionNodeConnection in 
@@ -317,7 +359,7 @@ public partial class RegionGraph: Node2D
                             (endRegionNode.Position - regionNode.Position) / 2 + 
                     GizmoTextOffset), 
                     connection.Cost.ToString("G"), 
-                    modulate: NodeColor);
+                    modulate: GridColor);
             }
         }
     }
@@ -333,5 +375,71 @@ public partial class RegionGraph: Node2D
         }
         
         return warnings.ToArray();
+    }
+
+    /// <summary>
+    /// Get the RegionNode related to a given region seed.
+    /// </summary>
+    /// <param name="nodeId">Region ID</param>
+    /// <returns>The PositionNode where the given region seed is placed.</returns>
+    public IPositionNode GetNodeById(uint nodeId)
+    {
+        RegionNode regionNode = _regionGraphResource.RegionIdToRegionNode[nodeId];
+        return regionNode;
+    }
+
+
+    /// <summary>
+    /// Retrieves a RegionNode located at the specified position in the graph.
+    /// </summary>
+    /// <param name="position">The position in the graph where the node is to be
+    /// located.</param>
+    /// <returns>The node located at the specified position, or the nearest node if
+    /// one does not exist at the exact position. Null if nothing is found.</returns>
+    public IPositionNode GetNodeAtPosition(Vector2 position)
+    {
+        RegionNode regionNode;
+        regionNode = _regionGraphResource.PositionToRegionNode.ContainsKey(position) ? 
+            _regionGraphResource.PositionToRegionNode[position]: 
+            GetNodeAtNearestPosition(position);
+        return regionNode;
+    }
+
+    /// <summary>
+    /// Retrieves the region node located at the nearest position to the specified
+    /// global position.
+    /// </summary>
+    /// <param name="globalPosition">The global position for which the nearest region
+    /// node is determined.</param>
+    /// <returns>The region node closest to the specified position.</returns>
+    private RegionNode GetNodeAtNearestPosition(Vector2 globalPosition)
+    {
+        Vector2 nearestPosition = FindNearestPosition(globalPosition);
+        RegionNode nearestNode = 
+            _regionGraphResource.PositionToRegionNode[nearestPosition];
+        return nearestNode;
+    }
+
+    /// <summary>
+    /// Finds the nearest position in the graph to the specified target position.
+    /// </summary>
+    /// <param name="targetPosition">The position for which to find the nearest graph
+    /// position.</param>
+    /// <returns>The nearest position in the graph to the target position.</returns>
+    private Vector2 FindNearestPosition(Vector2 targetPosition)
+    {
+        Vector2 nearestPosition = Vector2.Zero;
+        float minDistance = float.MaxValue;
+
+        foreach (Vector2 key in _regionGraphResource.PositionToRegionNode.Keys)
+        {
+            float distance = targetPosition.DistanceSquaredTo(key);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestPosition = key;
+            }
+        }
+        return nearestPosition;
     }
 }

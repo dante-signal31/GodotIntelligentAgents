@@ -129,7 +129,8 @@ public partial class MapGraphRegions: Node2D
                     DefaultCost / _regionsInfluence[current.RegionId]);
                 
                 // Where does that connection lead us?
-                PositionNode endNode = MapGraph.GetNodeById(graphConnection.EndNodeId);
+                PositionNode endNode = 
+                    (PositionNode) MapGraph.GetNodeById(graphConnection.EndNodeId);
                 
                 // Is that node already explored?
                 if (_exploredNodes.TryGetValue(
@@ -225,7 +226,8 @@ public partial class MapGraphRegions: Node2D
         {
             RegionSeed regionSeed = Seeds[(int)i];
             _regionsInfluence[i] = regionSeed.Influence;
-            PositionNode seedNode = MapGraph.GetNodeAtPosition(regionSeed.Position);
+            PositionNode seedNode = 
+                (PositionNode) MapGraph.GetNodeAtPosition(regionSeed.Position);
             RegionNodeRecord nodeRecord = new RegionNodeRecord()
             {
                 Node = seedNode,
@@ -283,7 +285,7 @@ public partial class MapGraphRegions: Node2D
         foreach (KeyValuePair<uint, uint> nodeIdToRegionId in 
                  _graphRegionsResource.NodesIdToRegionsId)
         {
-            PositionNode node = MapGraph.GetNodeById(nodeIdToRegionId.Key);
+            IPositionNode node = MapGraph.GetNodeById(nodeIdToRegionId.Key);
             Vector2 position = node.Position;
             uint regionId = nodeIdToRegionId.Value;
             Color regionColor = _regionColors[regionId];

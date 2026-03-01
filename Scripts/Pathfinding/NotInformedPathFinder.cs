@@ -21,7 +21,7 @@ public abstract partial class NotInformedPathFinder<TN>:
     /// <param name="targetPosition">The target position to find a path to.</param>
     /// <returns>A Path object representing the found path from the start position
     /// to the target position, or null if no valid path exists.</returns>
-    public override Path FindPath(Vector2 targetPosition) 
+    public override Path FindPath(Vector2 targetPosition, Vector2 fromPosition=default) 
     {
         // Nodes not fully explored yet, ordered as they were found.
         _openQueue.Clear();
@@ -32,8 +32,10 @@ public abstract partial class NotInformedPathFinder<TN>:
         ClosedDict.Clear();
         
         // Get graph nodes associated with the start and target positions. 
-        CurrentStartNode = Graph.GetNodeAtPosition(GlobalPosition);
-        PositionNode targetNode = Graph.GetNodeAtPosition(targetPosition);
+        CurrentStartNode = fromPosition==default?
+            Graph.GetNodeAtPosition(GlobalPosition):
+            Graph.GetNodeAtPosition(fromPosition);
+        IPositionNode targetNode = Graph.GetNodeAtPosition(targetPosition);
         
         // You get to the start node from nowhere (null) and at no cost (0).
         var startRecord = new NodeRecord
@@ -64,7 +66,7 @@ public abstract partial class NotInformedPathFinder<TN>:
             foreach (GraphConnection graphConnection in current.Node.Connections.Values)
             {
                 // Where does that connection lead us?
-                PositionNode endNode = Graph.GetNodeById(graphConnection.EndNodeId);
+                IPositionNode endNode = Graph.GetNodeById(graphConnection.EndNodeId);
                 // If that connection leads to an already explored node, skip it.
                 if (ClosedDict.ContainsKey(endNode)) continue;
                 

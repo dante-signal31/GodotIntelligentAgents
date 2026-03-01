@@ -42,11 +42,13 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
     /// A path object representing the sequence of nodes from the start position
     /// to the target position. Returns null if no valid path exists to the target.
     /// </returns>
-    public override Path FindPath(Vector2 targetPosition)
+    public override Path FindPath(Vector2 targetPosition, Vector2 fromPosition=default)
     {
         // Get graph nodes associated with the start and target positions. 
-        CurrentStartNode = Graph.GetNodeAtPosition(GlobalPosition);
-        PositionNode targetNode = Graph.GetNodeAtPosition(targetPosition);
+        CurrentStartNode = fromPosition==default? 
+            Graph.GetNodeAtPosition(GlobalPosition): 
+            Graph.GetNodeAtPosition(fromPosition);
+        IPositionNode targetNode = Graph.GetNodeAtPosition(targetPosition);
         
         CalculateCosts(CurrentStartNode, () => CurrentNodeRecord.Node == targetNode);
 
@@ -69,7 +71,7 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
     /// <param name="startNode">The node from where start the traversing.</param>
     /// <param name="endCondition">A function that when evaluates to true makes
     /// traversing end.</param>
-    public void CalculateCosts(PositionNode startNode, EndCondition endCondition)
+    public void CalculateCosts(IPositionNode startNode, EndCondition endCondition)
     {
         // Nodes not fully explored yet, ordered by the cost to get them from the
         // start node.
@@ -117,7 +119,7 @@ public partial class DijkstraPathFinder: HeuristicPathFinder<NodeRecord>
                      CurrentNodeRecord.Node.Connections.Values)
             {
                 // Where does that connection lead us?
-                PositionNode endNode = Graph.GetNodeById(graphConnection.EndNodeId);
+                IPositionNode endNode = Graph.GetNodeById(graphConnection.EndNodeId);
                 // Calculate the cost to reach the end node from the current node.
                 float endNodeCost = CurrentNodeRecord.CostSoFar + graphConnection.Cost;
                 

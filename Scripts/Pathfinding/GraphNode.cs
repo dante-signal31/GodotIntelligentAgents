@@ -13,11 +13,14 @@ public partial class GraphNode: Resource
     private static readonly HashSet<uint> AssignedIds = new();
     private static readonly Random Random = new();
 
-    [Export] public uint Id { get; protected set; } = GenerateUniqueId();
-    
-    [Export] public Godot.Collections.Dictionary<uint, GraphConnection> Connections = 
-        new();
+    [Export] public uint Id { get; set; } = GenerateUniqueId();
 
+    [Export] public Godot.Collections.Dictionary<uint, GraphConnection> Connections
+    {
+        get;
+        private set;
+    } = new();
+    
     private static uint GenerateUniqueId()
     {
         uint newId;

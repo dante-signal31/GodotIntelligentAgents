@@ -52,11 +52,25 @@ public partial class Path: GroupPattern
     /// </summary>
     public Vector2 CurrentTargetPosition => Positions.Offsets[CurrentTargetPositionIndex];
 
+    /// <summary>
+    /// Fill the path with the given positions.
+    /// </summary>
+    /// <param name="positions">Positions to setup the path.</param>
     public void LoadPathData(Array<Vector2> positions)
     {
         Positions.Offsets = positions;
         // New path, then reset index.
         CurrentTargetPositionIndex = 0;
+        EmitSignal(SignalName.PathUpdated);
+    }
+    
+    /// <summary>
+    /// Adds given path positions to the end of this path.
+    /// </summary>
+    /// <param name="path">Path to append</param>
+    public void AppendPath(Path path)
+    {
+        Positions.Offsets.AddRange(path.Positions.Offsets);
         EmitSignal(SignalName.PathUpdated);
     }
     

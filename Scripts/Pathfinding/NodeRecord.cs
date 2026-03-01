@@ -6,7 +6,7 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 /// </summary>
 public class NodeRecord
 {
-    public PositionNode Node;
+    public IPositionNode Node;
     public GraphConnection Connection;
     public float CostSoFar;
     

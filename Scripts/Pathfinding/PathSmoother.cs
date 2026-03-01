@@ -10,21 +10,14 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 /// A utility class for path smoothing in navigation systems. This class is designed to
 /// refine raw paths produced by an associated child pathfinding node (IPathFinder) into
 /// smoother paths by removing unnecessary nodes and creating more efficient routes.
+/// <remarks>This class only works at the PositionNode level. Do not use at
+/// RegionNode level.</remarks>
 /// </summary>
 [Tool]
 public partial class PathSmoother: Node2D, IPathFinder
 {
-    [ExportCategory("CONFIGURATION:")]
-    private MapGraph _graph;
-    [Export] public MapGraph Graph
-    {
-        get => _graph;
-        set
-        {
-            _graph = value;
-            if (_smoothedPathFinder != null) _smoothedPathFinder.Graph = value;
-        }
-    }
+    [ExportCategory("CONFIGURATION:")] 
+    [Export] private MapGraph _graph;
     
     [ExportCategory("DEBUG")]
     [Export] public bool ShowGizmos { get; set; }
@@ -34,6 +27,12 @@ public partial class PathSmoother: Node2D, IPathFinder
     private CleanAreaChecker _cleanAreaChecker;
     private Path _smoothedPath;
     private Path _rawPath;
+
+    public IPositionGraph Graph
+    {
+        get => _graph;
+        set => _graph = (MapGraph) value;
+    }
     
     public override void _Ready()
     {
@@ -43,9 +42,9 @@ public partial class PathSmoother: Node2D, IPathFinder
     public override void _EnterTree()
     {
         _cleanAreaChecker = new CleanAreaChecker(
-            (Mathf.Min(Graph.CellSize.X, Graph.CellSize.Y)/2), 
-            Graph.ObstaclesLayers, 
-            Graph);
+            (Mathf.Min(_graph.CellSize.X, _graph.CellSize.Y)/2), 
+            _graph.ObstaclesLayers, 
+            _graph);
     }    
     
     public override void _ExitTree()
@@ -54,9 +53,9 @@ public partial class PathSmoother: Node2D, IPathFinder
         if (_smoothedPath != null) _smoothedPath.QueueFree();
     }
     
-    public Path FindPath(Vector2 targetPosition)
+    public Path FindPath(Vector2 targetPosition, Vector2 fromPosition=default)
     {
-        _rawPath = _smoothedPathFinder.FindPath(targetPosition);
+        _rawPath = _smoothedPathFinder.FindPath(targetPosition, fromPosition);
         if (_rawPath == null) return null;
         CleanPreviousSmoothedPath();
         _smoothedPath = SmoothPath(_rawPath);

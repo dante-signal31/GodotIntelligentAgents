@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -6,6 +7,12 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 public abstract partial class PathFinder<T>: Node2D, IPathFinder 
     where T: NodeRecord, new()
 {
+    [ExportCategory("CONFIGURATION:")]
+    /// <summary>
+    /// Graph modeling the environment.
+    /// </summary>
+    [Export] private Node2D MapGraph { get; set; }
+    
     [ExportCategory("DEBUG:")]
     [Export] private bool ShowGizmos { get; set; } = true;
     [Export] private uint ExploredNodeGizmoRadius { get; set; }= 10;
@@ -14,22 +21,23 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
     [Export] private Color PathNodeColor { get; set; } = Colors.GreenYellow;
     [Export] private Vector2 GizmoTextOffset { get; set; }= new(10, 10);
     [Export] private Color TextColor { get; set; } = Colors.White;
-    
-    /// <summary>
-    /// Graph modeling the environment.
-    /// </summary>
-    public MapGraph Graph { get; set; }
+
+    public IPositionGraph Graph
+    {
+        get => MapGraph as IPositionGraph;
+        set => MapGraph = value as Node2D;
+    } 
     
     /// <summary>
     /// Agent starting node.
     /// </summary>
-    protected PositionNode CurrentStartNode;
+    protected IPositionNode CurrentStartNode;
     
     /// <summary>
     /// Dictionary containing nodes and their corresponding recorded data after the
     /// exploration process.
     /// </summary>
-    public Dictionary<PositionNode, T> ClosedDict;
+    public Dictionary<IPositionNode, T> ClosedDict;
     
     /// <summary>
     /// The currently found path across the graph to the target node.
@@ -52,7 +60,7 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
     /// A path object representing the sequence of nodes from the start position
     /// to the target position. Returns null if no valid path exists to the target.
     /// </returns>
-    public abstract Path FindPath(Vector2 targetPosition);
+    public abstract Path FindPath(Vector2 targetPosition, Vector2 fromPosition=default);
     
     /// <summary>
     /// Constructs a path from the start node to the target node by traversing
@@ -73,9 +81,9 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
     /// from the start node to the target node.
     /// </returns>
     public Path BuildPath(
-        Dictionary<PositionNode, T> closedDict,
-        PositionNode startNode,
-        PositionNode targetNode)
+        Dictionary<IPositionNode, T> closedDict,
+        IPositionNode startNode,
+        IPositionNode targetNode)
     {
         List<GraphConnection> path = new();
         T pointer = closedDict[targetNode];
@@ -84,7 +92,7 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
         while (pointer.Node != startNode)
         {
             path.Add(pointer.Connection);
-            PositionNode endA = Graph.GetNodeById(pointer.Connection.StartNodeId);
+            IPositionNode endA = Graph.GetNodeById(pointer.Connection.StartNodeId);
             pointer = closedDict[endA];
         }
 
@@ -99,7 +107,7 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
         _foundPath.ShowGizmos = ShowGizmos;
         foreach (GraphConnection connection in path)
         {
-            PositionNode endB = Graph.GetNodeById(connection.EndNodeId);
+            IPositionNode endB = Graph.GetNodeById(connection.EndNodeId);
             _foundPath.TargetPositions.Add(endB.Position);
         }
         
@@ -121,7 +129,7 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
         if (!ShowGizmos) return;
 
         // Draw explored nodes.
-        foreach (PositionNode exploredNode in ClosedDict.Keys)  
+        foreach (IPositionNode exploredNode in ClosedDict.Keys)  
         {
             DrawCircle(
                 ToLocal(exploredNode.Position), 
@@ -150,10 +158,13 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
                 // Once the text is drawn, restore the original transform matrix.
                 DrawSetTransformMatrix(Transform2D.Identity);
             }
-            else
+            // We skip the first node of the route because its NodeRecord has the
+            // connection set to null.
+            else if (ClosedDict[exploredNode].Connection != null)
             {
-                PositionNode fromNode = 
-                    Graph.GetNodeById(ClosedDict[exploredNode].Connection.StartNodeId);
+                IPositionNode fromNode =
+                    Graph.GetNodeById(ClosedDict[exploredNode].Connection
+                        .StartNodeId);
                 Vector2 relativePosition = exploredNode.Position - fromNode.Position;
                 // Connection orientation from the receiving node (the explored node)
                 // perspective.
@@ -166,16 +177,17 @@ public abstract partial class PathFinder<T>: Node2D, IPathFinder
                 {
                     connectionOrientation = relativePosition.X > 0f ? "W" : "E";
                 }
-                string nodeInfoText = 
+
+                string nodeInfoText =
                     $"{connectionOrientation}{ClosedDict[exploredNode].CostSoFar}";
                 // I must cancel the draw transform matrix just before drawing the text
                 // to avoid the text rotating when its node rotates along the agent it is 
                 // attached to.
                 DrawSetTransformMatrix(GlobalTransform.AffineInverse());
                 DrawString(
-                    ThemeDB.FallbackFont, 
-                    textPosition, 
-                    nodeInfoText, 
+                    ThemeDB.FallbackFont,
+                    textPosition,
+                    nodeInfoText,
                     modulate: TextColor);
                 // Once the text is drawn, restore the original transform matrix.
                 DrawSetTransformMatrix(Transform2D.Identity);

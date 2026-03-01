@@ -15,7 +15,7 @@ public partial class PathFinderSteeringBehavior : Node2D, ISteeringBehavior
     // I haven't used ITargeter interface because that interface waits for a Target field 
     // of type Node2D, but I need a Target type to connect to its PositionChanged signal.
     [Export] public Tools.Target PathTarget { get; set; }
-    [Export] public MapGraph Graph { get; set; }
+    // [Export] public MapGraph Graph { get; set; }
     
     private PathFollowingSteeringBehavior _pathFollowingSteeringBehavior;
     private IPathFinder _pathFinder;
@@ -24,7 +24,7 @@ public partial class PathFinderSteeringBehavior : Node2D, ISteeringBehavior
     {
         _pathFollowingSteeringBehavior = this.FindChild<PathFollowingSteeringBehavior>();
         _pathFinder = this.FindChild<IPathFinder>();
-        _pathFinder.Graph = Graph;
+        // _pathFinder.Graph = Graph;
         PathTarget.Connect(
             Tools.Target.SignalName.PositionChanged,
             new Callable(this, MethodName.OnPathTargetPositionChanged));

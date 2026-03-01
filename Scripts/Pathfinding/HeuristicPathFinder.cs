@@ -32,7 +32,7 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>
         protected readonly PriorityQueue<T, float> PriorityQueue = new ();
         // Needed to keep track of the nodes still pending to be explored and to quickly
         // get their respective records.
-        protected readonly Dictionary<PositionNode, T> NodeRecordDict = new ();
+        protected readonly Dictionary<IPositionNode, T> NodeRecordDict = new ();
         
         public int Count => NodeRecordDict.Count;
         
@@ -42,7 +42,7 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>
             NodeRecordDict.Clear();
         }
         
-        public bool Contains(PositionNode node) => NodeRecordDict.ContainsKey(node);
+        public bool Contains(IPositionNode node) => NodeRecordDict.ContainsKey(node);
         
 
         public abstract void Add(T record);
@@ -61,7 +61,7 @@ public abstract partial class HeuristicPathFinder<T>: PathFinder<T>
         /// Thrown when attempting to retrieve a record for a node that does not exist
         /// in the collection.
         /// </exception>
-        public T this[PositionNode node]
+        public T this[IPositionNode node]
         {
             get => NodeRecordDict[node];
             set => NodeRecordDict[node] = value;

@@ -106,7 +106,8 @@ public partial class MapGraphRegionsSmoother: Node
         uint positionsCount = 0;
         foreach (uint nodeId in nodesInRegion)
         {
-            PositionNode node = MapGraphRegions.MapGraph.GetNodeById(nodeId);
+            PositionNode node = 
+                (PositionNode) MapGraphRegions.MapGraph.GetNodeById(nodeId);
             positionsSum += node.Position;
             positionsCount++;
         }

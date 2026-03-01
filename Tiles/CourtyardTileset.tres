@@ -16,7 +16,7 @@ separation = Vector2i(155, 0)
 texture_region_size = Vector2i(107, 108)
 1:0/0 = 0
 1:0/0/modulate = Color(0.82932, 0.824651, 0.826978, 1)
-1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(53.5, -54, 53.5, 54, -53.5, 54, -53.5, -54)
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(43, -54, 43, 54, -53.5, 54, -53.5, -54)
 1:0/0/physics_layer_2/polygon_0/points = PackedVector2Array(53.5, -54, -53.5, -54, -53.5, 54, 53.5, 54)
 1:0/0/custom_data_0 = true
 1:0/0/custom_data_1 = 9999999.0
@@ -32,7 +32,7 @@ texture_region_size = Vector2i(107, 108)
 1:2/0/custom_data_1 = 400.0
 2:2/0 = 0
 2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-45, -46, 44, -45, 45, 44, -45, 45)
-2:2/0/physics_layer_2/polygon_0/points = PackedVector2Array(-45, -45, 43, -44, 43, 45, -45, 46)
+2:2/0/physics_layer_2/polygon_0/points = PackedVector2Array(-42, -44, 42, -45, 42, 45, -42, 45)
 2:2/0/custom_data_0 = true
 2:2/0/custom_data_1 = 9999999.0
 0:0/0 = 0
@@ -40,7 +40,7 @@ texture_region_size = Vector2i(107, 108)
 0:0/0/custom_data_1 = 8000.0
 
 [resource]
-tile_size = Vector2i(107, 108)
+tile_size = Vector2i(101, 108)
 physics_layer_0/collision_layer = 2
 physics_layer_0/collision_mask = 0
 physics_layer_1/collision_layer = 4

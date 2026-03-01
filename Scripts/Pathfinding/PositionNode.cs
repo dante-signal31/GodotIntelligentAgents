@@ -7,9 +7,9 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 /// Graph node implementation with four edges.
 /// </summary>
 [Tool]
-public partial class PositionNode: GraphNode
+public partial class PositionNode: GraphNode, IPositionNode
 {
-    [Export] public Vector2 Position;
+    [Export] public Vector2 Position { get; set; }
 
     public bool HasConnection(Orientation orientation)
     {

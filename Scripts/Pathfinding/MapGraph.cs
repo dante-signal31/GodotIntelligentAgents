@@ -14,7 +14,7 @@ namespace GodotGameAIbyExample.Scripts.Pathfinding;
 /// </remarks>
 /// </summary>
 [Tool]
-public partial class MapGraph: Node2D
+public partial class MapGraph: Node2D, IPositionGraph
 {
     [ExportCategory("CONFIGURATION:")]
     [Export] public Vector2I MapSize { get; set; } = new(1920, 1080);
@@ -58,12 +58,31 @@ public partial class MapGraph: Node2D
         return (Vector2I) (globalPosition / CellSize);
     } 
     
-    public PositionNode GetNodeAtPosition(Vector2 globalPosition)
+    /// <summary>
+    /// Returns the node at the specified global position.
+    /// </summary>
+    /// <param name="globalPosition">Global position to get the node.</param>
+    /// <returns>The position node at that position. If that position is inside an
+    /// obstacle, there won't be a node, so it will return null.</returns>
+    public IPositionNode GetNodeAtPosition(Vector2 globalPosition)
     {
         Vector2I arrayPosition = GlobalToArrayPosition(globalPosition);
         return GetNodeAtArrayPosition(arrayPosition);
     }
 
+
+    /// <summary>
+    /// Retrieves the nearest node to the specified global position.
+    /// <remarks>
+    /// While GetNodeAtPosition returns null if the position is inside an obstacle, with
+    /// this method you can retrieve the nearest node to that position in case that that
+    /// position is inside an obstacle. So, this method always returns a node, but it may
+    /// be one that is not exactly at the given position.
+    /// </remarks>
+    /// </summary>
+    /// <param name="globalPosition">The global position for which to find the closest
+    /// node.</param>
+    /// <returns>The nearest node to the given position.</returns>
     public PositionNode GetNodeAtNearestPosition(Vector2 globalPosition)
     {
         Vector2I arrayPosition = GlobalToArrayPosition(globalPosition);
@@ -101,7 +120,7 @@ public partial class MapGraph: Node2D
     
     private Vector2I GetArrayPositionById(uint nodeId) => GraphResource.NodeIdsToArrayPositions[nodeId];
     
-    public PositionNode GetNodeById(uint nodeId) => 
+    public IPositionNode GetNodeById(uint nodeId) => 
         GraphResource.ArrayPositionsToNodes[GetArrayPositionById(nodeId)];
     
     private Timer _redrawTimer;

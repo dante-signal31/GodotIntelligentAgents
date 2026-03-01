@@ -4,25 +4,12 @@ using Godot.Collections;
 namespace GodotGameAIbyExample.Scripts.Pathfinding;
 
 [Tool]
-public partial class RegionNode: GraphNode
+public partial class RegionNode: GraphNode, IPositionNode
 {
-   /// <summary>
-   /// Region identifier this node represents.
-   /// </summary>
-   /// <remarks>
-   /// This field value overwrites the graph node ID value. Having two different Ids
-   /// seemed confusing here.
-   /// </remarks>
-   [Export] public uint RegionId
-   {
-      get => Id;
-      set => Id = value;
-   }
-   
    /// <summary>
    /// Position of the region center.
    /// </summary>
-   [Export] public Vector2 Position;
+   [Export] public Vector2 Position { get; set; }
    
    /// <summary>
    /// Region nodes that border another region.
