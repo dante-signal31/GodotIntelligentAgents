@@ -526,4 +526,63 @@ public class PathFindingTests
         meshPathfindingAgent.Visible = false;
         meshPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
+    
+    /// <summary>
+    /// Test the region pathfinder behavior.
+    /// </summary>
+    [TestCase]
+    public async Task RegionPathFindingBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent regionPathfindingAgent = 
+            (MovingAgent) _sceneRunner.FindChild("RegionPathFinderMovingAgent");
+        
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position1");
+        Marker2D position2 = 
+            (Marker2D) _sceneRunner.FindChild("Position2");
+        Marker2D position3 = 
+            (Marker2D) _sceneRunner.FindChild("Position3");
+        
+        Target target = (Target) _sceneRunner.FindChild("Target");
+        
+        Path pathToFollow = 
+            (Path) _sceneRunner.FindChild("TestPath");
+        
+        // Get references to behaviors.
+        PathFinderSteeringBehavior pathFinderSteeringBehavior = 
+            regionPathfindingAgent.FindChild<PathFinderSteeringBehavior>();
+        
+        // Set up elements before the test.
+        pathToFollow.Visible = false;
+        regionPathfindingAgent.GlobalPosition = position1.GlobalPosition;
+        regionPathfindingAgent.MaximumSpeed = 400.0f;
+        regionPathfindingAgent.StopSpeed = 1f;
+        regionPathfindingAgent.MaximumRotationalDegSpeed = 1080f;
+        regionPathfindingAgent.StopRotationDegThreshold = 1f;
+        regionPathfindingAgent.AgentColor = new Color(0, 1, 0);
+        pathFinderSteeringBehavior.PathTarget = target;
+        regionPathfindingAgent.Visible = true;
+        regionPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Assert that the pathfinder agent can reach the first target.
+        target.GlobalPosition = position2.GlobalPosition;
+        await _sceneRunner.AwaitMillis(9000);
+        AssertThat(
+            regionPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
+            ).IsTrue();
+        
+        // Assert that the pathfinder agent can reach the second target.
+        target.GlobalPosition = position3.GlobalPosition;
+        await _sceneRunner.AwaitMillis(8000);
+        AssertThat(
+            regionPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
+        ).IsTrue();
+        
+        // Cleanup.
+        regionPathfindingAgent.Visible = false;
+        regionPathfindingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
 }
