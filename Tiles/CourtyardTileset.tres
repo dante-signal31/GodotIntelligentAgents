@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=4 format=3 uid="uid://lwrjedftv6bk"]
+[gd_resource type="TileSet" format=3 uid="uid://lwrjedftv6bk"]
 
 [ext_resource type="Texture2D" uid="uid://dehu5md1gaaes" path="res://Sprites/Atlas/SquareTilesAtlas.png" id="1_b4l4g"]
 
@@ -17,7 +17,6 @@ texture_region_size = Vector2i(107, 108)
 1:0/0 = 0
 1:0/0/modulate = Color(0.82932, 0.824651, 0.826978, 1)
 1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(43, -54, 43, 54, -53.5, 54, -53.5, -54)
-1:0/0/physics_layer_2/polygon_0/points = PackedVector2Array(53.5, -54, -53.5, -54, -53.5, 54, 53.5, 54)
 1:0/0/custom_data_0 = true
 1:0/0/custom_data_1 = 9999999.0
 2:0/0 = 0

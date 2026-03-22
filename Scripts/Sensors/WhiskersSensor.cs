@@ -4,6 +4,7 @@ using Godot;
 using Godot.Collections;
 using GodotGameAIbyExample.addons.InteractiveRanges.SectorRange;
 using GodotGameAIbyExample.Scripts.Extensions;
+using GodotGameAIbyExample.Scripts.Tools;
 
 namespace GodotGameAIbyExample.Scripts.Sensors;
 
@@ -40,7 +41,7 @@ public partial class WhiskersSensor : Node2D
     {
         
         // It should have 2N + 3 sensors.
-        // Think in this array of sensors as looking to UP-screen direction,
+        // Think of this array of sensors as looking to a UP-screen direction,
         // Inside this list:
         //  * Top left sensor is always at index 0.
         //  * Center sensor is always at the middle index.
@@ -114,27 +115,6 @@ public partial class WhiskersSensor : Node2D
             return GetEnumerator();
         }
     }
-
-    /// <summary>
-    /// Struct to represent ray ends for every sensor in the editor local space.
-    /// </summary>
-    public struct RayEnds
-    {
-        public Vector2 Start;
-        public Vector2 End;
-
-        public RayEnds()
-        {
-            Start = Vector2.Zero;
-            End = Vector2.Zero;
-        }
-        
-        public RayEnds(Vector2 start, Vector2 end)
-        {
-            Start = start;
-            End = end;
-        }
-    }
     
     [ExportCategory("CONFIGURATION:")]
     private uint _sensorsLayersMask;
@@ -172,7 +152,14 @@ public partial class WhiskersSensor : Node2D
         {
             if (_sensorResolution == value) return;
             _sensorResolution = value;
-            UpdateSensor();
+            if (Engine.IsEditorHint()) 
+                UpdateSensor();
+            else
+            {
+                UpdateRayEnds();
+                SetupSensors();
+                SubscribeToSensorsEvents();
+            }
         }
     }
     
@@ -187,7 +174,14 @@ public partial class WhiskersSensor : Node2D
             if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
             _sectorRange.SemiConeDegrees = value;
-            UpdateSensor();
+            if (Engine.IsEditorHint()) 
+                UpdateSensor();
+            else
+            {
+                UpdateRayEnds();
+                SetupSensors();
+                SubscribeToSensorsEvents();
+            }
         }
     }
     
@@ -202,7 +196,14 @@ public partial class WhiskersSensor : Node2D
             if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
             _sectorRange.Range = value;
-            UpdateSensor();
+            if (Engine.IsEditorHint()) 
+                UpdateSensor();
+            else
+            {
+                UpdateRayEnds();
+                SetupSensors();
+                SubscribeToSensorsEvents();
+            }
         }
     }
     
@@ -217,7 +218,14 @@ public partial class WhiskersSensor : Node2D
             if (_sectorRange == null) return;
             _onValidatingUpdatePending = true;
             _sectorRange.MinimumRange = value;
-            UpdateSensor();
+            if (Engine.IsEditorHint()) 
+                UpdateSensor();
+            else
+            {
+                UpdateRayEnds();
+                SetupSensors();
+                SubscribeToSensorsEvents();
+            }
         }
     }
 
@@ -234,7 +242,15 @@ public partial class WhiskersSensor : Node2D
         {
             if (_leftRangeSemiCone == value) return;
             _leftRangeSemiCone = value;
-            if (_sectorRange != null) UpdateSensor();
+            if (_sectorRange == null) return;
+            if (Engine.IsEditorHint()) 
+                UpdateSensor();
+            else
+            {
+                UpdateRayEnds();
+                SetupSensors();
+                SubscribeToSensorsEvents();
+            }
         }
     }
     
@@ -251,11 +267,19 @@ public partial class WhiskersSensor : Node2D
         {
             if (_rightRangeSemiCone == value) return;
             _rightRangeSemiCone = value;
-            if (_sectorRange != null) UpdateSensor();
+            if (_sectorRange == null) return;
+            if (Engine.IsEditorHint()) 
+                UpdateSensor();
+            else
+            {
+                UpdateRayEnds();
+                SetupSensors();
+                SubscribeToSensorsEvents();
+            }
         }
     }
     
-    private List<RayEnds> _rayEnds;
+    public readonly List<RayEnds> RayEnds = new();
 
     [ExportCategory("DEBUG:")] 
     
@@ -278,7 +302,7 @@ public partial class WhiskersSensor : Node2D
     }
     
     /// <summary>
-    /// Color for this script gizmos.
+    /// Color for this script gizmo.
     /// </summary>
     [Export] private Color GizmoColor { get; set; }= new Color(1, 0, 0);
     
@@ -295,7 +319,7 @@ public partial class WhiskersSensor : Node2D
 
     /// <summary>
     /// <p>Updates the sensor system by recalculating ray end points and scheduling a
-    /// redraw of the sensor visualization.</p>
+    /// redrawing of the sensor visualization.</p>
     /// <p>This method ensures that the sensor setup is refreshed when configuration
     /// changes occur, such as resolution or other related properties.</p>
     /// </summary>
@@ -318,6 +342,22 @@ public partial class WhiskersSensor : Node2D
                 if (sensor.IsObjectDetected) return true;
             }
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Sensor indices where an object is detected. True if detected.
+    /// </summary>
+    public List<bool> DetectionMask
+    {
+        get
+        {
+            List<bool> detectionMask = new();
+            foreach (RaySensor sensor in _sensors)
+            {
+                detectionMask.Add(sensor.IsObjectDetected); 
+            }
+            return detectionMask;
         }
     }
 
@@ -420,8 +460,8 @@ public partial class WhiskersSensor : Node2D
             
             rayEnds.Add(rayEnd);
         }
-        
-        _rayEnds = rayEnds;
+        RayEnds.Clear();
+        RayEnds.AddRange(rayEnds);
     }
 
     /// <summary>
@@ -495,7 +535,7 @@ public partial class WhiskersSensor : Node2D
     private void PlaceSensors()
     {
         int i = 0;
-        foreach (RayEnds rayEnd in _rayEnds)
+        foreach (RayEnds rayEnd in RayEnds)
         {
             RaySensor raySensor = _sensors.GetSensorFromLeft(i);
             raySensor.StartPosition = ToGlobal(rayEnd.Start);
@@ -628,8 +668,8 @@ public partial class WhiskersSensor : Node2D
         // If we are in editor then draw sensors placeholder.
         if (Engine.IsEditorHint())
         { 
-            if (_rayEnds == null) return;
-            foreach (RayEnds rayEnd in _rayEnds)
+            if (RayEnds == null) return;
+            foreach (RayEnds rayEnd in RayEnds)
             {
                 DrawLine(
                     rayEnd.Start, 

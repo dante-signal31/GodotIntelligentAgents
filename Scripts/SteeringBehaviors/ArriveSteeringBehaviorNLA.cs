@@ -13,7 +13,7 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <p> NLA behavior implements a Non-Linear-Acceleration approach. So, in this case
 /// acceleration is given by curves instead of a fixed acceleration value.</p>
 /// </summary>
-public partial class ArriveSteeringBehaviorNLA: Node, ISteeringBehavior, ITargeter
+public partial class ArriveSteeringBehaviorNLA: Node, ITargeterSteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")]
     /// <summary>

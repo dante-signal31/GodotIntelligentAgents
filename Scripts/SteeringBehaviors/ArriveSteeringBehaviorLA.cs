@@ -14,7 +14,7 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// acceleration is given by a fixed acceleration values. In this case, that values are
 /// maximum acceleration and maximum deceleration values from agent.</p>
 /// </summary>
-public partial class ArriveSteeringBehaviorLA: Node, ISteeringBehavior, ITargeter
+public partial class ArriveSteeringBehaviorLA: Node, ITargeterSteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")]
     /// <summary>

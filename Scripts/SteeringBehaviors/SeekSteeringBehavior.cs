@@ -10,7 +10,7 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <summary>
 /// <p>Seek steering behaviour makes the agent move towards a target position.</p>
 /// </summary>
-public partial class SeekSteeringBehavior: Node2D, ISteeringBehavior, ITargeter, IGizmos
+public partial class SeekSteeringBehavior: Node2D, ITargeterSteeringBehavior, IGizmos
 {
     private bool _showGizmos;
     private Color _gizmosColor;

@@ -36,7 +36,7 @@ public partial class SectorRange: Node2D
     /// <summary>
     /// Half-angular width in degrees for this cone.
     /// </summary>
-    [Export(PropertyHint.Range, "0, 90")] public float SemiConeDegrees
+    [Export(PropertyHint.Range, "0, 180")] public float SemiConeDegrees
     {
         get => _semiConeDegrees;
         set

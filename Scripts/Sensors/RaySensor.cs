@@ -67,12 +67,13 @@ public partial class RaySensor : Node2D
     /// <summary>
     /// Gizmo color for this sensor.
     /// </summary>
-    [Export] public Color GizmoColor { get; set; } = new Color(1, 0, 0);
+    [Export] public Color GizmoColor { get; set; } = new Color(1, 0, 0, 0.1f);
     
     /// <summary>
     /// Color to show when the sensor detects an object.
     /// </summary>
-    [Export] public Color GizmoDetectedColor { get; set; } = new Color(0, 1, 0);
+    [Export] public Color GizmoDetectedColor { get; set; } = 
+        new Color(0, 1, 0, 0.1f);
     
     /// <summary>
     /// Radius for the gizmos that mark the ray ends.
