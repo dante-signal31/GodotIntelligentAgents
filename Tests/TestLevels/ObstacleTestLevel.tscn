@@ -369,8 +369,8 @@ Target = NodePath("../../../Target")
 position = Vector2(232, 320)
 
 [node name="ContextSteeringBehavior" parent="Agents/ContextMovingAgent" unique_id=750442898 instance=ExtResource("26_mk2fd")]
-ContextResolution = 10
-ContextRadius = 300.0
+ContextResolution = 30
+_addedInterests = 4
 
 [node name="SeekSteeringBehavior" parent="Agents/ContextMovingAgent/ContextSteeringBehavior" unique_id=1783209027 node_paths=PackedStringArray("Target") instance=ExtResource("3_kftuo")]
 Target = NodePath("../../../../Target")
