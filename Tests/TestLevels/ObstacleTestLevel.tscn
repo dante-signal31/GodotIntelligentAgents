@@ -18,7 +18,9 @@
 [ext_resource type="Script" uid="uid://3o8nj5mnvovw" path="res://Scripts/SteeringBehaviors/WeightedBehavior.cs" id="11_e34o5"]
 [ext_resource type="PackedScene" uid="uid://y2ql7dj60glk" path="res://Scenes/SteeringBehaviors/SmoothedWallAvoiderSteeringBehavior.tscn" id="11_ib2b3"]
 [ext_resource type="PackedScene" uid="uid://yrgcucn0lsiu" path="res://Scenes/SteeringBehaviors/PriorityWeightBlendedSteeringBehavior.tscn" id="14_km65h"]
+[ext_resource type="Curve" uid="uid://f0voiei0g5sy" path="res://Curves/WhiskerSensorLeftRangeSemiCone.tres" id="15_2i8ly"]
 [ext_resource type="PackedScene" uid="uid://dg5jntlmhib8s" path="res://Scenes/SteeringBehaviors/PassiveAgentAvoiderSteeringBehavior.tscn" id="15_56c3e"]
+[ext_resource type="Curve" uid="uid://bc8d5yu8u0xwx" path="res://Curves/WhiskerSensorRightRangeSemiCone.tres" id="16_8f4uc"]
 [ext_resource type="PackedScene" uid="uid://dy3b5h8r1h1lr" path="res://Scenes/SteeringBehaviors/ArriveSteeringBehaviorLA.tscn" id="16_36lvx"]
 [ext_resource type="PackedScene" uid="uid://cnlu57k6d60rt" path="res://Scenes/Tools/PotentialCollisionDetector.tscn" id="16_wbisd"]
 [ext_resource type="PackedScene" uid="uid://be350relk3jqo" path="res://Scenes/Sensors/ConeSensor.tscn" id="17_acdjf"]
@@ -101,6 +103,7 @@ metadata/_custom_type_script = "uid://c1hmtt20hub48"
 [node name="ObstacleTestLevel" type="Node2D" unique_id=1876620435]
 
 [node name="ObstacleCourtyard" parent="." unique_id=931045014 instance=ExtResource("1_n20uv")]
+_walkableRegionWeldThreshold = 100
 
 [node name="Target" parent="." unique_id=452483211 instance=ExtResource("4_sfy1w")]
 modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
@@ -110,35 +113,35 @@ position = Vector2(1568, 728)
 visible = false
 Positions = SubResource("Resource_mk2fd")
 
-[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=754046427]
+[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=1464328081]
 position = Vector2(256, 264)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=2026532056]
+[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=1993958955]
 position = Vector2(256, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=2030002585]
+[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=1701095570]
 position = Vector2(640, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=420165704]
+[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=1365399670]
 position = Vector2(640, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=30538905]
+[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=23895108]
 position = Vector2(1152, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=1482022680]
+[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=1960719854]
 position = Vector2(1152, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=692672845]
+[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=336047684]
 position = Vector2(1622, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=1018854705]
+[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=2129313705]
 position = Vector2(1624, 272)
 script = ExtResource("5_3f7ow")
 
@@ -207,6 +210,8 @@ GizmosColor = Color(1, 0, 0, 1)
 
 [node name="WhiskersSensor" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior" unique_id=855720010 instance=ExtResource("7_8prle")]
 SensorResolution = 3
+LeftRangeSemiCone = ExtResource("15_2i8ly")
+RightRangeSemiCone = ExtResource("16_8f4uc")
 
 [node name="SectorRange" type="Node2D" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor" unique_id=1347088787]
 script = ExtResource("8_dgjwj")
@@ -244,6 +249,8 @@ GizmosColor = Color(1, 0, 0, 1)
 
 [node name="WhiskersSensor" parent="Agents/WeightBlendedHideWallAvoiderMovingAgent/WeightBlendedSteeringBehavior/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior" unique_id=30975951 instance=ExtResource("7_8prle")]
 SensorResolution = 3
+LeftRangeSemiCone = ExtResource("15_2i8ly")
+RightRangeSemiCone = ExtResource("16_8f4uc")
 
 [node name="SectorRange" type="Node2D" parent="Agents/WeightBlendedHideWallAvoiderMovingAgent/WeightBlendedSteeringBehavior/ActiveWallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor" unique_id=539614053]
 script = ExtResource("8_dgjwj")
@@ -254,7 +261,7 @@ metadata/_custom_type_script = "uid://d1u7qmneniqg0"
 [node name="PriorityWeightBlendedHideWallAvoiderMovingAgent" parent="Agents" unique_id=628572954 instance=ExtResource("2_hjfxj")]
 process_mode = 4
 visible = false
-position = Vector2(1512, 869)
+position = Vector2(1040, 832)
 MaximumSpeed = 200.0
 AutoSmoothSamples = 0
 
@@ -269,6 +276,7 @@ GizmosColor = Color(1, 0.282353, 0.92549, 1)
 [node name="HideSteeringBehavior" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent/PriorityWeightBlendedSteeringBehavior/AvoiderWeightBlendedSteeringBehavior" unique_id=1197883613 node_paths=PackedStringArray("Threat") instance=ExtResource("5_tck3o")]
 Threat = NodePath("../../../../SeekMovingAgent")
 ObstaclesLayers = 10
+SeparationFromObstacles = 50.0
 NotEmptyGroundLayers = 10
 
 [node name="PassiveAgentAvoiderSteeringBehavior" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent/PriorityWeightBlendedSteeringBehavior/AvoiderWeightBlendedSteeringBehavior" unique_id=2047950214 instance=ExtResource("15_56c3e")]
@@ -300,6 +308,8 @@ GizmosColor = Color(0, 1, 0, 1)
 
 [node name="WhiskersSensor" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent/PriorityWeightBlendedSteeringBehavior/ReachDestinationWeightBlendedSteeringBehavior/PassiveWallAvoiderSteeringBehavior" unique_id=1846106891 instance=ExtResource("7_8prle")]
 SensorResolution = 3
+LeftRangeSemiCone = ExtResource("15_2i8ly")
+RightRangeSemiCone = ExtResource("16_8f4uc")
 
 [node name="SectorRange" type="Node2D" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent/PriorityWeightBlendedSteeringBehavior/ReachDestinationWeightBlendedSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor" unique_id=1861621140]
 script = ExtResource("8_dgjwj")
@@ -310,7 +320,7 @@ metadata/_custom_type_script = "uid://d1u7qmneniqg0"
 [node name="PriorityDitheringBlendedHideWallAvoiderMovingAgent" parent="Agents" unique_id=1509782088 instance=ExtResource("2_hjfxj")]
 process_mode = 4
 visible = false
-position = Vector2(1130, 807)
+position = Vector2(1104, 848)
 MaximumSpeed = 200.0
 AutoSmoothSamples = 0
 
@@ -348,6 +358,8 @@ GizmosColor = Color(0, 1, 0, 1)
 
 [node name="WhiskersSensor" parent="Agents/PriorityDitheringBlendedHideWallAvoiderMovingAgent/PriorityDitheringBlendedSteeringBehavior/PassiveWallAvoiderSteeringBehavior" unique_id=1300070278 instance=ExtResource("7_8prle")]
 SensorResolution = 3
+LeftRangeSemiCone = ExtResource("15_2i8ly")
+RightRangeSemiCone = ExtResource("16_8f4uc")
 
 [node name="SectorRange" type="Node2D" parent="Agents/PriorityDitheringBlendedHideWallAvoiderMovingAgent/PriorityDitheringBlendedSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor" unique_id=229227041]
 script = ExtResource("8_dgjwj")
@@ -366,11 +378,12 @@ visible = false
 Target = NodePath("../../../Target")
 
 [node name="ContextMovingAgent" parent="Agents" unique_id=1142477403 instance=ExtResource("2_hjfxj")]
+process_mode = 4
+visible = false
 position = Vector2(232, 320)
 
 [node name="ContextSteeringBehavior" parent="Agents/ContextMovingAgent" unique_id=750442898 instance=ExtResource("26_mk2fd")]
 ContextResolution = 30
-_addedInterests = 4
 
 [node name="SeekSteeringBehavior" parent="Agents/ContextMovingAgent/ContextSteeringBehavior" unique_id=1783209027 node_paths=PackedStringArray("Target") instance=ExtResource("3_kftuo")]
 Target = NodePath("../../../../Target")
@@ -384,7 +397,7 @@ position = Vector2(376, 659)
 position = Vector2(624, 841)
 
 [node name="Position3" type="Marker2D" parent="Positions" unique_id=903531529]
-position = Vector2(1198, 846)
+position = Vector2(1104, 848)
 
 [node name="Position4" type="Marker2D" parent="Positions" unique_id=1946015872]
 position = Vector2(1190, 299)

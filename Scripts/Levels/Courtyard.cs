@@ -14,7 +14,7 @@ public partial class Courtyard : Node2D
     
     [ExportCategory("CONFIGURATION:")] 
     [Export] private TileMapLayer _obstacleLayer;
-    [Export] private int _walkableRegionWeldThreshold = 100;
+    [Export] private int _walkableRegionWeldThreshold = 90;
 
     public Array<Vector2> ObstaclePositions { get; } = new();
     

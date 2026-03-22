@@ -1,32 +1,36 @@
-[gd_scene load_steps=7 format=3 uid="uid://bdtksryxm4q8b"]
+[gd_scene format=3 uid="uid://bdtksryxm4q8b"]
 
 [ext_resource type="PackedScene" uid="uid://dwhjud2sqtjqh" path="res://Scenes/SteeringBehaviors/UsherAgent.tscn" id="1_kl6kd"]
 [ext_resource type="Script" uid="uid://cmu8ovhs6kaqc" path="res://Scripts/SteeringBehaviors/UsherWaiterAgent.cs" id="2_h37du"]
 [ext_resource type="PackedScene" uid="uid://ctpd66e545h3v" path="res://Scenes/SteeringBehaviors/WallAvoiderSteeringBehavior.tscn" id="2_l2tgm"]
 [ext_resource type="PackedScene" uid="uid://kphwl01n3lyj" path="res://Scenes/Sensors/WhiskersSensor.tscn" id="3_h37du"]
 [ext_resource type="PackedScene" uid="uid://canr4k1kbhog0" path="res://Scenes/SteeringBehaviors/PassiveWallAvoiderSteeringBehavior.tscn" id="3_ti2yq"]
+[ext_resource type="Curve" uid="uid://f0voiei0g5sy" path="res://Curves/WhiskerSensorLeftRangeSemiCone.tres" id="6_bt3ww"]
 [ext_resource type="Script" uid="uid://d1u7qmneniqg0" path="res://addons/InteractiveRanges/SectorRange/SectorRange.cs" id="6_p6e1m"]
+[ext_resource type="Curve" uid="uid://bc8d5yu8u0xwx" path="res://Curves/WhiskerSensorRightRangeSemiCone.tres" id="7_2kteg"]
 
-[node name="UsherWallAvoiderAgent" instance=ExtResource("1_kl6kd")]
+[node name="UsherWallAvoiderAgent" unique_id=71523188 instance=ExtResource("1_kl6kd")]
 script = ExtResource("2_h37du")
 MaximumLaggingBehindDistance = 500
 MaximumSpeed = 50.0
 
-[node name="WallAvoiderSteeringBehavior" parent="." index="2" instance=ExtResource("2_l2tgm")]
+[node name="WallAvoiderSteeringBehavior" parent="." index="2" unique_id=355263710 instance=ExtResource("2_l2tgm")]
 AvoidanceTimeout = 0.5
 ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 1)
 
-[node name="PassiveWallAvoiderSteeringBehavior" parent="WallAvoiderSteeringBehavior" index="1" instance=ExtResource("3_ti2yq")]
+[node name="PassiveWallAvoiderSteeringBehavior" parent="WallAvoiderSteeringBehavior" index="1" unique_id=405376164 instance=ExtResource("3_ti2yq")]
 _avoidDistance = 100.0
 _longitudinalTolerance = 0.094
 ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 1)
 
-[node name="WhiskersSensor" parent="WallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior" index="0" instance=ExtResource("3_h37du")]
+[node name="WhiskersSensor" parent="WallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior" index="0" unique_id=571977120 instance=ExtResource("3_h37du")]
 SensorResolution = 3
+LeftRangeSemiCone = ExtResource("6_bt3ww")
+RightRangeSemiCone = ExtResource("7_2kteg")
 
-[node name="SectorRange" type="Node2D" parent="WallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor" index="0"]
+[node name="SectorRange" type="Node2D" parent="WallAvoiderSteeringBehavior/PassiveWallAvoiderSteeringBehavior/WhiskersSensor" index="0" unique_id=1866405654]
 script = ExtResource("6_p6e1m")
 SemiConeDegrees = 50.969
 Range = 175.0

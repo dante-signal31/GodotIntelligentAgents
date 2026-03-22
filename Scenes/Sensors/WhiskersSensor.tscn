@@ -2,16 +2,6 @@
 
 [ext_resource type="Script" uid="uid://br1uiiomrxdrs" path="res://Scripts/Sensors/WhiskersSensor.cs" id="1_x5m14"]
 
-[sub_resource type="Curve" id="Curve_x5m14"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
-point_count = 1
-
-[sub_resource type="Curve" id="Curve_uddsd"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
-point_count = 1
-
 [node name="WhiskersSensor" type="Node2D" unique_id=777747198]
 script = ExtResource("1_x5m14")
 SensorsLayersMask = 8
-LeftRangeSemiCone = SubResource("Curve_x5m14")
-RightRangeSemiCone = SubResource("Curve_uddsd")

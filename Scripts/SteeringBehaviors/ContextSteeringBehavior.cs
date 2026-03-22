@@ -37,7 +37,7 @@ public partial class ContextSteeringBehavior: Node2D, ISteeringBehavior
     /// <p>Whiskers will be set complying its internal rules. So final amount of whiskers
     /// may not be exactly equal to this value.</p> 
     /// </summary>
-    [Export] private uint ContextResolution
+    [Export] public uint ContextResolution
     {
         get => _contextResolution;
         set
@@ -52,7 +52,7 @@ public partial class ContextSteeringBehavior: Node2D, ISteeringBehavior
     /// <summary>
     /// Radius of the context circle.
     /// </summary>
-    [Export] private float ContextRadius
+    [Export] public float ContextRadius
     {
         get => _contextRadius;
         set
@@ -63,7 +63,7 @@ public partial class ContextSteeringBehavior: Node2D, ISteeringBehavior
         }
     }
 
-    [Export] private uint _addedInterests = 2;
+    [Export] public uint AddedInterests = 2;
     
     [ExportCategory("DEBUG:")]
     [Export] private bool ShowGizmos { get; set; }
@@ -159,7 +159,7 @@ public partial class ContextSteeringBehavior: Node2D, ISteeringBehavior
         int highestInterestIndex = 0;
         foreach (InterestWhiskers.Interest interest in validInterests)
         {
-            if (highestInterestIndex++ >= _addedInterests) break;
+            if (highestInterestIndex++ >= AddedInterests) break;
             _currentSteeringVector += interest.Direction * interest.Value;
         }
         

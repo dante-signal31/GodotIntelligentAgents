@@ -150,7 +150,7 @@ public class ObstacleBehaviorTests
         wallAvoiderAgent.StopSpeed = 1f;
         wallAvoiderAgent.MaximumRotationalDegSpeed = 1080f;
         wallAvoiderAgent.StopRotationDegThreshold = 1f;
-        wallAvoiderAgent.AgentColor = new Color(1, 0, 0);
+        wallAvoiderAgent.AgentColor = new Color(0, 1, 0);
         wallAvoiderSteeringBehavior.Target = target;
         wallAvoiderAgent.Visible = true;
         wallAvoiderAgent.ProcessMode = Node.ProcessModeEnum.Always;
@@ -388,10 +388,10 @@ public class ObstacleBehaviorTests
     public async Task PriorityWeightBlendedHideWallAvoiderBehaviorTest()
     {
         // Get references to agent and target.
-        Scripts.SteeringBehaviors.MovingAgent seekAgent = 
-            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
-        Scripts.SteeringBehaviors.MovingAgent hideAgent = 
-            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("PriorityWeightBlendedHideWallAvoiderMovingAgent");
+        MovingAgent seekAgent = 
+            (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
+        MovingAgent hideAgent = 
+            (MovingAgent) _sceneRunner.FindChild("PriorityWeightBlendedHideWallAvoiderMovingAgent");
         Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
@@ -497,10 +497,10 @@ public class ObstacleBehaviorTests
     public async Task PriorityDitheringBlendedHideWallAvoiderBehaviorTest()
     {
         // Get references to agent and target.
-        Scripts.SteeringBehaviors.MovingAgent seekAgent = 
-            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
-        Scripts.SteeringBehaviors.MovingAgent hideAgent = 
-            (Scripts.SteeringBehaviors.MovingAgent) _sceneRunner.FindChild("PriorityDitheringBlendedHideWallAvoiderMovingAgent");
+        MovingAgent seekAgent = 
+            (MovingAgent) _sceneRunner.FindChild("SeekMovingAgent");
+        MovingAgent hideAgent = 
+            (MovingAgent) _sceneRunner.FindChild("PriorityDitheringBlendedHideWallAvoiderMovingAgent");
         Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
         Marker2D position1 = 
             (Marker2D) _sceneRunner.FindChild("Position1");
@@ -594,5 +594,57 @@ public class ObstacleBehaviorTests
         seekAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
         hideAgent.Visible = false;
         hideAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
+    
+    /// <summary>
+    /// Test that ContextBehavior can move an agent from a point A to a point B
+    /// avoiding obstacles.
+    /// </summary>
+    [TestCase]
+    public async Task ContextBehaviorTest()
+    {
+        // Get references to agent and target.
+        MovingAgent contextAgent = 
+            (MovingAgent) _sceneRunner.FindChild("ContextMovingAgent");
+        Scripts.Tools.Target target = (Scripts.Tools.Target) _sceneRunner.FindChild("Target");
+        Marker2D position1 = 
+            (Marker2D) _sceneRunner.FindChild("Position2");
+        Marker2D position5 = 
+            (Marker2D) _sceneRunner.FindChild("Position5");
+        
+        // Get references to behaviors.
+        ContextSteeringBehavior contextSteeringBehavior = 
+            contextAgent.FindChild<ContextSteeringBehavior>();
+        SeekSteeringBehavior seekSteeringBehavior = 
+            contextAgent.FindChild<SeekSteeringBehavior>(recursive:true);
+        
+        // Setup agents before the test.
+        target.GlobalPosition = position5.GlobalPosition;
+        contextAgent.GlobalPosition = position1.GlobalPosition;
+        contextAgent.MaximumSpeed = 100.0f;
+        contextAgent.StopSpeed = 1f;
+        contextAgent.MaximumRotationalDegSpeed = 1080f;
+        contextAgent.StopRotationDegThreshold = 1f;
+        contextAgent.AgentColor = new Color(0, 1, 0);
+        seekSteeringBehavior.Target = target;
+        contextAgent.Visible = true;
+        contextSteeringBehavior.ContextResolution = 30;
+        contextSteeringBehavior.ContextRadius = 100;
+        contextSteeringBehavior.AddedInterests = 4;
+        contextAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        
+        // Start test.
+        
+        // Give hide agent time to reach target.
+        await _sceneRunner.AwaitMillis(15000);
+        
+        // Assert that agent has reached target.
+        AssertThat(
+            contextAgent.GlobalPosition.DistanceTo(target.GlobalPosition) <
+            20.0f).IsTrue();
+        
+        // Cleanup.
+        contextAgent.Visible = false;
+        contextAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
 }
