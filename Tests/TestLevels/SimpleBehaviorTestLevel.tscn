@@ -42,7 +42,7 @@ point_count = 2
 modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
 top_level = true
 z_index = 1000
-position = Vector2(1455, 756)
+position = Vector2(1564, 396)
 gizmo_extents = 51.0
 
 [node name="Positions" type="Node" parent="." unique_id=2036415414]
@@ -72,7 +72,7 @@ position = Vector2(1236, 321)
 position = Vector2(1278, 753)
 
 [node name="Position9" type="Marker2D" parent="Positions" unique_id=1103187859]
-position = Vector2(1766, 480)
+position = Vector2(1640, 478)
 
 [node name="Position10" type="Marker2D" parent="Positions" unique_id=1461380013]
 position = Vector2(961, 911)
@@ -89,16 +89,18 @@ position = Vector2(904, 493)
 [node name="Agents" type="Node" parent="." unique_id=1162190175]
 
 [node name="SeekMovingAgent" parent="Agents" unique_id=1580858849 instance=ExtResource("4_d5nib")]
-position = Vector2(1358, 323)
+process_mode = 4
+visible = false
+position = Vector2(409, 295)
 AutoSmoothSamples = 0
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" unique_id=872175569 node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
-Target = NodePath("../../../Positions/Position3")
+Target = NodePath("../../../Target")
 
 [node name="ArriveMovingAgentLA" parent="Agents" unique_id=710729572 instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(1235, 314)
+position = Vector2(1511, 277)
 MaximumSpeed = 600.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 300.0
@@ -152,7 +154,7 @@ Target = NodePath("../../SeekMovingAgent")
 [node name="VelocityMatchingMovingAgent" parent="Agents" unique_id=574138465 instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(1290, 755)
+position = Vector2(1485, 734)
 MaximumSpeed = 600.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 400.0
@@ -200,14 +202,14 @@ PredictedPositionMarkerVisible = true
 [node name="SeparationMovingAgent" parent="Agents" unique_id=347598589 instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(975, 559)
+position = Vector2(1473, 500)
 MaximumSpeed = 600.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 300.0
 AutoSmoothSamples = 0
 
 [node name="SeparationSteeringBehavior" parent="Agents/SeparationMovingAgent" unique_id=2013836029 node_paths=PackedStringArray("Threats") instance=ExtResource("14_t8tiy")]
-Threats = [null, null]
+Threats = [NodePath("../../ArriveMovingAgentLA"), NodePath("../../VelocityMatchingMovingAgent")]
 SeparationThreshold = 400.0
 DecayCoefficient = 20.0
 VelocityMarkerVisible = true
@@ -262,7 +264,7 @@ AutoSmoothSamples = 0
 
 [node name="OffsetFollowBehavior" parent="Agents/OffsetFollowMovingAgent" unique_id=764306254 node_paths=PackedStringArray("Target") instance=ExtResource("18_q0gcs")]
 Target = NodePath("../../SeekMovingAgent")
-OffsetFromTarget = Vector2(-383, 230)
+OffsetFromTarget = Vector2(566, 258)
 ShowGizmos = false
 
 [node name="ArriveSteeringBehaviorNLA" parent="Agents/OffsetFollowMovingAgent/OffsetFollowBehavior" unique_id=755186671 node_paths=PackedStringArray("Target") instance=ExtResource("5_xfglb")]
@@ -276,11 +278,15 @@ position = Vector2(287, -6)
 [node name="ActiveAgentAvoiderMovingAgent" parent="Agents" unique_id=2064019733 instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(1604, 273)
+position = Vector2(322, 775)
 MaximumSpeed = 200.0
 AutoSmoothSamples = 0
 
-[node name="ActiveAgentAvoiderSteeringBehavior" parent="Agents/ActiveAgentAvoiderMovingAgent" unique_id=1108652152 instance=ExtResource("23_ujip5")]
+[node name="ActiveAgentAvoiderSteeringBehavior" parent="Agents/ActiveAgentAvoiderMovingAgent" unique_id=1108652152 node_paths=PackedStringArray("_toTargetSteeringBehavior", "_agentAvoiderSteeringBehavior") instance=ExtResource("23_ujip5")]
+ShowGizmos = true
+GizmosColor = Color(1, 0, 0, 1)
+_toTargetSteeringBehavior = NodePath("SeekSteeringBehavior")
+_agentAvoiderSteeringBehavior = NodePath("PassiveAgentAvoiderSteeringBehavior")
 
 [node name="SeekSteeringBehavior" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior" unique_id=122432116 node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
 Target = NodePath("../../../../Target")
@@ -302,9 +308,12 @@ Range = 200.0
 metadata/_custom_type_script = "uid://x00e0v0m34tl"
 
 [node name="ANNAgentAvoiderMovingAgent" parent="Agents" unique_id=214968402 instance=ExtResource("4_d5nib")]
-position = Vector2(302, 343)
+process_mode = 4
+visible = false
+position = Vector2(1603, 515)
 
 [node name="ActiveAgentAvoiderSteeringBehavior" parent="Agents/ANNAgentAvoiderMovingAgent" unique_id=545161167 node_paths=PackedStringArray("_toTargetSteeringBehavior", "_agentAvoiderSteeringBehavior") instance=ExtResource("23_ujip5")]
+AvoidanceTimeout = 0.75
 ShowGizmos = true
 GizmosColor = Color(1, 0, 0, 0.9882353)
 _toTargetSteeringBehavior = NodePath("SeekSteeringBehavior")
@@ -314,7 +323,7 @@ _agentAvoiderSteeringBehavior = NodePath("ANNPassiveAgentAvoiderBehavior")
 Target = NodePath("../../../../Target")
 
 [node name="ANNPassiveAgentAvoiderBehavior" parent="Agents/ANNAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior" unique_id=1925096258 instance=ExtResource("24_ifpi0")]
-MinimumDistanceBetweenAgents = 300.0
+MinimumDistanceBetweenAgents = 400.0
 ShowGizmos = true
 GizmosColor = Color(0, 0, 1, 1)
 

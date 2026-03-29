@@ -78,8 +78,9 @@ public partial class ActiveAgentAvoiderSteeringBehavior:
         
         // Nothing to avoid, but we are waiting for avoidance timeout, so let's
         // continue our current velocity.
-        if (avoidingSteeringVelocity.Equals(SteeringOutput.Zero) &&
-            _waitingForAvoidanceTimeout)
+        // if (avoidingSteeringVelocity.Equals(SteeringOutput.Zero) &&
+        //     _waitingForAvoidanceTimeout)
+        if (_waitingForAvoidanceTimeout)
             return _currentSteeringOutput;
         
         // Nothing to avoid and waiting nothing, so let's just go to our target.
@@ -90,6 +91,10 @@ public partial class ActiveAgentAvoiderSteeringBehavior:
         // velocity to avoid collision. 
         Vector2 newVelocity = steeringToTargetVelocity.Linear + 
                               avoidingSteeringVelocity.Linear;
+        // Check resulting the speed is not higher than the maximum one.
+        if (newVelocity.Length() > args.MaximumSpeed) 
+            newVelocity = newVelocity.Normalized() * args.MaximumSpeed;
+        
         _currentSteeringOutput = new SteeringOutput(
             newVelocity, 
             steeringToTargetVelocity.Angular);

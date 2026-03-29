@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
@@ -20,6 +21,13 @@ public partial class ANNPassiveAgentAvoiderBehavior: Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")]
     [Export] public float MinimumDistanceBetweenAgents = 200f;
+    /// <summary>
+    /// Threshold factor for determining when to use normal vector avoidance.
+    /// When the dot product between avoidance and collision vectors exceeds this value 
+    /// (positive or negative), the avoidance vector is replaced with a vector normal 
+    /// to the collision agent's velocity to prevent chase or collision scenarios.
+    /// </summary>
+    [Export] public float TooAlignedFactor { get; set; }= 0.95f;
     
     [ExportCategory("DEBUG:")]
     [Export] public bool ShowGizmos = false;
@@ -27,6 +35,7 @@ public partial class ANNPassiveAgentAvoiderBehavior: Node2D, ISteeringBehavior
     
     private VolumetricSensor _sensor;
     private Vector2 _currentAgentAvoidingVelocity = Vector2.Zero;
+    private readonly Random _random = new();
     
     public override void _Ready()
     {
@@ -69,7 +78,39 @@ public partial class ANNPassiveAgentAvoiderBehavior: Node2D, ISteeringBehavior
         float evasionSpeed = Mathf.Min(
             args.MaximumSpeed, 
             evasionMagnitude * args.MaximumSpeed);
+        
+        // Finally, we can calculate the final evasion vector.
         _currentAgentAvoidingVelocity = evasionVector * evasionSpeed;
+        
+        // THE EDGE CASE:
+        // This algorithm suffers the same edge problem than Millington's. The problem
+        // with the original algorithm is that it does not seem to take in count the edge
+        // case where the two agents are going one against the other directly, in opposite 
+        // directions. The rest of the method fixes that.
+        
+        // One way to find out if the two agents are going one against the other in 
+        // opposite directions is to check the dot product between the evasion vector
+        // and the current velocity. If the absolute value of a dot product is near 1,
+        // that means the two agents are going away or approaching, in both cases in
+        // the same "line". In the first case, it wouldn't be a collision, but we want
+        // an avoidance movement, not a chase.In the second case, that means that the
+        // two agents are approaching in opposite directions.
+        float alignmentFactor = Mathf.Abs(
+            evasionVector.Dot(args.CurrentAgent.Velocity.Normalized())); 
+        if (Mathf.Abs(alignmentFactor) >= TooAlignedFactor)
+        {
+            // If relative velocity is too aligned with evasionVector, then it means
+            // we can end in a direct hit, so we try an evasion vector that is
+            // perpendicular to the current agent's velocity.
+            evasionVector = args.CurrentAgent.Velocity
+                                         .Rotated(Mathf.Pi / 2)
+                                         .Normalized() * 
+                                     // Turn to one side or another randomly.
+                                     (_random.Next(2) * 2 - 1); 
+            _currentAgentAvoidingVelocity = evasionVector * args.MaximumSpeed;
+        }
+        
+
         return new SteeringOutput(_currentAgentAvoidingVelocity);
     }
     
