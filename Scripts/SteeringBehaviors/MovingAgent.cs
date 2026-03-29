@@ -111,11 +111,25 @@ public partial class MovingAgent : CharacterBody2D
             return _steeringBehavior;
         }
     }
+
+    public float Radius
+    {
+        get
+        {
+            if (_agentShape == null) return 0.0f;
+            if (_agentShape.Shape is CircleShape2D circleShape)
+            {
+                return circleShape.Radius;
+            }
+            return 0.0f;
+        }
+    }
     
     protected SteeringBehaviorArgs _behaviorArgs;
     private float _maximumRotationSpeedRadNormalized;
     private float _stopRotationRadThreshold;
     private MovingWindow _lastRotations;
+    private CollisionShape2D _agentShape;
 
     protected virtual SteeringBehaviorArgs GetSteeringBehaviorArgs()
     {
@@ -145,6 +159,7 @@ public partial class MovingAgent : CharacterBody2D
     {
         if (_bodySprite != null) _bodySprite.Modulate = AgentColor;
         _behaviorArgs = GetSteeringBehaviorArgs();
+        _agentShape = this.FindChild<CollisionShape2D>();
     }
 
     public override void _PhysicsProcess(double delta)

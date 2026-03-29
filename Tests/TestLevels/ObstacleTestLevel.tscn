@@ -113,35 +113,35 @@ position = Vector2(1568, 728)
 visible = false
 Positions = SubResource("Resource_mk2fd")
 
-[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=1464328081]
+[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=421080932]
 position = Vector2(256, 264)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=1993958955]
+[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=10140310]
 position = Vector2(256, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=1701095570]
+[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=583559995]
 position = Vector2(640, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=1365399670]
+[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=774555570]
 position = Vector2(640, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=23895108]
+[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=620254099]
 position = Vector2(1152, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=1960719854]
+[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=568642164]
 position = Vector2(1152, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=336047684]
+[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=58933240]
 position = Vector2(1622, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=2129313705]
+[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=639201478]
 position = Vector2(1624, 272)
 script = ExtResource("5_3f7ow")
 
@@ -378,12 +378,11 @@ visible = false
 Target = NodePath("../../../Target")
 
 [node name="ContextMovingAgent" parent="Agents" unique_id=1142477403 instance=ExtResource("2_hjfxj")]
-process_mode = 4
-visible = false
 position = Vector2(232, 320)
 
 [node name="ContextSteeringBehavior" parent="Agents/ContextMovingAgent" unique_id=750442898 instance=ExtResource("26_mk2fd")]
 ContextResolution = 30
+AddedInterests = 4
 
 [node name="SeekSteeringBehavior" parent="Agents/ContextMovingAgent/ContextSteeringBehavior" unique_id=1783209027 node_paths=PackedStringArray("Target") instance=ExtResource("3_kftuo")]
 Target = NodePath("../../../../Target")

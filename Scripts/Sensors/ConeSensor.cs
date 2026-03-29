@@ -31,10 +31,22 @@ public partial class ConeSensor : Node2D
         float newRange, float newDegrees);
     
     [ExportCategory("CONFIGURATION:")]
+    
+    private uint _layersToDetect;
     /// <summary>
     /// Specifies the physics layers that the sensor will monitor for objects.
     /// </summary>
-    [Export(PropertyHint.Layers2DPhysics)] public uint LayersToDetect { get; set; } = 1;
+    [Export(PropertyHint.Layers2DPhysics)]
+    public uint LayersToDetect
+    {
+        get => _layersToDetect;
+        set
+        {
+            _layersToDetect = value;
+            if (_sensor == null) return;
+            _sensor.DetectionLayers = value;
+        }
+    }
     
     private float _detectionRange;
     /// <summary>
@@ -92,7 +104,14 @@ public partial class ConeSensor : Node2D
     private VolumetricSensor _sensor;
     private BoxRangeManager _boxRangeManager;
     private ConeRange _coneRange;
-    
+
+    public override void _EnterTree()
+    {
+        if (_coneRange != null) return;
+        _coneRange = this.FindChild<ConeRange>();
+        if (_coneRange != null) InitializeConeRange();
+    }
+
     public override void _Ready()
     {
         _sensor = this.FindChild<VolumetricSensor>();
@@ -101,20 +120,27 @@ public partial class ConeSensor : Node2D
         
         _sensor.DetectionLayers = LayersToDetect;
 
-        if (_coneRange == null ) return;
+        // if (_coneRange == null ) return;
+        // InitializeConeRange();
+    }
+
+    private void InitializeConeRange()
+    {
         _coneRange.Connect(
             ConeRange.SignalName.Updated,
             Callable.From(OnConeRangeUpdated));
         DetectionRange = _coneRange.Range;
         DetectionSemiConeAngle = _coneRange.SemiConeDegrees;
     }
-    
+
     private void UpdateDetectionArea()
     {
         if (_boxRangeManager == null) return;
         _boxRangeManager.Range = DetectionRange;
         _boxRangeManager.Width = DetectionRange * 
-                                Mathf.Sin(Mathf.DegToRad(DetectionSemiConeAngle)) * 2;
+                                Mathf.Abs(
+                                    Mathf.Sin(Mathf.DegToRad(DetectionSemiConeAngle)) 
+                                    * 2);
     }
 
     /// <summary>

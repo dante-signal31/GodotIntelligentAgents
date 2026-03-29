@@ -6,11 +6,6 @@ using Timer = System.Timers.Timer;
 
 namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
-// It must be marked as Tool to be found by MovingAgent when it uses my custom extension
-// method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
-// seems and old Godot C# problem:
-// https://github.com/godotengine/godot/issues/36395
-[Tool]
 /// <summary>
 /// <p>Node to offer an active agent avoiding steering behaviour.</p>
 /// <p>Represents a steering behavior where an agent goes to a target avoiding another
@@ -18,12 +13,19 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <p>The difference with an obstacle avoidance algorithm is that obstacles don't move
 /// while agents do.</p>
 /// </summary>
+//
+// It must be marked as Tool to be found by MovingAgent when it uses my custom extension
+// method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
+// seems and old Godot C# problem:
+// https://github.com/godotengine/godot/issues/36395
+[Tool]
 public partial class ActiveAgentAvoiderSteeringBehavior: 
     Node2D, 
     ISteeringBehavior, 
     IGizmos
 {
     [ExportCategory("CONFIGURATION:")]
+    
     /// <summary>
     /// Timeout started after no further collision detected, before resuming travel to
     /// target.
@@ -33,10 +35,15 @@ public partial class ActiveAgentAvoiderSteeringBehavior:
     [ExportCategory("DEBUG:")]
     [Export] public bool ShowGizmos { get; set; }
     [Export] public Color GizmosColor { get; set;}
+    
+    [ExportGroup("WIRING:")]
+    [Export] private Node2D _toTargetSteeringBehavior;
+    [Export] private Node2D _agentAvoiderSteeringBehavior;
 
     private ITargeter _targeter;
+    
     private ISteeringBehavior _steeringBehavior;
-    private PassiveAgentAvoiderSteeringBehavior _passiveAvoiderBehavior; 
+    private ISteeringBehavior _passiveAvoiderBehavior;
     private System.Timers.Timer _avoidanceTimer;
     private bool _waitingForAvoidanceTimeout;
     private SteeringOutput _currentSteeringOutput;
@@ -44,9 +51,9 @@ public partial class ActiveAgentAvoiderSteeringBehavior:
     
     public override void _Ready()
     {
-        _targeter = this.FindChild<ITargeter>();
-        _steeringBehavior = (ISteeringBehavior)_targeter;
-        _passiveAvoiderBehavior = this.FindChild<PassiveAgentAvoiderSteeringBehavior>();
+        _targeter = (ITargeter) _toTargetSteeringBehavior;
+        _steeringBehavior = (ISteeringBehavior)_toTargetSteeringBehavior;
+        _passiveAvoiderBehavior = (ISteeringBehavior) _agentAvoiderSteeringBehavior;
         _avoidanceTimer = new Timer(AvoidanceTimeout * 1000);
         _avoidanceTimer.Elapsed += OnAvoidanceTimeout;
     }
@@ -103,21 +110,21 @@ public partial class ActiveAgentAvoiderSteeringBehavior:
         ITargeter targeterBehavior = 
             this.FindChild<ITargeter>();
 
-        PassiveAgentAvoiderSteeringBehavior passiveAvoiderBehavior =
-            this.FindChild<PassiveAgentAvoiderSteeringBehavior>();
+        ISteeringBehavior passiveAvoiderBehavior =
+            this.FindChild<ISteeringBehavior>();
         
         List<string> warnings = new();
         
         if (targeterBehavior == null || !(targeterBehavior is ISteeringBehavior))
         {
-            warnings.Add("This node needs a child of type both ISteeringBehavior and " +
+            warnings.Add("This node needs a child of type ISteeringBehavior and " +
                          "ITargeter to work. ");  
         }
 
         if (passiveAvoiderBehavior== null)
         {
             warnings.Add("This node needs a child of type " +
-                         "PassiveAgentAvoiderSteeringBehavior to work. "); 
+                         "ISteeringBehavior to work. "); 
         }
         
         return warnings.ToArray();

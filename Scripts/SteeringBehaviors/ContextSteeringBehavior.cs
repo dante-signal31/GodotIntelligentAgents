@@ -34,7 +34,7 @@ public partial class ContextSteeringBehavior: Node2D, ISteeringBehavior
     private uint _contextResolution = 10;
     /// <summary>
     /// <p>Number of whiskers to use for context.</p>
-    /// <p>Whiskers will be set complying its internal rules. So final amount of whiskers
+    /// <p>Whiskers will be set complying with its internal rules. So final number of whiskers
     /// may not be exactly equal to this value.</p> 
     /// </summary>
     [Export] public uint ContextResolution

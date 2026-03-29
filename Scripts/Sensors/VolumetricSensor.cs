@@ -19,10 +19,24 @@ public partial class VolumetricSensor : Node2D
     [Signal] private delegate void ObjectLeftAreaEventHandler(Node2D detectedObject);
 
     [ExportCategory("CONFIGURATION:")]
+    private uint _detectionLayers;
+
     /// <summary>
-    /// Specifies the physics layers that the will monitor for detections.
+    /// Specifies the physics layers that the sensor will monitor for detections.
     /// </summary>
-    [Export(PropertyHint.Layers2DPhysics)] public uint DetectionLayers { get; set; }
+    [Export(PropertyHint.Layers2DPhysics)]
+    public uint DetectionLayers
+    {
+        get => _detectionLayers;
+        set
+        {
+            _detectionLayers = value;
+            if (_area == null) return;
+            _area.CollisionMask = _detectionLayers;
+        }
+    }
+
+    [Export] public bool IgnoreOwnerAgent = true;
     
     /// <summary>
     /// Current set of objects that is inside the detection area.
@@ -35,24 +49,32 @@ public partial class VolumetricSensor : Node2D
     public bool AnyObjectDetected => DetectedObjects.Count > 0;
     
     private Area2D _area;
-    private CollisionShape2D _collisionShape;
-    
+    protected CollisionShape2D CollisionShape;
+
+    public override void _EnterTree()
+    {
+        if (_area != null) return;
+        _area = this.FindChild<Area2D>();
+        CollisionShape = _area?.FindChild<CollisionShape2D>();
+    }
+
     public override void _Ready()
     {
-        _area = this.FindChild<Area2D>();
         if (_area == null) return;
         
         _area.BodyEntered += OnObjectEntered;
         _area.BodyExited += OnObjectExited;
 
+        DetectionLayers = _detectionLayers;
+        
         UpdateDetectedObjectsSet();
     }
 
     
     public override void _ExitTree()
     {
-        if (_collisionShape == null) return;
-        _collisionShape.Reparent(this);
+        if (CollisionShape == null) return;
+        CollisionShape.Reparent(this);
     }
 
     /// <summary>
@@ -62,7 +84,7 @@ public partial class VolumetricSensor : Node2D
     /// </summary>
     private void UpdateDetectedObjectsSet()
     {
-        if (_area == null || _collisionShape == null) return;
+        if (_area == null || CollisionShape == null) return;
         foreach (Node2D body in _area.GetOverlappingBodies())
         {
             if (DetectedObjects.Contains(body)) continue;
@@ -73,6 +95,7 @@ public partial class VolumetricSensor : Node2D
     
     private void OnObjectEntered(Node2D body)
     {
+        if (IgnoreOwnerAgent && body.IsAncestorOf(this)) return;
         if (DetectedObjects.Contains(body)) return;
         DetectedObjects.Add(body);
         EmitSignal(SignalName.ObjectEnteredArea, body);
