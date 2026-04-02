@@ -9,7 +9,7 @@ namespace GodotGameAIbyExample.Scripts.Tools;
 public class MovingWindow
 {
     private readonly Queue<float> _queue;
-    private float _sum;
+    // private float _sum;
 
     /// <summary>
     /// Returns the maximum number of elements that can be stored in the moving window.
@@ -22,10 +22,16 @@ public class MovingWindow
     public int Count => _queue.Count;
     
     /// <summary>
+    /// Array of current values in the moving window.
+    /// </summary>
+    public float[] Values => _queue.ToArray();
+    
+    /// <summary>
     /// Returns the average of the elements in the moving window.
     /// </summary>
     /// <returns>The average of the elements in the moving window.</returns>
-    public float Average => _queue.Count == 0 ? 0f : _sum / _queue.Count;
+    // TODO: Average should not be here. Take it to its own class to smooth values. Include the smooth algorithms seen here: https://jasonfantl.com/posts/Collision-Avoidance/#simulations
+    // public float Average => _queue.Count == 0 ? 0f : _sum / _queue.Count;
 
     /// <summary>
     /// Creates a new moving window with the specified capacity.
@@ -52,9 +58,10 @@ public class MovingWindow
     public void Add(float value)
     {
         if (_queue.Count == Capacity)
-            _sum -= _queue.Dequeue();
+            // _sum -= _queue.Dequeue();
+            _queue.Dequeue();
 
         _queue.Enqueue(value);
-        _sum += value;
+        // _sum += value;
     }
 }

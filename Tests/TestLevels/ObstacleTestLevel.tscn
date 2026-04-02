@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://canr4k1kbhog0" path="res://Scenes/SteeringBehaviors/PassiveWallAvoiderSteeringBehavior.tscn" id="10_km65h"]
 [ext_resource type="Script" uid="uid://3o8nj5mnvovw" path="res://Scripts/SteeringBehaviors/WeightedBehavior.cs" id="11_e34o5"]
 [ext_resource type="PackedScene" uid="uid://y2ql7dj60glk" path="res://Scenes/SteeringBehaviors/SmoothedWallAvoiderSteeringBehavior.tscn" id="11_ib2b3"]
+[ext_resource type="Curve" uid="uid://b7ik6hbcpxt6s" path="res://Curves/gaussian.tres" id="12_8f4uc"]
 [ext_resource type="PackedScene" uid="uid://yrgcucn0lsiu" path="res://Scenes/SteeringBehaviors/PriorityWeightBlendedSteeringBehavior.tscn" id="14_km65h"]
 [ext_resource type="Curve" uid="uid://f0voiei0g5sy" path="res://Curves/WhiskerSensorLeftRangeSemiCone.tres" id="15_2i8ly"]
 [ext_resource type="PackedScene" uid="uid://dg5jntlmhib8s" path="res://Scenes/SteeringBehaviors/PassiveAgentAvoiderSteeringBehavior.tscn" id="15_56c3e"]
@@ -34,6 +35,16 @@ script = ExtResource("4_6salh")
 Offsets = Array[Vector2]([Vector2(256, 264), Vector2(256, 768), Vector2(640, 768), Vector2(640, 344), Vector2(1152, 344), Vector2(1152, 896), Vector2(1622, 896), Vector2(1624, 272)])
 metadata/_custom_type_script = "uid://d1ouy1q86lot"
 
+[sub_resource type="Curve" id="Curve_2i8ly"]
+
+[sub_resource type="Curve" id="Curve_8f4uc"]
+
+[sub_resource type="Curve" id="Curve_ab1lm"]
+
+[sub_resource type="Curve" id="Curve_vrx1a"]
+
+[sub_resource type="Curve" id="Curve_q0i0p"]
+
 [sub_resource type="Resource" id="Resource_36lvx"]
 script = ExtResource("11_e34o5")
 SteeringBehavior = NodePath("ActiveWallAvoiderSteeringBehavior")
@@ -47,6 +58,8 @@ SteeringBehavior = NodePath("HideSteeringBehavior")
 Weight = 2.0
 DebugColor = Color(1, 1, 0, 1)
 metadata/_custom_type_script = "uid://3o8nj5mnvovw"
+
+[sub_resource type="Curve" id="Curve_km50g"]
 
 [sub_resource type="Resource" id="Resource_7rh7n"]
 script = ExtResource("11_e34o5")
@@ -76,6 +89,8 @@ Weight = 2.0
 DebugColor = Color(0.721569, 0.00392157, 0.929412, 1)
 metadata/_custom_type_script = "uid://3o8nj5mnvovw"
 
+[sub_resource type="Curve" id="Curve_fvkd6"]
+
 [sub_resource type="Resource" id="Resource_6salh"]
 script = ExtResource("21_vx4id")
 SteeringBehavior = NodePath("PassiveAgentAvoiderSteeringBehavior")
@@ -100,6 +115,13 @@ SteeringBehavior = NodePath("SeekSteeringBehavior")
 Probability = 0.4
 metadata/_custom_type_script = "uid://c1hmtt20hub48"
 
+[sub_resource type="Curve" id="Curve_tieph"]
+
+[sub_resource type="Curve" id="Curve_n32bh"]
+resource_local_to_scene = true
+_data = [Vector2(0, 0), 0.0, 3.3098502, 0, 0, Vector2(0.498366, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -4.0818977, 0.0, 0, 0]
+point_count = 3
+
 [node name="ObstacleTestLevel" type="Node2D" unique_id=1876620435]
 
 [node name="ObstacleCourtyard" parent="." unique_id=931045014 instance=ExtResource("1_n20uv")]
@@ -107,41 +129,41 @@ _walkableRegionWeldThreshold = 100
 
 [node name="Target" parent="." unique_id=452483211 instance=ExtResource("4_sfy1w")]
 modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
-position = Vector2(1568, 728)
+position = Vector2(1520, 424)
 
 [node name="TestPath" parent="." unique_id=1734785540 instance=ExtResource("3_vx4id")]
 visible = false
 Positions = SubResource("Resource_mk2fd")
 
-[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=421080932]
+[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=1599346379]
 position = Vector2(256, 264)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=10140310]
+[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=732624014]
 position = Vector2(256, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=583559995]
+[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=1731456138]
 position = Vector2(640, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=774555570]
+[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=53504846]
 position = Vector2(640, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=620254099]
+[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=1253448509]
 position = Vector2(1152, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=568642164]
+[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=1780177476]
 position = Vector2(1152, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=58933240]
+[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=1937003808]
 position = Vector2(1622, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=639201478]
+[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=204863245]
 position = Vector2(1624, 272)
 script = ExtResource("5_3f7ow")
 
@@ -151,6 +173,7 @@ script = ExtResource("5_3f7ow")
 process_mode = 4
 visible = false
 position = Vector2(176, 176)
+SmoothingCurve = SubResource("Curve_2i8ly")
 
 [node name="PathFollowingSteeringBehavior" parent="Agents/PathFollowingMovingAgent" unique_id=1050933191 node_paths=PackedStringArray("FollowPath") instance=ExtResource("6_xwcat")]
 FollowPath = NodePath("../../../TestPath")
@@ -161,6 +184,7 @@ visible = false
 position = Vector2(1133, 844)
 MaximumSpeed = 600.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_8f4uc")
 
 [node name="HideSteeringBehavior" parent="Agents/HideMovingAgent" unique_id=2133758431 node_paths=PackedStringArray("Threat") instance=ExtResource("5_tck3o")]
 Threat = NodePath("../../SeekMovingAgent")
@@ -175,6 +199,7 @@ process_mode = 4
 visible = false
 position = Vector2(383, 806)
 AgentColor = Color(0.876078, 0.0670398, 0.0128302, 1)
+SmoothingCurve = SubResource("Curve_ab1lm")
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" unique_id=454892247 node_paths=PackedStringArray("Target") instance=ExtResource("3_kftuo")]
 visible = false
@@ -185,6 +210,7 @@ process_mode = 4
 visible = false
 position = Vector2(398, 559)
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_vrx1a")
 
 [node name="SmoothedWallAvoiderSteeringBehavior" parent="Agents/SmoothedWallAvoiderMovingAgent" unique_id=138799089 node_paths=PackedStringArray("Target") instance=ExtResource("11_ib2b3")]
 Target = NodePath("../../../Target")
@@ -193,13 +219,14 @@ _usherAdvantage = 200.0
 _secondsToWaitAfterReachingUsher = 2.0
 
 [node name="WallAvoiderMovingAgent" parent="Agents" unique_id=1250762253 instance=ExtResource("2_hjfxj")]
-process_mode = 4
-visible = false
 position = Vector2(481, 548)
+AutoSmooth = true
+SmoothingMethod = 1
+SmoothingCurve = ExtResource("12_8f4uc")
 
 [node name="ActiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent" unique_id=2130685882 node_paths=PackedStringArray("Target") instance=ExtResource("6_3e5d2")]
 Target = NodePath("../../../Target")
-AvoidanceTimeout = 0.5
+AvoidanceTimeout = 0.1
 GizmosColor = Color(1, 0.501961, 0, 1)
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior" unique_id=604976748 instance=ExtResource("10_km65h")]
@@ -225,6 +252,7 @@ visible = false
 position = Vector2(1199, 851)
 MaximumSpeed = 75.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_q0i0p")
 
 [node name="WeightBlendedSteeringBehavior" parent="Agents/WeightBlendedHideWallAvoiderMovingAgent" unique_id=1810019961 instance=ExtResource("10_1atku")]
 WeightedBehaviors = Array[ExtResource("11_e34o5")]([SubResource("Resource_36lvx"), SubResource("Resource_ib2b3")])
@@ -264,6 +292,7 @@ visible = false
 position = Vector2(1040, 832)
 MaximumSpeed = 200.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_km50g")
 
 [node name="PriorityWeightBlendedSteeringBehavior" parent="Agents/PriorityWeightBlendedHideWallAvoiderMovingAgent" unique_id=1267565885 instance=ExtResource("14_km65h")]
 ShowGizmos = true
@@ -323,6 +352,7 @@ visible = false
 position = Vector2(1104, 848)
 MaximumSpeed = 200.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_fvkd6")
 
 [node name="PriorityDitheringBlendedSteeringBehavior" parent="Agents/PriorityDitheringBlendedHideWallAvoiderMovingAgent" unique_id=625848659 instance=ExtResource("20_acdjf")]
 RandomBehaviors = Array[ExtResource("21_vx4id")]([SubResource("Resource_6salh"), SubResource("Resource_xwcat"), SubResource("Resource_ni8xx"), SubResource("Resource_3f7ow")])
@@ -372,13 +402,19 @@ process_mode = 4
 visible = false
 position = Vector2(632, 627)
 AgentColor = Color(0, 0, 1, 1)
+SmoothingCurve = SubResource("Curve_tieph")
 
 [node name="SeekSteeringBehavior" parent="Agents/ObstacleMovingAgent" unique_id=976247001 node_paths=PackedStringArray("Target") instance=ExtResource("3_kftuo")]
 visible = false
 Target = NodePath("../../../Target")
 
 [node name="ContextMovingAgent" parent="Agents" unique_id=1142477403 instance=ExtResource("2_hjfxj")]
+process_mode = 4
+visible = false
 position = Vector2(232, 320)
+AutoSmooth = true
+SmoothingMethod = 1
+SmoothingCurve = SubResource("Curve_n32bh")
 
 [node name="ContextSteeringBehavior" parent="Agents/ContextMovingAgent" unique_id=750442898 instance=ExtResource("26_mk2fd")]
 ContextResolution = 30

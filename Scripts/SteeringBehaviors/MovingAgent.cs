@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
@@ -59,6 +60,8 @@ public partial class MovingAgent : CharacterBody2D
     /// Smooth heading averaging velocity vector.
     /// </summary>
     [Export] public bool AutoSmooth { get; set; }
+    [Export] public SmoothingMethods SmoothingMethod { get; set; } = 
+        SmoothingMethods.Average;
 
     private int _autoSmoothSamples = 10;
     /// <summary>
@@ -73,8 +76,29 @@ public partial class MovingAgent : CharacterBody2D
             _autoSmoothSamples = value;
             if (!AutoSmooth) return;
             _lastRotations = new MovingWindow(value);
+            UpdateSmoothingWeights();
         }
     }
+    
+    private Curve _smoothingCurve = new Curve();
+    /// <summary>
+    /// Curve to be used if Weighted Moving Average smoothing method is selected.
+    /// </summary>
+    [Export]
+    public Curve SmoothingCurve
+    {
+        get => _smoothingCurve;
+        set
+        {
+            _smoothingCurve = value;
+            UpdateSmoothingWeights();
+        }
+    }
+
+    /// <summary>
+    /// Convergence rate for exponential smoothing.
+    /// </summary>
+    [Export] public float ConvergenceRate = 0.6f;
     
     [ExportGroup("WIRING:")]
     [Export] private Sprite2D _bodySprite;
@@ -130,6 +154,8 @@ public partial class MovingAgent : CharacterBody2D
     private float _stopRotationRadThreshold;
     private MovingWindow _lastRotations;
     private CollisionShape2D _agentShape;
+    private float _lastRotation;
+    private float[] _weights;
 
     protected virtual SteeringBehaviorArgs GetSteeringBehaviorArgs()
     {
@@ -160,6 +186,12 @@ public partial class MovingAgent : CharacterBody2D
         if (_bodySprite != null) _bodySprite.Modulate = AgentColor;
         _behaviorArgs = GetSteeringBehaviorArgs();
         _agentShape = this.FindChild<CollisionShape2D>();
+        UpdateSmoothingWeights();
+    }
+
+    private void UpdateSmoothingWeights()
+    {
+        _weights = ValueSmoother.SampleWeights(AutoSmoothSamples, SmoothingCurve);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -180,12 +212,25 @@ public partial class MovingAgent : CharacterBody2D
             if (AutoSmooth)
             {
                 // If no explicit angular steering, but autoSmoothing is desired, we will
-                // smooth the heading by averaging the last few rotations.
+                // smooth the rotation.
                 float rotationNeeded = Forward.AngleTo(steeringOutput.Linear);
                 _lastRotations.Add(rotationNeeded);
-                float averageRotation = _lastRotations.Average;
-                Vector2 averageHeading = Forward.Rotated(averageRotation);
-                SetRotation(averageHeading, delta);
+                float smoothedRotation = SmoothingMethod switch
+                {
+                    SmoothingMethods.Average => 
+                        ValueSmoother.Average(_lastRotations.Values),
+                    SmoothingMethods.WeightedMovingAverage =>
+                        ValueSmoother.WeightedMovingAverage(_lastRotations, _weights),
+                    SmoothingMethods.Exponential =>
+                        ValueSmoother.Exponential(
+                            _lastRotation, 
+                            rotationNeeded, 
+                            ConvergenceRate),
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+                _lastRotation = smoothedRotation;
+                Vector2 smoothedHeading = Forward.Rotated(smoothedRotation);
+                SetRotation(smoothedHeading, delta);
             }
             else
             {
