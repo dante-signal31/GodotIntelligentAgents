@@ -220,13 +220,12 @@ _secondsToWaitAfterReachingUsher = 2.0
 
 [node name="WallAvoiderMovingAgent" parent="Agents" unique_id=1250762253 instance=ExtResource("2_hjfxj")]
 position = Vector2(481, 548)
-AutoSmooth = true
-SmoothingMethod = 1
+SmoothingMethod = 2
 SmoothingCurve = ExtResource("12_8f4uc")
 
 [node name="ActiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent" unique_id=2130685882 node_paths=PackedStringArray("Target") instance=ExtResource("6_3e5d2")]
 Target = NodePath("../../../Target")
-AvoidanceTimeout = 0.1
+AvoidanceTimeout = 0.5
 GizmosColor = Color(1, 0.501961, 0, 1)
 
 [node name="PassiveWallAvoiderSteeringBehavior" parent="Agents/WallAvoiderMovingAgent/ActiveWallAvoiderSteeringBehavior" unique_id=604976748 instance=ExtResource("10_km65h")]

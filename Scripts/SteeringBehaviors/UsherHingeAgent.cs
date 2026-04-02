@@ -94,14 +94,14 @@ public partial class UsherHingeAgent : MovingAgent
     protected override void UpdateSteeringBehaviorArgs(double delta)
     {
         // Update steering behavior args.
-        _behaviorArgs.MaximumSpeed = 0;
-        _behaviorArgs.StopSpeed = 0;
-        _behaviorArgs.CurrentVelocity = Vector2.Zero;
-        _behaviorArgs.MaximumRotationalSpeed = MaximumRotationalDegSpeed;
-        _behaviorArgs.StopRotationThreshold = StopRotationDegThreshold;
-        _behaviorArgs.MaximumAcceleration = 0;
-        _behaviorArgs.MaximumDeceleration = 0;
-        _behaviorArgs.DeltaTime = delta;
+        BehaviorArgs.MaximumSpeed = 0;
+        BehaviorArgs.StopSpeed = 0;
+        BehaviorArgs.CurrentVelocity = Vector2.Zero;
+        BehaviorArgs.MaximumRotationalSpeed = MaximumRotationalDegSpeed;
+        BehaviorArgs.StopRotationThreshold = StopRotationDegThreshold;
+        BehaviorArgs.MaximumAcceleration = 0;
+        BehaviorArgs.MaximumDeceleration = 0;
+        BehaviorArgs.DeltaTime = delta;
     }
     
     public override void _Process(double delta)

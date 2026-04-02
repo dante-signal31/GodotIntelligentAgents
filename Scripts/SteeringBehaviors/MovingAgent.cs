@@ -98,7 +98,7 @@ public partial class MovingAgent : CharacterBody2D
     /// <summary>
     /// Convergence rate for exponential smoothing.
     /// </summary>
-    [Export] public float ConvergenceRate = 0.6f;
+    [Export] public float ExponentialConvergenceRate = 0.6f;
     
     [ExportGroup("WIRING:")]
     [Export] private Sprite2D _bodySprite;
@@ -149,7 +149,7 @@ public partial class MovingAgent : CharacterBody2D
         }
     }
     
-    protected SteeringBehaviorArgs _behaviorArgs;
+    protected SteeringBehaviorArgs BehaviorArgs;
     private float _maximumRotationSpeedRadNormalized;
     private float _stopRotationRadThreshold;
     private MovingWindow _lastRotations;
@@ -184,7 +184,7 @@ public partial class MovingAgent : CharacterBody2D
     public override void _Ready()
     {
         if (_bodySprite != null) _bodySprite.Modulate = AgentColor;
-        _behaviorArgs = GetSteeringBehaviorArgs();
+        BehaviorArgs = GetSteeringBehaviorArgs();
         _agentShape = this.FindChild<CollisionShape2D>();
         UpdateSmoothingWeights();
     }
@@ -201,13 +201,10 @@ public partial class MovingAgent : CharacterBody2D
         UpdateSteeringBehaviorArgs(delta);
 
         // Get steering output.
-        SteeringOutput steeringOutput = SteeringBehavior.GetSteering(_behaviorArgs);
+        SteeringOutput steeringOutput = SteeringBehavior.GetSteering(BehaviorArgs);
         
-        // Apply new steering output to our agent. I don't enforce the StopSpeed because
-        // I've found more flexible to do it at steering behavior level.
-        Velocity = steeringOutput.Linear;
-        
-        if (steeringOutput.Angular == 0 && Velocity != Vector2.Zero)
+        // Agent faces to the velocity direction.
+        if (steeringOutput.Angular == 0 && steeringOutput.Linear != Vector2.Zero)
         {
             if (AutoSmooth)
             {
@@ -225,11 +222,15 @@ public partial class MovingAgent : CharacterBody2D
                         ValueSmoother.Exponential(
                             _lastRotation, 
                             rotationNeeded, 
-                            ConvergenceRate),
+                            ExponentialConvergenceRate),
                     _ => throw new ArgumentOutOfRangeException()
                 };
                 _lastRotation = smoothedRotation;
                 Vector2 smoothedHeading = Forward.Rotated(smoothedRotation);
+                steeringOutput = 
+                    new SteeringOutput(
+                        smoothedHeading.Normalized() * 
+                        steeringOutput.Linear.Length());
                 SetRotation(smoothedHeading, delta);
             }
             else
@@ -241,26 +242,30 @@ public partial class MovingAgent : CharacterBody2D
                 
             }
         }
+        // Agent moves in a direction while faces another direction (e.g., strafing)
         else if (steeringOutput.Angular != 0)
         {
             // In this case, our steering wants us to face and move in different
             // directions. Steering checks that no threshold is surpassed.
             GlobalRotationDegrees += steeringOutput.Angular * (float)delta;
         }
+        // Apply new steering output to our agent. I don't enforce the StopSpeed because
+        // I've found it more flexible to do it at steering behavior level.
+        Velocity = steeringOutput.Linear;
         MoveAndSlide();
     }
 
     protected virtual void UpdateSteeringBehaviorArgs(double delta)
     {
         // Update steering behavior args.
-        _behaviorArgs.MaximumSpeed = MaximumSpeed;
-        _behaviorArgs.StopSpeed = StopSpeed;
-        _behaviorArgs.CurrentVelocity = Velocity;
-        _behaviorArgs.MaximumRotationalSpeed = MaximumRotationalDegSpeed;
-        _behaviorArgs.StopRotationThreshold = StopRotationDegThreshold;
-        _behaviorArgs.MaximumAcceleration = MaximumAcceleration;
-        _behaviorArgs.MaximumDeceleration = MaximumDeceleration;
-        _behaviorArgs.DeltaTime = delta;
+        BehaviorArgs.MaximumSpeed = MaximumSpeed;
+        BehaviorArgs.StopSpeed = StopSpeed;
+        BehaviorArgs.CurrentVelocity = Velocity;
+        BehaviorArgs.MaximumRotationalSpeed = MaximumRotationalDegSpeed;
+        BehaviorArgs.StopRotationThreshold = StopRotationDegThreshold;
+        BehaviorArgs.MaximumAcceleration = MaximumAcceleration;
+        BehaviorArgs.MaximumDeceleration = MaximumDeceleration;
+        BehaviorArgs.DeltaTime = delta;
     }
 
     /// <summary>

@@ -147,7 +147,7 @@ public partial class UsherFormationAgent: MovingAgent, IGizmos
         {
             UpdateSteeringBehaviorArgs(delta);
             // Get steering output.
-            SteeringOutput steeringOutput = SteeringBehavior.GetSteering(_behaviorArgs);
+            SteeringOutput steeringOutput = SteeringBehavior.GetSteering(BehaviorArgs);
             switch (GetMovementNeeded(steeringOutput.Linear))
             {
                 case MovementNeeded.Stop:
