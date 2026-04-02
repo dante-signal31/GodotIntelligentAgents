@@ -284,7 +284,7 @@ public partial class PassiveWallAvoiderSteeringBehavior:
     public override void _Draw()
     {
         if (!ShowGizmos || 
-            !_whiskersSensor.IsAnyObjectDetected || 
+            !_whiskersSensor.AnyObjectDetected || 
             _closestHit == null) return;
         
         DrawCircle(ToLocal(_closestHit.Position), 10.0f, GizmosColor);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Godot;
@@ -332,7 +333,7 @@ public partial class WhiskersSensor : Node2D
     /// <summary>
     /// Whether this sensor detects any collider.
     /// </summary>
-    public bool IsAnyObjectDetected
+    public bool AnyObjectDetected
     {
         get
         {
@@ -361,19 +362,37 @@ public partial class WhiskersSensor : Node2D
         }
     }
 
+    // /// <summary>
+    // /// <p>Set of detected objects.</p>
+    // /// <p>It offers a tuple of (Node2D, int) where the int is the sensor index.</p>
+    // /// </summary>
+    // public HashSet<(Node2D, int)> DetectedObjects
+    // {
+    //     get
+    //     {
+    //         HashSet<(Node2D, int)> detectedObjects = new();
+    //         UpdateRayCastHits();
+    //         foreach ((RayCastHit hit, int index) in _rayCastHits)
+    //         {
+    //             detectedObjects.Add((hit.DetectedObject, index));
+    //         }
+    //         return detectedObjects;
+    //     }
+    // }
+    
     /// <summary>
     /// <p>Set of detected objects.</p>
     /// <p>It offers a tuple of (Node2D, int) where the int is the sensor index.</p>
     /// </summary>
-    public HashSet<(Node2D, int)> DetectedObjects
+    public HashSet<Node2D> DetectedObjects
     {
         get
         {
-            HashSet<(Node2D, int)> detectedObjects = new();
+            HashSet<Node2D> detectedObjects = new();
             UpdateRayCastHits();
             foreach ((RayCastHit hit, int index) in _rayCastHits)
             {
-                detectedObjects.Add((hit.DetectedObject, index));
+                detectedObjects.Add(hit.DetectedObject);
             }
             return detectedObjects;
         }

@@ -219,6 +219,8 @@ _usherAdvantage = 200.0
 _secondsToWaitAfterReachingUsher = 2.0
 
 [node name="WallAvoiderMovingAgent" parent="Agents" unique_id=1250762253 instance=ExtResource("2_hjfxj")]
+process_mode = 4
+visible = false
 position = Vector2(481, 548)
 SmoothingMethod = 2
 SmoothingCurve = ExtResource("12_8f4uc")

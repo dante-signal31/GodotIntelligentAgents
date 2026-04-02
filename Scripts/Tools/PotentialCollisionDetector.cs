@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
-using GodotGameAIbyExample.addons.InteractiveRanges.ConeRange;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.Sensors;
+using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
 namespace GodotGameAIbyExample.Scripts.Tools;
 
@@ -54,7 +54,7 @@ public partial class PotentialCollisionDetector : Node2D
     /// closest agent which may collide with the current agent. It facilitates collision
     /// prediction and subsequent decision-making processes.
     /// </remarks>
-    public SteeringBehaviors.MovingAgent PotentialCollisionAgent { get; private set; }
+    public MovingAgent PotentialCollisionAgent { get; private set; }
 
     /// <summary>
     /// Represents the calculated time remaining before a potential collision occurs.
@@ -107,30 +107,49 @@ public partial class PotentialCollisionDetector : Node2D
     /// are close enough to be considered for collision detection. 
     /// </remarks>
     public float CollisionDistance { get; private set; }
+    
+    /// <summary>
+    /// Indicates whether the system is currently evaluating any potential collisions.
+    /// </summary>
+    public bool EvaluatingPotentialCollision => _detectedAgents.Count > 0;
 
-    private ConeSensor _sensor;
+    private ISensor _sensor;
     private CollisionShape2D _collisionShape;
-    private SteeringBehaviors.MovingAgent _currentAgent;
-    private HashSet<SteeringBehaviors.MovingAgent> _detectedAgents = new();
+    private MovingAgent _currentAgent;
+    private HashSet<MovingAgent> _detectedAgents = new();
     
     public override void _EnterTree()
     {
         // Find out who our father is.
-        _currentAgent = this.FindAncestor<SteeringBehaviors.MovingAgent>();
+        _currentAgent = this.FindAncestor<MovingAgent>();
         CollisionDistance = 2 * AgentRadius;
+        // Connect to sensor events.
+        _sensor = this.FindChild<ISensor>();
+        if (_sensor == null) return;
+        _sensor.ObjectEnteredSensor += OnObjectEnteredSensor;
+        _sensor.ObjectLeftSensor += OnObjectExitedSensor;
     }
 
-    public override void _Ready()
+    public override void _ExitTree()
     {
-        _sensor = this.FindChild<ConeSensor>();
         if (_sensor == null) return;
-        _sensor.Connect(
-            ConeSensor.SignalName.ObjectEnteredCone,
-            new Callable(this, MethodName.OnObjectEnteredSensor));
-        _sensor.Connect(
-            ConeSensor.SignalName.ObjectLeftCone,
-            new Callable(this, MethodName.OnObjectExitedSensor));
+        _sensor.ObjectEnteredSensor -= OnObjectEnteredSensor;
+        _sensor.ObjectLeftSensor -= OnObjectExitedSensor;
     }
+
+
+    // public override void _Ready()
+    // {
+    //     _sensor = this.FindChild<ISensor>();
+    //     if (_sensor == null) return;
+    //     Node2D sensorNode = (Node2D) _sensor;
+    //     sensorNode.Connect(
+    //         ConeSensor.SignalName.ObjectEnteredCone,
+    //         new Callable(this, MethodName.OnObjectEnteredSensor));
+    //     sensorNode.Connect(
+    //         ConeSensor.SignalName.ObjectLeftCone,
+    //         new Callable(this, MethodName.OnObjectExitedSensor));
+    // }
     
     /// <summary>
     /// Event handler to use when another agent enters our detection area.
@@ -138,7 +157,7 @@ public partial class PotentialCollisionDetector : Node2D
     /// <param name="otherObject">The agent who enters our detection area.</param>
     private void OnObjectEnteredSensor(Node2D otherObject)
     {
-        if (otherObject is SteeringBehaviors.MovingAgent otherAgent)
+        if (otherObject is MovingAgent otherAgent)
         {
             _detectedAgents.Add(otherAgent);
         }
@@ -150,24 +169,56 @@ public partial class PotentialCollisionDetector : Node2D
     /// <param name="otherAgent">The agent who exits our detection area.</param>
     private void OnObjectExitedSensor(Node2D otherObject)
     {
-        if (otherObject is SteeringBehaviors.MovingAgent otherAgent)
+        if (otherObject is MovingAgent otherAgent)
         {
             if (!_detectedAgents.Contains(otherAgent)) return;
             _detectedAgents.Remove(otherAgent);
         }
+    }
+    
+    /// <summary>
+    /// Assess if the current agent can collide with any of the detected agents, with
+    /// the given velocity and radius.
+    /// </summary>
+    /// <param name="currentVelocity">Velocity for the current agent.</param>
+    /// <param name="currentRadius">Radius for the current agent.</param>
+    /// <param name="collisionTime">If a potential collision is detected, returns time
+    /// to suffer that collision if the given velocity is applied to the current agent.
+    /// If no potential collision is detected, then a float.PositiveInfinity is
+    /// returned in this parameter.</param>
+    /// <returns>True if any potential collision is detected. False otherwise.</returns>
+    public bool IsCollidingVelocity(
+        Vector2 currentVelocity, 
+        float currentRadius, 
+        out float collisionTime)
+    {
+        Array<MovingAgent> otherAgents = GetDetectedAgents();
+        foreach (MovingAgent otherAgent in otherAgents)
+        {
+            if (IsGoingToHappenACollision(
+                otherAgent, 
+                currentVelocity,
+                currentRadius + otherAgent.Radius,
+                out var relativePosition, 
+                out var relativeVelocity, 
+                out var timeToClosestPosition, 
+                out var minRelativePosition, 
+                out var minSeparation))
+            {
+                collisionTime = timeToClosestPosition;
+                return true;
+            }
+        }
+        // No collision detected for that currentVelocity with that currentRadius.
+        collisionTime = float.PositiveInfinity;
+        return false;
     }
 
     public override void _PhysicsProcess(double delta)
     {
         if (_sensor == null) return;
         
-        Array<SteeringBehaviors.MovingAgent> targets = new Array<SteeringBehaviors.MovingAgent>(
-            _sensor.DetectedObjects.Where(x => 
-                    x is SteeringBehaviors.MovingAgent && 
-                    // Don't take in count our own agent.
-                    ((SteeringBehaviors.MovingAgent)x).Name != _currentAgent.Name)
-                .Cast<SteeringBehaviors.MovingAgent>()
-                .ToArray());
+        Array<MovingAgent> targets = GetDetectedAgents();
         
         if (targets.Count == 0)
         {
@@ -178,50 +229,23 @@ public partial class PotentialCollisionDetector : Node2D
         float shortestTimeToCollision = float.MaxValue;
         Vector2 relativePositionAtPotentialCollision = Vector2.Zero;
         float minSeparationAtClosestCollisionCandidate = float.MaxValue;
-        SteeringBehaviors.MovingAgent closestCollidingAgentCandidate = null;
+        MovingAgent closestCollidingAgentCandidate = null;
         Vector2 currentRelativePositionToPotentialCollisionAgent = Vector2.Zero;
         Vector2 currentRelativeVelocityToPotentialCollisionAgent = Vector2.Zero;
         PotentialCollisionDetected = false;
         
-        foreach (SteeringBehaviors.MovingAgent target in targets)
+        foreach (MovingAgent target in targets)
         {
-            // Calculate time to collision.
-            Vector2 relativePosition = target.GlobalPosition - 
-                                       _currentAgent.GlobalPosition;
-            // float currentDistance = relativePosition.Length();
-            Vector2 relativeVelocity = target.Velocity - _currentAgent.Velocity;
-            float relativeSpeed = relativeVelocity.Length();
-            
-            // I've used Millington algorithm as reference, but here mine differs his.
-            // Millington algorithm uses de positive dot product between relativePosition
-            // and relativeVelocity. I guess it's an error because, in my calculations,
-            // that would get a positive result for a non-collision approach,
-            // that wouldn't be correct because timeToClosestPosition should be negative
-            // if agents go away from each other and positive if they go towards each
-            // other.
-            // Besides, I've found sources where this formula is defined and they 
-            // multiply by -1.0 the numerator:
-            // https://medium.com/@knave/collision-avoidance-the-math-1f6cdf383b5c
-            //
-            // So, I've multiplied by -1.0 the numerator.
-            float timeToClosestPosition = -1 * relativePosition.Dot(relativeVelocity) / 
-                                    (float) Mathf.Pow(relativeSpeed, 2.0);
+            if (!IsGoingToHappenACollision(
+                    target, 
+                    _currentAgent.Velocity,
+                    CollisionDistance,
+                    out var relativePosition, 
+                    out var relativeVelocity, 
+                    out var timeToClosestPosition, 
+                    out var minRelativePosition, 
+                    out var minSeparation)) continue;
 
-            // They are moving away, so no collision possible.
-            if (timeToClosestPosition < 0) continue;
-            
-            // Here too, my implementation differs from Millington's. He calculates
-            // miSeparation substracting relativeSpeed * timeToClosestPosition from the 
-            // modulus of relative position. My tests show that you must do instead the
-            // operations summing with vectors and later get the module.
-            Vector2 minRelativePosition =
-                relativePosition + relativeVelocity * timeToClosestPosition; 
-            float minSeparation = minRelativePosition.Length();
-
-            // If minSeparation is greater than _collisionDistance then we have no
-            // collision at all, so we assess next target.
-            if (minSeparation > CollisionDistance) continue;
-            
             // OK, we have a candidate potential collision, but is it the nearest?
             if (timeToClosestPosition < shortestTimeToCollision)
             {
@@ -246,15 +270,81 @@ public partial class PotentialCollisionDetector : Node2D
         PotentialCollisionDetected = PotentialCollisionAgent != null;
     }
 
+    /// <summary>
+    /// Gets all agents detected by the sensor.
+    /// </summary>
+    /// <returns>An array with the MovingAgent components of detected agents.</returns>
+    private Array<MovingAgent> GetDetectedAgents()
+    {
+        return new Array<MovingAgent>(
+            _sensor.DetectedObjects.Where(x => 
+                    x is MovingAgent && 
+                    // Don't take in count our own agent.
+                    ((MovingAgent)x).Name != _currentAgent.Name)
+                .Cast<MovingAgent>()
+                .ToArray());
+    }
+
+    private bool IsGoingToHappenACollision(
+        MovingAgent target,
+        Vector2 currentVelocity,
+        float collisionDistance,
+        out Vector2 relativePosition,
+        out Vector2 relativeVelocity, 
+        out float timeToClosestPosition,
+        out Vector2 minRelativePosition, 
+        out float minSeparation)
+    {
+        // Calculate time to collision.
+        relativePosition = target.GlobalPosition - 
+                           _currentAgent.GlobalPosition;
+        relativeVelocity = target.Velocity - currentVelocity;
+        float relativeSpeed = relativeVelocity.Length();
+            
+        // I've used Millington algorithm as reference, but here mine differs his.
+        // Millington algorithm uses de positive dot product between relativePosition
+        // and relativeVelocity. I guess it's an error because, in my calculations,
+        // that would get a positive result for a non-collision approach,
+        // that wouldn't be correct because timeToClosestPosition should be negative
+        // if agents go away from each other and positive if they go towards each
+        // other.
+        // Besides, I've found sources where this formula is defined and they 
+        // multiply by -1.0 the numerator:
+        // https://medium.com/@knave/collision-avoidance-the-math-1f6cdf383b5c
+        //
+        // So, I've multiplied by -1.0 the numerator.
+        timeToClosestPosition = -1 * relativePosition.Dot(relativeVelocity) / 
+                                (float) Mathf.Pow(relativeSpeed, 2.0);
+        
+        // Here too, my implementation differs from Millington's. He calculates
+        // miSeparation substracting relativeSpeed * timeToClosestPosition from the 
+        // modulus of relative position. My tests show that you must do instead the
+        // operations summing with vectors and later get the module.
+        minRelativePosition = relativePosition + relativeVelocity * timeToClosestPosition; 
+        minSeparation = minRelativePosition.Length();
+        
+        // They are moving away, so no collision possible.
+        if (timeToClosestPosition < 0)
+        {
+            minSeparation = 0;
+            return false;
+        }
+
+        // If minSeparation is greater than CollisionDistance then we have no
+        // collision at all, so we assess next target.
+        if (minSeparation > collisionDistance) return false;
+        return true;
+    }
+
     public override string[] _GetConfigurationWarnings()
     {
-        ConeSensor sensor = this.FindChild<ConeSensor>();
+        ISensor sensor = this.FindChild<ISensor>();
 
         List<string> warnings = new();
 
         if (sensor == null)
         {
-            warnings.Add("This node needs a child ConeSensor node to work. ");
+            warnings.Add("This node needs a child ISensor node to work. ");
         }
 
         return warnings.ToArray();

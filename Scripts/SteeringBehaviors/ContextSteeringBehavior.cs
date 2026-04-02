@@ -116,7 +116,7 @@ public partial class ContextSteeringBehavior: Node2D, ISteeringBehavior
         _currentSteeringVector = steering.Linear;
         // If there is no danger, we don't need to do anything. Just go straight to
         // the target.
-        if (!_dangerSensor.IsAnyObjectDetected) return steering;
+        if (!_dangerSensor.AnyObjectDetected) return steering;
         
         // Get fresh interests.
         _interestWhisker.CalculateInterests(steering.Linear);
@@ -220,7 +220,7 @@ public partial class ContextSteeringBehavior: Node2D, ISteeringBehavior
         foreach (InterestWhiskers.Interest interest in _interests)
         {
             if (_dangerSensor.DetectionMask[index++] || 
-                !_dangerSensor.IsAnyObjectDetected) continue;
+                !_dangerSensor.AnyObjectDetected) continue;
             DrawLine(
                 Vector2.Zero,  
                 ToLocal(GlobalPosition + 

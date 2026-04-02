@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.addons.InteractiveRanges.ConeRange;
@@ -10,25 +11,29 @@ namespace GodotGameAIbyExample.Scripts.Sensors;
 /// Component to implement a cone of vision sensor.
 /// </summary>
 [Tool]
-public partial class ConeSensor : Node2D
+public partial class ConeSensor : Node2D, ISensor
 {
-    /// <summary>
-    /// Delegate for handling events when an object enters the cone of vision.
-    /// </summary>
-    [Signal] public delegate void ObjectEnteredConeEventHandler(Node2D detectedObject);
+    public event Action<Node2D> ObjectEnteredSensor;
+    public event Action<Node2D> ObjectStayedInSensor;
+    public event Action<Node2D> ObjectLeftSensor;
+    public event Action<float, float> ConeSensorDimensionsChanged;
+    // /// <summary>
+    // /// Delegate for handling events when an object enters the cone of vision.
+    // /// </summary>
+    // [Signal] public delegate void ObjectEnteredConeEventHandler(Node2D detectedObject);
+    //
+    //
+    // /// <summary>
+    // /// Delegate for handling events when an object exits the cone of vision.
+    // /// </summary>
+    // [Signal] public delegate void ObjectLeftConeEventHandler(Node2D lostObject);
 
-
-    /// <summary>
-    /// Delegate for handling events when an object exits the cone of vision.
-    /// </summary>
-    [Signal] public delegate void ObjectLeftConeEventHandler(Node2D lostObject);
-
-    /// <summary>
-    /// Delegate for handling changes in the cone sensor's dimensions,
-    /// such as range and angle.
-    /// </summary>
-    [Signal] public delegate void ConeSensorDimensionsChangedEventHandler(
-        float newRange, float newDegrees);
+    // /// <summary>
+    // /// Delegate for handling changes in the cone sensor's dimensions,
+    // /// such as range and angle.
+    // /// </summary>
+    // [Signal] public delegate void ConeSensorDimensionsChangedEventHandler(
+    //     float newRange, float newDegrees);
     
     [ExportCategory("CONFIGURATION:")]
     
@@ -59,10 +64,11 @@ public partial class ConeSensor : Node2D
         {
             _detectionRange = value;
             UpdateDetectionArea();
-            EmitSignal(
-                SignalName.ConeSensorDimensionsChanged, 
-                value, 
-                DetectionSemiConeAngle);
+            ConeSensorDimensionsChanged?.Invoke(value, DetectionSemiConeAngle);
+            // EmitSignal(
+            //     SignalName.ConeSensorDimensionsChanged, 
+            //     value, 
+            //     DetectionSemiConeAngle);
         }
     } 
     
@@ -77,10 +83,11 @@ public partial class ConeSensor : Node2D
         {
             _detectionSemiConeAngle = value;
             UpdateDetectionArea();
-            EmitSignal(
-                SignalName.ConeSensorDimensionsChanged,
-                DetectionRange,
-                value);
+            ConeSensorDimensionsChanged?.Invoke(DetectionRange, value);
+            // EmitSignal(
+            //     SignalName.ConeSensorDimensionsChanged,
+            //     DetectionRange,
+            //     value);
         }
     }
     
@@ -159,9 +166,6 @@ public partial class ConeSensor : Node2D
     /// <p>Event handler launched when the cone range gizmo is updated.</p>
     /// <p>This way DetectionRange and DetectionSemiconeAngle are updated.</p>
     /// </summary>
-    /// <param name="range">How far we will detect other agents.</param>
-    /// <param name="semiConeDegrees">How many degrees from forward we will admit
-    /// detecting an agent.</param>
     public void OnConeRangeUpdated()
     {
         if (_coneRange == null) return;
@@ -179,7 +183,8 @@ public partial class ConeSensor : Node2D
         
         DetectedObjects.Add(otherObject);
         
-        EmitSignal(SignalName.ObjectEnteredCone, otherObject);
+        ObjectEnteredSensor?.Invoke(otherObject);
+        // EmitSignal(SignalName.ObjectEnteredCone, otherObject);
     }
 
     /// <summary>
@@ -210,7 +215,16 @@ public partial class ConeSensor : Node2D
         
         DetectedObjects.Remove(otherObject);
 
-        EmitSignal(SignalName.ObjectLeftCone, otherObject);
+        ObjectLeftSensor?.Invoke(otherObject);
+        // EmitSignal(SignalName.ObjectLeftCone, otherObject);
+    }
+    
+    public override void _PhysicsProcess(double delta)
+    {
+        foreach (var detectedObject in DetectedObjects)
+        {
+            ObjectStayedInSensor?.Invoke(detectedObject);
+        }
     }
     
     public override string[] _GetConfigurationWarnings()

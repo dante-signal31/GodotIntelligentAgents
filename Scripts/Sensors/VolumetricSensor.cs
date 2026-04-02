@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
@@ -9,14 +10,17 @@ namespace GodotGameAIbyExample.Scripts.Sensors;
 /// attached to. 
 /// </summary>
 [Tool]
-public partial class VolumetricSensor : Node2D
+public partial class VolumetricSensor : Node2D, ISensor
 {
 
-    [Signal] private delegate void ObjectEnteredAreaEventHandler(Node2D detectedObject);
+    public event Action<Node2D> ObjectEnteredSensor;
+    public event Action<Node2D> ObjectLeftSensor;
+    public event Action<Node2D> ObjectStayedInSensor;
+    // [Signal] private delegate void ObjectEnteredAreaEventHandler(Node2D detectedObject);
     
-    [Signal] private delegate void ObjectStayedInAreaEventHandler(Node2D detectedObject);
+    // [Signal] private delegate void ObjectStayedInAreaEventHandler(Node2D detectedObject);
     
-    [Signal] private delegate void ObjectLeftAreaEventHandler(Node2D detectedObject);
+    // [Signal] private delegate void ObjectLeftAreaEventHandler(Node2D detectedObject);
 
     [ExportCategory("CONFIGURATION:")]
     private uint _detectionLayers;
@@ -37,7 +41,9 @@ public partial class VolumetricSensor : Node2D
     }
 
     [Export] public bool IgnoreOwnerAgent = true;
-    
+
+
+
     /// <summary>
     /// Current set of objects that is inside the detection area.
     /// </summary>
@@ -71,11 +77,11 @@ public partial class VolumetricSensor : Node2D
     }
 
     
-    public override void _ExitTree()
-    {
-        if (CollisionShape == null) return;
-        CollisionShape.Reparent(this);
-    }
+    // public override void _ExitTree()
+    // {
+    //     if (CollisionShape == null) return;
+    //     CollisionShape.Reparent(this);
+    // }
 
     /// <summary>
     /// <p>Update DetectedObjects set with any object inside the detection area.</p>
@@ -89,7 +95,8 @@ public partial class VolumetricSensor : Node2D
         {
             if (DetectedObjects.Contains(body)) continue;
             DetectedObjects.Add(body);
-            EmitSignal(SignalName.ObjectEnteredArea, body);
+            ObjectEnteredSensor?.Invoke(body);
+            // EmitSignal(SignalName.ObjectEnteredArea, body);
         }
     }
     
@@ -98,21 +105,23 @@ public partial class VolumetricSensor : Node2D
         if (IgnoreOwnerAgent && body.IsAncestorOf(this)) return;
         if (DetectedObjects.Contains(body)) return;
         DetectedObjects.Add(body);
-        EmitSignal(SignalName.ObjectEnteredArea, body);
+        ObjectEnteredSensor?.Invoke(body);
+        // EmitSignal(SignalName.ObjectEnteredArea, body);
     }
 
     private void OnObjectExited(Node2D body)
     {
         if (!DetectedObjects.Contains(body)) return;
         DetectedObjects.Remove(body);
-        EmitSignal(SignalName.ObjectLeftArea, body);
+        ObjectLeftSensor?.Invoke(body);
+        // EmitSignal(SignalName.ObjectLeftArea, body);
     }
 
     public override void _PhysicsProcess(double delta)
     {
         foreach (var detectedObject in DetectedObjects)
         {
-            EmitSignal(SignalName.ObjectStayedInArea, detectedObject);
+            ObjectStayedInSensor?.Invoke(detectedObject);
         }
     }
 

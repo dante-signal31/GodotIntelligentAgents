@@ -25,6 +25,32 @@
 [ext_resource type="PackedScene" uid="uid://dg5jntlmhib8s" path="res://Scenes/SteeringBehaviors/PassiveAgentAvoiderSteeringBehavior.tscn" id="24_cmigx"]
 [ext_resource type="PackedScene" uid="uid://cip2ek6n8fg4" path="res://Scenes/SteeringBehaviors/ANNPassiveAgentAvoiderBehavior.tscn" id="24_ifpi0"]
 [ext_resource type="PackedScene" uid="uid://dvk8qqy48q4ti" path="res://Scenes/Sensors/CircleSensor.tscn" id="25_cmigx"]
+[ext_resource type="Curve" uid="uid://b7ik6hbcpxt6s" path="res://Curves/gaussian.tres" id="26_1o7g3"]
+[ext_resource type="PackedScene" uid="uid://73eoh74bxawt" path="res://Scenes/SteeringBehaviors/VOAgentAvoiderSteeringBehavior.tscn" id="26_vtb3e"]
+
+[sub_resource type="Curve" id="Curve_1o7g3"]
+
+[sub_resource type="Curve" id="Curve_3uomi"]
+
+[sub_resource type="Curve" id="Curve_kafq8"]
+
+[sub_resource type="Curve" id="Curve_upwh5"]
+
+[sub_resource type="Curve" id="Curve_02q8g"]
+
+[sub_resource type="Curve" id="Curve_ifpi0"]
+
+[sub_resource type="Curve" id="Curve_6el8a"]
+
+[sub_resource type="Curve" id="Curve_3sykx"]
+
+[sub_resource type="Curve" id="Curve_3010k"]
+
+[sub_resource type="Curve" id="Curve_ieua8"]
+
+[sub_resource type="Curve" id="Curve_35h8u"]
+
+[sub_resource type="Curve" id="Curve_ip106"]
 
 [sub_resource type="Curve" id="Curve_gj4u3"]
 _data = [Vector2(0, 1), 0.0, -0.128196, 0, 0, Vector2(1, 0), -2.07517, 0.0, 0, 0]
@@ -34,6 +60,18 @@ point_count = 2
 _data = [Vector2(0, 0.30129), 0.0, 2.08494, 0, 0, Vector2(1, 0.996007), 0.0, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="Curve" id="Curve_qxue7"]
+
+[sub_resource type="Curve" id="Curve_3ruup"]
+
+[sub_resource type="Curve" id="Curve_pc8n4"]
+
+[sub_resource type="Curve" id="Curve_rlejg"]
+
+[sub_resource type="Curve" id="Curve_ba46e"]
+
+[sub_resource type="Curve" id="Curve_wgcds"]
+
 [node name="SimpleBehaviorTestLevel" type="Node2D" unique_id=1295611756]
 
 [node name="ClearCourtyard" parent="." unique_id=2091622630 instance=ExtResource("1_oy3cc")]
@@ -42,7 +80,7 @@ point_count = 2
 modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
 top_level = true
 z_index = 1000
-position = Vector2(1564, 396)
+position = Vector2(1470, 812)
 gizmo_extents = 51.0
 
 [node name="Positions" type="Node" parent="." unique_id=2036415414]
@@ -89,13 +127,12 @@ position = Vector2(904, 493)
 [node name="Agents" type="Node" parent="." unique_id=1162190175]
 
 [node name="SeekMovingAgent" parent="Agents" unique_id=1580858849 instance=ExtResource("4_d5nib")]
-process_mode = 4
-visible = false
-position = Vector2(409, 295)
+position = Vector2(1515, 312)
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_1o7g3")
 
 [node name="SeekSteeringBehavior" parent="Agents/SeekMovingAgent" unique_id=872175569 node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
-Target = NodePath("../../../Target")
+Target = NodePath("../../../Positions/Position3")
 
 [node name="ArriveMovingAgentLA" parent="Agents" unique_id=710729572 instance=ExtResource("4_d5nib")]
 process_mode = 4
@@ -105,6 +142,7 @@ MaximumSpeed = 600.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 300.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_3uomi")
 
 [node name="ArriveSteeringBehaviorLa" parent="Agents/ArriveMovingAgentLA" unique_id=2007561828 node_paths=PackedStringArray("Target") instance=ExtResource("10_ippjy")]
 Target = NodePath("../../../Positions/Position4")
@@ -115,6 +153,7 @@ visible = false
 position = Vector2(1630, 761)
 MaximumSpeed = 600.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_kafq8")
 
 [node name="ArriveSteeringBehaviorNLA" parent="Agents/ArriveMovingAgentNLA" unique_id=660086359 node_paths=PackedStringArray("Target") instance=ExtResource("5_xfglb")]
 Target = NodePath("../../../Target")
@@ -125,6 +164,7 @@ process_mode = 4
 visible = false
 position = Vector2(1378, 678)
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_upwh5")
 
 [node name="FleeSteeringBehavior" parent="Agents/FleeMovingAgent" unique_id=1356197676 instance=ExtResource("6_4ry8j")]
 PanicDistance = 200.0
@@ -136,6 +176,7 @@ position = Vector2(1219, 267)
 MaximumSpeed = 600.0
 MaximumRotationalDegSpeed = 180.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_02q8g")
 
 [node name="AlignSteeringBehavior" parent="Agents/AlignMovingAgent" unique_id=1448746709 node_paths=PackedStringArray("Target") instance=ExtResource("7_jhf1f")]
 Target = NodePath("../../SeekMovingAgent")
@@ -147,6 +188,7 @@ position = Vector2(1484, 364)
 MaximumSpeed = 600.0
 MaximumRotationalDegSpeed = 180.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_ifpi0")
 
 [node name="FaceSteeringBehavior" parent="Agents/FaceMovingAgent" unique_id=1037041453 node_paths=PackedStringArray("Target") instance=ExtResource("8_mvp47")]
 Target = NodePath("../../SeekMovingAgent")
@@ -159,6 +201,7 @@ MaximumSpeed = 600.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 400.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_6el8a")
 
 [node name="VelocityMatchingSteeringBehavior" parent="Agents/VelocityMatchingMovingAgent" unique_id=1893537294 node_paths=PackedStringArray("Target") instance=ExtResource("9_p6qlj")]
 Target = NodePath("../../ArriveMovingAgentLA")
@@ -169,6 +212,7 @@ process_mode = 4
 visible = false
 position = Vector2(175, 199)
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_3sykx")
 
 [node name="PursueSteeringBehavior" parent="Agents/PursueMovingAgent" unique_id=1957497670 node_paths=PackedStringArray("Target") instance=ExtResource("11_0ln1b")]
 Target = NodePath("../../SeekMovingAgent")
@@ -181,6 +225,7 @@ visible = false
 position = Vector2(1759, 486)
 MaximumSpeed = 600.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_3010k")
 
 [node name="InterposeSteeringBehavior" parent="Agents/InterposeMovingAgent" unique_id=740952139 node_paths=PackedStringArray("AgentA", "AgentB") instance=ExtResource("12_vep10")]
 AgentA = NodePath("../../ArriveMovingAgentLA")
@@ -193,6 +238,7 @@ process_mode = 4
 visible = false
 position = Vector2(890, 758)
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_ieua8")
 
 [node name="EvadeSteeringBehavior" parent="Agents/EvadeMovingAgent" unique_id=1136421584 node_paths=PackedStringArray("Threat") instance=ExtResource("13_exiqe")]
 Threat = NodePath("../../SeekMovingAgent")
@@ -207,6 +253,7 @@ MaximumSpeed = 600.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 300.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_35h8u")
 
 [node name="SeparationSteeringBehavior" parent="Agents/SeparationMovingAgent" unique_id=2013836029 node_paths=PackedStringArray("Threats") instance=ExtResource("14_t8tiy")]
 Threats = [NodePath("../../ArriveMovingAgentLA"), NodePath("../../VelocityMatchingMovingAgent")]
@@ -222,6 +269,7 @@ position = Vector2(898, 765)
 MaximumSpeed = 600.0
 MaximumRotationalDegSpeed = 180.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_ip106")
 
 [node name="GroupAlignSteeringBehavior" parent="Agents/GroupAlignMovingAgent" unique_id=1066843769 node_paths=PackedStringArray("Targets") instance=ExtResource("15_cm7y6")]
 Targets = [null, null]
@@ -237,6 +285,7 @@ visible = false
 position = Vector2(1636, 463)
 MaximumSpeed = 600.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_qxue7")
 
 [node name="CohesionSteeringBehavior" parent="Agents/CohesionMovingAgent" unique_id=2097294107 node_paths=PackedStringArray("Targets") instance=ExtResource("16_4hd86")]
 Targets = [null, null, null]
@@ -249,6 +298,7 @@ process_mode = 4
 visible = false
 position = Vector2(969, 905)
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_3ruup")
 
 [node name="WanderSteeringBehavior" parent="Agents/WanderMovingAgent" unique_id=261087774 instance=ExtResource("17_38cq1")]
 WanderRadius = 60.0
@@ -261,10 +311,11 @@ visible = false
 position = Vector2(688, 559)
 MaximumSpeed = 150.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_pc8n4")
 
 [node name="OffsetFollowBehavior" parent="Agents/OffsetFollowMovingAgent" unique_id=764306254 node_paths=PackedStringArray("Target") instance=ExtResource("18_q0gcs")]
 Target = NodePath("../../SeekMovingAgent")
-OffsetFromTarget = Vector2(566, 258)
+OffsetFromTarget = Vector2(-540, 241)
 ShowGizmos = false
 
 [node name="ArriveSteeringBehaviorNLA" parent="Agents/OffsetFollowMovingAgent/OffsetFollowBehavior" unique_id=755186671 node_paths=PackedStringArray("Target") instance=ExtResource("5_xfglb")]
@@ -281,6 +332,7 @@ visible = false
 position = Vector2(322, 775)
 MaximumSpeed = 200.0
 AutoSmoothSamples = 0
+SmoothingCurve = SubResource("Curve_rlejg")
 
 [node name="ActiveAgentAvoiderSteeringBehavior" parent="Agents/ActiveAgentAvoiderMovingAgent" unique_id=1108652152 node_paths=PackedStringArray("_toTargetSteeringBehavior", "_agentAvoiderSteeringBehavior") instance=ExtResource("23_ujip5")]
 ShowGizmos = true
@@ -297,10 +349,10 @@ TooAlignedFactor = 0.99
 [node name="PotentialCollisionDetector" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/PassiveAgentAvoiderSteeringBehavior" unique_id=1843414419 instance=ExtResource("20_qd6kt")]
 AgentRadius = 55.0
 
-[node name="ConeSensor2" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/PassiveAgentAvoiderSteeringBehavior/PotentialCollisionDetector" unique_id=1285423154 instance=ExtResource("21_qd6kt")]
+[node name="ConeSensor" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/PassiveAgentAvoiderSteeringBehavior/PotentialCollisionDetector" unique_id=1285423154 instance=ExtResource("21_qd6kt")]
 LayersToDetect = 1
 
-[node name="ConeRange" type="Node2D" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/PassiveAgentAvoiderSteeringBehavior/PotentialCollisionDetector/ConeSensor2" unique_id=877333123]
+[node name="ConeRange" type="Node2D" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/PassiveAgentAvoiderSteeringBehavior/PotentialCollisionDetector/ConeSensor" unique_id=877333123]
 script = ExtResource("21_6oyvm")
 SemiConeDegrees = 90.0
 Resolution = 12
@@ -311,6 +363,7 @@ metadata/_custom_type_script = "uid://x00e0v0m34tl"
 process_mode = 4
 visible = false
 position = Vector2(1603, 515)
+SmoothingCurve = SubResource("Curve_ba46e")
 
 [node name="ActiveAgentAvoiderSteeringBehavior" parent="Agents/ANNAgentAvoiderMovingAgent" unique_id=545161167 node_paths=PackedStringArray("_toTargetSteeringBehavior", "_agentAvoiderSteeringBehavior") instance=ExtResource("23_ujip5")]
 AvoidanceTimeout = 0.75
@@ -335,6 +388,7 @@ process_mode = 4
 visible = false
 position = Vector2(1528, 244)
 AgentColor = Color(0.7921569, 0.47058824, 0, 1)
+SmoothingCurve = SubResource("Curve_wgcds")
 
 [node name="ActiveAgentAvoiderSteeringBehavior" parent="Agents/ANNAgentAvoiderMovingAgent2" unique_id=1830922817 node_paths=PackedStringArray("_toTargetSteeringBehavior", "_agentAvoiderSteeringBehavior") instance=ExtResource("23_ujip5")]
 ShowGizmos = true
@@ -352,5 +406,26 @@ GizmosColor = Color(0, 0, 1, 1)
 
 [node name="CircleSensor" parent="Agents/ANNAgentAvoiderMovingAgent2/ActiveAgentAvoiderSteeringBehavior/ANNPassiveAgentAvoiderBehavior" unique_id=1850573560 instance=ExtResource("25_cmigx")]
 Radius = 500.0
+
+[node name="VOAgentAvoiderMovingAgent" parent="Agents" unique_id=1936263847 instance=ExtResource("4_d5nib")]
+position = Vector2(226, 248)
+AutoSmooth = true
+SmoothingMethod = 1
+AutoSmoothSamples = 20
+SmoothingCurve = ExtResource("26_1o7g3")
+
+[node name="VOAgentAvoiderSteeringBehavior" parent="Agents/VOAgentAvoiderMovingAgent" unique_id=814293294 node_paths=PackedStringArray("_toTargetSteeringBehavior") instance=ExtResource("26_vtb3e")]
+EvasionStrength = 150.0
+MinimumDistanceBetweenAgents = 50.0
+NoCollisionVelocitiesColor = Color(1, 0.6627451, 0, 1)
+_toTargetSteeringBehavior = NodePath("SeekSteeringBehavior")
+
+[node name="SeekSteeringBehavior" parent="Agents/VOAgentAvoiderMovingAgent/VOAgentAvoiderSteeringBehavior" unique_id=1438822276 node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
+Target = NodePath("../../../../Target")
+
+[node name="PotentialCollisionDetector" parent="Agents/VOAgentAvoiderMovingAgent/VOAgentAvoiderSteeringBehavior" unique_id=1340679161 instance=ExtResource("20_qd6kt")]
+
+[node name="CircleSensor" parent="Agents/VOAgentAvoiderMovingAgent/VOAgentAvoiderSteeringBehavior/PotentialCollisionDetector" unique_id=497158187 instance=ExtResource("25_cmigx")]
+Radius = 400.0
 
 [editable path="ClearCourtyard"]
