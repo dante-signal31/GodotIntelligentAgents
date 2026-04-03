@@ -10,6 +10,9 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// algorithm.</p>
 /// <p>The difference with an obstacle avoidance algorithm is that obstacles don't move
 /// while agents do.</p>
+/// <remarks> This behavior needs AutoSmooth enabled at the MovingAgent node. It works
+/// best if the auto-smoothing method is WeightedMovingAverage with 20 samples and a
+/// gaussian curve.</remarks>
 /// </summary>
 [Tool]
 // It must be marked as a Tool to be found by MovingAgent when it uses my custom extension
@@ -39,9 +42,12 @@ public partial class VOAgentAvoiderBehavior: Node2D, ISteeringBehavior
     /// The higher the value, the more aggressive the evasion will be.
     /// <remarks>Keep well above than the double of MinimumDistanceBetweenAgents.</remarks>
     /// </summary>
-    [Export] public float EvasionStrength = 10f;
+    [Export] public float EvasionStrength = 150f;
     
-    [Export] public float MinimumDistanceBetweenAgents = 200f;
+    // 50 pixels of distance may be enough to avoid collision with other agents in usual
+    // situations. But for frontal collisions, you will need a minimum distance of 100 and
+    // an evasion strength above 200.
+    [Export] public float MinimumDistanceBetweenAgents = 50f;
     
     [ExportCategory("DEBUG:")]
     [Export] public bool ShowGizmos;
@@ -88,6 +94,7 @@ public partial class VOAgentAvoiderBehavior: Node2D, ISteeringBehavior
         // most irrational number (the golden ratio) to uniformly generate points
         // on a disk.
         // Got from: https://jasonfantl.com/posts/Collision-Avoidance/#sampling-velocities
+        _velocitySamplingDisc.Clear();
         for (int i = 1; i <= resolution; i++)
         {
             float radius = Mathf.Sqrt((float)i / resolution) * maximumSpeed;

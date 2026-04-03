@@ -121,12 +121,17 @@ position = Vector2(467, 506)
 [node name="Position12" type="Marker2D" parent="Positions" unique_id=2009382039]
 position = Vector2(1486, 506)
 
+[node name="Position13" type="Marker2D" parent="Positions" unique_id=1717563347]
+position = Vector2(305, 277)
+
 [node name="Marker2D" type="Marker2D" parent="Positions" unique_id=684331777]
 position = Vector2(904, 493)
 
 [node name="Agents" type="Node" parent="." unique_id=1162190175]
 
 [node name="SeekMovingAgent" parent="Agents" unique_id=1580858849 instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(1515, 312)
 AutoSmoothSamples = 0
 SmoothingCurve = SubResource("Curve_1o7g3")
@@ -137,15 +142,15 @@ Target = NodePath("../../../Positions/Position3")
 [node name="ArriveMovingAgentLA" parent="Agents" unique_id=710729572 instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(1511, 277)
-MaximumSpeed = 600.0
+position = Vector2(272, 665)
+MaximumSpeed = 110.0
 MaximumAcceleration = 200.0
 MaximumDeceleration = 300.0
 AutoSmoothSamples = 0
 SmoothingCurve = SubResource("Curve_3uomi")
 
 [node name="ArriveSteeringBehaviorLa" parent="Agents/ArriveMovingAgentLA" unique_id=2007561828 node_paths=PackedStringArray("Target") instance=ExtResource("10_ippjy")]
-Target = NodePath("../../../Positions/Position4")
+Target = NodePath("../../../Positions/Position7")
 
 [node name="ArriveMovingAgentNLA" parent="Agents" unique_id=710229834 instance=ExtResource("4_d5nib")]
 process_mode = 4
@@ -408,15 +413,16 @@ GizmosColor = Color(0, 0, 1, 1)
 Radius = 500.0
 
 [node name="VOAgentAvoiderMovingAgent" parent="Agents" unique_id=1936263847 instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(226, 248)
+MaximumSpeed = 115.0
 AutoSmooth = true
 SmoothingMethod = 1
 AutoSmoothSamples = 20
 SmoothingCurve = ExtResource("26_1o7g3")
 
 [node name="VOAgentAvoiderSteeringBehavior" parent="Agents/VOAgentAvoiderMovingAgent" unique_id=814293294 node_paths=PackedStringArray("_toTargetSteeringBehavior") instance=ExtResource("26_vtb3e")]
-EvasionStrength = 150.0
-MinimumDistanceBetweenAgents = 50.0
 NoCollisionVelocitiesColor = Color(1, 0.6627451, 0, 1)
 _toTargetSteeringBehavior = NodePath("SeekSteeringBehavior")
 
