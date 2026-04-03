@@ -64,6 +64,7 @@ public partial class VOAgentAvoiderBehavior: Node2D, ISteeringBehavior
         }
     }
 
+
     private const float Phi = 1.618033988749895f;
     private readonly HashSet<Vector2> _velocitySamplingDisc = new();
     private ISteeringBehavior _steeringBehavior;
