@@ -3,14 +3,14 @@
 [ext_resource type="Script" uid="uid://7gqc8dr2oifo" path="res://Scripts/Sensors/VolumetricSensor.cs" id="1_8fdxi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8fdxi"]
+size = Vector2(400.21, 200.105)
 
 [node name="VolumetricSensor" type="Node2D" unique_id=1284326153]
 script = ExtResource("1_8fdxi")
 
-[node name="Area2D" type="Area2D" parent="." unique_id=35459674]
+[node name="Area2D" type="Area2D" parent="." unique_id=957372027]
+rotation = 1.5707964
+collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=391347426]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=484636069]
 shape = SubResource("RectangleShape2D_8fdxi")
-
-[connection signal="body_entered" from="Area2D" to="." method="OnObjectEntered"]
-[connection signal="body_exited" from="Area2D" to="." method="OnObjectExited"]

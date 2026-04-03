@@ -133,6 +133,7 @@ position = Vector2(904, 493)
 process_mode = 4
 visible = false
 position = Vector2(1515, 312)
+MaximumSpeed = 200.0
 AutoSmoothSamples = 0
 SmoothingCurve = SubResource("Curve_1o7g3")
 
@@ -334,7 +335,7 @@ position = Vector2(287, -6)
 [node name="ActiveAgentAvoiderMovingAgent" parent="Agents" unique_id=2064019733 instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(322, 775)
+position = Vector2(305, 269)
 MaximumSpeed = 200.0
 AutoSmoothSamples = 0
 SmoothingCurve = SubResource("Curve_rlejg")
@@ -354,14 +355,14 @@ TooAlignedFactor = 0.99
 [node name="PotentialCollisionDetector" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/PassiveAgentAvoiderSteeringBehavior" unique_id=1843414419 instance=ExtResource("20_qd6kt")]
 AgentRadius = 55.0
 
-[node name="ConeSensor" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/PassiveAgentAvoiderSteeringBehavior/PotentialCollisionDetector" unique_id=1285423154 instance=ExtResource("21_qd6kt")]
+[node name="ConeSensor" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/PassiveAgentAvoiderSteeringBehavior/PotentialCollisionDetector" unique_id=344342074 instance=ExtResource("21_qd6kt")]
 LayersToDetect = 1
 
-[node name="ConeRange" type="Node2D" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/PassiveAgentAvoiderSteeringBehavior/PotentialCollisionDetector/ConeSensor" unique_id=877333123]
+[node name="ConeRange" type="Node2D" parent="Agents/ActiveAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/PassiveAgentAvoiderSteeringBehavior/PotentialCollisionDetector/ConeSensor" unique_id=1438990587]
 script = ExtResource("21_6oyvm")
 SemiConeDegrees = 90.0
 Resolution = 12
-Range = 200.0
+Range = 197.865
 metadata/_custom_type_script = "uid://x00e0v0m34tl"
 
 [node name="ANNAgentAvoiderMovingAgent" parent="Agents" unique_id=214968402 instance=ExtResource("4_d5nib")]

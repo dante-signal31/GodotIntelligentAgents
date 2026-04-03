@@ -48,10 +48,6 @@ public partial class ConeSensor : Node2D, ISensor
             _detectionRange = value;
             UpdateDetectionArea();
             ConeSensorDimensionsChanged?.Invoke(value, DetectionSemiConeAngle);
-            // EmitSignal(
-            //     SignalName.ConeSensorDimensionsChanged, 
-            //     value, 
-            //     DetectionSemiConeAngle);
         }
     } 
     
@@ -93,25 +89,46 @@ public partial class ConeSensor : Node2D, ISensor
 
     public override void _EnterTree()
     {
-        if (_coneRange != null) return;
-        _coneRange = this.FindChild<ConeRange>();
+        if (_coneRange == null)
+            _coneRange = this.FindChild<ConeRange>();
+        if (_boxRangeManager == null) 
+            _boxRangeManager = this.FindChild<BoxRangeManager>();
         if (_coneRange != null) InitializeConeRange();
+        if (_sensor == null)
+            _sensor = this.FindChild<VolumetricSensor>();
+        _sensor.ObjectEnteredSensor += OnObjectEnteredArea;
+        _sensor.ObjectStayedInSensor += OnObjectStayedInArea;
+        _sensor.ObjectLeftSensor += OnObjectLeftArea;
     }
 
     public override void _Ready()
     {
-        _sensor = this.FindChild<VolumetricSensor>();
-        _boxRangeManager = this.FindChild<BoxRangeManager>();
-        _coneRange = this.FindChild<ConeRange>();
+        if (_sensor == null)
+            _sensor = this.FindChild<VolumetricSensor>();
+        if (_boxRangeManager == null)
+            _boxRangeManager = this.FindChild<BoxRangeManager>();
+        if (_coneRange == null)
+            _coneRange = this.FindChild<ConeRange>();
+        if (_coneRange != null) InitializeConeRange();
         
         _sensor.DetectionLayers = LayersToDetect;
     }
 
+    public override void _ExitTree()
+    {
+        _sensor.ObjectEnteredSensor -= OnObjectEnteredArea;
+        _sensor.ObjectStayedInSensor -= OnObjectStayedInArea;
+        _sensor.ObjectLeftSensor -= OnObjectLeftArea;
+    }
+
     private void InitializeConeRange()
     {
+        if (_coneRange.IsConnected(
+                ConeRange.SignalName.Updated, 
+                new Callable(this, MethodName.OnConeRangeUpdated))) return;
         _coneRange.Connect(
             ConeRange.SignalName.Updated,
-            Callable.From(OnConeRangeUpdated));
+            new Callable(this, MethodName.OnConeRangeUpdated));
         DetectionRange = _coneRange.Range;
         DetectionSemiConeAngle = _coneRange.SemiConeDegrees;
     }

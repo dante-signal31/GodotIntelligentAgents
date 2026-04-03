@@ -16,11 +16,6 @@ public partial class VolumetricSensor : Node2D, ISensor
     public event Action<Node2D> ObjectEnteredSensor;
     public event Action<Node2D> ObjectLeftSensor;
     public event Action<Node2D> ObjectStayedInSensor;
-    // [Signal] private delegate void ObjectEnteredAreaEventHandler(Node2D detectedObject);
-    
-    // [Signal] private delegate void ObjectStayedInAreaEventHandler(Node2D detectedObject);
-    
-    // [Signal] private delegate void ObjectLeftAreaEventHandler(Node2D detectedObject);
 
     [ExportCategory("CONFIGURATION:")]
     private uint _detectionLayers;
@@ -41,9 +36,7 @@ public partial class VolumetricSensor : Node2D, ISensor
     }
 
     [Export] public bool IgnoreOwnerAgent = true;
-
-
-
+    
     /// <summary>
     /// Current set of objects that is inside the detection area.
     /// </summary>
@@ -61,22 +54,22 @@ public partial class VolumetricSensor : Node2D, ISensor
     {
         if (_area != null) return;
         _area = this.FindChild<Area2D>();
-        CollisionShape = _area?.FindChild<CollisionShape2D>();
+        if (_area == null) return;
+        CollisionShape = _area.FindChild<CollisionShape2D>();
     }
 
     public override void _Ready()
     {
-        if (_area == null) return;
-        
-        _area.BodyEntered += OnObjectEntered;
-        _area.BodyExited += OnObjectExited;
-
+        _area.Connect(
+            Area2D.SignalName.BodyEntered, 
+            new Callable(this, MethodName.OnObjectEntered));
+        _area.Connect(
+            Area2D.SignalName.BodyExited, 
+            new Callable(this, MethodName.OnObjectExited));
         DetectionLayers = _detectionLayers;
-        
         UpdateDetectedObjectsSet();
     }
 
-    
     // public override void _ExitTree()
     // {
     //     if (CollisionShape == null) return;
