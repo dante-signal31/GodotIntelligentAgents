@@ -235,7 +235,7 @@ public partial class RegionGraph: Node2D, IPositionGraph
                             }
                         }
                     }
-                    catch (KeyNotFoundException e)
+                    catch (KeyNotFoundException)
                     {
                         Console.Error.WriteLine($"Boundary node not found " +
                                                 $"({boundaryNodeId}) when calculating " +

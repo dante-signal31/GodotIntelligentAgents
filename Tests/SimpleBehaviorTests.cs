@@ -1156,6 +1156,116 @@ public class SimpleBehaviorTests
         agentAvoider.ProcessMode = Node.ProcessModeEnum.Disabled;
         obstacleMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
+    
+    /// <summary>
+    /// Test that AgentAvoiderBehavior can reach its target without touching other
+    /// moving agents that goes across its path.
+    /// </summary>
+    [TestCase]
+    public async Task AgentAvoiderBehaviorTestSixthScenario()
+    {
+        // Get references to agent and target.
+        MovingAgent agentAvoider =
+            (MovingAgent)_sceneRunner.FindChild(
+                "ActiveAgentAvoiderMovingAgent");
+        Marker2D position13 =
+            (Marker2D)_sceneRunner.FindChild("Position13");
+        MovingAgent obstacleMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild(
+                "SeekMovingAgent");
+        Marker2D position1 =
+            (Marker2D)_sceneRunner.FindChild("Position1");
+        Scripts.Tools.Target targetOfAgentAvoiderMovingAgent =
+            (Scripts.Tools.Target)_sceneRunner.FindChild("Target");
+        MovingAgent obstacleMovingAgent2 = (MovingAgent) _sceneRunner.FindChild(
+            "ArriveMovingAgentLA");
+        Marker2D position3 =
+            (Marker2D)_sceneRunner.FindChild("Position3");
+        Marker2D position6 =
+            (Marker2D)_sceneRunner.FindChild("Position6");
+        Marker2D position7 =
+            (Marker2D)_sceneRunner.FindChild("Position7");
+        Marker2D position5 =
+            (Marker2D)_sceneRunner.FindChild("Position5");
+        
+        // Get references to steering behavior from both agents.
+        ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
+            agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
+        PassiveAgentAvoiderSteeringBehavior passiveAgentAvoiderBehavior =
+            agentAvoider.FindChild<PassiveAgentAvoiderSteeringBehavior>(recursive: true);
+        SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
+            agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
+        SeekSteeringBehavior seekSteeringBehavior =
+            obstacleMovingAgent.FindChild<SeekSteeringBehavior>();
+        ArriveSteeringBehaviorLA arriveSteeringBehaviorLa =
+            obstacleMovingAgent2.FindChild<ArriveSteeringBehaviorLA>();
+
+        // Setup agents before the test.
+        agentAvoider.GlobalPosition = position13.GlobalPosition;
+        agentAvoider.MaximumSpeed = 100.0f;
+        agentAvoider.MaximumAcceleration = 400.0f;
+        agentAvoider.MaximumRotationalDegSpeed = 180f;
+        agentAvoider.StopRotationDegThreshold = 1f;
+        agentAvoider.StopSpeed = 10f;
+        agentAvoider.MaximumAcceleration = 200;
+        agentAvoider.MaximumDeceleration = 400;
+
+        obstacleMovingAgent.GlobalPosition = position1.GlobalPosition;
+        obstacleMovingAgent.MaximumSpeed = 40f;
+        obstacleMovingAgent.StopSpeed = 1f;
+        obstacleMovingAgent.MaximumRotationalDegSpeed = 180f;
+        obstacleMovingAgent.StopRotationDegThreshold = 1f;
+        obstacleMovingAgent.MaximumAcceleration = 180f;
+        obstacleMovingAgent.MaximumDeceleration = 180f;
+        obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
+        
+        obstacleMovingAgent2.GlobalPosition = position3.GlobalPosition;
+        obstacleMovingAgent2.MaximumSpeed = 100f;
+        obstacleMovingAgent2.StopSpeed = 1f;
+        obstacleMovingAgent2.MaximumRotationalDegSpeed = 180f;
+        obstacleMovingAgent2.StopRotationDegThreshold = 1f;
+        obstacleMovingAgent2.MaximumAcceleration = 180f;
+        obstacleMovingAgent2.MaximumDeceleration = 180f;
+        obstacleMovingAgent2.AgentColor = new Color(1, 0, 0);
+
+        agentAvoiderBehavior.AvoidanceTimeout = 0.5f;
+
+        // SIXTH SCENARIO:
+        targetOfAgentAvoiderMovingAgent.GlobalPosition = position6.GlobalPosition;
+        seekSteeringBehavior.Target = position5;
+        arriveSteeringBehaviorLa.Target = position7;
+        agentAvoiderSeekSteeringBehavior.Target = targetOfAgentAvoiderMovingAgent;
+        agentAvoider.Visible = true;
+        obstacleMovingAgent.Visible = true;
+        obstacleMovingAgent2.Visible = true;
+        agentAvoider.ProcessMode = Node.ProcessModeEnum.Always;
+        obstacleMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        obstacleMovingAgent2.ProcessMode = Node.ProcessModeEnum.Always;
+        // Assert we move without touching the obstacle agent.
+        int steps = 15;
+        for (int i = 0; i < steps; i++)
+        {
+            await _sceneRunner.AwaitMillis(1000);
+            AssertThat(
+                agentAvoider.GlobalPosition.DistanceTo(
+                    obstacleMovingAgent.GlobalPosition) >
+                110f
+            ).IsTrue();
+        }
+
+        // Assert we reached target.
+        AssertThat(
+            agentAvoider.GlobalPosition.DistanceTo(
+                targetOfAgentAvoiderMovingAgent.GlobalPosition) <
+            10f
+        ).IsTrue();
+        // Disable test agents.
+        agentAvoider.Visible = false;
+        obstacleMovingAgent.Visible = false;
+        agentAvoider.ProcessMode = Node.ProcessModeEnum.Disabled;
+        obstacleMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+        obstacleMovingAgent2.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
 
     /// <summary>
     /// Test that ANNAgentAvoiderBehavior can reach its target without touching another
@@ -1619,6 +1729,117 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.Visible = false;
         agentAvoider.ProcessMode = Node.ProcessModeEnum.Disabled;
         obstacleMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
+    
+    /// <summary>
+    /// Test that ANNAgentAvoiderBehavior can reach its target without touching other
+    /// moving agents that goes across its path.
+    /// </summary>
+    [TestCase]
+    public async Task AnnAgentAvoiderBehaviorTestSixthScenario()
+    {
+        // Get references to agent and target.
+        MovingAgent agentAvoider =
+            (MovingAgent)_sceneRunner.FindChild(
+                "ANNAgentAvoiderMovingAgent");
+        Marker2D position13 =
+            (Marker2D)_sceneRunner.FindChild("Position13");
+        MovingAgent obstacleMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild(
+                "SeekMovingAgent");
+        Marker2D position1 =
+            (Marker2D)_sceneRunner.FindChild("Position1");
+        Scripts.Tools.Target targetOfAgentAvoiderMovingAgent =
+            (Scripts.Tools.Target)_sceneRunner.FindChild("Target");
+        MovingAgent obstacleMovingAgent2 = (MovingAgent) _sceneRunner.FindChild(
+            "ArriveMovingAgentLA");
+        Marker2D position3 =
+            (Marker2D)_sceneRunner.FindChild("Position3");
+        Marker2D position6 =
+            (Marker2D)_sceneRunner.FindChild("Position6");
+        Marker2D position7 =
+            (Marker2D)_sceneRunner.FindChild("Position7");
+        Marker2D position5 =
+            (Marker2D)_sceneRunner.FindChild("Position5");
+        
+        // Get references to steering behavior from both agents.
+        ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
+            agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
+        ANNPassiveAgentAvoiderBehavior annAgentAvoiderBehavior =
+            agentAvoider.FindChild<ANNPassiveAgentAvoiderBehavior>(recursive: true);
+        SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
+            agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
+        SeekSteeringBehavior seekSteeringBehavior =
+            obstacleMovingAgent.FindChild<SeekSteeringBehavior>();
+        ArriveSteeringBehaviorLA arriveSteeringBehaviorLa =
+            obstacleMovingAgent2.FindChild<ArriveSteeringBehaviorLA>();
+
+        // Setup agents before the test.
+        agentAvoider.GlobalPosition = position13.GlobalPosition;
+        agentAvoider.MaximumSpeed = 180.0f;
+        agentAvoider.MaximumAcceleration = 400.0f;
+        agentAvoider.MaximumRotationalDegSpeed = 180f;
+        agentAvoider.StopRotationDegThreshold = 1f;
+        agentAvoider.StopSpeed = 10f;
+        agentAvoider.MaximumAcceleration = 200;
+        agentAvoider.MaximumDeceleration = 400;
+
+        obstacleMovingAgent.GlobalPosition = position1.GlobalPosition;
+        obstacleMovingAgent.MaximumSpeed = 40f;
+        obstacleMovingAgent.StopSpeed = 1f;
+        obstacleMovingAgent.MaximumRotationalDegSpeed = 180f;
+        obstacleMovingAgent.StopRotationDegThreshold = 1f;
+        obstacleMovingAgent.MaximumAcceleration = 180f;
+        obstacleMovingAgent.MaximumDeceleration = 180f;
+        obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
+        
+        obstacleMovingAgent2.GlobalPosition = position3.GlobalPosition;
+        obstacleMovingAgent2.MaximumSpeed = 100f;
+        obstacleMovingAgent2.StopSpeed = 1f;
+        obstacleMovingAgent2.MaximumRotationalDegSpeed = 180f;
+        obstacleMovingAgent2.StopRotationDegThreshold = 1f;
+        obstacleMovingAgent2.MaximumAcceleration = 180f;
+        obstacleMovingAgent2.MaximumDeceleration = 180f;
+        obstacleMovingAgent2.AgentColor = new Color(1, 0, 0);
+
+        agentAvoiderBehavior.AvoidanceTimeout = 0.5f;
+        annAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 400f;
+
+        // SIXTH SCENARIO:
+        targetOfAgentAvoiderMovingAgent.GlobalPosition = position6.GlobalPosition;
+        seekSteeringBehavior.Target = position5;
+        arriveSteeringBehaviorLa.Target = position7;
+        agentAvoiderSeekSteeringBehavior.Target = targetOfAgentAvoiderMovingAgent;
+        agentAvoider.Visible = true;
+        obstacleMovingAgent.Visible = true;
+        obstacleMovingAgent2.Visible = true;
+        agentAvoider.ProcessMode = Node.ProcessModeEnum.Always;
+        obstacleMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        obstacleMovingAgent2.ProcessMode = Node.ProcessModeEnum.Always;
+        // Assert we move without touching the obstacle agent.
+        int steps = 10;
+        for (int i = 0; i < steps; i++)
+        {
+            await _sceneRunner.AwaitMillis(1000);
+            AssertThat(
+                agentAvoider.GlobalPosition.DistanceTo(
+                    obstacleMovingAgent.GlobalPosition) >
+                110f
+            ).IsTrue();
+        }
+
+        // Assert we reached target.
+        AssertThat(
+            agentAvoider.GlobalPosition.DistanceTo(
+                targetOfAgentAvoiderMovingAgent.GlobalPosition) <
+            10f
+        ).IsTrue();
+        // Disable test agents.
+        agentAvoider.Visible = false;
+        obstacleMovingAgent.Visible = false;
+        agentAvoider.ProcessMode = Node.ProcessModeEnum.Disabled;
+        obstacleMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+        obstacleMovingAgent2.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
     
     /// <summary>
