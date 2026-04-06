@@ -2437,7 +2437,7 @@ public class SimpleBehaviorTests
     }
     
     /// <summary>
-    /// Test that VOAgentAvoiderBehavior can reach its target without touching another
+    /// Test that VOAgentAvoiderSteeringBehavior can reach its target without touching another
     /// moving agent that goes across its path.
     /// </summary>
     [TestCase]
@@ -2464,8 +2464,8 @@ public class SimpleBehaviorTests
             (Marker2D)_sceneRunner.FindChild("Position9");
 
         // Get references to steering behavior from both agents.
-        VOAgentAvoiderBehavior voAgentAvoiderBehavior =
-            agentAvoider.FindChild<VOAgentAvoiderBehavior>(recursive: true);
+        VOAgentAvoiderSteeringBehavior voAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<VOAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -2489,9 +2489,9 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.MaximumDeceleration = 180f;
         obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
         
-        voAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 50f;
-        voAgentAvoiderBehavior.SamplingDiscResolution = 100;
-        voAgentAvoiderBehavior.EvasionStrength = 150;
+        voAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 50f;
+        voAgentAvoiderSteeringBehavior.SamplingDiscResolution = 100;
+        voAgentAvoiderSteeringBehavior.EvasionStrength = 150;
 
         // FIRST SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position9.GlobalPosition;
@@ -2529,7 +2529,7 @@ public class SimpleBehaviorTests
     }
     
     /// <summary>
-    /// Test that VOAgentAvoiderBehavior can reach its target without touching another
+    /// Test that VOAgentAvoiderSteeringBehavior can reach its target without touching another
     /// moving agent that goes across its path.
     /// </summary>
     [TestCase]
@@ -2556,8 +2556,8 @@ public class SimpleBehaviorTests
             (Marker2D)_sceneRunner.FindChild("Position9");
 
         // Get references to steering behavior from both agents.
-        VOAgentAvoiderBehavior voAgentAvoiderBehavior =
-            agentAvoider.FindChild<VOAgentAvoiderBehavior>(recursive: true);
+        VOAgentAvoiderSteeringBehavior voAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<VOAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -2581,9 +2581,9 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.MaximumDeceleration = 180f;
         obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
 
-        voAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 50f;
-        voAgentAvoiderBehavior.SamplingDiscResolution = 100;
-        voAgentAvoiderBehavior.EvasionStrength = 150;
+        voAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 50f;
+        voAgentAvoiderSteeringBehavior.SamplingDiscResolution = 100;
+        voAgentAvoiderSteeringBehavior.EvasionStrength = 150;
 
         // SECOND SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position9.GlobalPosition;
@@ -2621,7 +2621,7 @@ public class SimpleBehaviorTests
     }
     
     /// <summary>
-    /// Test that VOAgentAvoiderBehavior can reach its target without touching another
+    /// Test that VOAgentAvoiderSteeringBehavior can reach its target without touching another
     /// moving agent that goes across its path.
     /// </summary>
     [TestCase]
@@ -2648,8 +2648,8 @@ public class SimpleBehaviorTests
             (Marker2D)_sceneRunner.FindChild("Position9");
 
         // Get references to steering behavior from both agents.
-        VOAgentAvoiderBehavior voAgentAvoiderBehavior =
-            agentAvoider.FindChild<VOAgentAvoiderBehavior>(recursive: true);
+        VOAgentAvoiderSteeringBehavior voAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<VOAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -2673,9 +2673,9 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.MaximumDeceleration = 180f;
         obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
 
-        voAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 50f;
-        voAgentAvoiderBehavior.SamplingDiscResolution = 100;
-        voAgentAvoiderBehavior.EvasionStrength = 150;
+        voAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 50f;
+        voAgentAvoiderSteeringBehavior.SamplingDiscResolution = 100;
+        voAgentAvoiderSteeringBehavior.EvasionStrength = 150;
 
         // THIRD SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position3.GlobalPosition;
@@ -2713,7 +2713,7 @@ public class SimpleBehaviorTests
     }
     
     /// <summary>
-    /// Test that VOAgentAvoiderBehavior can reach its target without touching another
+    /// Test that VOAgentAvoiderSteeringBehavior can reach its target without touching another
     /// moving agent that goes across its path.
     /// </summary>
     [TestCase]
@@ -2740,8 +2740,8 @@ public class SimpleBehaviorTests
         //     (Marker2D)_sceneRunner.FindChild("Position9");
 
         // Get references to steering behavior from both agents.
-        VOAgentAvoiderBehavior voAgentAvoiderBehavior =
-            agentAvoider.FindChild<VOAgentAvoiderBehavior>(recursive: true);
+        VOAgentAvoiderSteeringBehavior voAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<VOAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -2764,9 +2764,9 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.MaximumDeceleration = 180f;
         obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
 
-        voAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 50f;
-        voAgentAvoiderBehavior.SamplingDiscResolution = 100;
-        voAgentAvoiderBehavior.EvasionStrength = 150;
+        voAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 50f;
+        voAgentAvoiderSteeringBehavior.SamplingDiscResolution = 100;
+        voAgentAvoiderSteeringBehavior.EvasionStrength = 150;
 
         // FOURTH SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position11.GlobalPosition;
@@ -2804,7 +2804,7 @@ public class SimpleBehaviorTests
     }
     
     /// <summary>
-    /// Test that VOAgentAvoiderBehavior can reach its target without touching another
+    /// Test that VOAgentAvoiderSteeringBehavior can reach its target without touching another
     /// moving agent that goes across its path.
     /// </summary>
     [TestCase]
@@ -2831,8 +2831,8 @@ public class SimpleBehaviorTests
         //     (Marker2D)_sceneRunner.FindChild("Position9");
 
         // Get references to steering behavior from both agents.
-        VOAgentAvoiderBehavior voAgentAvoiderBehavior =
-            agentAvoider.FindChild<VOAgentAvoiderBehavior>(recursive: true);
+        VOAgentAvoiderSteeringBehavior voAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<VOAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -2856,9 +2856,9 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.MaximumDeceleration = 180f;
         obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
 
-        voAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 100f;
-        voAgentAvoiderBehavior.SamplingDiscResolution = 100;
-        voAgentAvoiderBehavior.EvasionStrength = 220;
+        voAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 100f;
+        voAgentAvoiderSteeringBehavior.SamplingDiscResolution = 100;
+        voAgentAvoiderSteeringBehavior.EvasionStrength = 220;
 
         // FIFTH SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position12.GlobalPosition;
@@ -2896,7 +2896,7 @@ public class SimpleBehaviorTests
     }
     
     /// <summary>
-    /// Test that VOAgentAvoiderBehavior can reach its target without touching other
+    /// Test that VOAgentAvoiderSteeringBehavior can reach its target without touching other
     /// moving agents that goes across its path.
     /// </summary>
     [TestCase]
@@ -2927,8 +2927,8 @@ public class SimpleBehaviorTests
             (Marker2D)_sceneRunner.FindChild("Position5");
         
         // Get references to steering behavior from both agents.
-        VOAgentAvoiderBehavior voAgentAvoiderBehavior =
-            agentAvoider.FindChild<VOAgentAvoiderBehavior>(recursive: true);
+        VOAgentAvoiderSteeringBehavior voAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<VOAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -2964,9 +2964,9 @@ public class SimpleBehaviorTests
         obstacleMovingAgent2.MaximumDeceleration = 180f;
         obstacleMovingAgent2.AgentColor = new Color(1, 0, 0);
 
-        voAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 100f;
-        voAgentAvoiderBehavior.SamplingDiscResolution = 100;
-        voAgentAvoiderBehavior.EvasionStrength = 220;
+        voAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 100f;
+        voAgentAvoiderSteeringBehavior.SamplingDiscResolution = 100;
+        voAgentAvoiderSteeringBehavior.EvasionStrength = 220;
 
         // SIXTH SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position6.GlobalPosition;

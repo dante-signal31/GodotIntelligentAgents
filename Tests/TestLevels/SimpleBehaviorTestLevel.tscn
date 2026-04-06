@@ -130,10 +130,8 @@ position = Vector2(904, 493)
 [node name="Agents" type="Node" parent="." unique_id=1162190175]
 
 [node name="SeekMovingAgent" parent="Agents" unique_id=1580858849 instance=ExtResource("4_d5nib")]
-process_mode = 4
-visible = false
-position = Vector2(1515, 312)
-MaximumSpeed = 200.0
+position = Vector2(1048, 601)
+MaximumSpeed = 0.0
 AutoSmoothSamples = 0
 SmoothingCurve = SubResource("Curve_1o7g3")
 
@@ -321,7 +319,7 @@ SmoothingCurve = SubResource("Curve_pc8n4")
 
 [node name="OffsetFollowBehavior" parent="Agents/OffsetFollowMovingAgent" unique_id=764306254 node_paths=PackedStringArray("Target") instance=ExtResource("18_q0gcs")]
 Target = NodePath("../../SeekMovingAgent")
-OffsetFromTarget = Vector2(-540, 241)
+OffsetFromTarget = Vector2(-73, -48)
 ShowGizmos = false
 
 [node name="ArriveSteeringBehaviorNLA" parent="Agents/OffsetFollowMovingAgent/OffsetFollowBehavior" unique_id=755186671 node_paths=PackedStringArray("Target") instance=ExtResource("5_xfglb")]
@@ -414,8 +412,6 @@ GizmosColor = Color(0, 0, 1, 1)
 Radius = 500.0
 
 [node name="VOAgentAvoiderMovingAgent" parent="Agents" unique_id=1936263847 instance=ExtResource("4_d5nib")]
-process_mode = 4
-visible = false
 position = Vector2(226, 248)
 MaximumSpeed = 115.0
 AutoSmooth = true

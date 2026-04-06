@@ -19,7 +19,7 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 // method FindChild<T>(). Otherwise, FindChild casting to ISteeringBehavior will fail. It
 // seems and old Godot C# problem:
 // https://github.com/godotengine/godot/issues/36395
-public partial class VOAgentAvoiderBehavior: Node2D, ISteeringBehavior
+public partial class VOAgentAvoiderSteeringBehavior: Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")] 
     private uint _samplingDiscResolution = 100;
@@ -136,8 +136,6 @@ public partial class VOAgentAvoiderBehavior: Node2D, ISteeringBehavior
         // If a collision is going to happen in the future, then calculate the avoiding
         // vector nearest to the ideal velocity to target.
         float lowestPenalty = float.MaxValue;
-        float candidateVectorDivergence;
-        float candidateCollisionTime;
         _bestCandidateVelocity = Vector2.Zero;
         foreach (Vector2 candidateVelocity in _velocitySamplingDisc)
         {
@@ -160,8 +158,6 @@ public partial class VOAgentAvoiderBehavior: Node2D, ISteeringBehavior
             if (penalty < lowestPenalty)
             {
                 lowestPenalty = penalty;
-                candidateVectorDivergence = vectorDivergence;
-                candidateCollisionTime = collisionTime;
                 _bestCandidateVelocity = candidateVelocity;
             }
         }
