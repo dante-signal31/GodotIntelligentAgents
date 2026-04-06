@@ -1297,8 +1297,8 @@ public class SimpleBehaviorTests
         // Get references to steering behavior from both agents.
         ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
             agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
-        ANNPassiveAgentAvoiderBehavior annAgentAvoiderBehavior =
-            agentAvoider.FindChild<ANNPassiveAgentAvoiderBehavior>(recursive: true);
+        ANNPassiveAgentAvoiderSteeringBehavior annAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<ANNPassiveAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -1323,7 +1323,7 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
 
         agentAvoiderBehavior.AvoidanceTimeout = 0.5f;
-        annAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 400f;
+        annAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 400f;
 
         // FIRST SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position9.GlobalPosition;
@@ -1390,8 +1390,8 @@ public class SimpleBehaviorTests
         // Get references to steering behavior from both agents.
         ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
             agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
-        ANNPassiveAgentAvoiderBehavior annAgentAvoiderBehavior =
-            agentAvoider.FindChild<ANNPassiveAgentAvoiderBehavior>(recursive: true);
+        ANNPassiveAgentAvoiderSteeringBehavior annAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<ANNPassiveAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -1416,7 +1416,7 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
 
         agentAvoiderBehavior.AvoidanceTimeout = 0.5f;
-        annAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 400f;
+        annAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 400f;
 
         // SECOND SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position9.GlobalPosition;
@@ -1483,8 +1483,8 @@ public class SimpleBehaviorTests
         // Get references to steering behavior from both agents.
         ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
             agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
-        ANNPassiveAgentAvoiderBehavior annAgentAvoiderBehavior =
-            agentAvoider.FindChild<ANNPassiveAgentAvoiderBehavior>(recursive: true);
+        ANNPassiveAgentAvoiderSteeringBehavior annAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<ANNPassiveAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -1509,7 +1509,7 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
 
         agentAvoiderBehavior.AvoidanceTimeout = 0.5f;
-        annAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 400f;
+        annAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 400f;
 
         // THIRD SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position3.GlobalPosition;
@@ -1576,8 +1576,8 @@ public class SimpleBehaviorTests
         // Get references to steering behavior from both agents.
         ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
             agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
-        ANNPassiveAgentAvoiderBehavior annAgentAvoiderBehavior =
-            agentAvoider.FindChild<ANNPassiveAgentAvoiderBehavior>(recursive: true);
+        ANNPassiveAgentAvoiderSteeringBehavior annAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<ANNPassiveAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -1601,7 +1601,7 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
 
         agentAvoiderBehavior.AvoidanceTimeout = 0.5f;
-        annAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 400f;
+        annAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 400f;
 
         // FOURTH SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position11.GlobalPosition;
@@ -1668,8 +1668,8 @@ public class SimpleBehaviorTests
         // Get references to steering behavior from both agents.
         ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
             agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
-        ANNPassiveAgentAvoiderBehavior annAgentAvoiderBehavior =
-            agentAvoider.FindChild<ANNPassiveAgentAvoiderBehavior>(recursive: true);
+        ANNPassiveAgentAvoiderSteeringBehavior annAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<ANNPassiveAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -1694,7 +1694,7 @@ public class SimpleBehaviorTests
         obstacleMovingAgent.AgentColor = new Color(1, 0, 0);
 
         agentAvoiderBehavior.AvoidanceTimeout = 0.5f;
-        annAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 400f;
+        annAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 400f;
 
         // FIFTH SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position12.GlobalPosition;
@@ -1765,8 +1765,8 @@ public class SimpleBehaviorTests
         // Get references to steering behavior from both agents.
         ActiveAgentAvoiderSteeringBehavior agentAvoiderBehavior =
             agentAvoider.FindChild<ActiveAgentAvoiderSteeringBehavior>();
-        ANNPassiveAgentAvoiderBehavior annAgentAvoiderBehavior =
-            agentAvoider.FindChild<ANNPassiveAgentAvoiderBehavior>(recursive: true);
+        ANNPassiveAgentAvoiderSteeringBehavior annAgentAvoiderSteeringBehavior =
+            agentAvoider.FindChild<ANNPassiveAgentAvoiderSteeringBehavior>(recursive: true);
         SeekSteeringBehavior agentAvoiderSeekSteeringBehavior =
             agentAvoider.FindChild<SeekSteeringBehavior>(recursive: true);
         SeekSteeringBehavior seekSteeringBehavior =
@@ -1803,7 +1803,7 @@ public class SimpleBehaviorTests
         obstacleMovingAgent2.AgentColor = new Color(1, 0, 0);
 
         agentAvoiderBehavior.AvoidanceTimeout = 0.5f;
-        annAgentAvoiderBehavior.MinimumDistanceBetweenAgents = 400f;
+        annAgentAvoiderSteeringBehavior.MinimumDistanceBetweenAgents = 400f;
 
         // SIXTH SCENARIO:
         targetOfAgentAvoiderMovingAgent.GlobalPosition = position6.GlobalPosition;

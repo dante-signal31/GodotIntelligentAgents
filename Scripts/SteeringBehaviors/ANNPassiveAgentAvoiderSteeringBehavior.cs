@@ -17,7 +17,7 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 /// <p>The difference with an obstacle avoidance algorithm is that obstacles don't move
 /// while agents do.</p>
 /// </summary>
-public partial class ANNPassiveAgentAvoiderBehavior: Node2D, ISteeringBehavior
+public partial class ANNPassiveAgentAvoiderSteeringBehavior: Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")]
     [Export] public float MinimumDistanceBetweenAgents = 200f;

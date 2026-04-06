@@ -23,7 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://be350relk3jqo" path="res://Scenes/Sensors/ConeSensor.tscn" id="21_qd6kt"]
 [ext_resource type="PackedScene" uid="uid://de8c34qfrri5a" path="res://Scenes/SteeringBehaviors/ActiveAgentAvoiderSteeringBehavior.tscn" id="23_ujip5"]
 [ext_resource type="PackedScene" uid="uid://dg5jntlmhib8s" path="res://Scenes/SteeringBehaviors/PassiveAgentAvoiderSteeringBehavior.tscn" id="24_cmigx"]
-[ext_resource type="PackedScene" uid="uid://cip2ek6n8fg4" path="res://Scenes/SteeringBehaviors/ANNPassiveAgentAvoiderBehavior.tscn" id="24_ifpi0"]
+[ext_resource type="PackedScene" uid="uid://cip2ek6n8fg4" path="res://Scenes/SteeringBehaviors/ANNPassiveAgentAvoiderSteeringBehavior.tscn" id="24_ifpi0"]
 [ext_resource type="PackedScene" uid="uid://dvk8qqy48q4ti" path="res://Scenes/Sensors/CircleSensor.tscn" id="25_cmigx"]
 [ext_resource type="Curve" uid="uid://b7ik6hbcpxt6s" path="res://Curves/gaussian.tres" id="26_1o7g3"]
 [ext_resource type="PackedScene" uid="uid://73eoh74bxawt" path="res://Scenes/SteeringBehaviors/VOAgentAvoiderSteeringBehavior.tscn" id="26_vtb3e"]
@@ -130,6 +130,8 @@ position = Vector2(904, 493)
 [node name="Agents" type="Node" parent="." unique_id=1162190175]
 
 [node name="SeekMovingAgent" parent="Agents" unique_id=1580858849 instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(1048, 601)
 MaximumSpeed = 0.0
 AutoSmoothSamples = 0
@@ -380,12 +382,10 @@ _agentAvoiderSteeringBehavior = NodePath("ANNPassiveAgentAvoiderBehavior")
 Target = NodePath("../../../../Target")
 
 [node name="ANNPassiveAgentAvoiderBehavior" parent="Agents/ANNAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior" unique_id=1925096258 instance=ExtResource("24_ifpi0")]
-MinimumDistanceBetweenAgents = 400.0
 ShowGizmos = true
 GizmosColor = Color(0, 0, 1, 1)
 
 [node name="CircleSensor" parent="Agents/ANNAgentAvoiderMovingAgent/ActiveAgentAvoiderSteeringBehavior/ANNPassiveAgentAvoiderBehavior" unique_id=1284326153 instance=ExtResource("25_cmigx")]
-Radius = 500.0
 
 [node name="ANNAgentAvoiderMovingAgent2" parent="Agents" unique_id=492455992 instance=ExtResource("4_d5nib")]
 process_mode = 4
@@ -403,15 +403,13 @@ _agentAvoiderSteeringBehavior = NodePath("ANNPassiveAgentAvoiderBehavior")
 [node name="SeekSteeringBehavior" parent="Agents/ANNAgentAvoiderMovingAgent2/ActiveAgentAvoiderSteeringBehavior" unique_id=1182595444 node_paths=PackedStringArray("Target") instance=ExtResource("5_b8gkt")]
 Target = NodePath("../../../../Positions/Position3")
 
-[node name="ANNPassiveAgentAvoiderBehavior" parent="Agents/ANNAgentAvoiderMovingAgent2/ActiveAgentAvoiderSteeringBehavior" unique_id=954115805 instance=ExtResource("24_ifpi0")]
-MinimumDistanceBetweenAgents = 50.0
-ShowGizmos = true
-GizmosColor = Color(0, 0, 1, 1)
+[node name="ANNPassiveAgentAvoiderBehavior" parent="Agents/ANNAgentAvoiderMovingAgent2/ActiveAgentAvoiderSteeringBehavior" unique_id=345803903 instance=ExtResource("24_ifpi0")]
 
-[node name="CircleSensor" parent="Agents/ANNAgentAvoiderMovingAgent2/ActiveAgentAvoiderSteeringBehavior/ANNPassiveAgentAvoiderBehavior" unique_id=1850573560 instance=ExtResource("25_cmigx")]
-Radius = 500.0
+[node name="CircleSensor" parent="Agents/ANNAgentAvoiderMovingAgent2/ActiveAgentAvoiderSteeringBehavior/ANNPassiveAgentAvoiderBehavior" unique_id=2037491909 instance=ExtResource("25_cmigx")]
 
 [node name="VOAgentAvoiderMovingAgent" parent="Agents" unique_id=1936263847 instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(226, 248)
 MaximumSpeed = 115.0
 AutoSmooth = true
