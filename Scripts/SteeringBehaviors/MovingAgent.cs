@@ -173,6 +173,8 @@ public partial class MovingAgent : CharacterBody2D
 
     public override void _EnterTree()
     {
+        _agentShape = this.FindChild<CollisionShape2D>();
+        
         _maximumRotationSpeedRadNormalized =
             Mathf.DegToRad(MaximumRotationalDegSpeed) / (2 * Mathf.Pi);
         _stopRotationRadThreshold = Mathf.DegToRad(StopRotationDegThreshold);
@@ -180,12 +182,11 @@ public partial class MovingAgent : CharacterBody2D
         if (!AutoSmooth) return;
         _lastRotations = new MovingWindow(AutoSmoothSamples);
     }
-
+    
     public override void _Ready()
     {
         if (_bodySprite != null) _bodySprite.Modulate = AgentColor;
         BehaviorArgs = GetSteeringBehaviorArgs();
-        _agentShape = this.FindChild<CollisionShape2D>();
         UpdateSmoothingWeights();
     }
 

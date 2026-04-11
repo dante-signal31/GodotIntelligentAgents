@@ -27,6 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://dvk8qqy48q4ti" path="res://Scenes/Sensors/CircleSensor.tscn" id="25_cmigx"]
 [ext_resource type="Curve" uid="uid://b7ik6hbcpxt6s" path="res://Curves/gaussian.tres" id="26_1o7g3"]
 [ext_resource type="PackedScene" uid="uid://73eoh74bxawt" path="res://Scenes/SteeringBehaviors/VOAgentAvoiderSteeringBehavior.tscn" id="26_vtb3e"]
+[ext_resource type="PackedScene" uid="uid://j00kef0klrhd" path="res://Scenes/SteeringBehaviors/MeshPathFindingSteeringBehavior.tscn" id="28_3uomi"]
 
 [sub_resource type="Curve" id="Curve_1o7g3"]
 
@@ -72,6 +73,10 @@ point_count = 2
 
 [sub_resource type="Curve" id="Curve_wgcds"]
 
+[sub_resource type="Curve" id="Curve_nwlyv"]
+
+[sub_resource type="Curve" id="Curve_1ekqx"]
+
 [node name="SimpleBehaviorTestLevel" type="Node2D" unique_id=1295611756]
 
 [node name="ClearCourtyard" parent="." unique_id=2091622630 instance=ExtResource("1_oy3cc")]
@@ -80,8 +85,12 @@ point_count = 2
 modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
 top_level = true
 z_index = 1000
-position = Vector2(1470, 812)
+position = Vector2(1320, 754)
 gizmo_extents = 51.0
+
+[node name="Target2" parent="." unique_id=215977387 instance=ExtResource("3_hsc70")]
+modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
+position = Vector2(343, 776)
 
 [node name="Positions" type="Node" parent="." unique_id=2036415414]
 
@@ -125,7 +134,7 @@ position = Vector2(1486, 506)
 position = Vector2(305, 277)
 
 [node name="Marker2D" type="Marker2D" parent="Positions" unique_id=684331777]
-position = Vector2(904, 493)
+position = Vector2(310, 812)
 
 [node name="Agents" type="Node" parent="." unique_id=1162190175]
 
@@ -429,4 +438,36 @@ Target = NodePath("../../../../Target")
 [node name="CircleSensor" parent="Agents/VOAgentAvoiderMovingAgent/VOAgentAvoiderSteeringBehavior/PotentialCollisionDetector" unique_id=497158187 instance=ExtResource("25_cmigx")]
 Radius = 400.0
 
+[node name="MeshAgentAvoiderMovingAgent" parent="Agents" unique_id=1361705829 instance=ExtResource("4_d5nib")]
+position = Vector2(253, 251)
+MaximumSpeed = 300.0
+SmoothingCurve = SubResource("Curve_nwlyv")
+
+[node name="MeshPathFindingSteeringBehavior" parent="Agents/MeshAgentAvoiderMovingAgent" unique_id=471368086 node_paths=PackedStringArray("PathTarget") instance=ExtResource("28_3uomi")]
+PathTarget = NodePath("../../../Target")
+AgentDetectionRange = 400.0
+TimeHorizon = 4.0
+
+[node name="PathFollowingSteeringBehavior" parent="Agents/MeshAgentAvoiderMovingAgent/MeshPathFindingSteeringBehavior" index="0" unique_id=509784456 node_paths=PackedStringArray("FollowPath")]
+FollowPath = NodePath("")
+
+[node name="MeshNavigationAgent2D" parent="Agents/MeshAgentAvoiderMovingAgent/MeshPathFindingSteeringBehavior" index="1" unique_id=391528009]
+target_position = Vector2(1320, 754)
+radius = 0.0
+neighbor_distance = 400.0
+time_horizon_agents = 4.0
+max_speed = 300.0
+
+[node name="MeshMovingAgentObstacle" parent="Agents" unique_id=1825993207 instance=ExtResource("4_d5nib")]
+position = Vector2(1458, 343)
+AgentColor = Color(1, 0, 0, 1)
+MaximumSpeed = 150.0
+SmoothingCurve = SubResource("Curve_1ekqx")
+
+[node name="MeshPathFindingSteeringBehavior" parent="Agents/MeshMovingAgentObstacle" unique_id=668809470 node_paths=PackedStringArray("PathTarget") instance=ExtResource("28_3uomi")]
+PathTarget = NodePath("../../../Target2")
+AgentDetectionRange = 400.0
+TimeHorizon = 4.0
+
 [editable path="ClearCourtyard"]
+[editable path="Agents/MeshAgentAvoiderMovingAgent/MeshPathFindingSteeringBehavior"]
