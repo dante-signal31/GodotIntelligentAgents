@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Timers;
 using Godot;
 using GodotGameAIbyExample.Scripts.Extensions;
 using GodotGameAIbyExample.Scripts.Pathfinding;
+using Timer = System.Timers.Timer;
 
 namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
@@ -52,6 +54,18 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
             _avoidAgents = value;
             if (_meshNavigationPathFinder == null) return;
             _meshNavigationPathFinder.AvoidanceEnabled = value;
+        }
+    }
+    
+    private float _minimumDistanceBetweenAgents = 50f;
+    [Export] public float MinimumDistanceBetweenAgents
+    {
+        get => _minimumDistanceBetweenAgents;
+        set
+        {
+            _minimumDistanceBetweenAgents = value;
+            if (_meshNavigationPathFinder == null || _currentAgent == null) return;
+            _meshNavigationPathFinder.Radius = value + _currentAgent.Radius;
         }
     }
 
@@ -115,6 +129,19 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
         }
     }
     
+    /// <summary>
+    /// Threshold factor for determining when to use normal vector avoidance.
+    /// When the dot product between avoidance and collision vectors exceeds this value 
+    /// (positive or negative), the avoidance vector is replaced with a vector normal 
+    /// to the collision agent's velocity to prevent chase or collision scenarios.
+    /// </summary>
+    [Export] public float TooAlignedFactor = 0.95f;
+    
+    /// <summary>
+    /// Timer for too aligned situations.
+    /// </summary>
+    [Export] public float AvoidanceTimeout { get; set; } = 0.5f;
+    
     [ExportCategory("DEBUG:")] 
     [Export] public bool ShowGizmos { get; set; } = true;
     [Export] public Color GizmosColor { get; set; } = Colors.Yellow;
@@ -138,26 +165,29 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
     private PathFollowingSteeringBehavior _pathFollowingSteeringBehavior;
     private MeshNavigationAgent2D _meshNavigationPathFinder;
     private Vector2 _currentAvoidVector;
+    private readonly Random _random = new();
+    private SteeringOutput _currentSteering;
 
     public override void _Ready()
     {
         _currentAgent = this.FindAncestor<MovingAgent>();
         _pathFollowingSteeringBehavior = this.FindChild<PathFollowingSteeringBehavior>();
-        
+
         // Configure the mesh pathfinder.
         _meshNavigationPathFinder = this.FindChild<MeshNavigationAgent2D>();
-        _meshNavigationPathFinder.Radius = _currentAgent.Radius;
+        _meshNavigationPathFinder.Radius = _currentAgent.Radius +
+                                           MinimumDistanceBetweenAgents;
         _meshNavigationPathFinder.Connect(
             NavigationAgent2D.SignalName.PathChanged,
             new Callable(this, MethodName.OnPathUpdated));
-        
+
         // Show path gizmo if we are debugging.
         if (CurrentPath == null) CurrentPath = new Path();
         CurrentPath.Name = $"{Name} - Path";
         CurrentPath.ShowGizmos = ShowGizmos;
         CurrentPath.GizmosColor = GizmosColor;
         GetTree().Root.CallDeferred(MethodName.AddChild, CurrentPath);
-        
+
         // Configure agent avoidance.
         _meshNavigationPathFinder.Connect(
             NavigationAgent2D.SignalName.VelocityComputed,
@@ -173,7 +203,7 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
         if (PathTarget == null) return;
         UpdateTargetPosition(PathTarget.Position);
     }
-    
+
     /// <summary>
     /// <p>Callback for when the target position changes.</p>
     /// <p>This method updates the mesh navigation server's target position and generates
@@ -223,8 +253,20 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
         // Calculate best path to target.
-        if (_meshNavigationPathFinder == null || !_meshNavigationPathFinder.IsReady) 
+        if (_meshNavigationPathFinder == null || !_meshNavigationPathFinder.IsReady)
             return SteeringOutput.Zero;
+
+        // Sometimes, the agent gets its target, but a nearby agent makes it move from
+        // the target. The problem is that, as path finding and avoidance are separate
+        // systems, the pathfinder thinks that the agent stays at the target, so it does
+        // not return a new vector to reach it. In those cases we must force pathfinder
+        // to recalculate the path.
+        if (_meshNavigationPathFinder.IsNavigationFinished() &&
+            GlobalPosition.DistanceTo(_meshNavigationPathFinder.TargetPosition) >
+            _meshNavigationPathFinder.TargetDesiredDistance)
+        {
+            OnPathTargetPositionChanged(_meshNavigationPathFinder.TargetPosition);
+        }
         
         // Godot needs this call every physics frame to keep navigation map updated.
         _meshNavigationPathFinder?.GetNextPathPosition();
@@ -243,9 +285,50 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
         // Tell our mesh navigation server which is our vector to target. This lets
         // it calculate the avoidance vector nearest to our current path.
         _meshNavigationPathFinder.SetVelocity(pathSteering.Linear);
+            
+        // Now, get the avoidance vector. Actually, we are using the avoidance vector
+        // calculated after the last GetSteering call. But just one frame lag does not
+        // seem a big deal. But we must check the avoidance vector for the classic
+        // edge case for avoidance systems.
+        //
+        // THE EDGE CASE:
+        // The builtin avoidance system in Godot suffers the same edge problem
+        // as Millington's or ANN. The problem is that it does not seem to take in
+        // count the edge case where the two agents are going one against the other
+        // directly, in opposite directions. The rest of the method fixes that.
+        //
+        // One way to find out if the two agents are going one against the other in 
+        // opposite directions is to check the dot product between the evasion vector
+        // and the current velocity. If the absolute value of a dot product is near 1,
+        // that means the two agents are going away or approaching, in both cases in
+        // the same "line". In the first case, it wouldn't be a collision, but we want
+        // an avoidance movement, not a chase.In the second case, that means that the
+        // two agents are approaching in opposite directions.
+        if (_currentAvoidVector != Vector2.Zero)
+        {
+            // Remember that in other algorithms we calculated evasion vector and
+            // afterwards we assed it to the velocity to get the final vector. But in 
+            // this case MeshNavigationAgent2D already calculates the final vector. So,
+            // to get the evasion vector we must subtract the current velocity from
+            // the calculated vector.
+            Vector2 evasionVector = (_currentAvoidVector - args.CurrentAgent.Velocity);
+            float alignmentFactor = Mathf.Abs(
+                evasionVector.Normalized().Dot(
+                    args.CurrentAgent.Velocity.Normalized())); 
+            if (Mathf.Abs(alignmentFactor) >= TooAlignedFactor && evasionVector.Length() > 50f)
+            {
+                // If relative velocity is too aligned with evasionVector, then it means
+                // we can end in a direct hit, so we try an evasion vector that is
+                // perpendicular to the current agent's velocity.
+                Vector2 avoidVectorNormalized = args.CurrentAgent.Velocity
+                                                    .Rotated(Mathf.Pi / 2)
+                                                    .Normalized() * 
+                                                // Turn to one side or another randomly.
+                                                (_random.Next(2) * 2 - 1); 
+                _currentAvoidVector = avoidVectorNormalized * args.MaximumSpeed;
+            }
+        }
         
-        // Actually, we are using the avoidance vector calculated after the last
-        // GetSteering call. But just one frame lag does not seem a big deal.
         SteeringOutput avoidSteering = new SteeringOutput(
             _currentAvoidVector,
             pathSteering.Angular

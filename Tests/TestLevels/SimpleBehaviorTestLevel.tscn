@@ -439,6 +439,8 @@ Target = NodePath("../../../../Target")
 Radius = 400.0
 
 [node name="MeshAgentAvoiderMovingAgent" parent="Agents" unique_id=1361705829 instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(253, 251)
 MaximumSpeed = 300.0
 SmoothingCurve = SubResource("Curve_nwlyv")
@@ -453,12 +455,14 @@ FollowPath = NodePath("")
 
 [node name="MeshNavigationAgent2D" parent="Agents/MeshAgentAvoiderMovingAgent/MeshPathFindingSteeringBehavior" index="1" unique_id=391528009]
 target_position = Vector2(1320, 754)
-radius = 0.0
+radius = 52.0384
 neighbor_distance = 400.0
 time_horizon_agents = 4.0
 max_speed = 300.0
 
 [node name="MeshMovingAgentObstacle" parent="Agents" unique_id=1825993207 instance=ExtResource("4_d5nib")]
+process_mode = 4
+visible = false
 position = Vector2(1458, 343)
 AgentColor = Color(1, 0, 0, 1)
 MaximumSpeed = 150.0
