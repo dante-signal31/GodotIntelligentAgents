@@ -167,6 +167,8 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
     private Vector2 _currentAvoidVector;
     private readonly Random _random = new();
     private SteeringOutput _currentSteering;
+    private Timer _avoidanceTimer;
+    private bool _waitingForAvoidanceTimeout;
 
     public override void _Ready()
     {
@@ -202,6 +204,23 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
         // Make the agent head to the target if we already have one.
         if (PathTarget == null) return;
         UpdateTargetPosition(PathTarget.Position);
+        
+        // Set up timer.
+        _avoidanceTimer = new Timer(AvoidanceTimeout * 1000);
+        _avoidanceTimer.AutoReset = false;
+        _avoidanceTimer.Elapsed += OnAvoidanceTimeout;
+    }
+    
+    private void OnAvoidanceTimeout(object sender, ElapsedEventArgs elapsedEventArgs)
+    {
+        _waitingForAvoidanceTimeout = false;
+    }
+    
+    private void StartAvoidanceTimer()
+    {
+        _avoidanceTimer.Stop();
+        _avoidanceTimer.Start();
+        _waitingForAvoidanceTimeout = true;
     }
 
     /// <summary>
@@ -304,14 +323,14 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
         // the same "line". In the first case, it wouldn't be a collision, but we want
         // an avoidance movement, not a chase.In the second case, that means that the
         // two agents are approaching in opposite directions.
-        if (_currentAvoidVector != Vector2.Zero)
+        if (_currentAvoidVector != Vector2.Zero && !_waitingForAvoidanceTimeout)
         {
             // Remember that in other algorithms we calculated evasion vector and
-            // afterwards we assed it to the velocity to get the final vector. But in 
+            // afterward we assed it to the velocity to get the final vector. But in 
             // this case MeshNavigationAgent2D already calculates the final vector. So,
-            // to get the evasion vector we must subtract the current velocity from
+            // to get the evasion vector, we must subtract the current velocity from
             // the calculated vector.
-            Vector2 evasionVector = (_currentAvoidVector - args.CurrentAgent.Velocity);
+            Vector2 evasionVector = (_currentAvoidVector - pathSteering.Linear);
             float alignmentFactor = Mathf.Abs(
                 evasionVector.Normalized().Dot(
                     args.CurrentAgent.Velocity.Normalized())); 
@@ -326,6 +345,7 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
                                                 // Turn to one side or another randomly.
                                                 (_random.Next(2) * 2 - 1); 
                 _currentAvoidVector = avoidVectorNormalized * args.MaximumSpeed;
+                StartAvoidanceTimer();
             }
         }
         

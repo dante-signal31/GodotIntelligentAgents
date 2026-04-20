@@ -74,6 +74,8 @@ point_count = 2
 [sub_resource type="Curve" id="Curve_wgcds"]
 
 [sub_resource type="Curve" id="Curve_nwlyv"]
+_data = [Vector2(0, 0), 0.0, 3.3098502, 0, 0, Vector2(0.498366, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.0026866198), -4.0818977, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="Curve" id="Curve_1ekqx"]
 
@@ -85,12 +87,12 @@ point_count = 2
 modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
 top_level = true
 z_index = 1000
-position = Vector2(1320, 754)
+position = Vector2(1488, 506)
 gizmo_extents = 51.0
 
 [node name="Target2" parent="." unique_id=215977387 instance=ExtResource("3_hsc70")]
 modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
-position = Vector2(343, 776)
+position = Vector2(469, 502)
 
 [node name="Positions" type="Node" parent="." unique_id=2036415414]
 
@@ -441,8 +443,9 @@ Radius = 400.0
 [node name="MeshAgentAvoiderMovingAgent" parent="Agents" unique_id=1361705829 instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(253, 251)
+position = Vector2(467, 504)
 MaximumSpeed = 300.0
+AutoSmooth = true
 SmoothingCurve = SubResource("Curve_nwlyv")
 
 [node name="MeshPathFindingSteeringBehavior" parent="Agents/MeshAgentAvoiderMovingAgent" unique_id=471368086 node_paths=PackedStringArray("PathTarget") instance=ExtResource("28_3uomi")]
@@ -455,7 +458,7 @@ FollowPath = NodePath("")
 
 [node name="MeshNavigationAgent2D" parent="Agents/MeshAgentAvoiderMovingAgent/MeshPathFindingSteeringBehavior" index="1" unique_id=391528009]
 target_position = Vector2(1320, 754)
-radius = 52.0384
+radius = 102.0384
 neighbor_distance = 400.0
 time_horizon_agents = 4.0
 max_speed = 300.0
@@ -463,7 +466,7 @@ max_speed = 300.0
 [node name="MeshMovingAgentObstacle" parent="Agents" unique_id=1825993207 instance=ExtResource("4_d5nib")]
 process_mode = 4
 visible = false
-position = Vector2(1458, 343)
+position = Vector2(1488, 508)
 AgentColor = Color(1, 0, 0, 1)
 MaximumSpeed = 150.0
 SmoothingCurve = SubResource("Curve_1ekqx")
