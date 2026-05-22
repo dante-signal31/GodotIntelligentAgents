@@ -36,7 +36,7 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
                     new Callable(this, MethodName.OnPathTargetPositionChanged));
             }
             if (_meshNavigationPathFinder == null) return;
-            UpdateTargetPosition(value.Position);
+            UpdateTargetPosition(value.GlobalPosition);
         }
     }
     
@@ -160,6 +160,11 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
             _pathFollowingSteeringBehavior.FollowPath = value;
         }
     }
+
+    /// <summary>
+    /// True if the pathfinding system is ready to calculate a path.
+    /// </summary>
+    public bool PathFindingReady => _meshNavigationPathFinder.IsReady;
     
     private MovingAgent _currentAgent;
     private PathFollowingSteeringBehavior _pathFollowingSteeringBehavior;
@@ -172,7 +177,16 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
 
     public override void _Ready()
     {
+        // Set up timer.
+        _avoidanceTimer = new Timer(AvoidanceTimeout * 1000);
+        _avoidanceTimer.AutoReset = false;
+        _avoidanceTimer.Elapsed += OnAvoidanceTimeout;
+        
+        // Get current agent.
         _currentAgent = this.FindAncestor<MovingAgent>();
+        if (_currentAgent == null) return;
+        
+        
         _pathFollowingSteeringBehavior = this.FindChild<PathFollowingSteeringBehavior>();
 
         // Configure the mesh pathfinder.
@@ -203,12 +217,7 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
 
         // Make the agent head to the target if we already have one.
         if (PathTarget == null) return;
-        UpdateTargetPosition(PathTarget.Position);
-        
-        // Set up timer.
-        _avoidanceTimer = new Timer(AvoidanceTimeout * 1000);
-        _avoidanceTimer.AutoReset = false;
-        _avoidanceTimer.Elapsed += OnAvoidanceTimeout;
+        UpdateTargetPosition(PathTarget.GlobalPosition);
     }
     
     private void OnAvoidanceTimeout(object sender, ElapsedEventArgs elapsedEventArgs)
@@ -242,12 +251,12 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
     /// target.
     /// </summary>
     /// <param name="newTargetPosition"></param>
-    private void UpdateTargetPosition(Vector2 newTargetPosition)
+    public void UpdateTargetPosition(Vector2 newTargetPosition)
     {
         _meshNavigationPathFinder.TargetPosition = newTargetPosition;
         // Oddly, you must call GetNextPathPosition() to make navigation server
         // recalculate the path to the new target position.
-        _meshNavigationPathFinder.GetNextPathPosition();
+        // _meshNavigationPathFinder?.GetNextPathPosition();
     }
     
     /// <summary>
@@ -268,7 +277,14 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
     {
         _currentAvoidVector = avoidVector;
     }
-    
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (!_meshNavigationPathFinder.IsReady) return;
+        // Godot needs this call every physics frame to keep navigation map updated.
+        _meshNavigationPathFinder?.GetNextPathPosition();
+    }
+
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
         // Calculate best path to target.
@@ -287,11 +303,8 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
             OnPathTargetPositionChanged(_meshNavigationPathFinder.TargetPosition);
         }
         
-        // Godot needs this call every physics frame to keep navigation map updated.
-        _meshNavigationPathFinder?.GetNextPathPosition();
-        
         // No path? then no move.
-        if (CurrentPath.PathLength == 0) return SteeringOutput.Zero;
+        if (CurrentPath.PathPositionsCount == 0) return SteeringOutput.Zero;
         
         SteeringOutput pathSteering = _pathFollowingSteeringBehavior.GetSteering(args);
         

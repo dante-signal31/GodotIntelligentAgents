@@ -29,6 +29,20 @@
 [ext_resource type="PackedScene" uid="uid://cpqb1t62g0yfy" path="res://Scenes/SteeringBehaviors/PriorityDitheringBlendedSteeringBehavior.tscn" id="20_acdjf"]
 [ext_resource type="Script" uid="uid://c1hmtt20hub48" path="res://Scripts/SteeringBehaviors/RandomBehavior.cs" id="21_vx4id"]
 [ext_resource type="PackedScene" uid="uid://m34468003uh2" path="res://Scenes/SteeringBehaviors/ContextSteeringBehavior.tscn" id="26_mk2fd"]
+[ext_resource type="PackedScene" uid="uid://cakemgobhu7qe" path="res://Scenes/SteeringBehaviors/PipelineSteeringBehavior.tscn" id="30_4uo0v"]
+[ext_resource type="PackedScene" uid="uid://d31j5kiwxp3qr" path="res://Scenes/SteeringBehaviors/PipelineTargeterAggregator.tscn" id="31_qtcqb"]
+[ext_resource type="PackedScene" uid="uid://v5vwslf1gdx3" path="res://Scenes/SteeringBehaviors/PipelineManualPositionTargeter.tscn" id="32_at47j"]
+[ext_resource type="PackedScene" uid="uid://drl4dk2q780lc" path="res://Scenes/SteeringBehaviors/PipelineDecomposerAggregator.tscn" id="35_6eiss"]
+[ext_resource type="PackedScene" uid="uid://q7mn80ljumjm" path="res://Scenes/SteeringBehaviors/PipelinePathDecomposer.tscn" id="36_085yk"]
+[ext_resource type="PackedScene" uid="uid://ditxmi56bbdyx" path="res://Scenes/SteeringBehaviors/PipelineConstraintsAggregator.tscn" id="36_r5j5l"]
+[ext_resource type="PackedScene" uid="uid://ce4h53mnljii8" path="res://Scenes/SteeringBehaviors/PipelineMeshPathFinderActuator.tscn" id="37_g5048"]
+[ext_resource type="PackedScene" uid="uid://b6jxcemj6xp7r" path="res://Scenes/SteeringBehaviors/WanderSteeringBehavior.tscn" id="38_5mmdj"]
+[ext_resource type="PackedScene" uid="uid://cbs0myfeng31w" path="res://Scenes/SteeringBehaviors/PipelineHidingConstraint.tscn" id="39_r5j5l"]
+[ext_resource type="PackedScene" uid="uid://cpwcnqlikjcoq" path="res://Scenes/SteeringBehaviors/PipelineAgentAvoidingConstraint.tscn" id="40_g5048"]
+
+[sub_resource type="Resource" id="Resource_085yk"]
+script = ExtResource("4_6salh")
+Offsets = Array[Vector2]([Vector2(176, 888), Vector2(1648, 904), Vector2(1632, 176), Vector2(176, 176)])
 
 [sub_resource type="Resource" id="Resource_mk2fd"]
 script = ExtResource("4_6salh")
@@ -117,10 +131,12 @@ metadata/_custom_type_script = "uid://c1hmtt20hub48"
 
 [sub_resource type="Curve" id="Curve_tieph"]
 
-[sub_resource type="Curve" id="Curve_n32bh"]
+[sub_resource type="Curve" id="Curve_qtcqb"]
 resource_local_to_scene = true
 _data = [Vector2(0, 0), 0.0, 3.3098502, 0, 0, Vector2(0.498366, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -4.0818977, 0.0, 0, 0]
 point_count = 3
+
+[sub_resource type="Curve" id="Curve_v558f"]
 
 [node name="ObstacleTestLevel" type="Node2D" unique_id=1876620435]
 
@@ -129,54 +145,72 @@ _walkableRegionWeldThreshold = 100
 
 [node name="Target" parent="." unique_id=452483211 instance=ExtResource("4_sfy1w")]
 modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
-position = Vector2(1520, 424)
+position = Vector2(1096, 832)
+
+[node name="PipelineTestPath" parent="." unique_id=1347808325 instance=ExtResource("3_vx4id")]
+Loop = true
+Positions = SubResource("Resource_085yk")
+
+[node name="GroupPosition0" type="Node2D" parent="PipelineTestPath" unique_id=817474689]
+position = Vector2(176, 888)
+script = ExtResource("5_3f7ow")
+
+[node name="GroupPosition1" type="Node2D" parent="PipelineTestPath" unique_id=1285097306]
+position = Vector2(1648, 904)
+script = ExtResource("5_3f7ow")
+
+[node name="GroupPosition2" type="Node2D" parent="PipelineTestPath" unique_id=100770212]
+position = Vector2(1632, 176)
+script = ExtResource("5_3f7ow")
+
+[node name="GroupPosition3" type="Node2D" parent="PipelineTestPath" unique_id=40822013]
+position = Vector2(176, 176)
+script = ExtResource("5_3f7ow")
 
 [node name="TestPath" parent="." unique_id=1734785540 instance=ExtResource("3_vx4id")]
 visible = false
 Positions = SubResource("Resource_mk2fd")
 
-[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=1599346379]
+[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=811202000]
 position = Vector2(256, 264)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=732624014]
+[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=807022060]
 position = Vector2(256, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=1731456138]
+[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=2112849937]
 position = Vector2(640, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=53504846]
+[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=592671268]
 position = Vector2(640, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=1253448509]
+[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=1708707160]
 position = Vector2(1152, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=1780177476]
+[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=1970349900]
 position = Vector2(1152, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=1937003808]
+[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=315929433]
 position = Vector2(1622, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=204863245]
+[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=1179881081]
 position = Vector2(1624, 272)
 script = ExtResource("5_3f7ow")
 
 [node name="Agents" type="Node" parent="." unique_id=1798933024]
 
 [node name="PathFollowingMovingAgent" parent="Agents" unique_id=796579103 instance=ExtResource("2_hjfxj")]
-process_mode = 4
-visible = false
-position = Vector2(176, 176)
+position = Vector2(176, 184)
 SmoothingCurve = SubResource("Curve_2i8ly")
 
 [node name="PathFollowingSteeringBehavior" parent="Agents/PathFollowingMovingAgent" unique_id=1050933191 node_paths=PackedStringArray("FollowPath") instance=ExtResource("6_xwcat")]
-FollowPath = NodePath("../../../TestPath")
+FollowPath = NodePath("../../../PipelineTestPath")
 
 [node name="HideMovingAgent" parent="Agents" unique_id=1542455866 instance=ExtResource("2_hjfxj")]
 process_mode = 4
@@ -195,8 +229,6 @@ NotEmptyGroundLayers = 10
 RayColor = Color(1, 0, 0, 1)
 
 [node name="SeekMovingAgent" parent="Agents" unique_id=1555629600 instance=ExtResource("2_hjfxj")]
-process_mode = 4
-visible = false
 position = Vector2(383, 806)
 AgentColor = Color(0.876078, 0.0670398, 0.0128302, 1)
 SmoothingCurve = SubResource("Curve_ab1lm")
@@ -415,7 +447,7 @@ visible = false
 position = Vector2(232, 320)
 AutoSmooth = true
 SmoothingMethod = 1
-SmoothingCurve = SubResource("Curve_n32bh")
+SmoothingCurve = SubResource("Curve_qtcqb")
 
 [node name="ContextSteeringBehavior" parent="Agents/ContextMovingAgent" unique_id=750442898 instance=ExtResource("26_mk2fd")]
 ContextResolution = 30
@@ -423,6 +455,65 @@ AddedInterests = 4
 
 [node name="SeekSteeringBehavior" parent="Agents/ContextMovingAgent/ContextSteeringBehavior" unique_id=1783209027 node_paths=PackedStringArray("Target") instance=ExtResource("3_kftuo")]
 Target = NodePath("../../../../Target")
+
+[node name="PipelineMovingAgent" parent="Agents" unique_id=1270946062 instance=ExtResource("2_hjfxj")]
+position = Vector2(1104, 864)
+SmoothingCurve = SubResource("Curve_v558f")
+
+[node name="PipelineSteeringBehavior" parent="Agents/PipelineMovingAgent" unique_id=165407284 instance=ExtResource("30_4uo0v")]
+
+[node name="PipelineTargeterAggregator" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior" unique_id=1167156047 instance=ExtResource("31_qtcqb")]
+
+[node name="PipelineManualPositionTargeter" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineTargeterAggregator" unique_id=1957654268 node_paths=PackedStringArray("Target") instance=ExtResource("32_at47j")]
+Target = NodePath("../../../../../Positions/Position1")
+
+[node name="PipelineDecomposerAggregator" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior" unique_id=914881314 instance=ExtResource("35_6eiss")]
+
+[node name="PipelinePathDecomposer" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineDecomposerAggregator" unique_id=1715355761 instance=ExtResource("36_085yk")]
+_minimumChunkLength = 200.0
+
+[node name="MeshPathFinderSteeringBehavior" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineDecomposerAggregator/PipelinePathDecomposer" index="0" unique_id=471368086]
+GizmosColor = Color(0.1500001, 0, 1, 1)
+
+[node name="MeshNavigationAgent2D" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineDecomposerAggregator/PipelinePathDecomposer/MeshPathFinderSteeringBehavior" index="1" unique_id=391528009]
+avoidance_enabled = false
+radius = 102.0384
+neighbor_distance = 200.0
+debug_use_custom = true
+debug_path_custom_color = Color(0.2774362, 0.7393459, 0, 1)
+
+[node name="PipelineConstraintsAggregator" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior" unique_id=1972840012 instance=ExtResource("36_r5j5l")]
+
+[node name="PipelineHidingConstraint" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineConstraintsAggregator" unique_id=2053048233 node_paths=PackedStringArray("Threat") instance=ExtResource("39_r5j5l")]
+Threat = NodePath("../../../../SeekMovingAgent")
+ObstaclesLayers = 10
+
+[node name="HidingPointsDetector" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineConstraintsAggregator/PipelineHidingConstraint" index="0" unique_id=234496252 node_paths=PackedStringArray("Threat")]
+Threat = NodePath("../../../../../SeekMovingAgent")
+
+[node name="MeshNavigationAgent2D" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineConstraintsAggregator/PipelineHidingConstraint" index="1" unique_id=1864021246]
+debug_enabled = true
+debug_use_custom = true
+debug_path_custom_color = Color(1, 0.3397426, 0.33415815, 1)
+
+[node name="RayCast2D" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineConstraintsAggregator/PipelineHidingConstraint" index="2" unique_id=409658688]
+collision_mask = 11
+
+[node name="PipelineAgentAvoidingConstraint" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineConstraintsAggregator" unique_id=1085190008 instance=ExtResource("40_g5048")]
+
+[node name="PipelineMeshPathFinderActuator" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior" unique_id=445977192 instance=ExtResource("37_g5048")]
+
+[node name="MeshPathFinderSteeringBehavior" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineMeshPathFinderActuator" index="0" unique_id=471368086]
+AvoidAgents = false
+
+[node name="MeshNavigationAgent2D" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineMeshPathFinderActuator/MeshPathFinderSteeringBehavior" index="1" unique_id=391528009]
+avoidance_enabled = false
+radius = 102.0384
+neighbor_distance = 200.0
+debug_use_custom = true
+debug_path_custom_color = Color(0.87516665, 0.89, 0, 1)
+
+[node name="WanderSteeringBehavior" parent="Agents/PipelineMovingAgent/PipelineSteeringBehavior" unique_id=1883084887 instance=ExtResource("38_5mmdj")]
 
 [node name="Positions" type="Node" parent="." unique_id=1704437883]
 
@@ -448,6 +539,11 @@ position = Vector2(320, 321)
 position = Vector2(176, 176)
 
 [node name="Marker2D" type="Marker2D" parent="Positions" unique_id=550285906]
-position = Vector2(1130, 586)
+position = Vector2(1107, 461)
 
 [editable path="TestPath"]
+[editable path="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineDecomposerAggregator/PipelinePathDecomposer"]
+[editable path="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineDecomposerAggregator/PipelinePathDecomposer/MeshPathFinderSteeringBehavior"]
+[editable path="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineConstraintsAggregator/PipelineHidingConstraint"]
+[editable path="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineMeshPathFinderActuator"]
+[editable path="Agents/PipelineMovingAgent/PipelineSteeringBehavior/PipelineMeshPathFinderActuator/MeshPathFinderSteeringBehavior"]

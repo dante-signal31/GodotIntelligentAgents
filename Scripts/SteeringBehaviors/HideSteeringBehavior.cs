@@ -18,11 +18,11 @@ using GodotGameAIbyExample.Scripts.SteeringBehaviors;
 public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")] 
-    private GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent _threat;
+    private MovingAgent _threat;
     /// <summary>
     /// Agent to hide from.
     /// </summary>
-    [Export] public GodotGameAIbyExample.Scripts.SteeringBehaviors.MovingAgent Threat
+    [Export] public MovingAgent Threat
     {
         get => _threat;
         set
@@ -132,7 +132,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     /// </summary>
     public bool VisibleByThreat => _threatCanSeeUs;
     
-    private HidingPointsDetector _hidingPointsDetector;
+    private GodotGameAIbyExample.Scripts.Tools.HidingPointsDetector _hidingPointsDetector;
     private INavigationAgent _navigationAgent2D;
     private SeekSteeringBehavior _seekSteeringBehavior;
     private GodotGameAIbyExample.Scripts.Levels.Courtyard _currentLevel;
@@ -210,7 +210,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
 
     private void InitHidingPointDetector()
     {
-        _hidingPointsDetector = this.FindChild<HidingPointsDetector>();
+        _hidingPointsDetector = this.FindChild<GodotGameAIbyExample.Scripts.Tools.HidingPointsDetector>();
         _hidingPointsDetector.Threat = Threat;
         _hidingPointsDetector.ObstaclesPositions = _currentLevel.ObstaclePositions;
         _hidingPointsDetector.ObstaclesLayers = ObstaclesLayers;
@@ -313,7 +313,7 @@ public partial class HideSteeringBehavior : Node2D, ISteeringBehavior
     
     public override string[] _GetConfigurationWarnings()
     {
-        _hidingPointsDetector = this.FindChild<HidingPointsDetector>();
+        _hidingPointsDetector = this.FindChild<GodotGameAIbyExample.Scripts.Tools.HidingPointsDetector>();
         _seekSteeringBehavior = this.FindChild<SeekSteeringBehavior>();
         _navigationAgent2D = this.FindChild<INavigationAgent>();
         _rayCast2D = this.FindChild<RayCast2D>();

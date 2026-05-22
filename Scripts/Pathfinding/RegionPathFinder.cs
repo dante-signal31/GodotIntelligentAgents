@@ -78,7 +78,7 @@ public partial class RegionPathFinder: Node2D, IPathFinder
             initialRegion.Position);
         
         // Now get the sequence of regions to traverse.
-        uint[] regionIdsSequence = new uint[regionPath.PathLength+1];
+        uint[] regionIdsSequence = new uint[regionPath.PathPositionsCount+1];
         regionIdsSequence[0] = initialRegionId;
         uint index = 1;
         foreach (Vector2 regionPathPosition in regionPath.TargetPositions)

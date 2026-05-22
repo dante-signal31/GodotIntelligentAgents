@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://fghynj1qk4qb"]
+[gd_scene format=3 uid="uid://fghynj1qk4qb"]
 
 [ext_resource type="Script" uid="uid://gf8y2catrpmq" path="res://Scripts/SteeringBehaviors/ArriveSteeringBehaviorNLA.cs" id="1_qgep0"]
 
@@ -10,7 +10,7 @@ point_count = 2
 _data = [Vector2(0, 1), 0.0, -0.240721, 0, 0, Vector2(0.510479, 0.571428), -2.54046, -2.54046, 0, 0, Vector2(0.997006, 0.0021621), -0.581632, 0.0, 0, 0]
 point_count = 3
 
-[node name="ArriveSteeringBehaviorNLA" type="Node"]
+[node name="ArriveSteeringBehaviorNLA" type="Node" unique_id=1144596548]
 script = ExtResource("1_qgep0")
 AccelerationRadius = 100.0
 _accelerationCurve = SubResource("Curve_ovdls")

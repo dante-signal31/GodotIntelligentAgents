@@ -135,12 +135,33 @@ public partial class VOAgentAvoiderSteeringBehavior: Node2D, ISteeringBehavior
 
         // If a collision is going to happen in the future, then calculate the avoiding
         // vector nearest to the ideal velocity to target.
+        _bestCandidateVelocity = 
+            GetBestCandidateVelocity(steeringToTargetVelocity.Linear);
+
+        // Return the best candidate velocity as part of the steering output.
+        return new SteeringOutput(
+            _bestCandidateVelocity, 
+            steeringToTargetVelocity.Angular);
+    }
+
+    /// <summary>
+    /// Determines the optimal candidate velocity closest to the ideal velocity
+    /// while avoiding potential collisions with other agents.
+    /// </summary>
+    /// <param name="idealVelocity">
+    /// The desired velocity vector towards which the agent is attempting to move.
+    /// </param>
+    /// <returns>
+    /// The best candidate velocity vector that minimizes divergence from ideal velocity
+    /// and avoids collisions.
+    /// </returns>
+    public Vector2 GetBestCandidateVelocity(Vector2 idealVelocity)
+    {
         float lowestPenalty = float.MaxValue;
-        _bestCandidateVelocity = Vector2.Zero;
+        Vector2 bestCandidateVelocity = Vector2.Zero;
         foreach (Vector2 candidateVelocity in _velocitySamplingDisc)
         {
             // Add candidate velocity to one of the lists used for debugging.
-            // TODO: Implement minimum distance between agents.
             if (_collisionDetector.IsCollidingVelocity(
                     candidateVelocity,
                     _currentAgent.Radius + MinimumDistanceBetweenAgents,
@@ -152,22 +173,44 @@ public partial class VOAgentAvoiderSteeringBehavior: Node2D, ISteeringBehavior
             {
                 _noCollisionCandidateVelocities.Add(candidateVelocity);
             }
-            float vectorDivergence =
-                (steeringToTargetVelocity.Linear - candidateVelocity).Length();
-            float penalty = vectorDivergence + (EvasionStrength / collisionTime);
+            
+            var penalty = GetDivergencePenalty(
+                idealVelocity, 
+                candidateVelocity, 
+                collisionTime);
             if (penalty < lowestPenalty)
             {
                 lowestPenalty = penalty;
-                _bestCandidateVelocity = candidateVelocity;
+                bestCandidateVelocity = candidateVelocity;
             }
         }
-        
-        // Return the best candidate velocity as part of the steering output.
-        return new SteeringOutput(
-            _bestCandidateVelocity, 
-            steeringToTargetVelocity.Angular);
+
+        return bestCandidateVelocity;
     }
-    
+
+    /// <summary>
+    /// Calculates a penalty value for a candidate velocity based on its divergence
+    /// from the ideal velocity and the expected collision time. Higher penalties
+    /// indicate that the candidate velocity is less similar to the ideal velocity or
+    /// more prone to a collision.
+    /// </summary>
+    /// <param name="idealVelocity">The optimal velocity vector for the agent.</param>
+    /// <param name="candidateVelocity">The potential velocity vector being
+    /// evaluated.</param>
+    /// <param name="collisionTime">The time until collision if the candidate velocity
+    /// is chosen.</param>
+    /// <return>A float representing the penalty for the given candidate
+    /// velocity.</return>
+    public float GetDivergencePenalty(
+        Vector2 idealVelocity, 
+        Vector2 candidateVelocity,
+        float collisionTime)
+    {
+        float vectorDivergence = (idealVelocity - candidateVelocity).Length();
+        float penalty = vectorDivergence + (EvasionStrength / collisionTime);
+        return penalty;
+    }
+
     public override void _Process(double delta)
     {
         if (ShowGizmos) DrawGizmos();

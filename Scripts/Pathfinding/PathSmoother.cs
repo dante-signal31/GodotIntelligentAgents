@@ -97,7 +97,7 @@ public partial class PathSmoother: Node2D, IPathFinder
     private Path SmoothPath(Path rawPath)
     {
         // With paths of length 2 or less, there's nothing to smooth.
-        if (rawPath.PathLength <= 2) return rawPath;
+        if (rawPath.PathPositionsCount <= 2) return rawPath;
         
         Path smoothedPath = new();
         smoothedPath.Loop = false;
@@ -116,7 +116,7 @@ public partial class PathSmoother: Node2D, IPathFinder
                 // If there was a clear path to the end of the path, then add that end to
                 // the smoothed path before leaving the loop. That will complete the
                 // smoothed path.
-                if (endIndex >= rawPath.PathLength - 1) 
+                if (endIndex >= rawPath.PathPositionsCount - 1) 
                     smoothedPositions.Add(rawPath.TargetPositions[endIndex]);
                 endIndex++;
                 // If there was a clear path from the starIndex position to the endIndex
@@ -124,7 +124,7 @@ public partial class PathSmoother: Node2D, IPathFinder
                 // omit the positions between them from the smoothed path.
                 continue;
             }
-            if (endIndex == rawPath.PathLength - 1)
+            if (endIndex == rawPath.PathPositionsCount - 1)
             {
                 // If we were at the end of the path, then add the last position to the
                 // smoothed path and smooth no more.
@@ -138,7 +138,7 @@ public partial class PathSmoother: Node2D, IPathFinder
             // any of the remaining positions.
             startIndex = endIndex-1;
             endIndex++;
-        } while (endIndex < rawPath.PathLength);
+        } while (endIndex < rawPath.PathPositionsCount);
         
         smoothedPath.LoadPathData(smoothedPositions);
         return smoothedPath;

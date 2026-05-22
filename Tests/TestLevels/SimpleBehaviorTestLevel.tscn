@@ -27,7 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://dvk8qqy48q4ti" path="res://Scenes/Sensors/CircleSensor.tscn" id="25_cmigx"]
 [ext_resource type="Curve" uid="uid://b7ik6hbcpxt6s" path="res://Curves/gaussian.tres" id="26_1o7g3"]
 [ext_resource type="PackedScene" uid="uid://73eoh74bxawt" path="res://Scenes/SteeringBehaviors/VOAgentAvoiderSteeringBehavior.tscn" id="26_vtb3e"]
-[ext_resource type="PackedScene" uid="uid://j00kef0klrhd" path="res://Scenes/SteeringBehaviors/MeshPathFindingSteeringBehavior.tscn" id="28_3uomi"]
+[ext_resource type="PackedScene" uid="uid://j00kef0klrhd" path="res://Scenes/SteeringBehaviors/MeshPathFinderSteeringBehavior.tscn" id="28_3uomi"]
 
 [sub_resource type="Curve" id="Curve_1o7g3"]
 
