@@ -36,6 +36,9 @@ public partial class ConeSensor : Node2D, ISensor
         }
     }
     
+    [Export] public bool CheckLineOfSight = true;
+    [Export(PropertyHint.Layers2DPhysics)] public uint VisualObstaclesLayersMask = 1;
+    
     private float _detectionRange;
     /// <summary>
     /// Range to detect objects.
@@ -76,7 +79,13 @@ public partial class ConeSensor : Node2D, ISensor
     /// <p>Only are considered those objects included in the layer mask provided
     /// to ConeSensor.</p> 
     /// </summary>
-    public HashSet<Node2D> DetectedObjects { get; } = new();
+    public HashSet<Node2D> DetectedObjects {
+        get
+        {
+            if (CheckLineOfSight) return _objectsInSensorRangeAndVisible;
+            return _objectsInSensorRange;
+        } 
+    }
 
     /// <summary>
     /// Whether there is any object inside the detection area.
@@ -86,6 +95,10 @@ public partial class ConeSensor : Node2D, ISensor
     private VolumetricSensor _sensor;
     private BoxRangeManager _boxRangeManager;
     private ConeRange _coneRange;
+    private RayCast2D _lineOfSightRayCast;
+    
+    private readonly HashSet<Node2D> _objectsInSensorRange = new();
+    private readonly HashSet<Node2D> _objectsInSensorRangeAndVisible = new();
 
     public override void _EnterTree()
     {
@@ -110,6 +123,13 @@ public partial class ConeSensor : Node2D, ISensor
         if (_coneRange == null)
             _coneRange = this.FindChild<ConeRange>();
         if (_coneRange != null) InitializeConeRange();
+        if (_lineOfSightRayCast == null)
+        {
+            _lineOfSightRayCast = this.FindChild<RayCast2D>();
+            _lineOfSightRayCast.Enabled = CheckLineOfSight;
+            _lineOfSightRayCast.CollisionMask = LayersToDetect | 
+                                                VisualObstaclesLayersMask;
+        }
         
         _sensor.DetectionLayers = LayersToDetect;
     }
@@ -165,6 +185,16 @@ public partial class ConeSensor : Node2D, ISensor
         DetectionRange = _coneRange.Range;
         DetectionSemiConeAngle = _coneRange.SemiConeDegrees;
     }
+
+    
+    private bool ObjectIsVisible(Node2D otherObject)
+    {
+        _lineOfSightRayCast.TargetPosition = ToLocal(otherObject.GlobalPosition);
+        _lineOfSightRayCast.ForceRaycastUpdate();
+        Node2D detectedObject = (Node2D) _lineOfSightRayCast.GetCollider();
+        if (detectedObject == null) return false;
+        return detectedObject == otherObject;
+    }
     
     /// <summary>
     /// Event handler to use when another object enters the detection area.
@@ -172,9 +202,20 @@ public partial class ConeSensor : Node2D, ISensor
     /// <param name="otherObject">The object who enters the detection area.</param>
     private void OnObjectEnteredArea(Node2D otherObject)
     {
+        // Remember that the initial detection area is a square, but our final detection
+        // area is a cone whose area is a subset of the square area. So, we need to
+        // check if the object is inside the cone range.
         if (!PositionIsInConeRange(otherObject.GlobalPosition)) return;
         
-        DetectedObjects.Add(otherObject);
+        _objectsInSensorRange.Add(otherObject);
+        
+        if (!CheckLineOfSight) ObjectEnteredSensor?.Invoke(otherObject);
+
+        // Object can be inside the cone range but behind a cover. So, we must check
+        // if there is a line-of-sight with the object.
+        if (!CheckLineOfSight || !ObjectIsVisible(otherObject)) return; 
+            
+        _objectsInSensorRangeAndVisible.Add(otherObject);
         
         ObjectEnteredSensor?.Invoke(otherObject);
     }
@@ -186,15 +227,34 @@ public partial class ConeSensor : Node2D, ISensor
     private void OnObjectStayedInArea(Node2D otherObject)
     {
         if (!PositionIsInConeRange(otherObject.GlobalPosition) &&
-            DetectedObjects.Contains(otherObject))
+            _objectsInSensorRange.Contains(otherObject))
         {
-            DetectedObjects.Remove(otherObject);
+            _objectsInSensorRange.Remove(otherObject);
             return;
         }
 
         if (!PositionIsInConeRange(otherObject.GlobalPosition)) return;
         
-        if (!DetectedObjects.Contains(otherObject)) DetectedObjects.Add(otherObject);
+        // Can an object appear in stay phase without having being detected
+        // in enter phase? Yes, it can. If the game starts with the object already inside
+        // the sensor range, then it won't be detected in the enter phase but in the stay
+        // phase.
+        _objectsInSensorRange.Add(otherObject);
+
+        if (!CheckLineOfSight || !ObjectIsVisible(otherObject))
+        {
+            if (_objectsInSensorRangeAndVisible.Contains(otherObject)) 
+                _objectsInSensorRangeAndVisible.Remove(otherObject);
+            return;
+        }
+        
+        // This is a HashSet. The type offers a built-in method to avoid duplicated
+        // elements. So, we can simply add the element without checking if it is already
+        // in the collection.
+        _objectsInSensorRangeAndVisible.Add(otherObject);
+        
+        // We don't call here the ObjectStayedInSensor event because it is called from
+        // PhysicsProcess().
     }
     
     /// <summary>
@@ -203,9 +263,19 @@ public partial class ConeSensor : Node2D, ISensor
     /// <param name="otherObject">The object who exits our detection area.</param>
     private void OnObjectLeftArea(Node2D otherObject)
     {
-        if (!DetectedObjects.Contains(otherObject)) return;
+        if (!_objectsInSensorRange.Contains(otherObject)) return;
         
-        DetectedObjects.Remove(otherObject);
+        _objectsInSensorRange.Remove(otherObject);
+        
+        if (!CheckLineOfSight)
+        {
+            ObjectLeftSensor?.Invoke(otherObject);
+            return;
+        }
+
+        if (!_objectsInSensorRangeAndVisible.Contains(otherObject)) return;
+        
+        _objectsInSensorRangeAndVisible.Remove(otherObject);
 
         ObjectLeftSensor?.Invoke(otherObject);
     }

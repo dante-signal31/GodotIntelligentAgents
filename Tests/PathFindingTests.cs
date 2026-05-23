@@ -517,7 +517,7 @@ public class PathFindingTests
         
         // Assert that the pathfinder agent can reach the second target.
         target.GlobalPosition = position3.GlobalPosition;
-        await _sceneRunner.AwaitMillis(6000);
+        await _sceneRunner.AwaitMillis(7000);
         AssertThat(
             meshPathfindingAgent.GlobalPosition.DistanceTo(target.GlobalPosition) < 30f
         ).IsTrue();

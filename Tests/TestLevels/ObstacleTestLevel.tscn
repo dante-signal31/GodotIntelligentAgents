@@ -30,6 +30,10 @@
 [ext_resource type="Script" uid="uid://c1hmtt20hub48" path="res://Scripts/SteeringBehaviors/RandomBehavior.cs" id="21_vx4id"]
 [ext_resource type="PackedScene" uid="uid://m34468003uh2" path="res://Scenes/SteeringBehaviors/ContextSteeringBehavior.tscn" id="26_mk2fd"]
 
+[sub_resource type="Resource" id="Resource_085yk"]
+script = ExtResource("4_6salh")
+Offsets = Array[Vector2]([Vector2(176, 888), Vector2(1648, 904), Vector2(1632, 176), Vector2(176, 176)])
+
 [sub_resource type="Resource" id="Resource_mk2fd"]
 script = ExtResource("4_6salh")
 Offsets = Array[Vector2]([Vector2(256, 264), Vector2(256, 768), Vector2(640, 768), Vector2(640, 344), Vector2(1152, 344), Vector2(1152, 896), Vector2(1622, 896), Vector2(1624, 272)])
@@ -117,10 +121,12 @@ metadata/_custom_type_script = "uid://c1hmtt20hub48"
 
 [sub_resource type="Curve" id="Curve_tieph"]
 
-[sub_resource type="Curve" id="Curve_n32bh"]
+[sub_resource type="Curve" id="Curve_n1bjt"]
 resource_local_to_scene = true
 _data = [Vector2(0, 0), 0.0, 3.3098502, 0, 0, Vector2(0.498366, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -4.0818977, 0.0, 0, 0]
 point_count = 3
+
+[sub_resource type="Curve" id="Curve_n32bh"]
 
 [node name="ObstacleTestLevel" type="Node2D" unique_id=1876620435]
 
@@ -129,41 +135,61 @@ _walkableRegionWeldThreshold = 100
 
 [node name="Target" parent="." unique_id=452483211 instance=ExtResource("4_sfy1w")]
 modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
-position = Vector2(1520, 424)
+position = Vector2(1096, 832)
+
+[node name="PipelineTestPath" parent="." unique_id=1347808325 instance=ExtResource("3_vx4id")]
+Loop = true
+Positions = SubResource("Resource_085yk")
+
+[node name="GroupPosition0" type="Node2D" parent="PipelineTestPath" unique_id=204668534]
+position = Vector2(176, 888)
+script = ExtResource("5_3f7ow")
+
+[node name="GroupPosition1" type="Node2D" parent="PipelineTestPath" unique_id=1163469588]
+position = Vector2(1648, 904)
+script = ExtResource("5_3f7ow")
+
+[node name="GroupPosition2" type="Node2D" parent="PipelineTestPath" unique_id=289419685]
+position = Vector2(1632, 176)
+script = ExtResource("5_3f7ow")
+
+[node name="GroupPosition3" type="Node2D" parent="PipelineTestPath" unique_id=213850077]
+position = Vector2(176, 176)
+script = ExtResource("5_3f7ow")
 
 [node name="TestPath" parent="." unique_id=1734785540 instance=ExtResource("3_vx4id")]
 visible = false
 Positions = SubResource("Resource_mk2fd")
 
-[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=1599346379]
+[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=1430756272]
 position = Vector2(256, 264)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=732624014]
+[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=912514629]
 position = Vector2(256, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=1731456138]
+[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=1774056227]
 position = Vector2(640, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=53504846]
+[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=1085007523]
 position = Vector2(640, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=1253448509]
+[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=324072416]
 position = Vector2(1152, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=1780177476]
+[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=662006302]
 position = Vector2(1152, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=1937003808]
+[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=1261319799]
 position = Vector2(1622, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=204863245]
+[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=1309814113]
 position = Vector2(1624, 272)
 script = ExtResource("5_3f7ow")
 
@@ -172,11 +198,11 @@ script = ExtResource("5_3f7ow")
 [node name="PathFollowingMovingAgent" parent="Agents" unique_id=796579103 instance=ExtResource("2_hjfxj")]
 process_mode = 4
 visible = false
-position = Vector2(176, 176)
+position = Vector2(176, 184)
 SmoothingCurve = SubResource("Curve_2i8ly")
 
 [node name="PathFollowingSteeringBehavior" parent="Agents/PathFollowingMovingAgent" unique_id=1050933191 node_paths=PackedStringArray("FollowPath") instance=ExtResource("6_xwcat")]
-FollowPath = NodePath("../../../TestPath")
+FollowPath = NodePath("../../../PipelineTestPath")
 
 [node name="HideMovingAgent" parent="Agents" unique_id=1542455866 instance=ExtResource("2_hjfxj")]
 process_mode = 4
@@ -415,7 +441,7 @@ visible = false
 position = Vector2(232, 320)
 AutoSmooth = true
 SmoothingMethod = 1
-SmoothingCurve = SubResource("Curve_n32bh")
+SmoothingCurve = SubResource("Curve_n1bjt")
 
 [node name="ContextSteeringBehavior" parent="Agents/ContextMovingAgent" unique_id=750442898 instance=ExtResource("26_mk2fd")]
 ContextResolution = 30
@@ -423,6 +449,27 @@ AddedInterests = 4
 
 [node name="SeekSteeringBehavior" parent="Agents/ContextMovingAgent/ContextSteeringBehavior" unique_id=1783209027 node_paths=PackedStringArray("Target") instance=ExtResource("3_kftuo")]
 Target = NodePath("../../../../Target")
+
+[node name="ConeSensorMovingAgent" parent="Agents" unique_id=1339785049 instance=ExtResource("2_hjfxj")]
+process_mode = 4
+visible = false
+position = Vector2(232, 296)
+MaximumSpeed = 0.0
+SmoothingCurve = SubResource("Curve_n32bh")
+
+[node name="SeekSteeringBehavior" parent="Agents/ConeSensorMovingAgent" unique_id=1814032160 node_paths=PackedStringArray("Target") instance=ExtResource("3_kftuo")]
+Target = NodePath("../../../Target")
+
+[node name="ConeSensor" parent="Agents/ConeSensorMovingAgent" unique_id=344342074 instance=ExtResource("17_acdjf")]
+LayersToDetect = 1
+VisualObstaclesLayersMask = 8
+
+[node name="ConeRange" type="Node2D" parent="Agents/ConeSensorMovingAgent/ConeSensor" unique_id=2088698585]
+script = ExtResource("18_vx4id")
+SemiConeDegrees = 45.0
+Resolution = 10
+Range = 700.0
+metadata/_custom_type_script = "uid://x00e0v0m34tl"
 
 [node name="Positions" type="Node" parent="." unique_id=1704437883]
 
@@ -447,7 +494,13 @@ position = Vector2(320, 321)
 [node name="Position7" type="Marker2D" parent="Positions" unique_id=137825839]
 position = Vector2(176, 176)
 
+[node name="Position8" type="Marker2D" parent="Positions" unique_id=1384476087]
+position = Vector2(576, 528)
+
+[node name="Position9" type="Marker2D" parent="Positions" unique_id=1049258219]
+position = Vector2(656, 416)
+
 [node name="Marker2D" type="Marker2D" parent="Positions" unique_id=550285906]
-position = Vector2(1130, 586)
+position = Vector2(1107, 461)
 
 [editable path="TestPath"]
