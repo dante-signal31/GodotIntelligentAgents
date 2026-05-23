@@ -14,7 +14,6 @@ public partial class Courtyard : Node2D
     
     [ExportCategory("CONFIGURATION:")] 
     [Export] private TileMapLayer _obstacleLayer;
-    [Export] private bool _weldWalkableRegions = true;
     [Export] private int _walkableRegionWeldThreshold = 90;
 
     public Array<Vector2> ObstaclePositions { get; } = new();
@@ -31,7 +30,6 @@ public partial class Courtyard : Node2D
     /// </summary>
     private void WeldWalkableRegions()
     {
-        if (!_weldWalkableRegions) return;
         Rid mapRid = GetWorld2D().NavigationMap;
         NavigationServer2D.MapSetEdgeConnectionMargin(mapRid, _walkableRegionWeldThreshold);
     }

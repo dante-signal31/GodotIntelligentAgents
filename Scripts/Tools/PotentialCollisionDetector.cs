@@ -136,6 +136,20 @@ public partial class PotentialCollisionDetector : Node2D
         _sensor.ObjectEnteredSensor -= OnObjectEnteredSensor;
         _sensor.ObjectLeftSensor -= OnObjectExitedSensor;
     }
+
+
+    // public override void _Ready()
+    // {
+    //     _sensor = this.FindChild<ISensor>();
+    //     if (_sensor == null) return;
+    //     Node2D sensorNode = (Node2D) _sensor;
+    //     sensorNode.Connect(
+    //         ConeSensor.SignalName.ObjectEnteredCone,
+    //         new Callable(this, MethodName.OnObjectEnteredSensor));
+    //     sensorNode.Connect(
+    //         ConeSensor.SignalName.ObjectLeftCone,
+    //         new Callable(this, MethodName.OnObjectExitedSensor));
+    // }
     
     /// <summary>
     /// Event handler to use when another agent enters our detection area.

@@ -13,11 +13,9 @@ agent_radius = 65.0
 [node name="ObstacleCourtyard" type="Node2D" unique_id=752048064 node_paths=PackedStringArray("_obstacleLayer")]
 script = ExtResource("1_7a4ke")
 _obstacleLayer = NodePath("NavigationRegion2D/InteriorObstaclesMapLayer")
-_weldWalkableRegions = false
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=264193770]
 navigation_polygon = SubResource("NavigationPolygon_kog6o")
-use_edge_connections = false
 
 [node name="InteriorObstaclesMapLayer" type="TileMapLayer" parent="NavigationRegion2D" unique_id=1466238108]
 z_index = 10

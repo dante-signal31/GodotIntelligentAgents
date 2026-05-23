@@ -40,25 +40,7 @@ public partial class Path: GroupPattern
     /// <summary>
     /// How many positions this path has.
     /// </summary>
-    public int PathPositionsCount => Positions.Offsets.Count;
-
-    /// <summary>
-    /// Length of the path.
-    /// </summary>
-    public float PathLength
-    {
-        get
-        {
-            float length = 0;
-            Vector2 initialPosition = TargetPositions[0];
-            foreach (Vector2 targetPosition in TargetPositions)
-            {
-                length += (targetPosition - initialPosition).Length();
-                initialPosition = targetPosition;
-            }
-            return length;
-        }
-    }
+    public int PathLength => Positions.Offsets.Count;
 
     /// <summary>
     /// Current index of the position we are going to.

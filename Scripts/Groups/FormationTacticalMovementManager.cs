@@ -42,7 +42,7 @@ public partial class FormationTacticalMovementManager: Node2D, IGizmos
     // value higher than the range of the WhiskerSensors of the agents in the formation.
     // Otherwise, agents sensor will touch covers when approaching hiding points, which
     // will trigger an avoidance movement.
-    private Tools.HidingPointsDetector _hidingPointsDetector;
+    private HidingPointsDetector _hidingPointsDetector;
     private System.Timers.Timer _detectionCooldownTimer;
     private bool _waitingForDetectionCooldownTimeout;
     private Vector2[] _availableHidingPoints;
@@ -153,7 +153,7 @@ public partial class FormationTacticalMovementManager: Node2D, IGizmos
         Node2D _currentRoot = GetTree().Root.FindChild<Node2D>();
         if (_currentRoot == null) return;
         Levels.Courtyard _currentLevel = _currentRoot.FindChild<Levels.Courtyard>();
-        _hidingPointsDetector = this.FindChild<Tools.HidingPointsDetector>();
+        _hidingPointsDetector = this.FindChild<HidingPointsDetector>();
         _hidingPointsDetector.Threat = _targeter.Target;
         _hidingPointsDetector.ObstaclesPositions = _currentLevel.ObstaclePositions;
         _currentTarget = _targeter.Target;
@@ -274,7 +274,7 @@ public partial class FormationTacticalMovementManager: Node2D, IGizmos
     {
         List<string> warnings = new();
 
-        Tools.HidingPointsDetector hidingPointsDetector = this.FindChild<Tools.HidingPointsDetector>();
+        HidingPointsDetector hidingPointsDetector = this.FindChild<HidingPointsDetector>();
         if (hidingPointsDetector == null)
         {
             warnings.Add("This node needs a child node of type " +

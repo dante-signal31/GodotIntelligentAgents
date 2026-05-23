@@ -1,31 +1,28 @@
-using System.Collections.Generic;
 using Godot;
+using System.Collections.Generic;
 using Godot.Collections;
 using GodotGameAIbyExample.Scripts.Extensions;
 
-namespace GodotGameAIbyExample.Scripts.Tools;
-
-/// <summary>
-/// <p>This node tracks a specific treat and tries to find hiding points from it using
-/// a provided list of level obstacles positions.</p>
-/// <p>Valid hiding points detected are offered through the HidingPoints property.</p>
-/// </summary>
-// It must be marked as a Tool to be found by HideSteeringBehavior when it uses my custom
+// It must be marked as Tool to be found by HideSteeringBehavior when it uses my custom
 // extension method FindChild<T>(). Otherwise, FindChild casting to HidePointsDetector
 // will fail. It seems and old Godot C# problem:
 // https://github.com/godotengine/godot/issues/36395
 [Tool]
+/// <summary>
+/// <p>This nodes tracks an specific treat and tries to find hiding points from it using
+/// a provided list of level obstacles positions.<p>
+/// <p>Valid hiding points detected are offered through HidingPoints property.</p>
+/// </summary>
 public partial class HidingPointsDetector : Node2D
 {
     [ExportCategory("CONFIGURATION:")]
-    
     /// <summary>
     /// Agent to hide from.
     /// </summary>
     [Export] public Node2D Threat { get; set; }
     
     /// <summary>
-    /// Obstacle positions in the level.
+    /// Obstacles positions in the level.
     /// </summary>
     // TODO: Should this be exported really?
     [Export] public Array<Vector2> ObstaclesPositions { get; set; } = 
@@ -33,7 +30,7 @@ public partial class HidingPointsDetector : Node2D
     
     private uint _obstaclesLayers = 1;
     /// <summary>
-    /// At which physics layers do the obstacles belong to?
+    /// At which physics layers the obstacles belong to?
     /// </summary>
     [Export(PropertyHint.Layers2DPhysics)] public uint ObstaclesLayers
     {
@@ -47,7 +44,7 @@ public partial class HidingPointsDetector : Node2D
 
     private float _separationFromObstacles = 100f;
     /// <summary>
-    /// How much separation must our hiding point show from obstacles?
+    /// How much separation our hiding point must show from obstacles?
     /// </summary>
     [Export] public float SeparationFromObstacles
     {
@@ -109,6 +106,10 @@ public partial class HidingPointsDetector : Node2D
     // [Export] public float MaximumExternalRayDistance { get; set; } = 300f;
     
     [ExportCategory("DEBUG:")]
+    /// <summary>
+    /// Show calculations gizmos.
+    /// </summary>
+    // TODO: Some of this fields can be made private.
     [Export] public bool ShowCalculationGizmos { get; set; }
     [Export] public Color RayColor { get; set; } = Colors.Green;
     [Export] public Color CleanRadiusColor { get; set; } = Colors.Red;
@@ -119,6 +120,7 @@ public partial class HidingPointsDetector : Node2D
     
     private RayCast2D _rayCaster;
     private ShapeCast2D _cleanAreaChecker;
+    // TODO: _cleanAreaShape should not be global. It can be local to InitCleanAreaChecker()
     private CollisionShape2D _cleanAreaShape;
     private CircleShape2D _cleanAreaShapeCircle;
 
@@ -160,7 +162,7 @@ public partial class HidingPointsDetector : Node2D
 
     public override void _Ready()
     {
-        CallDeferred(Node.MethodName.AddChild, _cleanAreaChecker);
+        CallDeferred(MethodName.AddChild, _cleanAreaChecker);
         InitRayCaster();
     }
 
@@ -171,11 +173,7 @@ public partial class HidingPointsDetector : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (_rayCaster == null || 
-            Threat == null ||
-            _cleanAreaChecker == null ||
-            !_cleanAreaChecker.IsInsideTree()) 
-            return;
+        if (_rayCaster == null || Threat == null) return;
         
         UpdateRayCollisionPoints();
         UpdateCleanHidingPoints();
@@ -184,7 +182,7 @@ public partial class HidingPointsDetector : Node2D
     /// <summary>
     /// <p>Update the list of sight collision points between the threat agent and the
     /// obstacles in the level.</p>
-    /// <p>This collision point is the raycast collision point between the threat
+    /// <p>This collision points is the raycast collision point between the threat
     /// agent position and the obstacle position.</p>
     /// </summary>
     private void UpdateRayCollisionPoints()
