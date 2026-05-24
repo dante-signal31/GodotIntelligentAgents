@@ -30,7 +30,7 @@ public class SensorTests
     }
 
     /// <summary>
-    /// Test that HideBehavior hides from a moving SeekBehavior.
+    /// Test that ConeSensor works with line-of-sight.
     /// </summary>
     [TestCase]
     public async Task ConeSensorTest()

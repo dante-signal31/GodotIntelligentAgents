@@ -226,6 +226,8 @@ public partial class ConeSensor : Node2D, ISensor
     /// <param name="otherObject">The object stays in the detection area.</param>
     private void OnObjectStayedInArea(Node2D otherObject)
     {
+        // Only keep in DetectedObjects those who are in the detection area and in
+        // cone range.
         if (!PositionIsInConeRange(otherObject.GlobalPosition) &&
             _objectsInSensorRange.Contains(otherObject))
         {
