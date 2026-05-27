@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using GdUnit4;
 using Godot;
@@ -115,6 +116,114 @@ public class SensorTests
         // Cleanup.
         coneSensorMovingAgent.Visible = false;
         coneSensorMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+        hideMovingAgent.Visible = false;
+        hideMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+        seekMovingAgent.Visible = false;
+        seekMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+        pathFollowingMovingAgent.Visible = false;
+        pathFollowingMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
+    
+     /// <summary>
+    /// Test that ConeSensor works with line-of-sight.
+    /// </summary>
+    [TestCase]
+    public async Task TouchSensorTest()
+    {
+        // Get references to test agents.
+        MovingAgent touchSensorMovingAgent = 
+            (MovingAgent)_sceneRunner.FindChild("TouchSensorMovingAgent");
+        MovingAgent hideMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("HideMovingAgent");
+        MovingAgent seekMovingAgent = 
+            (MovingAgent)_sceneRunner.FindChild("SeekMovingAgent");
+        MovingAgent pathFollowingMovingAgent = 
+            (MovingAgent)_sceneRunner.FindChild("PathFollowingMovingAgent");
+        
+        Scripts.Tools.Target target =
+            (Scripts.Tools.Target)_sceneRunner.FindChild("Target");
+        Marker2D position4 =
+            (Marker2D)_sceneRunner.FindChild("Position4");
+        Marker2D position2 =
+            (Marker2D)_sceneRunner.FindChild("Position2");
+        Marker2D position6 =
+            (Marker2D)_sceneRunner.FindChild("Position6");
+        Marker2D position1 =
+            (Marker2D)_sceneRunner.FindChild("Position1");
+        Marker2D position9 =
+            (Marker2D)_sceneRunner.FindChild("Position9");
+        Marker2D position8 =
+            (Marker2D)_sceneRunner.FindChild("Position8");
+
+        // Get reference to sensor.
+        TouchSensor touchSensor =
+            touchSensorMovingAgent.FindChild<TouchSensor>();
+        
+        // Get reference to sensor moving agent movement behavior.
+        SeekSteeringBehavior seekSteeringBehavior = 
+            touchSensorMovingAgent.FindChild<SeekSteeringBehavior>();
+        
+        // Setup agents before the test.
+        touchSensorMovingAgent.MaximumSpeed = 100.0f;
+        touchSensorMovingAgent.GlobalPosition = position1.GlobalPosition;
+        touchSensorMovingAgent.RotationDegrees = 0;
+        touchSensorMovingAgent.Visible = true;
+        
+        hideMovingAgent.GlobalPosition = position8.GlobalPosition;
+        hideMovingAgent.AgentColor = new Color(1, 0, 0);
+        hideMovingAgent.MaximumSpeed = 0.0f;
+        hideMovingAgent.Visible = true;
+        
+        seekMovingAgent.GlobalPosition = position2.GlobalPosition;
+        seekMovingAgent.AgentColor = new Color(1, 0, 0);
+        seekMovingAgent.MaximumSpeed = 0.0f;
+        seekMovingAgent.Visible = true;
+        
+        pathFollowingMovingAgent.GlobalPosition = position9.GlobalPosition;
+        pathFollowingMovingAgent.AgentColor = new Color(1, 0, 0);
+        pathFollowingMovingAgent.MaximumSpeed = 0.0f;
+        pathFollowingMovingAgent.Visible = true;
+        
+        touchSensorMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        hideMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        seekMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        pathFollowingMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+
+        // Start test.
+
+        // The coneSensorAgents looks away from the other agents. So, it should detect
+        // none.
+        await _sceneRunner.AwaitMillis(1000);
+        AssertThat(touchSensor.DetectedObjects.Count == 0).IsTrue();
+
+        // Change to a position where it should touch the first agent.
+        target.GlobalPosition = position8.GlobalPosition;
+        seekSteeringBehavior.Target = target;
+        // Give cone sensor time to detect agents.
+        await _sceneRunner.AwaitMillis(2000);
+        AssertThat(touchSensor.DetectedObjects.Count == 1 && 
+                   touchSensor.DetectedObjects.ToArray()[0].Name == hideMovingAgent.Name).IsTrue();
+        
+        // Change to a position where it should touch the second agent. 
+        target.GlobalPosition = position2.GlobalPosition;
+        seekSteeringBehavior.Target = target;
+        // Give cone sensor time to detect agents.
+        await _sceneRunner.AwaitMillis(2000);
+        AssertThat(touchSensor.DetectedObjects.Count == 1 && 
+                   touchSensor.DetectedObjects.ToArray()[0].Name == seekMovingAgent.Name).IsTrue();
+        
+        // Change to a position where it should touch the third agent. 
+        target.GlobalPosition = position9.GlobalPosition;
+        seekSteeringBehavior.Target = target;
+        // Give cone sensor time to detect agents.
+        await _sceneRunner.AwaitMillis(3000);
+        AssertThat(touchSensor.DetectedObjects.Count == 2 && 
+                   touchSensor.DetectedObjects.ToArray()[0].Name == hideMovingAgent.Name &&
+                   touchSensor.DetectedObjects.ToArray()[1].Name == pathFollowingMovingAgent.Name).IsTrue();
+        
+        // Cleanup.
+        touchSensorMovingAgent.Visible = false;
+        touchSensorMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
         hideMovingAgent.Visible = false;
         hideMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
         seekMovingAgent.Visible = false;

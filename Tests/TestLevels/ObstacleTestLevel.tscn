@@ -29,6 +29,7 @@
 [ext_resource type="PackedScene" uid="uid://cpqb1t62g0yfy" path="res://Scenes/SteeringBehaviors/PriorityDitheringBlendedSteeringBehavior.tscn" id="20_acdjf"]
 [ext_resource type="Script" uid="uid://c1hmtt20hub48" path="res://Scripts/SteeringBehaviors/RandomBehavior.cs" id="21_vx4id"]
 [ext_resource type="PackedScene" uid="uid://m34468003uh2" path="res://Scenes/SteeringBehaviors/ContextSteeringBehavior.tscn" id="26_mk2fd"]
+[ext_resource type="PackedScene" uid="uid://dah1tijajdu7n" path="res://Scenes/Sensors/TouchSensor.tscn" id="30_ab1lm"]
 
 [sub_resource type="Resource" id="Resource_085yk"]
 script = ExtResource("4_6salh")
@@ -128,6 +129,11 @@ point_count = 3
 
 [sub_resource type="Curve" id="Curve_n32bh"]
 
+[sub_resource type="Curve" id="Curve_4uo0v"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ab1lm"]
+radius = 56.0
+
 [node name="ObstacleTestLevel" type="Node2D" unique_id=1876620435]
 
 [node name="ObstacleCourtyard" parent="." unique_id=931045014 instance=ExtResource("1_n20uv")]
@@ -141,19 +147,19 @@ position = Vector2(1096, 832)
 Loop = true
 Positions = SubResource("Resource_085yk")
 
-[node name="GroupPosition0" type="Node2D" parent="PipelineTestPath" unique_id=204668534]
+[node name="GroupPosition0" type="Node2D" parent="PipelineTestPath" unique_id=1537129961]
 position = Vector2(176, 888)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition1" type="Node2D" parent="PipelineTestPath" unique_id=1163469588]
+[node name="GroupPosition1" type="Node2D" parent="PipelineTestPath" unique_id=877182871]
 position = Vector2(1648, 904)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition2" type="Node2D" parent="PipelineTestPath" unique_id=289419685]
+[node name="GroupPosition2" type="Node2D" parent="PipelineTestPath" unique_id=704146922]
 position = Vector2(1632, 176)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition3" type="Node2D" parent="PipelineTestPath" unique_id=213850077]
+[node name="GroupPosition3" type="Node2D" parent="PipelineTestPath" unique_id=1133546045]
 position = Vector2(176, 176)
 script = ExtResource("5_3f7ow")
 
@@ -161,35 +167,35 @@ script = ExtResource("5_3f7ow")
 visible = false
 Positions = SubResource("Resource_mk2fd")
 
-[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=1430756272]
+[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=1900337322]
 position = Vector2(256, 264)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=912514629]
+[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=7361763]
 position = Vector2(256, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=1774056227]
+[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=1805391528]
 position = Vector2(640, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=1085007523]
+[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=924242366]
 position = Vector2(640, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=324072416]
+[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=736450404]
 position = Vector2(1152, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=662006302]
+[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=57197060]
 position = Vector2(1152, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=1261319799]
+[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=1657026551]
 position = Vector2(1622, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=1309814113]
+[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=335157962]
 position = Vector2(1624, 272)
 script = ExtResource("5_3f7ow")
 
@@ -470,6 +476,22 @@ SemiConeDegrees = 45.0
 Resolution = 10
 Range = 700.0
 metadata/_custom_type_script = "uid://x00e0v0m34tl"
+
+[node name="TouchSensorMovingAgent" parent="Agents" unique_id=229195951 instance=ExtResource("2_hjfxj")]
+process_mode = 4
+visible = false
+position = Vector2(272, 432)
+SmoothingCurve = SubResource("Curve_4uo0v")
+
+[node name="SeekSteeringBehavior" parent="Agents/TouchSensorMovingAgent" unique_id=41385380 instance=ExtResource("3_kftuo")]
+
+[node name="TouchSensor" parent="Agents/TouchSensorMovingAgent" unique_id=855481771 instance=ExtResource("30_ab1lm")]
+_detectionLayers = 1
+
+[node name="Area2D" type="Area2D" parent="Agents/TouchSensorMovingAgent/TouchSensor" unique_id=1319076352]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Agents/TouchSensorMovingAgent/TouchSensor/Area2D" unique_id=43535711]
+shape = SubResource("CircleShape2D_ab1lm")
 
 [node name="Positions" type="Node" parent="." unique_id=1704437883]
 
