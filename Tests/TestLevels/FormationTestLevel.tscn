@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://4h3ubldn68qj"]
+[gd_scene format=3 uid="uid://4h3ubldn68qj"]
 
 [ext_resource type="PackedScene" uid="uid://bqiois541s161" path="res://Levels/ReallyBigObstacleCourtyard.tscn" id="1_o46ag"]
 [ext_resource type="PackedScene" uid="uid://deejypkq5wrxw" path="res://Scenes/Tools/Target.tscn" id="2_dhgyl"]
@@ -15,35 +15,68 @@
 [ext_resource type="PackedScene" uid="uid://b8ettivyhu5tv" path="res://Scenes/SteeringBehaviors/UsherHingeAgent.tscn" id="10_dhgyl"]
 [ext_resource type="PackedScene" uid="uid://dibmh52j5pc6t" path="res://Scenes/SteeringBehaviors/UsherWaiterFormationAgent.tscn" id="14_8csmf"]
 [ext_resource type="PackedScene" uid="uid://p1fj4pljujk6" path="res://Scenes/Groups/FormationObstacleManager.tscn" id="15_rin61"]
-[ext_resource type="Script" uid="uid://b31cjkyfc6swq" path="res://Scripts/Groups/GroupMemberPosition.cs" id="16_hubku"]
+
+[sub_resource type="Curve" id="Curve_rin61"]
+
+[sub_resource type="Curve" id="Curve_hubku"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o46ag"]
 size = Vector2(900, 300)
 
-[node name="FormationTestLevel" type="Node2D"]
+[sub_resource type="Curve" id="Curve_x3qa4"]
 
-[node name="SmoothedWallAvoiderMember" parent="." instance=ExtResource("10_b4w4m")]
+[sub_resource type="Curve" id="Curve_52ie5"]
+
+[sub_resource type="Curve" id="Curve_yabv1"]
+
+[sub_resource type="Curve" id="Curve_vs4we"]
+
+[sub_resource type="Curve" id="Curve_8vdnh"]
+
+[sub_resource type="Curve" id="Curve_rpoql"]
+
+[sub_resource type="Curve" id="Curve_jsny4"]
+
+[sub_resource type="Curve" id="Curve_bnmqu"]
+
+[sub_resource type="Curve" id="Curve_why3i"]
+
+[sub_resource type="Curve" id="Curve_8kyjh"]
+
+[sub_resource type="Curve" id="Curve_kif3o"]
+
+[sub_resource type="Curve" id="Curve_i0ar7"]
+
+[sub_resource type="Curve" id="Curve_d6t73"]
+
+[sub_resource type="Curve" id="Curve_20pde"]
+
+[node name="FormationTestLevel" type="Node2D" unique_id=1294600964]
+
+[node name="SmoothedWallAvoiderMember" parent="." unique_id=2074636400 instance=ExtResource("10_b4w4m")]
 process_mode = 4
 visible = false
 position = Vector2(3385, 2034)
+SmoothingCurve = SubResource("Curve_rin61")
 
 [node name="SmoothedWallAvoiderSteeringBehavior" parent="SmoothedWallAvoiderMember" index="2" node_paths=PackedStringArray("Target")]
 Target = NodePath("../../Target")
 
-[node name="BigObstacleCourtyard" parent="." instance=ExtResource("1_o46ag")]
+[node name="BigObstacleCourtyard" parent="." unique_id=1204046966 instance=ExtResource("1_o46ag")]
 
-[node name="Target" parent="." instance=ExtResource("2_dhgyl")]
+[node name="Target" parent="." unique_id=1418134556 instance=ExtResource("2_dhgyl")]
+modulate = Color(0.494245, 1.40181e-06, 2.40654e-07, 1)
 position = Vector2(6152, 2625)
 gizmo_extents = 169.4
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=81884488]
 position = Vector2(3851, 2157)
 zoom = Vector2(0.25, 0.25)
 
-[node name="ScalableFormation" type="Node" parent="."]
+[node name="ScalableFormation" type="Node" parent="." unique_id=2134543269]
 process_mode = 4
 
-[node name="UsherScalableFormationAgent" parent="ScalableFormation" instance=ExtResource("3_o46ag")]
+[node name="UsherScalableFormationAgent" parent="ScalableFormation" unique_id=229059590 instance=ExtResource("3_o46ag")]
 visible = false
 position = Vector2(4868, 2899)
 collision_layer = 17
@@ -55,20 +88,21 @@ GizmosColor = Color(1, 0, 0, 1)
 MaximumSpeed = 200.0
 StopSpeed = 3.0
 MaximumRotationalDegSpeed = 360.0
+SmoothingCurve = SubResource("Curve_hubku")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ScalableFormation/UsherScalableFormationAgent" node_paths=PackedStringArray("_formationNode")]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ScalableFormation/UsherScalableFormationAgent" unique_id=689111473 node_paths=PackedStringArray("_formationNode")]
 position = Vector2(-150, -50)
 rotation = 1.5707964
 shape = SubResource("RectangleShape2D_o46ag")
 script = ExtResource("4_emhl0")
 _formationNode = NodePath("../ScalableFormation")
 
-[node name="SeekSteeringBehavior" parent="ScalableFormation/UsherScalableFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
+[node name="SeekSteeringBehavior" parent="ScalableFormation/UsherScalableFormationAgent" unique_id=406641429 node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
 Target = NodePath("../../../Target")
 ArrivalDistance = 20.0
 ShowGizmos = true
 
-[node name="ScalableFormation" parent="ScalableFormation/UsherScalableFormationAgent" instance=ExtResource("5_emhl0")]
+[node name="ScalableFormation" parent="ScalableFormation/UsherScalableFormationAgent" unique_id=783766902 instance=ExtResource("5_emhl0")]
 position = Vector2(0, -500)
 rotation = 1.5707964
 _memberScene = ExtResource("6_8csmf")
@@ -78,22 +112,24 @@ FormationDimensions = Vector2(1000, 400)
 Density = Vector2(200, 200)
 Quantity = 10
 
-[node name="RightHinge" parent="ScalableFormation/UsherScalableFormationAgent/ScalableFormation" instance=ExtResource("10_dhgyl")]
+[node name="RightHinge" parent="ScalableFormation/UsherScalableFormationAgent/ScalableFormation" unique_id=104425696 instance=ExtResource("10_dhgyl")]
 position = Vector2(850, 50)
 rotation = -1.5708
 MaximumRotationalDegSpeed = 14.323945
 MaximumRotationalDegSpeed = 14.323945
+SmoothingCurve = SubResource("Curve_x3qa4")
 
-[node name="LeftHinge" parent="ScalableFormation/UsherScalableFormationAgent/ScalableFormation" instance=ExtResource("10_dhgyl")]
+[node name="LeftHinge" parent="ScalableFormation/UsherScalableFormationAgent/ScalableFormation" unique_id=1436673312 instance=ExtResource("10_dhgyl")]
 position = Vector2(50, 50)
 rotation = -1.5708
 MaximumRotationalDegSpeed = 14.323945
 GizmosColor = Color(1, 1, 0, 1)
 MaximumRotationalDegSpeed = 14.323945
+SmoothingCurve = SubResource("Curve_52ie5")
 
-[node name="TwoLevelFormation" type="Node" parent="."]
+[node name="TwoLevelFormation" type="Node" parent="." unique_id=1330239814]
 
-[node name="UsherTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("3_o46ag")]
+[node name="UsherTwoLevelFormationAgent" parent="TwoLevelFormation" unique_id=348338500 instance=ExtResource("3_o46ag")]
 process_mode = 4
 visible = false
 position = Vector2(1353, 847)
@@ -102,31 +138,34 @@ DeviationToleranceBeforeTurn = 0.02
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
 MaximumSpeed = 200.0
+SmoothingCurve = SubResource("Curve_yabv1")
 
-[node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
+[node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" unique_id=1532700972 node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
 Target = NodePath("../../../Target")
 
-[node name="TwoLevelFormation" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" instance=ExtResource("9_emhl0")]
+[node name="TwoLevelFormation" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" unique_id=1896714205 instance=ExtResource("9_emhl0")]
 _memberScene = ExtResource("10_b4w4m")
 
-[node name="FixedFormation" parent="TwoLevelFormation/UsherTwoLevelFormationAgent/TwoLevelFormation" instance=ExtResource("5_b4w4m")]
+[node name="FixedFormation" parent="TwoLevelFormation/UsherTwoLevelFormationAgent/TwoLevelFormation" unique_id=978158055 instance=ExtResource("5_b4w4m")]
 _memberScene = ExtResource("2_dhgyl")
 
-[node name="FormationPattern" parent="TwoLevelFormation/UsherTwoLevelFormationAgent/TwoLevelFormation/FixedFormation" instance=ExtResource("7_rin61")]
+[node name="FormationPattern" parent="TwoLevelFormation/UsherTwoLevelFormationAgent/TwoLevelFormation/FixedFormation" unique_id=1227664538 instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
 
-[node name="RightHinge" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="RightHinge" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" unique_id=763452881 instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 400)
 MaximumRotationalDegSpeed = 14.323945
 MaximumRotationalDegSpeed = 14.323945
+SmoothingCurve = SubResource("Curve_vs4we")
 
-[node name="LeftHinge" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="LeftHinge" parent="TwoLevelFormation/UsherTwoLevelFormationAgent" unique_id=1188031961 instance=ExtResource("10_dhgyl")]
 position = Vector2(0, -400)
 MaximumRotationalDegSpeed = 14.323945
 GizmosColor = Color(1, 0, 0, 1)
 MaximumRotationalDegSpeed = 14.323945
+SmoothingCurve = SubResource("Curve_8vdnh")
 
-[node name="UsherWaiterTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_8csmf")]
+[node name="UsherWaiterTwoLevelFormationAgent" parent="TwoLevelFormation" unique_id=1272489250 instance=ExtResource("14_8csmf")]
 process_mode = 4
 visible = false
 position = Vector2(1271, 2386)
@@ -135,31 +174,34 @@ DeviationToleranceBeforeTurn = 0.02
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
 MaximumSpeed = 200.0
+SmoothingCurve = SubResource("Curve_rpoql")
 
-[node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
+[node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" unique_id=1413772946 node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
 Target = NodePath("../../../Target")
 
-[node name="TwoLevelFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("9_emhl0")]
+[node name="TwoLevelFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" unique_id=1604957605 instance=ExtResource("9_emhl0")]
 _memberScene = ExtResource("10_b4w4m")
 
-[node name="UsherFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation" instance=ExtResource("5_b4w4m")]
+[node name="UsherFormation" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation" unique_id=2132202197 instance=ExtResource("5_b4w4m")]
 _memberScene = ExtResource("2_dhgyl")
 
-[node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation/UsherFormation" instance=ExtResource("7_rin61")]
+[node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent/TwoLevelFormation/UsherFormation" unique_id=1525381574 instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
 
-[node name="RightHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="RightHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" unique_id=1790763478 instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 400)
 MaximumRotationalDegSpeed = 14.323945
 MaximumRotationalDegSpeed = 14.323945
+SmoothingCurve = SubResource("Curve_jsny4")
 
-[node name="LeftHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="LeftHinge" parent="TwoLevelFormation/UsherWaiterTwoLevelFormationAgent" unique_id=405850143 instance=ExtResource("10_dhgyl")]
 position = Vector2(0, -400)
 MaximumRotationalDegSpeed = 14.323945
 GizmosColor = Color(1, 0, 0, 1)
 MaximumRotationalDegSpeed = 14.323945
+SmoothingCurve = SubResource("Curve_bnmqu")
 
-[node name="UsherWaiterObstacleManagedTwoLevelFormationAgent" parent="TwoLevelFormation" instance=ExtResource("14_8csmf")]
+[node name="UsherWaiterObstacleManagedTwoLevelFormationAgent" parent="TwoLevelFormation" unique_id=87875426 instance=ExtResource("14_8csmf")]
 process_mode = 4
 visible = false
 position = Vector2(3460, 853)
@@ -167,97 +209,41 @@ DeviationToleranceBeforeTurn = 0.02
 ShowGizmos = true
 GizmosColor = Color(0, 1, 0, 1)
 MaximumSpeed = 200.0
+SmoothingCurve = SubResource("Curve_why3i")
 
-[node name="FormationObstacleManager" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" node_paths=PackedStringArray("_iTargeterBehavior", "_iFormation", "_iFormationUshers") instance=ExtResource("15_rin61")]
+[node name="FormationObstacleManager" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" unique_id=1884241304 node_paths=PackedStringArray("_iTargeterBehavior", "_iFormation", "_iFormationUshers") instance=ExtResource("15_rin61")]
 _iTargeterBehavior = NodePath("../SeekSteeringBehavior")
 _iFormation = NodePath("../TwoLevelFormation")
 _iFormationUshers = NodePath("../TwoLevelFormation/UsherFormation")
 
-[node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
+[node name="SeekSteeringBehavior" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" unique_id=2141562682 node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
 Target = NodePath("../../../Target")
 
-[node name="TwoLevelFormation" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" instance=ExtResource("9_emhl0")]
+[node name="TwoLevelFormation" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" unique_id=1283674357 instance=ExtResource("9_emhl0")]
 _memberScene = ExtResource("10_b4w4m")
 
-[node name="UsherFormation" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation" instance=ExtResource("5_b4w4m")]
+[node name="UsherFormation" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation" unique_id=1687248106 instance=ExtResource("5_b4w4m")]
 _memberScene = ExtResource("2_dhgyl")
 
-[node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation" instance=ExtResource("7_rin61")]
+[node name="FormationPattern" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation" unique_id=1358103307 instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
 
-[node name="GroupPosition0" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(0, -400)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition1" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(0, -200)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition2" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition3" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(0, 200)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition4" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(0, 400)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition5" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(-200, -400)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition6" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(-200, -200)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition7" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(-200, 0)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition8" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(-200, 200)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition9" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(-200, 400)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition10" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(-400, -400)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition11" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(-400, -200)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition12" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(-400, 0)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition13" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(-400, 200)
-script = ExtResource("16_hubku")
-
-[node name="GroupPosition14" type="Node2D" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent/TwoLevelFormation/UsherFormation/FormationPattern"]
-position = Vector2(-400, 400)
-script = ExtResource("16_hubku")
-
-[node name="RightHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="RightHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" unique_id=816751006 instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 400)
 MaximumRotationalDegSpeed = 14.323945
 MaximumRotationalDegSpeed = 14.323945
+SmoothingCurve = SubResource("Curve_8kyjh")
 
-[node name="LeftHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="LeftHinge" parent="TwoLevelFormation/UsherWaiterObstacleManagedTwoLevelFormationAgent" unique_id=250068921 instance=ExtResource("10_dhgyl")]
 position = Vector2(0, -400)
 MaximumRotationalDegSpeed = 14.323945
 GizmosColor = Color(1, 0, 0, 1)
 MaximumRotationalDegSpeed = 14.323945
+SmoothingCurve = SubResource("Curve_kif3o")
 
-[node name="FixedFormation" type="Node" parent="."]
+[node name="FixedFormation" type="Node" parent="." unique_id=1871198658]
 
-[node name="UsherFormationAgent" parent="FixedFormation" instance=ExtResource("3_o46ag")]
+[node name="UsherFormationAgent" parent="FixedFormation" unique_id=693142934 instance=ExtResource("3_o46ag")]
 process_mode = 4
 visible = false
 position = Vector2(2310, 3105)
@@ -270,48 +256,51 @@ GizmosColor = Color(1, 0, 0, 1)
 MaximumSpeed = 200.0
 StopSpeed = 3.0
 MaximumRotationalDegSpeed = 360.0
+SmoothingCurve = SubResource("Curve_i0ar7")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="FixedFormation/UsherFormationAgent"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FixedFormation/UsherFormationAgent" unique_id=170747554]
 position = Vector2(-201.5, 0.5)
 shape = SubResource("RectangleShape2D_o46ag")
 
-[node name="SeekSteeringBehavior" parent="FixedFormation/UsherFormationAgent" node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
+[node name="SeekSteeringBehavior" parent="FixedFormation/UsherFormationAgent" unique_id=141380692 node_paths=PackedStringArray("Target") instance=ExtResource("4_o46ag")]
 Target = NodePath("../../../Target")
 ArrivalDistance = 20.0
 ShowGizmos = true
 
-[node name="FixedFormation" parent="FixedFormation/UsherFormationAgent" instance=ExtResource("5_b4w4m")]
+[node name="FixedFormation" parent="FixedFormation/UsherFormationAgent" unique_id=1556646526 instance=ExtResource("5_b4w4m")]
 _memberScene = ExtResource("6_8csmf")
 
-[node name="FormationPattern" parent="FixedFormation/UsherFormationAgent/FixedFormation" instance=ExtResource("7_rin61")]
+[node name="FormationPattern" parent="FixedFormation/UsherFormationAgent/FixedFormation" unique_id=95668380 instance=ExtResource("7_rin61")]
 Positions = ExtResource("8_hubku")
 
-[node name="RightHinge" parent="FixedFormation/UsherFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="RightHinge" parent="FixedFormation/UsherFormationAgent" unique_id=1997944474 instance=ExtResource("10_dhgyl")]
 position = Vector2(0, 401)
 MaximumRotationalDegSpeed = 14.288225
 MaximumRotationalDegSpeed = 14.288225
+SmoothingCurve = SubResource("Curve_d6t73")
 
-[node name="LeftHinge" parent="FixedFormation/UsherFormationAgent" instance=ExtResource("10_dhgyl")]
+[node name="LeftHinge" parent="FixedFormation/UsherFormationAgent" unique_id=1252673330 instance=ExtResource("10_dhgyl")]
 position = Vector2(0, -401)
 MaximumRotationalDegSpeed = 14.288225
 GizmosColor = Color(1, 1, 0, 1)
 MaximumRotationalDegSpeed = 14.288225
+SmoothingCurve = SubResource("Curve_20pde")
 
-[node name="Positions" type="Node" parent="."]
+[node name="Positions" type="Node" parent="." unique_id=688466514]
 
-[node name="Position1" type="Marker2D" parent="Positions"]
+[node name="Position1" type="Marker2D" parent="Positions" unique_id=742937396]
 position = Vector2(2135, 3100)
 
-[node name="Position2" type="Marker2D" parent="Positions"]
+[node name="Position2" type="Marker2D" parent="Positions" unique_id=1193376804]
 position = Vector2(3283, 3093)
 
-[node name="Position3" type="Marker2D" parent="Positions"]
+[node name="Position3" type="Marker2D" parent="Positions" unique_id=32994173]
 position = Vector2(3268, 1190)
 
-[node name="Position4" type="Marker2D" parent="Positions"]
+[node name="Position4" type="Marker2D" parent="Positions" unique_id=245698979]
 position = Vector2(2347, 1050)
 
-[node name="Position5" type="Marker2D" parent="Positions"]
+[node name="Position5" type="Marker2D" parent="Positions" unique_id=1336678530]
 position = Vector2(6923, 2408)
 
 [editable path="SmoothedWallAvoiderMember"]

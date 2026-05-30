@@ -200,15 +200,15 @@ public partial class MeshPathFinderSteeringBehavior: Node2D, ISteeringBehavior, 
         TimeHorizon = _timeHorizon;
         AgentLayer = _agentLayer;
         AgentDetectionLayers = _agentDetectionLayers;
-
-        // Make the agent head to the target if we already have one.
-        if (PathTarget == null) return;
-        UpdateTargetPosition(PathTarget.Position);
         
         // Set up timer.
         _avoidanceTimer = new Timer(AvoidanceTimeout * 1000);
         _avoidanceTimer.AutoReset = false;
         _avoidanceTimer.Elapsed += OnAvoidanceTimeout;
+
+        // Make the agent head to the target if we already have one.
+        if (PathTarget == null) return;
+        UpdateTargetPosition(PathTarget.Position);
     }
     
     private void OnAvoidanceTimeout(object sender, ElapsedEventArgs elapsedEventArgs)

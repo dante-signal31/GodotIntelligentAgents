@@ -147,19 +147,19 @@ position = Vector2(1096, 832)
 Loop = true
 Positions = SubResource("Resource_085yk")
 
-[node name="GroupPosition0" type="Node2D" parent="PipelineTestPath" unique_id=1537129961]
+[node name="GroupPosition0" type="Node2D" parent="PipelineTestPath" unique_id=1316439521]
 position = Vector2(176, 888)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition1" type="Node2D" parent="PipelineTestPath" unique_id=877182871]
+[node name="GroupPosition1" type="Node2D" parent="PipelineTestPath" unique_id=2048274304]
 position = Vector2(1648, 904)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition2" type="Node2D" parent="PipelineTestPath" unique_id=704146922]
+[node name="GroupPosition2" type="Node2D" parent="PipelineTestPath" unique_id=2086969106]
 position = Vector2(1632, 176)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition3" type="Node2D" parent="PipelineTestPath" unique_id=1133546045]
+[node name="GroupPosition3" type="Node2D" parent="PipelineTestPath" unique_id=347148416]
 position = Vector2(176, 176)
 script = ExtResource("5_3f7ow")
 
@@ -167,35 +167,35 @@ script = ExtResource("5_3f7ow")
 visible = false
 Positions = SubResource("Resource_mk2fd")
 
-[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=1900337322]
+[node name="GroupPosition0" type="Node2D" parent="TestPath" unique_id=993146357]
 position = Vector2(256, 264)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=7361763]
+[node name="GroupPosition1" type="Node2D" parent="TestPath" unique_id=739141424]
 position = Vector2(256, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=1805391528]
+[node name="GroupPosition2" type="Node2D" parent="TestPath" unique_id=1531572564]
 position = Vector2(640, 768)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=924242366]
+[node name="GroupPosition3" type="Node2D" parent="TestPath" unique_id=762886562]
 position = Vector2(640, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=736450404]
+[node name="GroupPosition4" type="Node2D" parent="TestPath" unique_id=2092391752]
 position = Vector2(1152, 344)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=57197060]
+[node name="GroupPosition5" type="Node2D" parent="TestPath" unique_id=449337680]
 position = Vector2(1152, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=1657026551]
+[node name="GroupPosition6" type="Node2D" parent="TestPath" unique_id=2124034842]
 position = Vector2(1622, 896)
 script = ExtResource("5_3f7ow")
 
-[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=335157962]
+[node name="GroupPosition7" type="Node2D" parent="TestPath" unique_id=346261590]
 position = Vector2(1624, 272)
 script = ExtResource("5_3f7ow")
 

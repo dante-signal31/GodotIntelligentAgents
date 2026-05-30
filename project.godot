@@ -15,9 +15,13 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="GodotGameAIbyExample"
-run/main_scene="uid://b62033ep2w41i"
+run/main_scene="uid://clcq7pay04ryu"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+RegionSenseManager="*uid://bvmn36e6f0pnx"
 
 [display]
 
@@ -31,7 +35,7 @@ project/assembly_name="Godot Game AI by Example"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/InteractiveRanges/plugin.cfg", "res://addons/gdUnit4/plugin.cfg")
+enabled=PackedStringArray("res://addons/InteractiveRanges/plugin.cfg", "res://addons/gdUnit4/plugin.cfg", "res://addons/rider-plugin/plugin.cfg")
 
 [gdunit4]
 

@@ -20,6 +20,10 @@ public partial class Target : Marker2D
     public const string PointSelectedAction = "PointSelected";
     
     [ExportCategory("CONFIGURATION:")]
+    /// <summary>
+    /// Whether the target should follow the mouse clicks.
+    /// </summary>
+    [Export] public bool FollowMouse = true;
     [Export] public Color MarkerColor { get; set; } = new Color(1, 0, 0);
 
     private Vector2 _currentPosition;
@@ -32,6 +36,7 @@ public partial class Target : Marker2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        if (!FollowMouse) return;
         base._UnhandledInput(@event);
         if (@event.IsActionPressed(PointSelectedAction))
         {
