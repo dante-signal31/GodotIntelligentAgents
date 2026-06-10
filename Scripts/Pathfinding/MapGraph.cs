@@ -119,8 +119,25 @@ public partial class MapGraph: Node2D, IPositionGraph
     }
     
     private Vector2I GetArrayPositionById(uint nodeId) => GraphResource.NodeIdsToArrayPositions[nodeId];
-    
+
+
+    /// <summary>
+    /// Retrieves a node corresponding to the given node ID.
+    /// </summary>
+    /// <param name="nodeId">The ID of the node to retrieve.</param>
+    /// <returns>The node associated with the specified ID. Returns null if no node is
+    /// found for the given ID.</returns>
     public IPositionNode GetNodeById(uint nodeId) => 
+        GraphResource.ArrayPositionsToNodes[GetArrayPositionById(nodeId)];
+
+
+    /// <summary>
+    /// Retrieves the PositionNode associated with the specified node ID.
+    /// </summary>
+    /// <param name="nodeId">The unique identifier of the node to retrieve.</param>
+    /// <returns>The PositionNode corresponding to the provided node ID. If no node
+    /// exists for the given ID, null is returned.</returns>
+    public PositionNode GetPositionNodeById(uint nodeId) => 
         GraphResource.ArrayPositionsToNodes[GetArrayPositionById(nodeId)];
     
     private Timer _redrawTimer;
@@ -258,16 +275,34 @@ public partial class MapGraph: Node2D, IPositionGraph
     /// map. This cost represents the effort required to traverse the tile at the given
     /// position.
     /// </summary>
+    /// <remarks>
+    /// It can be overridden to customize the which cost data to get
+    /// from the tile.
+    /// </remarks>
     /// <param name="neighborGlobalPosition">The global position of the tile
     /// to be evaluated.</param>
     /// <return>The movement cost as a float, derived from the custom data associated
     /// with the tile.</return>
-    private float GetPositionCost(Vector2 neighborGlobalPosition)
+    protected virtual float GetPositionCost(Vector2 neighborGlobalPosition) => 
+        GetPositionCustomFloatData(neighborGlobalPosition, "Cost");
+
+    /// <summary>
+    /// Get any tilemap custom float data associated with the specified global position.
+    /// </summary>
+    /// <param name="globalPosition">Tile global position.</param>
+    /// <param name="customDataName">Custom float data property name. </param>
+    /// <returns></returns>
+    public float GetPositionCustomFloatData(Vector2 globalPosition, string customDataName)
+    {
+        return (float) GetPositionCustomData(globalPosition, customDataName);
+    }
+
+    private Variant GetPositionCustomData(Vector2 globalPosition, string customDataName)
     {
         Vector2I tileArrayPosition = _walkableTilemapLayer.LocalToMap(
-            _walkableTilemapLayer.ToLocal(neighborGlobalPosition));
+            _walkableTilemapLayer.ToLocal(globalPosition));
         TileData tileData = _walkableTilemapLayer.GetCellTileData(tileArrayPosition);
-        return (float) tileData.GetCustomData("Cost");
+        return tileData.GetCustomData(customDataName);
     }
     
     public override void _Process(double delta)

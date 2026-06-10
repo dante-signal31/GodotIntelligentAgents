@@ -10,7 +10,7 @@ public abstract partial class NotInformedPathFinder<TN>:
     PathFinder<NodeRecord> where TN: INodeRecordCollection<NodeRecord>, new()
 {
     private readonly TN _openQueue = new();
-    
+
     /// <summary>
     /// Finds and returns a path to the specified target position.
     /// Depending on the implementation, this uses a specific node collection
@@ -19,6 +19,8 @@ public abstract partial class NotInformedPathFinder<TN>:
     /// <typeparam name="TN">The type of node collection to use for pathfinding.
     /// Must implement INodeCollection.</typeparam>
     /// <param name="targetPosition">The target position to find a path to.</param>
+    /// <param name="fromPosition">Start position where the found path should start from.
+    /// It defaults to the agent's current position.</param>
     /// <returns>A Path object representing the found path from the start position
     /// to the target position, or null if no valid path exists.</returns>
     public override Path FindPath(Vector2 targetPosition, Vector2 fromPosition=default) 
@@ -32,7 +34,7 @@ public abstract partial class NotInformedPathFinder<TN>:
         ClosedDict.Clear();
         
         // Get graph nodes associated with the start and target positions. 
-        CurrentStartNode = fromPosition==default?
+        CurrentStartNode = fromPosition == default?
             Graph.GetNodeAtPosition(GlobalPosition):
             Graph.GetNodeAtPosition(fromPosition);
         IPositionNode targetNode = Graph.GetNodeAtPosition(targetPosition);

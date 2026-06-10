@@ -1,3 +1,4 @@
+#if TOOLS
 using Godot;
 
 namespace GodotGameAIbyExample.addons.InteractiveRanges;
@@ -42,3 +43,4 @@ public partial class InteractiveRanges: EditorPlugin
         AddCustomType(name, baseNode, script, icon);
     }
 }
+#endif

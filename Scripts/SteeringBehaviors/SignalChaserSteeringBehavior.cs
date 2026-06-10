@@ -8,12 +8,16 @@ namespace GodotGameAIbyExample.Scripts.SteeringBehaviors;
 
 /// <summary>
 /// Represents a steering behavior responsible for directing an agent toward
-/// the source of the strongest sound signal detected within its sensing range.
-/// The behavior utilizes a sound sensor to identify signals and dynamically
+/// the source of the strongest signal detected within its sensing range.
+/// The behavior uses a sensor to identify signals and dynamically
 /// updates a pathfinding target for navigation.
 /// </summary>
+/// <remarks>
+/// This sensor can be used both for sound modalities, through a RegionSenseManager, and
+/// smell modalities, through a FEMSenseManager.
+/// </remarks>
 [Tool]
-public partial class SoundChaserSteeringBehavior: Node2D, ISteeringBehavior
+public partial class SignalChaserSteeringBehavior: Node2D, ISteeringBehavior
 {
     [ExportCategory("CONFIGURATION:")]
     /// <summary>
@@ -21,14 +25,16 @@ public partial class SoundChaserSteeringBehavior: Node2D, ISteeringBehavior
     /// </summary>
     [Export] public float ArrivalDistance = 100f;
     
-    private RegionSenseSoundSensor _soundSensor;
+    private ISensor _sensor;
+    private ISignalSensor _signalSensor;
     private MeshPathFinderSteeringBehavior _meshPathFinderSteeringBehavior;
     private Target _target;
     private Vector2 _currentTargetPosition;
     
     private void GetChildrenReferences()
     {
-        _soundSensor = this.FindChild<RegionSenseSoundSensor>();
+        _sensor = this.FindChild<ISensor>();
+        _signalSensor = this.FindChild<ISignalSensor>();
         _meshPathFinderSteeringBehavior = this.FindChild<MeshPathFinderSteeringBehavior>();
     }
 
@@ -47,10 +53,10 @@ public partial class SoundChaserSteeringBehavior: Node2D, ISteeringBehavior
 
     public SteeringOutput GetSteering(SteeringBehaviorArgs args)
     {
-        if (!_soundSensor.AnyObjectDetected) return SteeringOutput.Zero;
+        if (!_sensor.AnyObjectDetected) return SteeringOutput.Zero;
         
         // Chase the strongest signal.
-        RegionSenseSignal strongestSignal = _soundSensor.DetectedSignals.Peek().Signal;
+        RegionSenseSignal strongestSignal = _signalSensor.DetectedSignals.Peek().Signal;
 
         if (_currentTargetPosition.DistanceTo(strongestSignal.Source.GlobalPosition) >
             ArrivalDistance)
@@ -69,7 +75,7 @@ public partial class SoundChaserSteeringBehavior: Node2D, ISteeringBehavior
         
         GetChildrenReferences();
         
-        if (_soundSensor == null)
+        if (_sensor == null)
         {
             warnings.Add("This node needs a child of type RegionSenseSoundSensor " +
                          "to work.");

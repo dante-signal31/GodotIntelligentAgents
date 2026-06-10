@@ -5,7 +5,7 @@ namespace GodotGameAIbyExample.Scripts.Sensors;
 /// sense manager. This representation defines the limits of this kind of signals and
 /// how it is attenuated by distance.
 /// </summary>
-public class RegionSenseModality
+public abstract class RegionSenseModality
 {
     /// <summary>
     /// Maximum range of the modality.
@@ -46,8 +46,5 @@ public class RegionSenseModality
     /// <param name="signal">Signal to be sent.</param>
     /// <param name="sensor">Sensor candidate to receive the signal.</param>
     /// <returns>True if the sensor can receive the signal. Otherwise, false.</returns>
-    public virtual bool ExtraChecks(RegionSenseSignal signal, IRegionSenseSensor sensor)
-    {
-        return true;
-    }
+    public abstract bool ExtraChecks(RegionSenseSignal signal, IRegionSenseSensor sensor);
 }

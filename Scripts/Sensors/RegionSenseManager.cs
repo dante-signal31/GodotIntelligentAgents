@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using Godot;
 using Timer = System.Timers.Timer;
@@ -10,9 +11,9 @@ namespace GodotGameAIbyExample.Scripts.Sensors;
 /// Manages the registration of sensors and the distribution of signals
 /// to registered sensors within a defined region.
 /// </summary>
-public partial class RegionSenseManager: Node
+public partial class RegionSenseManager: Node2D
 {
-    [ExportCategory("CONFIGURATION:")]
+    [ExportCategory("REGION SENSE MANAGER CONFIGURATION:")]
     private float _sendingPeriod = 0.1f;
     /// <summary>
     /// Time in seconds between signal emissions.
@@ -44,7 +45,7 @@ public partial class RegionSenseManager: Node
         public RegionSenseSignal Signal;
     }
 
-    private readonly HashSet<IRegionSenseSensor> _registeredSensors = new();
+    protected readonly HashSet<IRegionSenseSensor> _registeredSensors = new();
     private readonly PriorityQueue<SignalNotification, double> _signalQueue = new();
     private Timer _senderTimer;
 
@@ -70,7 +71,7 @@ public partial class RegionSenseManager: Node
     /// Register a sensor to receive signals from this RegionSenseManager.
     /// </summary>
     /// <param name="sensor">Sensor interested in receiving signals.</param>
-    public void RegisterSensor(IRegionSenseSensor sensor)
+    public virtual void RegisterSensor(IRegionSenseSensor sensor)
     {
         _registeredSensors.Add(sensor);
     }
@@ -79,7 +80,7 @@ public partial class RegionSenseManager: Node
     /// Unregister a sensor from receiving signals from this RegionSenseManager.
     /// </summary>
     /// <param name="sensor">Sensor no longer interested in receiving signals.</param>
-    public void UnregisterSensor(IRegionSenseSensor sensor)
+    public virtual void UnregisterSensor(IRegionSenseSensor sensor)
     {
         _registeredSensors.Remove(sensor);
     }
@@ -88,9 +89,16 @@ public partial class RegionSenseManager: Node
     /// Called by signal sources to send a signal to the sensors.
     /// </summary>
     /// <param name="signal">Signal to be sent.</param>
-    public void RegisterSignal(RegionSenseSignal signal)
+    public virtual void RegisterSignal(RegionSenseSignal signal)
     {
-        foreach (IRegionSenseSensor sensor in _registeredSensors)
+        NotifySensors(signal, _registeredSensors.ToArray());
+    }
+
+    protected virtual void NotifySensors(
+        RegionSenseSignal signal, 
+        IRegionSenseSensor[] sensorArray)
+    {
+        foreach (IRegionSenseSensor sensor in sensorArray)
         {
             // Is this sensor interested in this signal modality?
             if (!sensor.SensesModality(signal.Modality)) continue;
@@ -100,11 +108,8 @@ public partial class RegionSenseManager: Node
             if (distance > signal.Modality.MaximumRange) continue;
             
             // Is the signal powerful enough to be perceived by the sensor?
-            float receivedPower = signal.Strength *
-                                  MathF.Pow(signal.Modality.Attenuation, 
-                                      distance/DistanceUnit);
-            if (receivedPower < sensor.ModalityThreshold(signal.Modality)) continue;
-            
+            if (!SignalPowerfulEnoughForSensor(signal, sensor)) continue;
+
             // Now, let's perform the specific checks for this modality.
             if (!signal.Modality.ExtraChecks(signal, sensor)) continue;
             
@@ -125,6 +130,27 @@ public partial class RegionSenseManager: Node
             };
             _signalQueue.Enqueue(notification, deliveryTime);
         }
+    }
+
+    /// <summary>
+    /// Determines whether a signal is powerful enough to be perceived by a sensor,
+    /// considering the distance, strength, and modality-specific attenuation.
+    /// </summary>
+    /// <param name="signal">The signal being evaluated for perception by the sensor.</param>
+    /// <param name="sensor">The sensor evaluating the signal.</param>
+    /// <returns>True if the signal's power at the sensor's location is above the
+    /// sensor's modality threshold; otherwise, false.</returns>
+    protected virtual bool SignalPowerfulEnoughForSensor(
+        RegionSenseSignal signal,
+        IRegionSenseSensor sensor)
+    {
+        float distance = signal.Source.GlobalPosition.DistanceTo(sensor.GlobalPosition);
+        
+        float receivedPower = signal.Strength *
+                              MathF.Pow(signal.Modality.Attenuation, 
+                                  distance/DistanceUnit);
+
+        return receivedPower >= sensor.ModalityThreshold(signal.Modality);
     }
 
     /// <summary>
