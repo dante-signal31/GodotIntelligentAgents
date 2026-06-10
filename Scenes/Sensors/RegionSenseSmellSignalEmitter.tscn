@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://csqc2nevy38tk"]
+
+[ext_resource type="Script" uid="uid://dyho6e1ylm6pp" path="res://Scripts/Sensors/RegionSenseSmellSignalEmitter.cs" id="1_mhhoi"]
+
+[node name="RegionSenseSmellSignalEmitter" type="Node2D" unique_id=448153153]
+script = ExtResource("1_mhhoi")

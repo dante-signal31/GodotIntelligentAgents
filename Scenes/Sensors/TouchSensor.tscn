@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dah1tijajdu7n"]
+
+[ext_resource type="Script" uid="uid://bv43eqs28klfr" path="res://Scripts/Sensors/TouchSensor.cs" id="1_evhls"]
+
+[node name="TouchSensor" type="Node2D" unique_id=855481771]
+script = ExtResource("1_evhls")

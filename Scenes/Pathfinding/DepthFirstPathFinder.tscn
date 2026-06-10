@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnaicuv712ku"]
+
+[ext_resource type="Script" uid="uid://cl5vch1a2b4bn" path="res://Scripts/Pathfinding/DepthFirstPathFinder.cs" id="1_htxau"]
+
+[node name="DepthFirstPathFinder" type="Node2D"]
+script = ExtResource("1_htxau")

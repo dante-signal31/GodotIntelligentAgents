@@ -1,0 +1,13 @@
+[gd_scene load_steps=5 format=3 uid="uid://dbthitkduyw3f"]
+
+[ext_resource type="Script" uid="uid://d2uu7aslgvdun" path="res://Scripts/Pathfinding/MapGraph.cs" id="1_10cfe"]
+[ext_resource type="Script" uid="uid://cnkybifuo2peh" path="res://Scripts/Pathfinding/PositionNode.cs" id="2_qa7yq"]
+[ext_resource type="Script" uid="uid://cwp4kfh18w44v" path="res://Scripts/Pathfinding/MapGraphResource.cs" id="3_sbi8i"]
+
+[sub_resource type="Resource" id="Resource_vde70"]
+script = ExtResource("3_sbi8i")
+
+[node name="MapGraph" type="Node2D"]
+script = ExtResource("1_10cfe")
+GraphResource = SubResource("Resource_vde70")
+ShowGizmos = true

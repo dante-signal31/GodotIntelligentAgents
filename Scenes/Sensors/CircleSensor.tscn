@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://dvk8qqy48q4ti"]
+
+[ext_resource type="PackedScene" uid="uid://c0i74j0qynh03" path="res://Scenes/Sensors/VolumetricSensor.tscn" id="1_t85ff"]
+[ext_resource type="Script" uid="uid://c3wmlubw2hwil" path="res://Scripts/Sensors/CircleSensor.cs" id="2_23aoh"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_t85ff"]
+radius = 200.0
+
+[node name="CircleSensor" unique_id=1284326153 instance=ExtResource("1_t85ff")]
+script = ExtResource("2_23aoh")
+Radius = 200.0
+DetectionLayers = 1
+
+[node name="Area2D" parent="." index="0" unique_id=35459674]
+collision_layer = 0
+
+[node name="CollisionShape2D" parent="Area2D" index="0" unique_id=391347426]
+shape = SubResource("CircleShape2D_t85ff")

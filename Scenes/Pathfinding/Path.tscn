@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcvoakuumbm7u"]
+
+[ext_resource type="Script" uid="uid://dt5jgmogoasd2" path="res://Scripts/Pathfinding/Path.cs" id="1_iuacr"]
+
+[node name="Path" type="Node2D"]
+script = ExtResource("1_iuacr")
+GizmosColor = Color(1, 1, 0, 1)

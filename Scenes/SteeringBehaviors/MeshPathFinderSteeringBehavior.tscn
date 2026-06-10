@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://j00kef0klrhd"]
+
+[ext_resource type="Script" uid="uid://dyewshylo0qae" path="res://Scripts/SteeringBehaviors/MeshPathFinderSteeringBehavior.cs" id="1_5ywbc"]
+[ext_resource type="PackedScene" uid="uid://gl8ea432pxyw" path="res://Scenes/SteeringBehaviors/PathFollowingSteeringBehavior.tscn" id="2_6c8tm"]
+[ext_resource type="PackedScene" uid="uid://brydlhmq16gta" path="res://Scenes/Pathfinding/MeshNavigationAgent2D.tscn" id="3_ibb1s"]
+
+[node name="MeshPathFinderSteeringBehavior" type="Node2D" unique_id=471368086]
+script = ExtResource("1_5ywbc")
+
+[node name="PathFollowingSteeringBehavior" parent="." unique_id=509784456 instance=ExtResource("2_6c8tm")]
+
+[node name="MeshNavigationAgent2D" parent="." unique_id=391528009 instance=ExtResource("3_ibb1s")]
+avoidance_enabled = true
+radius = 60.0
+debug_enabled = true
+debug_path_custom_color = Color(1, 0, 1, 1)

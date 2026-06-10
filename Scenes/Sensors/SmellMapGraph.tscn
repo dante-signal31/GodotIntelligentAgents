@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://co3fpfmitdrxo"]
+
+[ext_resource type="Script" uid="uid://40bb7q0nff8b" path="res://Scripts/Sensors/SmellMapGraph.cs" id="1_oy6gw"]
+[ext_resource type="Script" uid="uid://cnkybifuo2peh" path="res://Scripts/Pathfinding/PositionNode.cs" id="2_lrpr7"]
+[ext_resource type="Script" uid="uid://cwp4kfh18w44v" path="res://Scripts/Pathfinding/MapGraphResource.cs" id="3_77y5k"]
+
+[sub_resource type="Resource" id="Resource_s376s"]
+script = ExtResource("3_77y5k")
+
+[node name="SmellMapGraph" type="Node2D" unique_id=849997112]
+script = ExtResource("1_oy6gw")
+GraphResource = SubResource("Resource_s376s")
+ShowGizmos = true

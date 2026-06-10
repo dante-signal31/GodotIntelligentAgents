@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://k3lin5lefas"]
+
+[ext_resource type="Script" uid="uid://c8pma5xbjp27c" path="res://Scripts/Tools/InterestWhiskers.cs" id="1_1jto2"]
+
+[node name="InterestWhisker" type="Node2D" unique_id=1197856907]
+script = ExtResource("1_1jto2")

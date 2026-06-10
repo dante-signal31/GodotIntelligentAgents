@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://qn7rovi22b5b"]
+
+[ext_resource type="Script" uid="uid://dkagdmopdwfy4" path="res://Scripts/SteeringBehaviors/SignalChaserSteeringBehavior.cs" id="1_vycx3"]
+
+[node name="SignalChaserSteeringBehavior" type="Node2D" unique_id=337015559]
+script = ExtResource("1_vycx3")

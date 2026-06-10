@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bvmn36e6f0pnx"]
+
+[ext_resource type="Script" uid="uid://0wbn5e0lbj8n" path="res://Scripts/Sensors/RegionSenseManager.cs" id="1_i33d6"]
+
+[node name="RegionSenseManager" type="Node2D" unique_id=2031219065]
+script = ExtResource("1_i33d6")

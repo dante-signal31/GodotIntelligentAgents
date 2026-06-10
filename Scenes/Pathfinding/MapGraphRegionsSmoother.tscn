@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3me1huqasgfd"]
+
+[ext_resource type="Script" uid="uid://b44c1n6q83w1" path="res://Scripts/Pathfinding/MapGraphRegionsSmoother.cs" id="1_j76da"]
+
+[node name="MapGraphRegionsSmoother" type="Node"]
+script = ExtResource("1_j76da")

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://73eoh74bxawt"]
+
+[ext_resource type="Script" uid="uid://b5lpf6k0w7t5c" path="res://Scripts/SteeringBehaviors/VOAgentAvoiderBehavior.cs" id="1_tlm64"]
+
+[node name="VOAgentAvoiderSteeringBehavior" type="Node2D" unique_id=814293294]
+script = ExtResource("1_tlm64")
+ShowGizmos = true
+GizmosColor = Color(0, 0, 1, 1)
+NoCollisionVelocitiesColor = Color(0, 1, 0, 1)
+CollisionVelocitiesColor = Color(1, 0, 0, 1)
+GizmoRadius = 5

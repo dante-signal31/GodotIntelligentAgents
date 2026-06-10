@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bx1jgyfuervxe"]
+
+[ext_resource type="Script" uid="uid://udk0owcy0pat" path="res://Scripts/SteeringBehaviors/SoundEmitterSteeringBehavior.cs" id="1_g5ypq"]
+
+[node name="SoundEmitterSteeringBehavior" type="Node2D" unique_id=1130336638]
+script = ExtResource("1_g5ypq")

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://gl8ea432pxyw"]
+
+[ext_resource type="Script" uid="uid://6xslq0pavsnp" path="res://Scripts/SteeringBehaviors/PathFollowingSteeringBehavior.cs" id="1_jsxsg"]
+[ext_resource type="PackedScene" uid="uid://cuiom4nbl5741" path="res://Scenes/SteeringBehaviors/SeekSteeringBehavior.tscn" id="2_gabcv"]
+
+[node name="PathFollowingSteeringBehavior" type="Node2D"]
+script = ExtResource("1_jsxsg")
+
+[node name="SeekSteeringBehavior" parent="." instance=ExtResource("2_gabcv")]

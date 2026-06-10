@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cip2ek6n8fg4"]
+
+[ext_resource type="Script" uid="uid://cy0sferkc5tqu" path="res://Scripts/SteeringBehaviors/ANNPassiveAgentAvoiderSteeringBehavior.cs" id="1_lt7j8"]
+
+[node name="ANNPassiveAgentAvoiderSteeringBehavior" type="Node2D" unique_id=1925096258]
+script = ExtResource("1_lt7j8")

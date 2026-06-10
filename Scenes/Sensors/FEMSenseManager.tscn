@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://dgpsexbttyhyc"]
+
+[ext_resource type="Script" uid="uid://bius6iotqj61p" path="res://Scripts/Sensors/FEMSenseManager.cs" id="1_hvb1w"]
+
+[node name="FemSenseManager" type="Node2D" unique_id=862327533]
+script = ExtResource("1_hvb1w")
+ShowGizmos = true
+
+[node name="Timer" type="Timer" parent="." unique_id=36130692]

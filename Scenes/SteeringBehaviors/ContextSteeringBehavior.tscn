@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://m34468003uh2"]
+
+[ext_resource type="Script" uid="uid://bdc1hrwuwjh1i" path="res://Scripts/SteeringBehaviors/ContextSteeringBehavior.cs" id="1_axms5"]
+[ext_resource type="PackedScene" uid="uid://k3lin5lefas" path="res://Scenes/Tools/InterestWhisker.tscn" id="2_pooly"]
+[ext_resource type="PackedScene" uid="uid://kphwl01n3lyj" path="res://Scenes/Sensors/WhiskersSensor.tscn" id="3_k7hxs"]
+[ext_resource type="Script" uid="uid://d1u7qmneniqg0" path="res://addons/InteractiveRanges/SectorRange/SectorRange.cs" id="4_pooly"]
+
+[sub_resource type="Curve" id="Curve_pooly"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="Curve" id="Curve_k7hxs"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[node name="ContextSteeringBehavior" type="Node2D" unique_id=750442898]
+script = ExtResource("1_axms5")
+ContextResolution = 20
+ShowGizmos = true
+GizmoColor = Color(1, 0.7882353, 0, 1)
+GizmoColorInterest = Color(1, 0, 1, 1)
+
+[node name="InterestWhisker" parent="." unique_id=1197856907 instance=ExtResource("2_pooly")]
+
+[node name="WhiskersSensor" parent="." unique_id=67966128 instance=ExtResource("3_k7hxs")]
+SensorResolution = 9
+LeftRangeSemiCone = SubResource("Curve_pooly")
+RightRangeSemiCone = SubResource("Curve_k7hxs")
+
+[node name="SectorRange" type="Node2D" parent="WhiskersSensor" unique_id=687091344]
+script = ExtResource("4_pooly")
+SemiConeDegrees = 180.0
+Range = 100.0
+metadata/_custom_type_script = "uid://d1u7qmneniqg0"
