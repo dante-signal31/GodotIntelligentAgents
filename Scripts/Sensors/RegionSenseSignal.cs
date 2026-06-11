@@ -14,7 +14,12 @@ public struct RegionSenseSignal
     public float Strength;
     
     /// <summary>
-    /// Position of the signal source.
+    /// Position of the signal emission.
+    /// </summary>
+    public Vector2 EmissionPosition;
+    
+    /// <summary>
+    /// Signal source.
     /// </summary>
     public Node2D Source;
     

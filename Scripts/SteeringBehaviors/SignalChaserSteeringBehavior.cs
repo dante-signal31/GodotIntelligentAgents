@@ -58,10 +58,10 @@ public partial class SignalChaserSteeringBehavior: Node2D, ISteeringBehavior
         // Chase the strongest signal.
         RegionSenseSignal strongestSignal = _signalSensor.DetectedSignals.Peek().Signal;
 
-        if (_currentTargetPosition.DistanceTo(strongestSignal.Source.GlobalPosition) >
+        if (_currentTargetPosition.DistanceTo(strongestSignal.EmissionPosition) >
             ArrivalDistance)
         {
-            _target.GlobalPosition = strongestSignal.Source.GlobalPosition;
+            _target.GlobalPosition = strongestSignal.EmissionPosition;
             _meshPathFinderSteeringBehavior.PathTarget = _target;
             _currentTargetPosition = _target.GlobalPosition;
         }

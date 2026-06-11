@@ -116,7 +116,7 @@ public class AdvancedSensorTests
         soundChaserMovingAgent3.MaximumSpeed = 300.0f;
         soundChaserMovingAgent3.Visible = true;
         chaserSensor3.DetectionBufferSize = 100;
-        chaserSensor3.MinimumStrengthDetectionThreshold = 30;
+        chaserSensor3.MinimumStrengthDetectionThreshold = 40;
         chaserSensor3.DetectionExpirationTime = 1.0f;
         chaserSensor3.CleaningPeriod = 0.3f;
 
@@ -175,5 +175,152 @@ public class AdvancedSensorTests
         soundChaserMovingAgent2.ProcessMode = Node.ProcessModeEnum.Disabled;
         soundChaserMovingAgent3.Visible = false;
         soundChaserMovingAgent3.ProcessMode = Node.ProcessModeEnum.Disabled;
+    }
+    
+    /// <summary>
+    /// Test that SmellEmitterMovingAgent is chased when it gets near SmellChaserAgents.
+    /// </summary>
+    [TestCase]
+    public async Task SmellEmittingSensorTest()
+    {
+        // Get references to test agents.
+        MovingAgent smellEmittingMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("SmellEmitterMovingAgent");
+        MovingAgent smellChaserMovingAgent =
+            (MovingAgent)_sceneRunner.FindChild("SmellChaserMovingAgent");
+        MovingAgent smellChaserMovingAgent2 =
+            (MovingAgent)_sceneRunner.FindChild("SmellChaserMovingAgent2");
+        MovingAgent smellChaserMovingAgent3 =
+            (MovingAgent)_sceneRunner.FindChild("SmellChaserMovingAgent3");
+
+        Scripts.Tools.Target target =
+            (Scripts.Tools.Target)_sceneRunner.FindChild("Target");
+        
+        Marker2D position1 =
+            (Marker2D)_sceneRunner.FindChild("Position1");
+        Marker2D position2 =
+            (Marker2D)_sceneRunner.FindChild("Position2");
+        Marker2D position3 =
+            (Marker2D)_sceneRunner.FindChild("Position3");
+        Marker2D position4 =
+            (Marker2D)_sceneRunner.FindChild("Position4");
+        Marker2D position5 =
+            (Marker2D)_sceneRunner.FindChild("Position5");
+        Marker2D position6 =
+            (Marker2D)_sceneRunner.FindChild("Position6");
+        Marker2D position7 =
+            (Marker2D)_sceneRunner.FindChild("Position7");
+        Marker2D position8 =
+            (Marker2D)_sceneRunner.FindChild("Position8");
+
+        // Get references.
+        SeekSteeringBehavior emitterSeekSteeringBehavior =
+            smellEmittingMovingAgent.FindChild<SeekSteeringBehavior>(recursive: true);
+        RegionSenseSmellSignalEmitter signalEmitter =
+            smellEmittingMovingAgent.FindChild<RegionSenseSmellSignalEmitter>(recursive: true);
+        RegionSenseSmellSensor chaserSensor = 
+            smellChaserMovingAgent.FindChild<RegionSenseSmellSensor>(recursive: true);
+        RegionSenseSmellSensor chaserSensor2 = 
+            smellChaserMovingAgent2.FindChild<RegionSenseSmellSensor>(recursive: true);
+        RegionSenseSmellSensor chaserSensor3 = 
+            smellChaserMovingAgent3.FindChild<RegionSenseSmellSensor>(recursive: true);
+
+        // Setup agents before the test.ç
+        target.GlobalPosition = position1.GlobalPosition;
+        
+        smellEmittingMovingAgent.MaximumSpeed = 400f;
+        smellEmittingMovingAgent.GlobalPosition = position1.GlobalPosition;
+        smellEmittingMovingAgent.RotationDegrees = 0;
+        smellEmittingMovingAgent.Visible = true;
+        emitterSeekSteeringBehavior.Target = target;
+        signalEmitter.ModalityMaximumRange = 1000f;
+        signalEmitter.ModalityAttenuation = 0.9f;
+        signalEmitter.ModalityInverseTransmissionSpeed = 2 / 100f;
+        signalEmitter.EmissionPeriod = 0.3f;
+        signalEmitter.AutoStartEmission = true;
+        signalEmitter.SignalStrength = 10000f;
+
+        smellChaserMovingAgent.GlobalPosition = position3.GlobalPosition;
+        smellChaserMovingAgent.AgentColor = new Color(1, 0, 0);
+        smellChaserMovingAgent.MaximumSpeed = 300.0f;
+        smellChaserMovingAgent.Visible = true;
+        chaserSensor.DetectionBufferSize = 100;
+        chaserSensor.MinimumStrengthDetectionThreshold = 40;
+        chaserSensor.DetectionExpirationTime = 1.0f;
+        chaserSensor.CleaningPeriod = 0.3f;
+        
+        smellChaserMovingAgent2.GlobalPosition = position4.GlobalPosition;
+        smellChaserMovingAgent2.AgentColor = new Color(1, 0, 0);
+        smellChaserMovingAgent2.MaximumSpeed = 300.0f;
+        smellChaserMovingAgent2.Visible = true;
+        chaserSensor2.DetectionBufferSize = 100;
+        chaserSensor2.MinimumStrengthDetectionThreshold = 40;
+        chaserSensor2.DetectionExpirationTime = 1.0f;
+        chaserSensor2.CleaningPeriod = 0.3f;
+        
+        smellChaserMovingAgent3.GlobalPosition = position2.GlobalPosition;
+        smellChaserMovingAgent3.AgentColor = new Color(1, 0, 0);
+        smellChaserMovingAgent3.MaximumSpeed = 300.0f;
+        smellChaserMovingAgent3.Visible = true;
+        chaserSensor3.DetectionBufferSize = 100;
+        chaserSensor3.MinimumStrengthDetectionThreshold = 40;
+        chaserSensor3.DetectionExpirationTime = 1.0f;
+        chaserSensor3.CleaningPeriod = 0.3f;
+
+        smellEmittingMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        smellChaserMovingAgent.ProcessMode = Node.ProcessModeEnum.Always;
+        smellChaserMovingAgent2.ProcessMode = Node.ProcessModeEnum.Always;
+        smellChaserMovingAgent3.ProcessMode = Node.ProcessModeEnum.Always;
+
+        // Start test.
+
+        // The soundEmitter has not moved yet, nor any of the chasers.
+        await _sceneRunner.AwaitMillis(5000);
+        AssertThat(
+            Mathf.IsEqualApprox(position1.GlobalPosition.DistanceTo(smellEmittingMovingAgent.GlobalPosition), 0)).IsTrue();
+        AssertThat(
+            Mathf.IsEqualApprox(position2.GlobalPosition.DistanceTo(smellChaserMovingAgent3.GlobalPosition), 0)).IsTrue();
+        AssertThat(
+            Mathf.IsEqualApprox(position3.GlobalPosition.DistanceTo(smellChaserMovingAgent.GlobalPosition), 0)).IsTrue();
+        AssertThat(
+            Mathf.IsEqualApprox(position4.GlobalPosition.DistanceTo(smellChaserMovingAgent2.GlobalPosition), 0)).IsTrue();
+        
+        // Change to a position where one of the chasers can hear us.
+        target.GlobalPosition = position5.GlobalPosition;
+        await _sceneRunner.AwaitMillis(7000);
+        target.GlobalPosition = position6.GlobalPosition;
+        await _sceneRunner.AwaitMillis(5000);
+        // Did we make the chaser move?
+        AssertThat(
+            position2.GlobalPosition.DistanceTo(smellChaserMovingAgent3.GlobalPosition) > 100).IsTrue();
+        // The other two should not have moved.
+        AssertThat(
+            Mathf.IsEqualApprox(position3.GlobalPosition.DistanceTo(smellChaserMovingAgent.GlobalPosition), 0)).IsTrue();
+        AssertThat(
+            Mathf.IsEqualApprox(position4.GlobalPosition.DistanceTo(smellChaserMovingAgent2.GlobalPosition), 0)).IsTrue();
+        
+        // Change to a position where the second can hear us.
+        target.GlobalPosition = position7.GlobalPosition;
+        await _sceneRunner.AwaitMillis(2000);
+        target.GlobalPosition = position8.GlobalPosition;
+        await _sceneRunner.AwaitMillis(3000);
+        target.GlobalPosition = position1.GlobalPosition;
+        await _sceneRunner.AwaitMillis(2000);
+        // Did we make the chaser move?
+        AssertThat(
+            position3.GlobalPosition.DistanceTo(smellChaserMovingAgent.GlobalPosition) > 100).IsTrue();
+        // The last chased should not have moved.
+        AssertThat(
+            Mathf.IsEqualApprox(position4.GlobalPosition.DistanceTo(smellChaserMovingAgent2.GlobalPosition), 0)).IsTrue();
+
+        // Cleanup.
+        smellEmittingMovingAgent.Visible = false;
+        smellEmittingMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+        smellChaserMovingAgent.Visible = false;
+        smellChaserMovingAgent.ProcessMode = Node.ProcessModeEnum.Disabled;
+        smellChaserMovingAgent2.Visible = false;
+        smellChaserMovingAgent2.ProcessMode = Node.ProcessModeEnum.Disabled;
+        smellChaserMovingAgent3.Visible = false;
+        smellChaserMovingAgent3.ProcessMode = Node.ProcessModeEnum.Disabled;
     }
 }

@@ -163,6 +163,7 @@ public abstract partial class RegionSenseSignalEmitter<T>:
         RegionSenseSignal signal = new()
         {
             Modality = _currentModality,
+            EmissionPosition = GlobalPosition,
             Source = this,
             Strength = SignalStrength
         };
